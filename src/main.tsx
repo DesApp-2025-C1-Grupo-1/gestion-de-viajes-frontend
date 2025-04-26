@@ -1,18 +1,20 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
+import ReactDOM from 'react-dom/client';
 import { ThemeProvider } from '@mui/material';
+import { Provider } from 'react-redux';
 
 import { customMuiTheme } from './config/customMuiTheme';
-
 import { App } from './App';
-import './index.css'
-import { Provider } from 'react-redux';
 import { store } from './store/store';
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+import './index.css';
+
+// Aseguramos que 'root' no sea null
+const rootElement = document.getElementById('root') as HTMLElement;
+
+ReactDOM.createRoot(rootElement).render(
   <Provider store={store}>
     <ThemeProvider theme={customMuiTheme}>
       <App />
     </ThemeProvider>
   </Provider>
-)
+);

@@ -1,22 +1,21 @@
 import { createTheme } from "@mui/material";
-import { blue, lightBlue } from "@mui/material/colors";
+import { lightBlue } from "@mui/material/colors";
 
 export const customMuiTheme = createTheme({
+  palette: {
+    primary: {
+      main: '#E65F2B',
+    },
+    secondary: {
+      main: '#f44336',
+    },
+  },
   typography: {
-    h4: {
-      fontWeight: 'bold',
-      color: lightBlue[700],
-    },
-    h5: {
-      fontWeight: 'bold',
-      color: blue[800],
-      fontSize: '1.5rem',
-    },
-    subtitle1: {
-      fontSize: '1rem',
-    },
-    subtitle2: {
-      fontSize: '1.2rem',
+    fontFamily: 'poppins',
+    h2:{
+      fontSize: '2rem',
+      fontWeight: 900,
+      color: "5A5A65",
     },
     button: {
       textTransform: 'none',

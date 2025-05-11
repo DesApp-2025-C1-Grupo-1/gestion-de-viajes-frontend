@@ -6,7 +6,7 @@ import { VehicleTypeDialog } from "../components/vehicle/type-vehicle/VehicleTyp
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { VehicleGrid } from "../components/vehicle/type-vehicle/VehicleGrid";
 import { EmptyState } from "../components/EmptyState";
-import { LoadingState } from "../components/LoadingState";
+import  LoadingState  from "../components/LoadingState";
 import { SectionHeader } from "../components/SectionHeader";
 
 export default function TypeVehicle() {
@@ -80,7 +80,7 @@ export default function TypeVehicle() {
             />
 
             {isLoading ? (
-                <LoadingState />
+                <LoadingState title="tipos de vehículos" />
             ) : vehicleTypes.length === 0 ? (
                 <EmptyState onAdd={handleAddNew} />
             ) : (

@@ -82,5 +82,32 @@ export const customMuiTheme = createTheme({
         },
       },
     },
+    MuiMenu:{
+      styleOverrides:{
+        paper:{
+          maxHeight:200,
+          overflowY:"auto",
+          border: "1px solid #C7C7C7",
+          boxShadow: "0px 2px 4px rgba(199, 199, 199, 1.00)",
+        },
+      },
+    },
+    MuiSelect:{
+      styleOverrides:{
+        root:{
+          borderRadius:6,
+          backgroundColor:"#ffffff"
+        },
+      },
+    },
+    MuiMenuItem:{
+      styleOverrides:{
+        root:{
+          "&:hover":{
+            backgroundColor:"#e0e0e0"
+          }
+        }
+      }
+    },
   }
 });

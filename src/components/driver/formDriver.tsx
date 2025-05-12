@@ -82,7 +82,7 @@ export const FormDriver = ({onSubmit, editingDriver, onCancel, isEditing, compan
                             <DatePicker 
                                 value={formData.date_birth ? dayjs(formData.date_birth) : null}
                                 onChange={handleDateChange}
-                                renderInput={(params) => <TextField fullWidth {...params} />}
+                                slots={{ textField: (params) => <TextField {...params} fullWidth /> }}
                             />
                         </LocalizationProvider>
                     </Box>

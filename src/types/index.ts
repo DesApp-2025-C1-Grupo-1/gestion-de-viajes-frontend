@@ -1,7 +1,19 @@
+import { Dayjs } from "dayjs"
+
 export type VehicleType = {
   _id: string
   name: string
   description?: string
+}
+
+export type DriverType = {
+  _id: string 
+  name: string
+  surname: string
+  dni: number
+  date_birth: Dayjs | null
+  company: number
+  vehicle: number
 }
 
 export type Vehicle = {
@@ -14,4 +26,14 @@ export type Vehicle = {
   peso_carga: number
   tipo: string
   empresa: string
+}
+
+export type VehicleDriver = {
+  _id: string
+  name: string
+}
+
+export type CompanyDriver = {
+  _id: string
+  name: string
 }

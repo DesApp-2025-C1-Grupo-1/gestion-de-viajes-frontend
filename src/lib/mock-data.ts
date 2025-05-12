@@ -1,4 +1,5 @@
-import { Vehicle, VehicleType } from "../types";
+import dayjs from 'dayjs';
+import { Vehicle, VehicleType, DriverType} from "../types";
 
 export const vehicleTypes: VehicleType[] = [
   {
@@ -28,6 +29,44 @@ export const vehicleTypes: VehicleType[] = [
   },
 ]
 
+export const driverTypes: DriverType[] = [
+  {
+    "_id": "dri1",
+    "name": "Carlos",
+    "surname": "Gutierrez",
+    "dni": 17295772,
+    "date_birth": null,
+    "company": 5673,
+    "vehicle": 9483
+  },
+  {
+    "_id": "dri2",
+    "name": "Esteban",
+    "surname": "Rodriguez",
+    "dni": 25637829,
+    "date_birth": null,
+    "company": 4127,
+    "vehicle": 3856
+  },
+  {
+    "_id": "dri3",
+    "name": "Marcos",
+    "surname": "Bustamante",
+    "dni": 37896521,
+    "date_birth": null,
+    "company": 7895,
+    "vehicle": 1274
+  },
+  {
+    "_id": "dri4",
+    "name": "Laura",
+    "surname": "Fernandez",
+    "dni": 41235678,
+    "date_birth": null,
+    "company": 2153,
+    "vehicle": 9374
+  }
+]
 export const vehicles: Vehicle[] = [
   {
     _id: "veh1",

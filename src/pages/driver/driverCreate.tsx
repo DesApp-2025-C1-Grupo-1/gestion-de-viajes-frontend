@@ -3,7 +3,8 @@ import { useCallback, useState } from "react";
 import { DriverType } from "../../types";
 import { useDriver } from "../../hooks/useDriver";
 import { FormDriver } from "../../components/driver/formDriver";
-import { SectioHeaderForm } from "../../components/HeaderForms";
+//import { SectioHeaderForm } from "../../components/HeaderForms";
+import { SectionHeader } from "../../components/SectionHeader";
 
 export default function DriverCreate ()  {
 
@@ -19,7 +20,7 @@ export default function DriverCreate ()  {
 
     return(
         <>
-            <SectioHeaderForm
+            <SectionHeader
                 title= "Registrar chofer"
                 description= "Registre los choferes del sistema"
             />

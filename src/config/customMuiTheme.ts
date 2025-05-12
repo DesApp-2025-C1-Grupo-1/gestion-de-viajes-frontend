@@ -22,14 +22,65 @@ export const customMuiTheme = createTheme({
     },
   },
   components: {
+    MuiTable:{
+      styleOverrides: {
+        root: {
+          width: "100%",
+          minWidth: 600
+        },
+      },
+    },
     MuiTableCell: {
       styleOverrides: {
         head: {
-          fontWeight: 'bold',
-          fontSize: '1rem',
-          color: lightBlue[900]
-        }
+          fontWeight: 'semibold',
+          fontSize: '0.875rem',
+          color: "#4B5563",
+          border: "none",
+          textAlign: "left",
+          padding: "14px 18px",
+        },
+        body: {
+          fontSize: '0.875rem',
+          color: "#5A5A65",
+          border: "none",
+          padding: "26px 18px",
+        },
+        
+
       }
-    }
+    },
+    MuiTableRow: {
+      styleOverrides: {
+        head: {
+          backgroundColor: "#F6F7FB",
+          border: "none",
+        },
+        root : {
+          borderTop: "0.5px solid #C7C7C7",
+        }
+      },
+    },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          "& .MuiOutlinedInput-root": {
+            height: "40px",
+            borderRadius: "4px",
+            backgroundColor: "#fff",
+            fontSize: "0.8rem",
+            "& fieldset": {
+              borderColor: "#E0E0E0",
+            },
+            "&:hover fieldset": {
+              borderColor: "#C94715",
+            },
+            "&.Mui-focused fieldset": {
+              borderColor: "#C94715",
+            },
+          },
+        },
+      },
+    },
   }
 });

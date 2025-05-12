@@ -24,6 +24,7 @@ export default function ButtonAdd({ title, onClick , sx}: ButtonAddProps) {
                 padding: "8px 16px",
                 ...sx
             }}
+            className="w-full sm:max-w-max"
         >
             {title}
         </Button>

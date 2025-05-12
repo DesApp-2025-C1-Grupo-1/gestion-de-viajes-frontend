@@ -1,5 +1,5 @@
-import { VehicleType } from "../types"
-import { vehicleTypes } from "./mock-data"
+import { Vehicle, VehicleType } from "../types"
+import { vehicleTypes, vehicles } from "./mock-data"
 
 // Generar un ID aleatorio para los tipos de vehículos
 const generateId = () => Math.random().toString(36).substring(2, 15)
@@ -52,4 +52,11 @@ export const deleteVehicleType = async (id: string): Promise<void> => {
 
   vehicleTypes.splice(index, 1)
   return
+}
+
+
+export const fetchVehicle = async (): Promise<Vehicle[]> => {
+  // Simular un retraso en la llamada a la API
+  await new Promise((resolve) => setTimeout(resolve, 500))
+  return [...vehicles]
 }

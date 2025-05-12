@@ -1,4 +1,3 @@
-import Layout from "../components/Layout";
 import { useCallback, useState } from "react";
 import { VehicleType } from "../types";
 import { useVehicleTypes } from "../hooks/useVehicleTypes";
@@ -71,7 +70,7 @@ export default function TypeVehicle() {
     const handleAddNew = useCallback(() => handleOpenDialog(), [handleOpenDialog]);
 
     return(
-        <Layout className="bg-gray-50 ">
+        <>
             <SectionHeader
                 title="Tipos de Vehículo"
                 description="Gestione los tipos de vehículos disponibles en el sistema"
@@ -110,6 +109,6 @@ export default function TypeVehicle() {
                 }
             />
     
-        </Layout>
+        </>
     )
 }

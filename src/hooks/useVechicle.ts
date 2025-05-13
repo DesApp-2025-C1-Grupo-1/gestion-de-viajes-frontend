@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { Vehicle } from "../types";
-import { fetchVehicle } from "../lib/api";
+import { deleteVehicle, fetchVehicle } from "../lib/api";
 
 export const useVehicles = () => {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
@@ -38,16 +38,16 @@ export const useVehicles = () => {
       throw err;
     }
   }, []);
-
-  const removeVehicleType = useCallback(async (id: string) => {
+  */
+  const removeVehicle = useCallback(async (id: string) => {
     try {
-      await deleteVehicleType(id);
-      setVehicles(prev => prev.filter(type => type._id !== id));
+      await deleteVehicle(id);
+      setVehicles(prev => prev.filter(veh => veh._id !== id));
     } catch (err) {
       setError(err as Error);
       throw err;
     }
-  }, []); */
+  }, []); 
 
   useEffect(() => {
     loadVehicles();
@@ -59,7 +59,8 @@ export const useVehicles = () => {
     error,
     /* addVehicleType,
     editVehicleType,
-    removeVehicleType, */
+     */
+    removeVehicle,
     reload: loadVehicles
   };
 };

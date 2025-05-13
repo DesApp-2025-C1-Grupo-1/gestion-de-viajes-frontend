@@ -60,3 +60,14 @@ export const fetchVehicle = async (): Promise<Vehicle[]> => {
   await new Promise((resolve) => setTimeout(resolve, 500))
   return [...vehicles]
 }
+
+export const deleteVehicle = async (id: string): Promise<void> => {
+  // Simular un retraso en la llamada a la API
+  await new Promise((resolve) => setTimeout(resolve, 500))
+
+  const index = vehicles.findIndex((v) => v._id === id)
+  if (index === -1) throw new Error("Vehicle no encontrado")
+
+  vehicles.splice(index, 1)
+  return
+}

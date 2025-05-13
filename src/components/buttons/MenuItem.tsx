@@ -2,8 +2,12 @@ import { Edit, Ellipsis, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+interface MenuItemProps {
+    handleOpenDialog: () => void;
 
-export default function MenuItem() {
+}
+
+export default function MenuItem( { handleOpenDialog }: MenuItemProps) {
     
     const navigate = useNavigate();
     const [isActionOpen, setIsActionOpen] = useState(false);
@@ -32,11 +36,12 @@ export default function MenuItem() {
                         Editar
                     </li>
                     <li 
-                        className="flex items-center  py-2 px-4 cursor-pointer hover:bg-gray-100 text-[#DC2626] text-xs" onClick={() => navigate(`/vehicle/delete`)}
+                        className="flex items-center  py-2 px-4 cursor-pointer hover:bg-gray-100 text-[#DC2626] text-xs" onClick={ handleOpenDialog}
                     >
                         <Trash2 className="size-4 mr-2" />
                         Eliminar
                     </li>
+                    
                 </ul>
 
             </div>

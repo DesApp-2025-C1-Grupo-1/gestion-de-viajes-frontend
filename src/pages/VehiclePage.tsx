@@ -1,21 +1,37 @@
 import { Button, Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import { SectionHeader } from "../components/SectionHeader";
 import { useEffect, useState } from "react";
-import { Ellipsis} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useVehicles } from "../hooks/useVechicle";
 import  LoadingState  from "../components/LoadingState";
 import { useAutoRowsPerPage } from "../hooks/useAutoRowsPerPage";
 import SearchBar from "../components/SearchBar";
 import MenuItem from "../components/buttons/MenuItem";
-import { max } from "lodash";
+import { ConfirmDialog } from "../components/ConfirmDialog";
+import { Vehicle } from "../types";
 
 
 export default function VehiclePage() {
-    const { vehicles, isLoading } = useVehicles();
+    const { vehicles, isLoading ,removeVehicle} = useVehicles();
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);
     const {rowsPerPage} = useAutoRowsPerPage();
+    const [openDialog, setOpenDialog] = useState(false);
+    const [vehicleSelected, setVehicleSelected] = useState<Vehicle>();
+
+    const handleOpenDialog = (vehicle : Vehicle) => {
+        setOpenDialog(true);
+        setVehicleSelected(vehicle);
+    };
+
+    const handleDelete = async (id: string) => {
+        try {
+            await removeVehicle(id);
+            setOpenDialog(false);
+        } catch (error) {
+            console.error("Error deleting vehicle:", error);
+        }
+    };
 
     const filtered = vehicles.filter((v) =>
         v.patente.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -126,9 +142,12 @@ export default function VehiclePage() {
                                         <TableCell>{vehicle.tipo}</TableCell>
                                         <TableCell>{vehicle.empresa}</TableCell>
                                         <TableCell sx={{ display: "flex", justifyContent: "center", alignItems: "center", maxHeight: 72 }}>
-                                            <MenuItem />
+                                            <MenuItem  handleOpenDialog={() => handleOpenDialog(vehicle)}/>
+                                           
                                         </TableCell>
+                                         
                                     </TableRow>
+                                    
                                 ))
                             )}
                         </TableBody>
@@ -152,6 +171,20 @@ export default function VehiclePage() {
                 />
             </div>
 
+            {/* Dialogo de eliminar */}
+            {vehicleSelected && (
+                <ConfirmDialog 
+                    open={openDialog}
+                    onClose={() => setOpenDialog(false)}
+                    title="Eliminar vehículo"
+                    content={<p>
+                        ¿Estás seguro que deseas eliminar el vehículo{" "}
+                        <strong>{vehicleSelected?.patente}</strong>?
+                    </p>}
+                    onConfirm={() => handleDelete(vehicleSelected?._id)}
+                />
+            )}
+            
         </>
         
     );

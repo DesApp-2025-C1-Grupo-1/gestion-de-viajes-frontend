@@ -28,6 +28,7 @@ export default function DriverPage() {
     };
 
     useEffect(() => {setPage(1)}, [searchQuery]);
+
     const navigate = useNavigate();
 
     return(
@@ -36,8 +37,8 @@ export default function DriverPage() {
                 title="Listado de choferes"
                 description="Gestione los choferes disponibles del sistema"
                 buttonText="Nuevo chofer"
-                onAdd={() => {}}
-            />
+                onAdd={() => navigate("/driver-create")}
+            />  
 
             <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} placeholder="Buscar por nombre o empresa"></SearchBar>
 

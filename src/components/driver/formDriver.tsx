@@ -57,62 +57,67 @@ export const FormDriver = ({onSubmit, editingDriver, onCancel, isEditing, compan
     };
 
     return(
-        <Paper  sx={{padding:3, maxWidth: '95%', mx:'auto', borderRadius: 2, border: "1px solid #C7C7C7", boxShadow: "0px 2px 4px rgba(199, 199, 199, 1.00)"}}>
+        <Paper  sx={{padding:3, maxWidth: '95%', mx:'auto', borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "0.5px solid #C7C7C7"}}>
             <form onSubmit={handleSubmit}>
-                <Typography sx={{color: "#5A5A65" , fontWeight: 600 , fontSize: "1.3rem", mb:4}}>Datos personales</Typography>
+                <Typography sx={{color: "#5A5A65" , fontWeight: 550 , fontSize: "1.2rem", mb:4}}>Datos personales</Typography>
                 <Box sx={{ display: "flex", flexDirection: "row", gap: 5, mb: 6 }}> 
                     <Box sx={{ display: "flex", flexDirection: "column", gap: 1, width: "25%"}}> 
-                        <Typography sx={{ color: "#5A5A65"}}>Nombre</Typography>
-                        <TextField name="name" placeholder="Ingresar" value={formData.name} onChange={handleChange} fullWidth />
+                        <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>Nombre</Typography>
+                        <TextField className="inside-paper" name="name" placeholder="Ingresar" value={formData.name} onChange={handleChange} fullWidth />
                     </Box>
                     <Box sx={{ display: "flex", flexDirection: "column", gap: 1, width: "25%"}}>
-                        <Typography sx={{ color: "#5A5A65"}}>Apellido</Typography>
-                        <TextField name="surname" placeholder="Ingresar" value={formData.surname} onChange={handleChange} fullWidth />
+                        <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>Apellido</Typography>
+                        <TextField className="inside-paper" name="surname" placeholder="Ingresar" value={formData.surname} onChange={handleChange} fullWidth />
                     </Box>
                 </Box>
 
                 <Box sx={{ display: "flex", flexDirection: "row", gap: 5, mb: 6 }}>
                     <Box sx={{ display: "flex", flexDirection: "column", gap: 1, width: "25%"}}>
-                        <Typography sx={{ color: "#5A5A65"}}>DNI</Typography>
-                        <TextField name="dni" placeholder="Ingresar" value={formData.dni} onChange={handleChange} fullWidth />
+                        <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>DNI</Typography>
+                        <TextField className="inside-paper" name="dni" placeholder="Ingresar" value={formData.dni} onChange={handleChange} fullWidth />
                     </Box>
                     <Box sx={{ display: "flex", flexDirection: "column", gap: 1, width: "25%"}}>
-                        <Typography sx={{ color: "#5A5A65"}}>Fecha de nacimiento</Typography>
+                        <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>Fecha de nacimiento</Typography>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DatePicker 
+                            <DatePicker  
                                 value={formData.date_birth ? dayjs(formData.date_birth) : null}
                                 onChange={handleDateChange}
                                 slots={{ textField: (params) => <TextField {...params} fullWidth /> }}
+                                slotProps={{textField: {className: "date-pciker", variant: "outlined"}}}
                             />
                         </LocalizationProvider>
                     </Box>
                 </Box>
 
-                <Typography sx={{ color: "#5A5A65" , fontWeight: 600 , fontSize: "1.3rem", mb:4}}>Asignar recursos</Typography>
+                <Typography sx={{color: "#5A5A65" , fontWeight: 550 , fontSize: "1.2rem", mb:4}}>Asignar recursos</Typography>
                 <Box sx={{ display: "flex", flexDirection: "row", gap: 5, mb: 6 }}>
                     <Box sx={{ display: "flex", flexDirection: "column", gap: 1, width: "25%"}}>
-                        <Typography sx={{ color: "#5A5A65"}}>Empresa Transportista</Typography>
+                        <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>Empresa Transportista</Typography>
                         <Select name="empresa" value={formData.company} fullWidth>
                             <MenuItem value="Empresa A">Empresa A</MenuItem>
                             <MenuItem value="Empresa B">Empresa B</MenuItem>
                             <MenuItem value="Empresa C">Empresa C</MenuItem>
-                            <MenuItem value="Empresa C">Empresa C</MenuItem>
-                            <MenuItem value="Empresa C">Empresa C</MenuItem>
-                            <MenuItem value="Empresa C">Empresa C</MenuItem>
-                            <MenuItem value="Empresa C">Empresa C</MenuItem>
-                            <MenuItem value="Empresa C">Empresa C</MenuItem>
-                            <MenuItem value="Empresa C">Empresa C</MenuItem>
-                            <MenuItem value="Empresa C">Empresa C</MenuItem>
-                            <MenuItem value="Empresa C">Empresa C</MenuItem>
-                            <MenuItem value="Empresa C">Empresa C</MenuItem>
+                            <MenuItem value="Empresa D">Empresa D</MenuItem>
+                            <MenuItem value="Empresa E">Empresa E</MenuItem>
+                            <MenuItem value="Empresa F">Empresa F</MenuItem>
+                            <MenuItem value="Empresa G">Empresa G</MenuItem>
+                            <MenuItem value="Empresa H">Empresa H</MenuItem>
+                            <MenuItem value="Empresa I">Empresa I</MenuItem>
+                            <MenuItem value="Empresa J">Empresa J</MenuItem>
                         </Select>
                     </Box>
                     <Box sx={{ display: "flex", flexDirection: "column", gap: 1, width: "25%"}}>
-                        <Typography sx={{ color: "#5A5A65"}}>Vehículo a utilizar</Typography>
+                        <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>Vehículo a utilizar</Typography>
                         <Select name="vehiculo" value={formData.vehicle} fullWidth>
                             <MenuItem value="Camión Volvo">Camión Volvo</MenuItem>
                             <MenuItem value="Ford Ranger">Ford Ranger</MenuItem>
                             <MenuItem value="Chevrolet NKR 512">Chevrolet NKR 512</MenuItem>
+                            <MenuItem value="Toyota Hilux">Toyota Hilux</MenuItem>
+                            <MenuItem value="Chevrolet S10">Chevrolet S10</MenuItem>
+                            <MenuItem value="Volkswagen Amarok">Volkswagen Amarok</MenuItem>
+                            <MenuItem value="Nissan Frontier">Nissan Frontier</MenuItem>
+                            <MenuItem value="Renault Alaskan">Renault Alaskan</MenuItem>
+                            <MenuItem value="Mitsubishi L200">Mitsubishi L200</MenuItem>
                         </Select>
                     </Box>
                 </Box>

@@ -64,6 +64,28 @@ export const customMuiTheme = createTheme({
     MuiTextField: {
       styleOverrides: {
         root: {
+          //pruebapicker
+          "&.date-picker .MuiOutlinedInput-root": {
+            borderRadius: "6px !important",
+            height:"48px !important",
+            padding: "0px 14px !important",
+          },
+          //
+          "&.inside-paper .MuiOutlinedInput-root": {
+            borderRadius: 6,
+            height: "48px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: '0.900rem',
+            "& input": {
+              padding: "12px 12px", 
+            },
+          },
+          "&.inside-paper .MuiOutlinedInput-root fieldset": { 
+            border: "0.5px solid #C7C7C7",
+            borderRadius: 6,
+          },
           "& .MuiOutlinedInput-root": {
             borderRadius: "4px",
             backgroundColor: "#fff",
@@ -94,7 +116,8 @@ export const customMuiTheme = createTheme({
       styleOverrides:{
         root:{
           borderRadius:6,
-          backgroundColor:"#ffffff"
+          height:"48px",
+          padding: "0px 14px",
         },
       },
     },
@@ -103,7 +126,9 @@ export const customMuiTheme = createTheme({
         root:{
           "&:hover":{
             backgroundColor:"#e0e0e0"
-          }
+          },
+          color: "#5A5A65",
+          fontSize: '0.900rem'
         }
       }
     },

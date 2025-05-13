@@ -75,17 +75,11 @@ export default function DriverPage() {
                                 paginated.map((driver) => (
                                     <TableRow key={driver._id} className="hover:-bg-gray-50">
                                         <TableCell sx={{fontWeight: "bold"}}>{driver.name}</TableCell>
-                                        {/*<TableCell>{driver.licence}</TableCell>*/}
-                                        {/*<TableCell>{driver.typeLicence}</TableCell>*/}
+                                        <TableCell>{driver.licence}</TableCell>
+                                        <TableCell>{driver.typeLicence}</TableCell>
                                         <TableCell>{driver.company}</TableCell>
-                                        {/*<TableCell>{driver.tel}</TableCell>*/}
-                                        {/*<TableCell>{driver.email}</TableCell>*/}
-                                        {/*prox commit arreglar esto */}
-                                        <TableCell>{driver.dni}</TableCell>
-                                        <TableCell>{driver.dni}</TableCell>
-                                        <TableCell>{driver.dni}</TableCell>
-                                        <TableCell>{driver.dni}</TableCell>
-
+                                        <TableCell>{driver.telephone}</TableCell>
+                                        <TableCell>{driver.email}</TableCell>
                                         <TableCell sx={{display:"flex", justifyContent:"center", alignItems:"center", maxHeight:72}}>
                                             <MenuItem />
                                         </TableCell>

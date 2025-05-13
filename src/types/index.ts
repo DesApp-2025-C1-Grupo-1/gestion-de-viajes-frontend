@@ -13,7 +13,12 @@ export type DriverType = {
   dni: number
   date_birth: Dayjs | null
   company: string
+  //ver 
   vehicle: string
+  licence: number
+  typeLicence: string
+  telephone: number
+  email: string
 }
 
 export type Vehicle = {

@@ -36,8 +36,12 @@ export const driverTypes: DriverType[] = [
     "surname": "Gutierrez",
     "dni": 17295772,
     "date_birth": null,
-    "company": "5673",
-    "vehicle": "9483"
+    "company": "Transportes Rápidos SA", //aca deberia manejar el ID (cambiar)
+    "vehicle": "9483",
+    "licence": 12345,
+    "typeLicence": "A1",
+    "telephone": 1155990556,
+    "email": "chofer@gmail.com"
   },
   {
     "_id": "dri2",
@@ -45,8 +49,12 @@ export const driverTypes: DriverType[] = [
     "surname": "Rodriguez",
     "dni": 25637829,
     "date_birth": null,
-    "company": "4127",
-    "vehicle": "3856"
+    "company": "Lógista Express", //aca deberia manejar el ID (cambiar)
+    "vehicle": "3856",
+    "licence": 12345,
+    "typeLicence": "A2",
+    "telephone": 1155990556,
+    "email": "chofer@gmail.com"
   },
   {
     "_id": "dri3",
@@ -54,8 +62,12 @@ export const driverTypes: DriverType[] = [
     "surname": "Bustamante",
     "dni": 37896521,
     "date_birth": null,
-    "company": "7895",
-    "vehicle": "1274"
+    "company": "Transportes del Sur", //aca deberia manejar el ID (cambiar)
+    "vehicle": "1274",
+    "licence": 12345,
+    "typeLicence": "A3",
+    "telephone": 1155990556,
+    "email": "chofer@gmail.com"
   },
   {
     "_id": "dri4",
@@ -63,8 +75,12 @@ export const driverTypes: DriverType[] = [
     "surname": "Fernandez",
     "dni": 41235678,
     "date_birth": null,
-    "company": "2153",
-    "vehicle": "9374"
+    "company": "Distribuciones Andinas", //aca deberia manejar el ID (cambiar)
+    "vehicle": "9374",
+    "licence": 12345,
+    "typeLicence": "A4",
+    "telephone": 1155990556,
+    "email": "chofer@gmail.com"
   },
   {
     "_id": "dri5",
@@ -72,8 +88,12 @@ export const driverTypes: DriverType[] = [
     "surname": "Gomez",
     "dni": 39785632,
     "date_birth": null,
-    "company": "3412",
-    "vehicle": "5621"
+    "company": "Cargas Patagónicas", //aca deberia manejar el ID (cambiar)
+    "vehicle": "5621",
+    "licence": 12345,
+    "typeLicence": "A5",
+    "telephone": 1155990556,
+    "email": "chofer@gmail.com"
   },
   {
     "_id": "dri6",
@@ -81,8 +101,12 @@ export const driverTypes: DriverType[] = [
     "surname": "Martinez",
     "dni": 42896321,
     "date_birth": null,
-    "company": "8794",
-    "vehicle": "2145"
+    "company": "Norte Cargo", //aca deberia manejar el ID (cambiar)
+    "vehicle": "2145",
+    "licence": 12345,
+    "typeLicence": "A6",
+    "telephone": 1155990556,
+    "email": "chofer@gmail.com"
   },
   {
     "_id": "dri7",
@@ -90,8 +114,12 @@ export const driverTypes: DriverType[] = [
     "surname": "Perez",
     "dni": 38541278,
     "date_birth": null,
-    "company": "6521",
-    "vehicle": "3984"
+    "company": "Distribuciones Andinas", //aca deberia manejar el ID (cambiar)
+    "vehicle": "3984",
+    "licence": 12345,
+    "typeLicence": "A7",
+    "telephone": 1155990556,
+    "email": "chofer@gmail.com"
   },
   {
     "_id": "dri8",
@@ -99,8 +127,12 @@ export const driverTypes: DriverType[] = [
     "surname": "Lopez",
     "dni": 41023654,
     "date_birth": null,
-    "company": "7325",
-    "vehicle": "7812"
+    "company": "Transportes del Sur", //aca deberia manejar el ID (cambiar)
+    "vehicle": "7812",
+    "licence": 12345,
+    "typeLicence": "A8",
+    "telephone": 1155990556,
+    "email": "chofer@gmail.com"
   }
 ]
 

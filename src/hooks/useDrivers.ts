@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { DriverType } from "../types";
-import { fetchDrivers } from "../lib/apiDriver";
+import { deleteDriver, fetchDrivers } from "../lib/apiDriver";
 
 export const useDriver = () => {
     const [driver, setDriver] = useState<DriverType[]>([]);
@@ -21,6 +21,17 @@ export const useDriver = () => {
         }
     }, []);
 
+    const removeDriver = useCallback(async(id:string) => {
+        try{
+            await deleteDriver(id);
+            setDriver(prev => prev.filter(dri => dri._id));
+        }
+        catch(err){
+            setError(err as Error);
+            throw err;
+        }
+    },[])
+
     useEffect(() => {
         loadDrivers();}, [loadDrivers]);
 
@@ -28,6 +39,7 @@ export const useDriver = () => {
         driver,
         isLoading,
         error,
+        removeDriver,
         reload: loadDrivers
     }
 }

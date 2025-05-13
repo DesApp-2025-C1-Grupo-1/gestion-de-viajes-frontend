@@ -1,6 +1,5 @@
 import { Button, InputAdornment, Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
 import { SectionHeader } from "../../components/SectionHeader";
-import { Ellipsis} from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDriver } from "../../hooks/useDrivers";
@@ -8,13 +7,16 @@ import LoadingState from "../../components/LoadingState";
 import { useAutoRowsPerPage } from "../../hooks/useAutoRowsPerPega";
 import SearchBar from "../../components/SearchBar";
 import MenuItem from "../../components/buttons/MenuItem";
-import { max } from "lodash";
+import { ConfirmDialog } from "../../components/ConfirmDialog";
+import { DriverType } from "../../types";
 
 export default function DriverPage() {
-    const {driver, isLoading} = useDriver();
+    const {driver, isLoading, removeDriver} = useDriver();
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);
     const {rowsPerPage} = useAutoRowsPerPage();
+    const [openDialog, setOpenDialog] = useState(false);
+    const [driverSelect, setDriverSelect] = useState<DriverType>();
 
     const filtered = driver.filter((dri) =>
         dri.name.toLocaleLowerCase().includes(searchQuery.toLocaleLowerCase()) || dri.company.toLocaleLowerCase().includes(searchQuery.toLocaleLowerCase())
@@ -25,6 +27,21 @@ export default function DriverPage() {
 
     const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
         setPage(value)
+    };
+
+    const handleOpenDialog = (driver: DriverType) => {
+        setOpenDialog(true);
+        setDriverSelect(driver);
+    }
+
+    const handleDelete = async(id: string) => {
+        try{
+            await removeDriver(id);
+            setOpenDialog(false);
+        }
+        catch(err){
+            console.error("Error deleting driver", err);
+        }
     };
 
     useEffect(() => {setPage(1)}, [searchQuery]);
@@ -81,7 +98,7 @@ export default function DriverPage() {
                                         <TableCell>{driver.telephone}</TableCell>
                                         <TableCell>{driver.email}</TableCell>
                                         <TableCell sx={{display:"flex", justifyContent:"center", alignItems:"center", maxHeight:72}}>
-                                            <MenuItem />
+                                            <MenuItem  handleOpenDialog={() => handleOpenDialog(driver)}/>
                                         </TableCell>
                                     </TableRow>
                                 ))
@@ -105,6 +122,8 @@ export default function DriverPage() {
                     sx={{width: "100%", display: "flex", justifyContent: "flex-end"}}
                 />
             </div>
+
+            {/*dialog*/}
         </>
     );
 }

@@ -6,9 +6,12 @@ import { RouteAction } from "../../types"; //SACARRRRR
 const icons = {edit: Edit, delete: Trash2}
 const colors = {edit: Edit, delete: Trash2}
 
+interface MenuItemProps{
+    handleOpenDailog:() => void;
+}
 
 //export default function MenuItem() {
-export default function MenuItem() {
+export default function MenuItem({handleOpenDailog}: MenuItemProps){
     const navigate = useNavigate();
     const location = useLocation();
     const [isActionOpen, setIsActionOpen] = useState(false);
@@ -39,7 +42,7 @@ export default function MenuItem() {
                         <Edit className="size-4 mr-2" />
                         Editar
                     </li>
-                    <li className="flex items-center  py-2 px-4 cursor-pointer hover:bg-gray-100 text-[#DC2626] text-xs" onClick={() => navigate(`/${module}/edit/${id ?? ""}`)}>
+                    <li className="flex items-center  py-2 px-4 cursor-pointer hover:bg-gray-100 text-[#DC2626] text-xs" onClick={handleOpenDailog}>
                         <Trash2 className="size-4 mr-2" />
                         Eliminar
                     </li>

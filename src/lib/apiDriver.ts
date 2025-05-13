@@ -23,6 +23,10 @@ export const createDriver = async(driver: Partial<DriverType>): Promise<DriverTy
         date_birth: driver.date_birth || dayjs(),
         company: driver.company || "",
         vehicle: driver.vehicle || "",
+        licence: driver.licence || 0,
+        typeLicence: driver.typeLicence || "",
+        telephone: driver.telephone || 0,
+        email: driver.email || ""
       }
       driverTypes.push(newDriver)
       return { ...newDriver }

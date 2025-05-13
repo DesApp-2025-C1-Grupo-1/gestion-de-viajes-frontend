@@ -12,8 +12,8 @@ export type DriverType = {
   surname: string
   dni: number
   date_birth: Dayjs | null
-  company: number
-  vehicle: number
+  company: string
+  vehicle: string
 }
 
 export type Vehicle = {
@@ -37,3 +37,5 @@ export type CompanyDriver = {
   _id: string
   name: string
 }
+
+export type RouteAction = "edit" | "delete";

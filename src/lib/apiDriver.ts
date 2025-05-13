@@ -3,7 +3,13 @@ import { DriverType } from "../types";
 import { driverTypes } from './mock-data';
 
 //id
-const generateId = () => Math.random().toString(32).substring(2, 15)
+const generateId = () => Math.random().toString(36).substring(2, 15)
+
+//fetch
+export const fetchDrivers = async(): Promise<DriverType[]> => {
+    await new Promise((resolve) => setTimeout(resolve, 500))
+    return[...driverTypes]
+};
 
 //create chofer
 export const createDriver = async(driver: Partial<DriverType>): Promise<DriverType> => {
@@ -18,7 +24,6 @@ export const createDriver = async(driver: Partial<DriverType>): Promise<DriverTy
         company: driver.company || 0,
         vehicle: driver.vehicle || 0,
       }
-    
       driverTypes.push(newDriver)
       return { ...newDriver }
 };
@@ -28,8 +33,7 @@ export const updateDriver = async(id:string, driver: Partial<DriverType>): Promi
     await new Promise((resolve) => setTimeout(resolve, 500))
 
     const index = driverTypes.findIndex((dri) => dri._id === id)
-    if (index === 1) throw new Error("Driver not found")
-    
+    if (index === -1) throw new Error("Driver not found")
     driverTypes[index] = {...driverTypes[index], ...driver}
     return {...driverTypes[index]}
 };
@@ -40,6 +44,6 @@ export const deleteDriver = async(id:string) : Promise<void> => {
     
     const index = driverTypes.findIndex((dri) => dri._id === id)
     if (index === -1) throw new Error("Driver not found")
-
     driverTypes.splice(index,1)
-}
+    return
+};

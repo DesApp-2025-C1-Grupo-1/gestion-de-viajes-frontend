@@ -1,14 +1,15 @@
 import { Link, useLocation } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 interface OptionMenuProps {
   isCollapsed: boolean;
-  src: string;
+  //src: string;
   title: string;
   link?: string;
+  IconComponent: React.FC<{color?: string}>;
 }
 
-export default function OptionMenu({ isCollapsed, src, title, link = "" }: OptionMenuProps) {
+export default function OptionMenu({ isCollapsed, IconComponent, title, link = "" }: OptionMenuProps) {
   const location = useLocation();
   const textRef = useRef<HTMLParagraphElement>(null);
   const [isActive, setIsActive] = useState(false);
@@ -40,13 +41,14 @@ export default function OptionMenu({ isCollapsed, src, title, link = "" }: Optio
       `}
     >
       <div className={`flex items-center  ${!isCollapsed && "gap-4 "} w-full`}>
-        <img 
+        {/*<img 
           src={src} 
           alt={title} 
           className={`size-6 transition-all duration-300 ${
             isActive ? 'opacity-100' : 'opacity-80'
           }`}
-        />
+        />*/}
+        <IconComponent color={isActive ? " #E65F2B" : "#5A5A65" } />
         <p 
           ref={textRef}
           className={`

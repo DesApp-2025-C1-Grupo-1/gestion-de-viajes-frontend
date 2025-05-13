@@ -65,8 +65,45 @@ export const driverTypes: DriverType[] = [
     "date_birth": null,
     "company": "2153",
     "vehicle": "9374"
+  },
+  {
+    "_id": "dri5",
+    "name": "Carlos",
+    "surname": "Gomez",
+    "dni": 39785632,
+    "date_birth": null,
+    "company": "3412",
+    "vehicle": "5621"
+  },
+  {
+    "_id": "dri6",
+    "name": "Sofia",
+    "surname": "Martinez",
+    "dni": 42896321,
+    "date_birth": null,
+    "company": "8794",
+    "vehicle": "2145"
+  },
+  {
+    "_id": "dri7",
+    "name": "Javier",
+    "surname": "Perez",
+    "dni": 38541278,
+    "date_birth": null,
+    "company": "6521",
+    "vehicle": "3984"
+  },
+  {
+    "_id": "dri8",
+    "name": "Valentina",
+    "surname": "Lopez",
+    "dni": 41023654,
+    "date_birth": null,
+    "company": "7325",
+    "vehicle": "7812"
   }
 ]
+
 export const vehicles: Vehicle[] = [
   {
     _id: "veh1",

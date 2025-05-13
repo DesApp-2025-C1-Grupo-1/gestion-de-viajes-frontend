@@ -1,15 +1,16 @@
 import { ChevronLeft, ChevronRight, Truck } from "lucide-react";
-import home from "../assets/menu/home.svg";
-import companies from "../assets/menu/companie.svg";
-import trips from "../assets/menu/trip.svg";
-import drivers from "../assets/menu/driver.svg";
-import vehicles from "../assets/menu/vehicle.svg";
-import depots from "../assets/menu/deposit.svg";
+import HomeIcon from "./icons/HomeIcon";
+import DriverIcon from "./icons/DriverIcon";
+import VehicleIcon from "./icons/VehicleIcon";
+import DepotIcon from "./icons/DepotIcon";
+import TripIcon from "./icons/TripIcon";
+import CompanyIcon from "./icons/CompanyIcon";
+
 import { useState } from "react";
 import OptionMenu from "./OptionMenu";
 
 export default function Sidebar() {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   const toggleSidebar = () => {
@@ -19,21 +20,19 @@ export default function Sidebar() {
   };
 
   const menuItems = [
-    { src: home, title: "Inicio", link: "" },
-    { src: companies, title: "Empresas", link: "companies" },
-    { src: trips, title: "Viajes", link: "trips" },
-    { src: drivers, title: "Choferes", link: "drivers" },
-    { src: vehicles, title: "Vehículos", link: "vehicles" },
-    { src: depots, title: "Depósitos", link: "depots" }
+    { src: HomeIcon, title: "Inicio", link: "" },
+    { src: CompanyIcon, title: "Empresas", link: "companies" },
+    { src: TripIcon, title: "Viajes", link: "trips" },
+    { src: DriverIcon, title: "Choferes", link: "drivers" },
+    { src: VehicleIcon, title: "Vehículos", link: "vehicles" },
+    { src: DepotIcon, title: "Depósitos", link: "depots" }
   ];
 
   return (
     <aside 
       className={`
         flex flex-col h-full bg-white border-r border-gray-200 shadow-md
-        ${isCollapsed ? 'w-16' : 'w-60'} 
-        transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]
-        relative z-10
+        ${isCollapsed ? 'w-16' : 'w-60'} transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] z-10 relative
       `}
     >
         {/* Encabezado */}
@@ -48,21 +47,7 @@ export default function Sidebar() {
             >
             Logística Acme SRL
             </h2>
-            <button
-            onClick={toggleSidebar}
-            aria-label={isCollapsed ? "Expandir menú" : "Contraer menú"}
-            className={`
-                absolute -right-3 bg-white p-1 rounded-full border border-gray-300
-                hover:bg-gray-100 transition-all shadow-sm z-10
-                ${isTransitioning ? 'opacity-70' : 'opacity-100'}
-            `}
-            >
-            {isCollapsed ? (
-                <ChevronRight className="size-4 text-gray-600" />
-            ) : (
-                <ChevronLeft className="size-4 text-gray-600" />
-            )}
-            </button>
+            
         </div>
 
         {/* Menú */}
@@ -72,13 +57,28 @@ export default function Sidebar() {
                 <OptionMenu
                     key={item.link || 'home'}
                     isCollapsed={isCollapsed}
-                    src={item.src}
+                    IconComponent={item.src}
                     title={item.title}
                     link={item.link}
                 />
                 ))}
             </div>
         </nav>
+
+        <button
+            onClick={toggleSidebar}
+            aria-label={isCollapsed ? "Expandir menú" : "Contraer menú"}
+            className={`
+                absolute top-7  -right-3 bg-white p-1 rounded-full border border-gray-300
+                hover:bg-gray-100 transition-all shadow-sm z-10
+            `}
+            >
+            {isCollapsed ? (
+                <ChevronRight className="size-4 text-gray-600" />
+            ) : (
+                <ChevronLeft className="size-4 text-gray-600" />
+            )}
+            </button>
     </aside>
   );
 }

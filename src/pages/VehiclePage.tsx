@@ -1,17 +1,21 @@
-import { Button, InputAdornment, Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@mui/material";
+import { Button, Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import { SectionHeader } from "../components/SectionHeader";
 import { useEffect, useState } from "react";
-import { Ellipsis, SearchIcon} from "lucide-react";
+import { Ellipsis} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useVehicles } from "../hooks/useVechicle";
 import  LoadingState  from "../components/LoadingState";
+import { useAutoRowsPerPage } from "../hooks/useAutoRowsPerPage";
+import SearchBar from "../components/SearchBar";
+import MenuItem from "../components/buttons/MenuItem";
+import { max } from "lodash";
 
 
 export default function VehiclePage() {
     const { vehicles, isLoading } = useVehicles();
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);
-    const rowsPerPage: number = 5;
+    const {rowsPerPage} = useAutoRowsPerPage();
 
     const filtered = vehicles.filter((v) =>
         v.patente.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -24,6 +28,7 @@ export default function VehiclePage() {
     const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
         setPage(value);
     };
+
     useEffect(() => {
         // Si el search cambia, reseteamos a página 1
         setPage(1);
@@ -40,26 +45,8 @@ export default function VehiclePage() {
                 onAdd={() => {}}
             />
 
-            {/* Buscador y boton para ir a tipo de vehiculos*/}
-            <div className="flex flex-col sm:flex-row justify-between gap-2 mb-6">
-                <TextField
-                    id="search"
-                    name="search"
-                    variant="outlined"
-                    size="small"
-                    placeholder="Buscar vehiculo por patente o modelo"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    InputProps={{
-                        startAdornment: (
-                        <InputAdornment position="start">
-                            <SearchIcon className="size-4"/>
-                        </InputAdornment>
-                        ),
-                    }}
-                    
-                    className="w-full sm:w-full sm:max-w-80 "
-                />
+            {/* Buscador y boton para ir a tipo de vehiculos*/}    
+            <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} >
                 <Button
                     variant="contained"
                     onClick={() => navigate("/type-vehicle")} // o abrir modal
@@ -78,30 +65,29 @@ export default function VehiclePage() {
                 >
                     Tipos de vehículo
                 </Button>
-            </div>
-
+            </SearchBar>
+            
             {/* Tabla de vehículos */}
             <div 
-                className="overflow-x-auto bg-white rounded-lg "
+                className="bg-white rounded-lg overflow-hidden"
                 style={{
                     boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
                     border: "0.5px solid #C7C7C7",
                 }}
-            >
-                
-                <TableContainer className="min-w-full text-sm">
+            >         
+                <TableContainer className="h-full text-sm">
                     <Table 
                         aria-label="simple table"
                     >
                         <TableHead >
-                            <TableRow >
+                            <TableRow>
                                 <TableCell>Patente</TableCell>
                                 <TableCell>Modelo</TableCell>
                                 <TableCell>Año</TableCell>
                                 <TableCell>Capacidad(kg)</TableCell>
                                 <TableCell>Tipo</TableCell>
                                 <TableCell>Transportista</TableCell>
-                                <TableCell align="center">Acciones</TableCell>
+                                <TableCell align="center" sx={{width: 72}}>Acciones</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -139,12 +125,8 @@ export default function VehiclePage() {
                                         <TableCell>{vehicle.volumen_carga} kg</TableCell>
                                         <TableCell>{vehicle.tipo}</TableCell>
                                         <TableCell>{vehicle.empresa}</TableCell>
-                                        <TableCell sx={{ display: "flex", justifyContent: "center", alignItems: "center"}}>
-                                            <Ellipsis
-                                                className="cursor-pointer text-gray-500 hover:text-gray-700
-                                                size-4"
-                                                onClick={() => {}}
-                                            />
+                                        <TableCell sx={{ display: "flex", justifyContent: "center", alignItems: "center", maxHeight: 72 }}>
+                                            <MenuItem />
                                         </TableCell>
                                     </TableRow>
                                 ))
@@ -155,7 +137,7 @@ export default function VehiclePage() {
             </div>
 
             {/* Paginación */}
-            <div className="flex justify-between gap-2 items-center sm:px-4 py-6 ">
+            <div className="flex justify-between gap-2 items-center sm:px-4 py-4 ">
                 <p className="text-sm w-full">
                     Mostrando {Math.min((page - 1) * rowsPerPage + 1, filtered.length)}– 
                     {Math.min(page * rowsPerPage, filtered.length)} de {filtered.length} vehículos

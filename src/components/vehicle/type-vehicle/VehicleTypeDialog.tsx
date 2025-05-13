@@ -57,6 +57,9 @@ export const VehicleTypeDialog = ({ open, onClose, onSubmit, editingType }: Vehi
             required
             margin="normal"
             variant="outlined"
+            InputProps={{
+              style: { height: "55px" },
+            }}
           />
           <TextField
             id="description"
@@ -67,9 +70,12 @@ export const VehicleTypeDialog = ({ open, onClose, onSubmit, editingType }: Vehi
             placeholder="Descripción del tipo de vehículo"
             fullWidth
             multiline
-            rows={4}
+            rows={3}
             margin="normal"
             variant="outlined"
+            InputProps={{
+              style: { height: "100px"},
+            }}
           />
         </DialogContent>
         <DialogActions>

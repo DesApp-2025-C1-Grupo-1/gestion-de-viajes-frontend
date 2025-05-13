@@ -65,10 +65,8 @@ export const customMuiTheme = createTheme({
       styleOverrides: {
         root: {
           "& .MuiOutlinedInput-root": {
-            height: "40px",
             borderRadius: "4px",
             backgroundColor: "#fff",
-            fontSize: "0.8rem",
             "& fieldset": {
               borderColor: "#E0E0E0",
             },

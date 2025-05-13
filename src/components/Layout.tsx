@@ -10,8 +10,8 @@ export default function Layout({className }: LayoutProps) {
   return (
     <div className="flex h-screen bg-gray-50">
         <Sidebar />
-        <main className={`flex-1 p-4   overflow-hidden ${className}`}>
-          <Outlet />
+          <main className={`flex-1 p-4   overflow-hidden ${className}`}>
+        <Outlet />
         </main>
     </div>
   );

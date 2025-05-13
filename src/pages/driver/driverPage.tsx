@@ -8,7 +8,7 @@ import LoadingState from "../../components/LoadingState";
 import { useAutoRowsPerPage } from "../../hooks/useAutoRowsPerPega";
 import SearchBar from "../../components/SearchBar";
 import MenuItem from "../../components/buttons/MenuItem";
-
+import { max } from "lodash";
 
 export default function DriverPage() {
     const {driver, isLoading} = useDriver();
@@ -39,7 +39,7 @@ export default function DriverPage() {
                 onAdd={() => {}}
             />
 
-            <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} ></SearchBar>
+            <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} placeholder="Buscar por nombre o empresa"></SearchBar>
 
             <div className="bg-white rounded-lg overflow-hidden" style={{
                 boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",

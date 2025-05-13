@@ -98,7 +98,7 @@ export default function DriverPage() {
                                         <TableCell>{driver.telephone}</TableCell>
                                         <TableCell>{driver.email}</TableCell>
                                         <TableCell sx={{display:"flex", justifyContent:"center", alignItems:"center", maxHeight:72}}>
-                                            <MenuItem  handleOpenDialog={() => handleOpenDialog(driver)}/>
+                                            <MenuItem  handleOpenDailog={() => handleOpenDialog(driver)}/>
                                         </TableCell>
                                     </TableRow>
                                 ))
@@ -123,7 +123,18 @@ export default function DriverPage() {
                 />
             </div>
 
-            {/*dialog*/}
+            {driverSelect && (
+                <ConfirmDialog 
+                    open={openDialog}
+                    onClose={() => setOpenDialog(false)}
+                    title="Eliminar chofer"
+                    content={<p>
+                        ¿Estas seguro que deseas eliminar el chofer{" "}
+                        <strong>{driverSelect?.name}</strong>?
+                    </p>}
+                    onConfirm={() => handleDelete(driverSelect?._id)}
+                />
+            )}
         </>
     );
 }

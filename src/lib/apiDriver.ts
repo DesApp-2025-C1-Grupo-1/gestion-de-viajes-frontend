@@ -21,8 +21,8 @@ export const createDriver = async(driver: Partial<DriverType>): Promise<DriverTy
         surname: driver.surname || "",
         dni: driver.dni || 0,
         date_birth: driver.date_birth || dayjs(),
-        company: driver.company || 0,
-        vehicle: driver.vehicle || 0,
+        company: driver.company || "",
+        vehicle: driver.vehicle || "",
       }
       driverTypes.push(newDriver)
       return { ...newDriver }

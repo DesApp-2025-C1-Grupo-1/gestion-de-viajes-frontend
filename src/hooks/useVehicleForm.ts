@@ -17,7 +17,7 @@ export const useVehicleForm = (id? : string) => {
         marca: "",
         tipo: "",
         empresa: "",
-        año: 1521,
+        año: new Date().getFullYear(),
         peso_carga: 0,
         volumen_carga: 0,
     });

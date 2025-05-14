@@ -1,11 +1,13 @@
 import { useState, useCallback, useEffect } from 'react';
 import { Vehicle } from "../types";
 import { deleteVehicle, fetchVehicle } from "../lib/api";
+import { useNotify } from './useNotify';
 
 export const useVehicles = () => {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const { notify } = useNotify("Vehículo");
 
   const loadVehicles = useCallback(async () => {
     try {
@@ -19,30 +21,11 @@ export const useVehicles = () => {
     }
   }, []);
 
-  /* const addVehicleType = useCallback(async (formData: Partial<Vehicle>) => {
-    try {
-      const newType = await createVehicleType(formData);
-      setVehicles(prev => [...prev, newType]);
-    } catch (err) {
-      setError(err as Error);
-      throw err;
-    }
-  }, []);
-
-  const editVehicleType = useCallback(async (id: string, formData: Partial<Vehicle>) => {
-    try {
-      const updatedType = await updateVehicleType(id, formData);
-      setVehicles(prev => prev.map(type => (type._id === updatedType._id ? updatedType : type)));
-    } catch (err) {
-      setError(err as Error);
-      throw err;
-    }
-  }, []);
-  */
   const removeVehicle = useCallback(async (id: string) => {
     try {
       await deleteVehicle(id);
       setVehicles(prev => prev.filter(veh => veh._id !== id));
+      notify("delete")
     } catch (err) {
       setError(err as Error);
       throw err;
@@ -57,9 +40,6 @@ export const useVehicles = () => {
     vehicles,
     isLoading,
     error,
-    /* addVehicleType,
-    editVehicleType,
-     */
     removeVehicle,
     reload: loadVehicles
   };

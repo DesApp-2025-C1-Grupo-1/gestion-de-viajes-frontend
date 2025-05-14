@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Vehicle } from "../types";
 import { createVehicle, fetchVehicleById, updateVehicle } from "../lib/api";
 import { SelectChangeEvent } from "@mui/material";
+import { useNotify } from "./useNotify";
+
 
 export const useVehicleForm = (id? : string) => {
     const navigate = useNavigate();
@@ -22,6 +24,8 @@ export const useVehicleForm = (id? : string) => {
 
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
+
+    const {notify} = useNotify("Vehículo");
 
     useEffect(() => {
         if(isEditing && id){
@@ -53,6 +57,10 @@ export const useVehicleForm = (id? : string) => {
             ...prev,
             [name!]: true,
         }));
+
+        if (touched[name!]) {
+            validateField(name!, parsedValue);
+        }
     };
 
     const handleSelectChange = (event: SelectChangeEvent<string>) => {
@@ -157,12 +165,14 @@ export const useVehicleForm = (id? : string) => {
         try {
             if (isEditing) {
                 await updateVehicle(id!, formData as Omit<Vehicle, "_id">);
+                notify("update");
             } else {
                 await createVehicle(formData as Omit<Vehicle, "_id">);
+                notify("create");
             }
             navigate("/vehicles");
         } catch (err) {
-            alert("Error al guardar el vehículo");
+            notify("error");
         } finally {
             setLoading(false);
         }

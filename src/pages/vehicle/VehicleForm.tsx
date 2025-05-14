@@ -45,6 +45,7 @@ export default function VehicleFormPage() {
                                 error={!!touched.patente && !!errors.patente}
                                 helperText={touched.patente && errors.patente}
                                 className="inside-paper"
+                                disabled={loading}
                             />
                         </Box>
                         <Box sx={{ display: "flex", flexDirection: "column", gap: 1,  width: "100%", maxWidth: "300px"}}>
@@ -59,6 +60,7 @@ export default function VehicleFormPage() {
                                 error={!!touched.modelo  && !!errors.modelo}
                                 helperText={touched.modelo && errors.modelo}
                                 className="inside-paper"
+                                disabled={loading}
                             />
                         </Box>
                     </Box>
@@ -69,6 +71,7 @@ export default function VehicleFormPage() {
                             <TextField className="inside-paper" name="marca" placeholder="Ingresar" value={formData.marca} onChange={handleChange} fullWidth inputProps={{ "aria-label": "Marca del vehículo" }}
                                 error={!!touched.marca  && !!errors.marca}
                                 helperText={touched.marca && errors.marca}
+                                disabled={loading}
                             />
                         </Box>
                         <Box sx={{ display: "flex", flexDirection: "column", gap: 1, maxWidth: "300px", width: "100%"}}>
@@ -76,6 +79,7 @@ export default function VehicleFormPage() {
                             <TextField className="inside-paper"  type="number" name="año" placeholder="Ingresar" value={formData.año} onChange={handleChange} fullWidth inputProps={{ "aria-label": "Año del vehículo" }} 
                                 error={!!touched.año  && !!errors.año}
                                 helperText={touched.año && errors.año}
+                                disabled={loading}
                             />
                         </Box>
                     </Box>
@@ -86,6 +90,7 @@ export default function VehicleFormPage() {
                             <TextField className="inside-paper" name="volumen_carga" type="number" placeholder="Ingresar" value={formData.volumen_carga} onChange={handleChange} fullWidth inputProps={{ "aria-label": "Volumen de carga del vehículo" }} 
                                 error={!!touched.volumen_carga  && !!errors.volumen_carga}
                                 helperText={touched.volumen_carga && errors.volumen_carga}
+                                disabled={loading}
                             />
                         </Box>
                         <Box sx={{ display: "flex", flexDirection: "column", gap: 1, maxWidth: "300px", width: "100%"}}>
@@ -93,6 +98,7 @@ export default function VehicleFormPage() {
                             <TextField className="inside-paper" name="peso_carga" type="number"  placeholder="Ingresar" value={formData.peso_carga} onChange={handleChange} fullWidth inputProps={{ "aria-label": "Peso de carga del vehículo" }} 
                                 error={!!touched.peso_carga  && !!errors.peso_carga}
                                 helperText={touched.peso_carga && errors.peso_carga}
+                                disabled={loading}
                             />
                         </Box>
                     </Box>
@@ -109,6 +115,7 @@ export default function VehicleFormPage() {
                                 displayEmpty
                                 inputProps={{ "aria-label": "Empresa transportista" }}
                                 error={!!touched.empresa && !!errors.empresa}
+                                disabled={loading}
                             >
                                 {empresas.map((empresa) => (
                                     <MenuItem key={empresa._id} value={empresa.name}>
@@ -130,6 +137,7 @@ export default function VehicleFormPage() {
                                 displayEmpty
                                 inputProps={{ "aria-label": "Tipo de vehículo" }}
                                 error={!!errors.tipo && !!touched.tipo}
+                                disabled={loading}
                             >
                                 {vehicleTypes.map((type) => (
                                     <MenuItem key={type._id} value={type.name}>
@@ -149,11 +157,9 @@ export default function VehicleFormPage() {
                         </Button>
                     </Box>
                 </form>
-                {loading && (
-                    <Backdrop open sx={{ color: '#fff', zIndex: 9999 }}>
-                        <CircularProgress color="inherit" />
-                    </Backdrop>
-                )}
+                 <Backdrop open={loading} sx={{ zIndex: 9999, color: "#fff" }}>
+                    <CircularProgress color="inherit" />
+                </Backdrop>
             </Paper>
 
         </>

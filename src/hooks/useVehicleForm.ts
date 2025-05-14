@@ -25,8 +25,12 @@ export const useVehicleForm = (id? : string) => {
 
     useEffect(() => {
         if(isEditing && id){
+            setLoading(true);
             fetchVehicleById(id!)
                 .then((vehicle: Vehicle) => setFormData(vehicle))
+            setTimeout(() => {
+                setLoading(false);
+            }, 1000);
         }
     }, [id]);
 
@@ -136,7 +140,7 @@ export const useVehicleForm = (id? : string) => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
+        setLoading(true);
         const isValid = validate(formData);
         if (!isValid) {
             // Marcar todos los campos como tocados
@@ -145,10 +149,11 @@ export const useVehicleForm = (id? : string) => {
                 allTouched[key] = true;
             });
             setTouched(allTouched);
+            setTimeout(() => {
+                setLoading(false);
+            },500);
             return;
         }
-
-        setLoading(true);
         try {
             if (isEditing) {
                 await updateVehicle(id!, formData as Omit<Vehicle, "_id">);

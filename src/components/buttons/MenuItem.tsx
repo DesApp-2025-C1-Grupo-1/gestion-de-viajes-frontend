@@ -10,7 +10,6 @@ interface MenuItemProps{
     handleOpenDailog:() => void;
 }
 
-//export default function MenuItem() {
 export default function MenuItem({handleOpenDailog}: MenuItemProps){
     const navigate = useNavigate();
     const location = useLocation();
@@ -36,7 +35,6 @@ export default function MenuItem({handleOpenDailog}: MenuItemProps){
             </button>
             <div className={`absolute right-0 top-9 z-10 py-2 bg-white shadow-md rounded-md border border-line ${isActionOpen ? "block" : "hidden"}`}>
                 <p className="font-bold py-1 mb-1 text-xs text-center px-4">Acciones</p>
-                {/** PRUEBA IMPLEMENTACION GENERAL */}
                 <ul className="flex flex-col gap-2">
                     <li className="flex items-center  py-2 px-4 cursor-pointer hover:bg-gray-100 text-[#2563EB] text-xs" onClick={() => navigate(`/${module}/edit/${id ?? ""}`)}>
                         <Edit className="size-4 mr-2" />
@@ -47,19 +45,6 @@ export default function MenuItem({handleOpenDailog}: MenuItemProps){
                         Eliminar
                     </li>
                 </ul>
-                {/* 
-                //IMPLEMENTACION V1
-                <ul className="flex flex-col gap-2">
-                    <li className="flex items-center  py-2 px-4 cursor-pointer hover:bg-gray-100 text-[#2563EB] text-xs" onClick={() => navigate(`/vehicle/edit`)}>
-                        <Edit className="size-4 mr-2" />
-                        Editar
-                    </li>
-                    <li className="flex items-center  py-2 px-4 cursor-pointer hover:bg-gray-100 text-[#DC2626] text-xs" onClick={() => navigate(`/vehicle/delete`)}>
-                        <Trash2 className="size-4 mr-2" />
-                        Eliminar
-                    </li>
-                </ul>*/}
-
             </div>
         </div>
     )

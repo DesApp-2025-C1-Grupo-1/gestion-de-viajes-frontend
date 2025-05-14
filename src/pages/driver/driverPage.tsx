@@ -98,7 +98,7 @@ export default function DriverPage() {
                                         <TableCell>{driver.telephone}</TableCell>
                                         <TableCell>{driver.email}</TableCell>
                                         <TableCell sx={{display:"flex", justifyContent:"center", alignItems:"center", maxHeight:72}}>
-                                            <MenuItem  handleOpenDailog={() => handleOpenDialog(driver)}/>
+                                            <MenuItem  handleOpenDialog={() => handleOpenDialog(driver)}/>
                                         </TableCell>
                                     </TableRow>
                                 ))

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Paper, TextField, Select, MenuItem, Typography} from "@mui/material";
+import { Box, Button, Paper, TextField, Select, MenuItem, Typography, Grid} from "@mui/material";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -57,43 +57,43 @@ export const FormDriver = ({onSubmit, editingDriver, onCancel, isEditing, compan
     };
 
     return(
-        <Paper  sx={{padding:3, maxWidth: '95%', mx:'auto', borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "0.5px solid #C7C7C7"}}>
+        <Paper  sx={{padding:3, mx:'auto', borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "0.5px solid #C7C7C7"}}>
             <form onSubmit={handleSubmit}>
                 <Typography sx={{color: "#5A5A65" , fontWeight: 550 , fontSize: "1.2rem", mb:4}}>Datos personales</Typography>
-                <Box sx={{ display: "flex", flexDirection: "row", gap: 5, mb: 6 }}> 
-                    <Box sx={{ display: "flex", flexDirection: "column", gap: 1, width: "25%"}}> 
+                <Grid container spacing={3} mb={6}>
+                    <Grid item xs={12} md={6} lg={3}>
                         <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>Nombre</Typography>
                         <TextField className="inside-paper" name="name" placeholder="Ingresar" value={formData.name} onChange={handleChange} fullWidth />
-                    </Box>
-                    <Box sx={{ display: "flex", flexDirection: "column", gap: 1, width: "25%"}}>
+                    </Grid>
+                    <Grid item xs={12} md={6} lg={3}>
                         <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>Apellido</Typography>
                         <TextField className="inside-paper" name="surname" placeholder="Ingresar" value={formData.surname} onChange={handleChange} fullWidth />
-                    </Box>
-                </Box>
+                    </Grid>
+                </Grid>
 
-                <Box sx={{ display: "flex", flexDirection: "row", gap: 5, mb: 6 }}>
-                    <Box sx={{ display: "flex", flexDirection: "column", gap: 1, width: "25%"}}>
+                <Grid container spacing={3} mb={6}>
+                    <Grid item xs={12} md={6} lg={3}>
                         <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>DNI</Typography>
                         <TextField className="inside-paper" name="dni" placeholder="Ingresar" value={formData.dni} onChange={handleChange} fullWidth />
-                    </Box>
-                    <Box sx={{ display: "flex", flexDirection: "column", gap: 1, width: "25%"}}>
+                    </Grid>
+                    <Grid item xs={12} md={6} lg={3}>
                         <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>Fecha de nacimiento</Typography>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker  
                                 value={formData.date_birth ? dayjs(formData.date_birth) : null}
-                                onChange={handleDateChange}
+                                onChange={(date) => setFormData(prev => ({...prev, date_birth: date}))}
                                 slots={{ textField: (params) => <TextField {...params} fullWidth /> }}
                                 slotProps={{textField: {className: "date-pciker", variant: "outlined"}}}
                             />
                         </LocalizationProvider>
-                    </Box>
-                </Box>
+                    </Grid>  
+                </Grid>
 
                 <Typography sx={{color: "#5A5A65" , fontWeight: 550 , fontSize: "1.2rem", mb:4}}>Asignar recursos</Typography>
-                <Box sx={{ display: "flex", flexDirection: "row", gap: 5, mb: 6 }}>
-                    <Box sx={{ display: "flex", flexDirection: "column", gap: 1, width: "25%"}}>
+                <Grid container spacing={3} mb={6}>
+                    <Grid item xs={12} md={6} lg={3}>
                         <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>Empresa Transportista</Typography>
-                        <Select name="empresa" value={formData.company} fullWidth>
+                        <Select name="company" value={formData.company} onChange={(e) => setFormData(prev => ({...prev, company: e.target.value}))} fullWidth>
                             <MenuItem value="Empresa A">Empresa A</MenuItem>
                             <MenuItem value="Empresa B">Empresa B</MenuItem>
                             <MenuItem value="Empresa C">Empresa C</MenuItem>
@@ -105,10 +105,10 @@ export const FormDriver = ({onSubmit, editingDriver, onCancel, isEditing, compan
                             <MenuItem value="Empresa I">Empresa I</MenuItem>
                             <MenuItem value="Empresa J">Empresa J</MenuItem>
                         </Select>
-                    </Box>
-                    <Box sx={{ display: "flex", flexDirection: "column", gap: 1, width: "25%"}}>
+                    </Grid>
+                    <Grid item xs={12} md={6} lg={3}>
                         <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>Vehículo a utilizar</Typography>
-                        <Select name="vehiculo" value={formData.vehicle} fullWidth>
+                        <Select name="vehicle" value={formData.vehicle} onChange={(e) => setFormData(prev => ({...prev, vehicle: e.target.value}))} fullWidth>
                             <MenuItem value="Camión Volvo">Camión Volvo</MenuItem>
                             <MenuItem value="Ford Ranger">Ford Ranger</MenuItem>
                             <MenuItem value="Chevrolet NKR 512">Chevrolet NKR 512</MenuItem>
@@ -119,16 +119,17 @@ export const FormDriver = ({onSubmit, editingDriver, onCancel, isEditing, compan
                             <MenuItem value="Renault Alaskan">Renault Alaskan</MenuItem>
                             <MenuItem value="Mitsubishi L200">Mitsubishi L200</MenuItem>
                         </Select>
-                    </Box>
-                </Box>
-                <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+                    </Grid>
+                </Grid>
+
+                <Grid container spacing={3} mb={6}>
                     <Button onClick={onCancel} variant="outlined">Cancelar</Button>
                     <Button type="submit" variant="contained" sx={{ backgroundColor: "#E65F2B" }} disabled={!formData.name}>
                         {editingDriver ? "Actualizar" : "Crear"}
                     </Button>
-                </Box>
-            </form>
-        
+                </Grid>
+
+            </form>      
         </Paper>
     )
 }

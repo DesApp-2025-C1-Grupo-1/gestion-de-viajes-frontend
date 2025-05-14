@@ -1,11 +1,13 @@
 import { useState, useCallback, useEffect } from 'react';
 import { VehicleType } from "../types";
 import { createVehicleType, deleteVehicleType, fetchVehicleTypes, updateVehicleType } from "../lib/api";
+import { useNotify } from "./useNotify";
 
 export const useVehicleTypes = () => {
   const [vehicleTypes, setVehicleTypes] = useState<VehicleType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const { notify } = useNotify("Tipo de vehículo");
 
   const loadVehicleTypes = useCallback(async () => {
     try {
@@ -14,6 +16,7 @@ export const useVehicleTypes = () => {
       setVehicleTypes(data);
     } catch (err) {
       setError(err as Error);
+      notify("error");
     } finally {
       setIsLoading(false);
     }
@@ -23,8 +26,10 @@ export const useVehicleTypes = () => {
     try {
       const newType = await createVehicleType(formData);
       setVehicleTypes(prev => [...prev, newType]);
+      notify("create");
     } catch (err) {
       setError(err as Error);
+      notify("error");
       throw err;
     }
   }, []);
@@ -33,8 +38,10 @@ export const useVehicleTypes = () => {
     try {
       const updatedType = await updateVehicleType(id, formData);
       setVehicleTypes(prev => prev.map(type => (type._id === updatedType._id ? updatedType : type)));
+      notify("update");
     } catch (err) {
       setError(err as Error);
+      notify("error");
       throw err;
     }
   }, []);
@@ -43,8 +50,10 @@ export const useVehicleTypes = () => {
     try {
       await deleteVehicleType(id);
       setVehicleTypes(prev => prev.filter(type => type._id !== id));
+      notify("delete");
     } catch (err) {
       setError(err as Error);
+      notify("error");
       throw err;
     }
   }, []);

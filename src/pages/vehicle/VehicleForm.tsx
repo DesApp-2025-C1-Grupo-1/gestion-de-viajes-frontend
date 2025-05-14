@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { SectionHeader } from "../../components/SectionHeader";
-import { Box, Button, Paper, TextField, Select, MenuItem, Typography, Backdrop, CircularProgress} from "@mui/material";
+import { Box, Button, Paper, TextField, Select, MenuItem, Typography, Backdrop, CircularProgress, Grid} from "@mui/material";
 import { empresas, vehicleTypes } from "../../lib/mock-data";
 import { useVehicleForm } from "../../hooks/useVehicleForm";
 
@@ -28,12 +28,12 @@ export default function VehicleFormPage() {
                 onAdd={() => history.back()}
             />
 
-            <Paper  sx={{padding:3, maxWidth: '100%', mx:'auto', borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "0.5px solid #C7C7C7"}}>
-                <form onSubmit={handleSubmit} className="flex flex-col ">
+            <Paper  sx={{maxHeight:"85%", padding:3, overflow:"auto", mx:'auto', width:"100%", borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "0.5px solid #C7C7C7", pb: 5} }>
+                <form onSubmit={handleSubmit} className="flex flex-col">
                     <Typography sx={{color: "#5A5A65" , fontWeight: 550 , fontSize: "1.2rem", mb:4}}>Datos personales</Typography>
 
-                    <Box sx={{ display: "flex", flexWrap:"wrap", gap: 5, mb: 6 }}> 
-                        <Box sx={{ display: "flex", flexDirection: "column", gap: 1, maxWidth: "300px", width: "100%"}}> 
+                    <Grid container spacing={5} mb={3} > 
+                        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}> 
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>Patente</Typography>
                             <TextField
                                 name="patente" 
@@ -47,8 +47,8 @@ export default function VehicleFormPage() {
                                 className="inside-paper"
                                 disabled={loading}
                             />
-                        </Box>
-                        <Box sx={{ display: "flex", flexDirection: "column", gap: 1,  width: "100%", maxWidth: "300px"}}>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={6} lg={4} xl={3} >
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>Modelo</Typography>
                             <TextField  
                                 name="modelo" 
@@ -62,50 +62,51 @@ export default function VehicleFormPage() {
                                 className="inside-paper"
                                 disabled={loading}
                             />
-                        </Box>
-                    </Box>
+                        </Grid>
+                    </Grid>
 
-                    <Box sx={{ display: "flex", flexDirection: "wrap", gap: 5, mb: 6 }}>
-                        <Box sx={{ display: "flex", flexDirection: "column", gap: 1, maxWidth: "300px", width: "100%"}}>
+                    <Grid container spacing={5} mb={3} > 
+                        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}> 
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>Marca</Typography>
                             <TextField className="inside-paper" name="marca" placeholder="Ingresar" value={formData.marca} onChange={handleChange} fullWidth inputProps={{ "aria-label": "Marca del vehículo" }}
                                 error={!!touched.marca  && !!errors.marca}
                                 helperText={touched.marca && errors.marca}
                                 disabled={loading}
                             />
-                        </Box>
-                        <Box sx={{ display: "flex", flexDirection: "column", gap: 1, maxWidth: "300px", width: "100%"}}>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}> 
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>Año</Typography>
                             <TextField className="inside-paper"  type="number" name="año" placeholder="Ingresar" value={formData.año} onChange={handleChange} fullWidth inputProps={{ "aria-label": "Año del vehículo" }} 
                                 error={!!touched.año  && !!errors.año}
                                 helperText={touched.año && errors.año}
                                 disabled={loading}
                             />
-                        </Box>
-                    </Box>
+                        </Grid>
+                    </Grid>
 
-                    <Box sx={{ display: "flex", flexDirection: "wrap", gap: 5, mb: 6 }}>
-                        <Box sx={{ display: "flex", flexDirection: "column", gap: 1, maxWidth: "300px", width: "100%"}}>
+                    <Grid container spacing={5} mb={3} > 
+                        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}> 
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>Volumen de carga</Typography>
                             <TextField className="inside-paper" name="volumen_carga" type="number" placeholder="Ingresar" value={formData.volumen_carga} onChange={handleChange} fullWidth inputProps={{ "aria-label": "Volumen de carga del vehículo" }} 
                                 error={!!touched.volumen_carga  && !!errors.volumen_carga}
                                 helperText={touched.volumen_carga && errors.volumen_carga}
                                 disabled={loading}
                             />
-                        </Box>
-                        <Box sx={{ display: "flex", flexDirection: "column", gap: 1, maxWidth: "300px", width: "100%"}}>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}> 
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>Peso de carga</Typography>
                             <TextField className="inside-paper" name="peso_carga" type="number"  placeholder="Ingresar" value={formData.peso_carga} onChange={handleChange} fullWidth inputProps={{ "aria-label": "Peso de carga del vehículo" }} 
                                 error={!!touched.peso_carga  && !!errors.peso_carga}
                                 helperText={touched.peso_carga && errors.peso_carga}
                                 disabled={loading}
                             />
-                        </Box>
-                    </Box>
+                        </Grid>
+                    </Grid>
 
                     <Typography sx={{color: "#5A5A65" , fontWeight: 550 , fontSize: "1.2rem", mb:4}}>Asignar recursos</Typography>
-                    <Box sx={{ display: "flex", flexDirection: "row", gap: 5, mb: 6 }}>
-                        <Box sx={{ display: "flex", flexDirection: "column", gap: 1, maxWidth: "300px", width: "100%"}}>
+
+                    <Grid container spacing={5} mb={3} > 
+                        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}> 
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>Empresa Transportista</Typography>
                             <Select 
                                 name="empresa" 
@@ -126,8 +127,8 @@ export default function VehicleFormPage() {
                             <Typography color="error" fontSize={12}>
                                 {touched.empresa && errors.empresa}
                             </Typography>
-                        </Box>
-                        <Box sx={{ display: "flex", flexDirection: "column", gap: 1, maxWidth: "300px", width: "100%"}}>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}> 
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>Tipo de vehículo a utilizar</Typography>
                             <Select 
                                 name="tipo" 
@@ -148,9 +149,9 @@ export default function VehicleFormPage() {
                             <Typography color="error" fontSize={12}>
                                 {touched.tipo && errors.tipo}
                             </Typography>
-                        </Box>
-                    </Box>
-                    <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+                        </Grid>
+                    </Grid>
+                    <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 , mt: 3 }}>
                         <Button onClick={() => navigate("/vehicles")} variant="outlined">Cancelar</Button>
                         <Button type="submit" variant="contained" sx={{ backgroundColor: "#E65F2B" }} disabled={loading }>
                             {isEditing ? "Actualizar" : "Crear"}

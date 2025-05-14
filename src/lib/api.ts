@@ -61,13 +61,33 @@ export const fetchVehicle = async (): Promise<Vehicle[]> => {
   return [...vehicles]
 }
 
-export const deleteVehicle = async (id: string): Promise<void> => {
-  // Simular un retraso en la llamada a la API
-  await new Promise((resolve) => setTimeout(resolve, 500))
-
-  const index = vehicles.findIndex((v) => v._id === id)
-  if (index === -1) throw new Error("Vehicle no encontrado")
-
-  vehicles.splice(index, 1)
-  return
+export const fetchVehicleById = async (id: string): Promise<Vehicle> => {
+  await delay()
+  const found = vehicles.find((v) => v._id === id)
+  if (!found) throw new Error("Vehículo no encontrado")
+  return found
 }
+
+export const createVehicle = async (data: Omit<Vehicle, "_id">): Promise<Vehicle> => {
+  await delay()
+  const newVehicle: Vehicle = { ...data, _id: generateId() }
+  vehicles.push(newVehicle)
+  return newVehicle
+}
+
+export const updateVehicle = async (id: string, data: Omit<Vehicle, "_id">): Promise<Vehicle> => {
+  await delay()
+  const index = vehicles.findIndex((v) => v._id === id)
+  if (index === -1) throw new Error("Vehículo no encontrado")
+  vehicles[index] = { ...data, _id: id }
+  return vehicles[index]
+}
+
+export const deleteVehicle = async (id: string): Promise<void> => {
+  await delay()
+  const index = vehicles.findIndex((v) => v._id === id)
+  if (index === -1) throw new Error("Vehículo no encontrado")
+  vehicles.splice(index, 1)
+}
+
+const delay = (ms = 500) => new Promise((res) => setTimeout(res, ms))

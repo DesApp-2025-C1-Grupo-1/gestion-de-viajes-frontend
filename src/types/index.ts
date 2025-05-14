@@ -15,3 +15,13 @@ export type Vehicle = {
   tipo: string
   empresa: string
 }
+
+export type VehicleDriver = {
+  _id: string
+  name: string
+}
+
+export type CompanyDriver = {
+  _id: string
+  name: string
+}

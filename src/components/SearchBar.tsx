@@ -5,9 +5,10 @@ interface SearchBarProps {
     searchQuery: string;
     setSearchQuery: (query: string) => void;
     children?: React.ReactNode;
+    placeholder: string;
 }
 
-export default function SearchBar({searchQuery, setSearchQuery, children}: SearchBarProps) {
+export default function SearchBar({searchQuery, setSearchQuery, children, placeholder}: SearchBarProps) {
 
     return(
         <div className="flex flex-col sm:flex-row justify-between gap-2 mb-5">
@@ -16,7 +17,7 @@ export default function SearchBar({searchQuery, setSearchQuery, children}: Searc
                 name="search"
                 variant="outlined"
                 size="small"
-                placeholder="Buscar vehiculo por patente o modelo"
+                placeholder={placeholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 InputProps={{

@@ -1,14 +1,14 @@
 import { Button, Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
-import { SectionHeader } from "../components/SectionHeader";
+import { SectionHeader } from "../../components/SectionHeader";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useVehicles } from "../hooks/useVechicle";
-import  LoadingState  from "../components/LoadingState";
-import { useAutoRowsPerPage } from "../hooks/useAutoRowsPerPage";
-import SearchBar from "../components/SearchBar";
-import MenuItem from "../components/buttons/MenuItem";
-import { ConfirmDialog } from "../components/ConfirmDialog";
-import { Vehicle } from "../types";
+import { useVehicles } from "../../hooks/useVechicle";
+import  LoadingState  from "../../components/LoadingState";
+import { useAutoRowsPerPage } from "../../hooks/useAutoRowsPerPage";
+import SearchBar from "../../components/SearchBar";
+import MenuItem from "../../components/buttons/MenuItem";
+import { ConfirmDialog } from "../../components/ConfirmDialog";
+import { Vehicle } from "../../types";
 
 
 export default function VehiclePage() {
@@ -58,11 +58,11 @@ export default function VehiclePage() {
                 title="Flota de Vehículos"
                 description="Registre y gestione los vehículos disponibles para su red de transporte."
                 buttonText="Nuevo vehículo"
-                onAdd={() => {}}
+                onAdd={() => navigate("/vehicles/form")}
             />
 
             {/* Buscador y boton para ir a tipo de vehiculos*/}    
-            <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} >
+            <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} placeholder="Buscar vehículo por modelo o patente" >
                 <Button
                     variant="contained"
                     onClick={() => navigate("/type-vehicle")} // o abrir modal
@@ -133,7 +133,7 @@ export default function VehiclePage() {
                                 paginated.map((vehicle) => (
                                     <TableRow 
                                         key={vehicle._id} 
-                                        className="hover:bg-gray-50"
+                                        className="hover:bg-gray-50 overflow-hidden"
                                     >
                                         <TableCell sx={{fontWeight: "bold"}}>{vehicle.patente}</TableCell>
                                         <TableCell>{vehicle.modelo}</TableCell>
@@ -142,7 +142,9 @@ export default function VehiclePage() {
                                         <TableCell>{vehicle.tipo}</TableCell>
                                         <TableCell>{vehicle.empresa}</TableCell>
                                         <TableCell sx={{ display: "flex", justifyContent: "center", alignItems: "center", maxHeight: 72 }}>
-                                            <MenuItem  handleOpenDialog={() => handleOpenDialog(vehicle)}/>
+                                            <MenuItem  handleOpenDialog={() => handleOpenDialog(vehicle)}
+                                            id={vehicle._id}
+                                            />
                                            
                                         </TableCell>
                                          

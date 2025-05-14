@@ -1,12 +1,12 @@
 import { useCallback, useState } from "react";
-import { VehicleType } from "../types";
-import { useVehicleTypes } from "../hooks/useVehicleTypes";
-import { VehicleTypeDialog } from "../components/vehicle/type-vehicle/VehicleTypeDialog";
-import { ConfirmDialog } from "../components/ConfirmDialog";
-import { VehicleGrid } from "../components/vehicle/type-vehicle/VehicleGrid";
-import { EmptyState } from "../components/EmptyState";
-import  LoadingState  from "../components/LoadingState";
-import { SectionHeader } from "../components/SectionHeader";
+import { VehicleType } from "../../types";
+import { useVehicleTypes } from "../../hooks/useVehicleTypes";
+import { VehicleTypeDialog } from "../../components/vehicle/type-vehicle/VehicleTypeDialog";
+import { ConfirmDialog } from "../../components/ConfirmDialog";
+import { VehicleGrid } from "../../components/vehicle/type-vehicle/VehicleGrid";
+import { EmptyState } from "../../components/EmptyState";
+import  LoadingState  from "../../components/LoadingState";
+import { SectionHeader } from "../../components/SectionHeader";
 
 export default function TypeVehicle() {
 

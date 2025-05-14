@@ -5,15 +5,15 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, { Dayjs } from 'dayjs';
 import { CompanyDriver, DriverType, VehicleDriver } from "../../types";
-import { SelectChangeEvent } from "@mui/material";
+//import { SelectChangeEvent } from "@mui/material";
 
 interface FormDriverProps{
     onSubmit: (formData: Partial<DriverType>) => void;
     editingDriver?: DriverType | null;
     isEditing?: boolean;
     onCancel?: () => void; 
-    companies?: CompanyDriver[]; //prueba
-    vehicles?: VehicleDriver[]; //prueba
+    companies?: CompanyDriver[]; 
+    vehicles?: VehicleDriver[];
 }
 
 export const FormDriver = ({onSubmit, editingDriver, onCancel, isEditing, companies, vehicles} : FormDriverProps) => {
@@ -128,6 +128,7 @@ export const FormDriver = ({onSubmit, editingDriver, onCancel, isEditing, compan
                     </Button>
                 </Box>
             </form>
+        
         </Paper>
     )
 }

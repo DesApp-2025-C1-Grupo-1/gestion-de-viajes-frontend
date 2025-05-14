@@ -129,7 +129,7 @@ export default function DriverPage() {
                     onClose={() => setOpenDialog(false)}
                     title="Eliminar chofer"
                     content={<p>
-                        ¿Estas seguro que deseas eliminar el chofer{" "}
+                        ¿Estas seguro que deseas eliminar{" "}
                         <strong>{driverSelect?.name}</strong>?
                     </p>}
                     onConfirm={() => handleDelete(driverSelect?._id)}

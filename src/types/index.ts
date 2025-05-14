@@ -25,3 +25,13 @@ export type CompanyDriver = {
   _id: string
   name: string
 }
+export type Company = {
+  _id: string
+  name: string
+  trade_name: string
+  cuit: string
+  address: string
+  phone: string
+  email: string
+  drivers: CompanyDriver[]
+}

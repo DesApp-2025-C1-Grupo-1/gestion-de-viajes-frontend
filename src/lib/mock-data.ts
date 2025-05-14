@@ -1,4 +1,4 @@
-import { Vehicle, VehicleType } from "../types";
+import { Company, Vehicle, VehicleType } from "../types";
 
 export const vehicleTypes: VehicleType[] = [
   {
@@ -94,49 +94,65 @@ export const vehicles: Vehicle[] = [
     peso_carga: 1600,
     tipo: "Camión Articulado",
     empresa: "Transportista F",
-  },
-  {
-    _id: "veh7",
-    patente: "STU901",
-    modelo: "Volkswagen",
-    marca: "Volkswagen",
-    año: 2018,
-    volumen_carga: 1300,
-    peso_carga: 1700,
-    tipo: "Camión Articulado",
-    empresa: "Transportista G",
-  },
-  {
-    _id: "veh8",
-    patente: "VWX234",
-    modelo: "Subaru",
-    marca: "Subaru",
-    año: 2017,
-    volumen_carga: 1400,
-    peso_carga: 1900,
-    tipo: "Camión Rígido",
-    empresa: "Transportista H",
-  },
-  {
-    _id: "veh9",
-    patente: "XYZ567",
-    modelo: "Mazda",
-    marca: "Mazda",
-    año: 2021,
-    volumen_carga: 950,
-    peso_carga: 1400,
-    tipo: "Camión Articulado",
-    empresa: "Transportista I",
-  },
-  {
-    _id: "veh10",
-    patente: "LMN890",
-    modelo: "Honda",
-    marca: "Honda",
-    año: 2022,
-    volumen_carga: 1050,
-    peso_carga: 1550,
-    tipo: "Camión Rígido",
-    empresa: "Transportista J",
   }
+]
+
+export const empresas: Company[] = [
+  {
+    _id: "comp1",
+    name: "Transportista A",
+    trade_name: "TransA",
+    cuit: "20-12345678-9",
+    address: "Calle Falsa 123",
+    phone: "1234-5678",
+    email: "prueba@gmail.com",
+    drivers: [
+      {
+        _id: "driver1",
+        name: "Juan Pérez",
+      },
+      {
+        _id: "driver2",
+        name: "María López",
+      },
+    ],
+  },
+  {
+    _id: "comp2",
+    name: "Transportista B",
+    trade_name: "TransB",
+    cuit: "20-23456789-0",
+    address: "Avenida Siempre Viva 456",
+    phone: "2345-6789",
+    email: "test@gmail.com",
+    drivers: [
+      {
+        _id: "driver3",
+        name: "Carlos García",
+      },
+      {
+        _id: "driver4",
+        name: "Ana Martínez",
+      },
+    ],
+  },
+  {
+    _id: "comp3",
+    name: "Transportista C",
+    trade_name: "TransC",
+    cuit: "20-34567890-1",
+    address: "Boulevard de los Sueños Rotos 789",
+    phone: "3456-7890",
+    email: "fasfs@gmail.com",
+    drivers: [
+      {
+        _id: "driver5",
+        name: "Luis Fernández",
+      },
+      {
+        _id: "driver6",
+        name: "Laura González",
+      },
+    ],
+  },
 ]

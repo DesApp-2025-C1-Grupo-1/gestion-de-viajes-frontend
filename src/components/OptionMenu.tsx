@@ -21,9 +21,19 @@ export default function OptionMenu({ isCollapsed, IconComponent, title, link = "
     }
   }, []);
 
-  // Verificar ruta activa
+  // Verificar si la ruta actual comienza con el link asignado
   useEffect(() => {
-    setIsActive(location.pathname === `/${link}`);
+    const currentPath = location.pathname;
+    const targetPath = `/${link}`;
+
+    // Si es la home exacta
+    if (link === "" && currentPath === "/") {
+      setIsActive(true);
+    } else if (link !== "" && currentPath.startsWith(targetPath)) {
+      setIsActive(true);
+    } else {
+      setIsActive(false);
+    }
   }, [location, link]);
 
   return (

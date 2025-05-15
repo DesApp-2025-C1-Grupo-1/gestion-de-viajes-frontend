@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import { Company, Vehicle, VehicleType } from "../types";
-=======
 import { Vehicle, VehicleType, Driver, Company} from "../types";
->>>>>>> feature-driver
 
 export const driverTypes: Driver[] = [
   {
@@ -151,82 +147,6 @@ export const vehicles: Vehicle[] = [
     peso_carga: 1600,
     tipo: "Camión Articulado",
     empresa: "Transportes Rápidos SA",
-<<<<<<< HEAD
-=======
-  }
-]
-
-export const companies: Company[] = [
-  {
-    _id:"com1",
-    razon_social:"Transportes Rápidos sociedad anónima",
-    nombre_comercial:"Transportes Rápidos SA",
-    cuit: 30-123456-9,
-    domicilio_fiscal:"Av Principal 123",
-    telefono: 1155990776,
-    mail: "contacto@empresa.com",
-    nombre_contacto: "Administrador"
-  },
-  {
-    _id:"com2",
-    razon_social:"Lógista Express",
-    nombre_comercial:"Lógista Express",
-    cuit: 30-123456-9,
-    domicilio_fiscal:"Av Principal 123",
-    telefono: 1155990776,
-    mail: "contacto@empresa.com",
-    nombre_contacto: "Administrador"
-  },
-  {
-    _id:"com3",
-    razon_social:"Transportes del Sur",
-    nombre_comercial:"Transportes del Sur",
-    cuit: 30-123456-9,
-    domicilio_fiscal:"Av Principal 123",
-    telefono: 1155990776,
-    mail: "contacto@empresa.com",
-    nombre_contacto: "Administrador"
-  },
-  {
-    _id:"com4",
-    razon_social:"Distribuciones andinas sociedad",
-    nombre_comercial:"Distribuciones andinas",
-    cuit: 30-123456-9,
-    domicilio_fiscal:"Av Principal 123",
-    telefono: 1155990776,
-    mail: "contacto@empresa.com",
-    nombre_contacto: "Administrador"
-  },
-  {
-    _id:"com5",
-    razon_social:"Cargas Patagónicas",
-    nombre_comercial:"Cargas Patagónicas",
-    cuit: 30-123456-9,
-    domicilio_fiscal:"Av Principal 123",
-    telefono: 1155990776,
-    mail: "contacto@empresa.com",
-    nombre_contacto: "Administrador"
-  },
-  {
-    _id:"com6",
-    razon_social:"Transportes Rápidos sociedad anónima",
-    nombre_comercial:"Transportes Rápidos SA",
-    cuit: 30-123456-9,
-    domicilio_fiscal:"Av Principal 123",
-    telefono: 1155990776,
-    mail: "contacto@empresa.com",
-    nombre_contacto: "Administrador"
-  },
-  {
-    _id:"com7",
-    razon_social:"Norte cargo logística",
-    nombre_comercial:"Norte cargo",
-    cuit: 30-123456-9,
-    domicilio_fiscal:"Av Principal 123",
-    telefono: 1155990776,
-    mail: "contacto@empresa.com",
-    nombre_contacto: "Administrador"
->>>>>>> feature-driver
   }
 ]
 
@@ -301,4 +221,32 @@ export const companies: Company[] = [
     mail: "contacto@empresa.com",
     nombre_contacto: "Administrador"
   }
+]
+
+export const vehicleTypes: VehicleType[] = [
+  {
+    _id: "vtype1",
+    name: "Camión Articulado",
+    description: "Camión con remolque articulado",
+  },
+  {
+    _id: "vtype2",
+    name: "Camión Rígido",
+    description: "Camión sin remolque",
+  },
+  {
+    _id: "vtype3",
+    name: "Furgón",
+    description: "Vehículo cerrado para transporte de mercancías",
+  },
+  {
+    _id: "vtype4",
+    name: "Camioneta",
+    description: "Vehículo ligero para transporte de mercancías",
+  },
+  {
+    _id: "vtype5",
+    name: "Tractor con Semirremolque",
+    description: "Combinación de tractor y semirremolque",
+  },
 ]

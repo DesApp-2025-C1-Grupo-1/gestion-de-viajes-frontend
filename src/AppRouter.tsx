@@ -15,7 +15,7 @@ export function AppRouter() {
         <Route path='/type-vehicle' element={<TypeVehicle />} />
         <Route path="/vehicles" element={<VehiclePage />} />
         <Route path="/vehicles/form" element={<VehicleForm />} />
-        <Route path="/vehicles/form/:id" element={<VehicleForm />} />
+        <Route path="/vehicles/edit/:id" element={<VehicleForm />} />
         <Route path='/drivers' element={<DriverPage />} />
         <Route path='/driver/create' element={<DriverCreateEdit />} />
         <Route path="/drivers/edit/:id" element={<DriverCreateEdit />} />

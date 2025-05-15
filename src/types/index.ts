@@ -6,32 +6,6 @@ export type VehicleType = {
   description?: string
 }
 
-export type DriverType = {
-  _id: string 
-  name: string
-  surname: string
-  dni: number
-  date_birth: Dayjs | null
-  company: string
-  companyName?: string
-  vehicle: string
-  licence: number
-  typeLicence: string
-  telephone: number
-  email: string
-}
-
-export type CompanyType = {
-  _id: string
-  razon_social: string
-  nombre_comercial: string
-  cuit: number
-  domicilio_fiscal: string
-  telefono: number
-  mail: string
-  nombre_contacto: string
-}
-
 export type Vehicle = {
   _id: string
   patente: string
@@ -44,14 +18,29 @@ export type Vehicle = {
   empresa: string
 }
 
-export type VehicleDriver = {
+export type Company = {
   _id: string
-  name: string
+  razon_social: string
+  nombre_comercial: string
+  cuit: number
+  domicilio_fiscal: string
+  telefono: number
+  mail: string
+  nombre_contacto: string
 }
 
-export type CompanyDriver = {
-  _id: string
-  name: string
+export type Driver = {
+  _id: string 
+  nombre: string
+  apellido: string
+  dni: number
+  fecha_nacimiento: Dayjs | null
+  empresa: string
+  vehiculo: string
+  licencia: number
+  tipo_licencia: string
+  telefono: number
+  email: string
 }
 
-export type RouteAction = "edit" | "delete";
+

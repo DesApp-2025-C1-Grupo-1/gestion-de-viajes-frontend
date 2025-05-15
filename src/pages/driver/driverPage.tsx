@@ -8,7 +8,7 @@ import { useAutoRowsPerPage } from "../../hooks/useAutoRowsPerPega";
 import SearchBar from "../../components/SearchBar";
 import MenuItem from "../../components/buttons/MenuItem";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
-import { DriverType } from "../../types";
+import { Driver } from "../../types";
 
 export default function DriverPage() {
     const {driver, isLoading, removeDriver} = useDriver();
@@ -16,10 +16,10 @@ export default function DriverPage() {
     const [page, setPage] = useState<number>(1);
     const {rowsPerPage} = useAutoRowsPerPage();
     const [openDialog, setOpenDialog] = useState(false);
-    const [driverSelect, setDriverSelect] = useState<DriverType>();
+    const [driverSelect, setDriverSelect] = useState<Driver>();
 
     const filtered = driver.filter((dri) =>
-        dri.name.toLocaleLowerCase().includes(searchQuery.toLocaleLowerCase()) || dri.company.toLocaleLowerCase().includes(searchQuery.toLocaleLowerCase())
+        dri.nombre.toLocaleLowerCase().includes(searchQuery.toLocaleLowerCase()) || dri.empresa.toLocaleLowerCase().includes(searchQuery.toLocaleLowerCase())
     );
 
     const totalPages = Math.ceil(filtered.length / rowsPerPage);
@@ -29,7 +29,7 @@ export default function DriverPage() {
         setPage(value)
     };
 
-    const handleOpenDialog = (driver: DriverType) => {
+    const handleOpenDialog = (driver: Driver) => {
         setOpenDialog(true);
         setDriverSelect(driver);
     }
@@ -54,7 +54,7 @@ export default function DriverPage() {
                 title="Listado de choferes"
                 description="Gestione los choferes disponibles del sistema"
                 buttonText="Nuevo chofer"
-                onAdd={() => navigate("/driver-create")}
+                onAdd={() => navigate("/driver/create")}
             />  
 
             <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} placeholder="Buscar por nombre o empresa"></SearchBar>
@@ -90,15 +90,15 @@ export default function DriverPage() {
                                 </TableRow>
                             ): (
                                 paginated.map((driver) => (
-                                    <TableRow key={driver._id} className="hover:-bg-gray-50">
-                                        <TableCell sx={{fontWeight: "bold"}}>{driver.name}</TableCell>
-                                        <TableCell>{driver.licence}</TableCell>
-                                        <TableCell>{driver.typeLicence}</TableCell>
-                                        <TableCell>{driver.company}</TableCell>
-                                        <TableCell>{driver.telephone}</TableCell>
+                                    <TableRow key={driver._id} className="hover:-bg-gray-50 overflow-hidden">
+                                        <TableCell sx={{fontWeight: "bold"}}>{driver.nombre}</TableCell>
+                                        <TableCell>{driver.licencia}</TableCell>
+                                        <TableCell>{driver.tipo_licencia}</TableCell>
+                                        <TableCell>{driver.empresa}</TableCell>
+                                        <TableCell>{driver.telefono}</TableCell>
                                         <TableCell>{driver.email}</TableCell>
                                         <TableCell sx={{display:"flex", justifyContent:"center", alignItems:"center", maxHeight:72}}>
-                                            <MenuItem  handleOpenDialog={() => handleOpenDialog(driver)}/>
+                                            <MenuItem  handleOpenDialog={() => handleOpenDialog(driver)} id={driver._id}/>
                                         </TableCell>
                                     </TableRow>
                                 ))
@@ -127,14 +127,14 @@ export default function DriverPage() {
                 <ConfirmDialog 
                     open={openDialog}
                     onClose={() => setOpenDialog(false)}
-                    title="Eliminar chofer"
+                    title="Eliminar Chofer"
                     content={<p>
-                        ¿Estas seguro que deseas eliminar{" "}
-                        <strong>{driverSelect?.name}</strong>?
+                        ¿Estás seguro que deseas eliminar el chofer{" "}
+                        <strong>{driverSelect?.nombre}</strong>?
                     </p>}
                     onConfirm={() => handleDelete(driverSelect?._id)}
                 />
-            )}
+            )};
         </>
     );
 }

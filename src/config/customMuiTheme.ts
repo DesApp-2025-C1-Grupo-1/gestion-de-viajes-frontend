@@ -1,5 +1,4 @@
 import { createTheme } from "@mui/material";
-import { lightBlue } from "@mui/material/colors";
 
 export const customMuiTheme = createTheme({
   palette: {
@@ -46,8 +45,6 @@ export const customMuiTheme = createTheme({
           border: "none",
           padding: "26px 18px",
         },
-        
-
       }
     },
     MuiTableRow: {

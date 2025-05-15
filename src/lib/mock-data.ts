@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { Vehicle, VehicleType, Driver, Company} from "../types";
 
 export const driverTypes: Driver[] = [
@@ -6,9 +7,9 @@ export const driverTypes: Driver[] = [
     "nombre": "Carlos",
     "apellido": "Gutierrez",
     "dni": 17295772,
-    "fecha_nacimiento": null,
+    "fecha_nacimiento": dayjs("2022-04-03"),
     "empresa": "Transportes Rápidos SA", //aca deberia manejar el ID (cambiar)
-    "vehiculo": "9483",
+    "vehiculo": "Toyota",
     "licencia": 12345,
     "tipo_licencia": "A1",
     "telefono": 1155990556,
@@ -19,9 +20,9 @@ export const driverTypes: Driver[] = [
     "nombre": "Esteban",
     "apellido": "Rodriguez",
     "dni": 25637829,
-    "fecha_nacimiento": null,
+    "fecha_nacimiento": dayjs("2022-04-03"),
     "empresa": "Lógista Express", //aca deberia manejar el ID (cambiar)
-    "vehiculo": "3856",
+    "vehiculo": "Toyota",
     "licencia": 12345,
     "tipo_licencia": "A2",
     "telefono": 1155990556,
@@ -32,9 +33,9 @@ export const driverTypes: Driver[] = [
     "nombre": "Marcos",
     "apellido": "Bustamante",
     "dni": 37896521,
-    "fecha_nacimiento": null,
+    "fecha_nacimiento": dayjs("2022-04-03"),
     "empresa": "Transportes del Sur", //aca deberia manejar el ID (cambiar)
-    "vehiculo": "1274",
+    "vehiculo": "Chevrolet",
     "licencia": 12345,
     "tipo_licencia": "A3",
     "telefono": 1155990556,
@@ -45,9 +46,9 @@ export const driverTypes: Driver[] = [
     "nombre": "Laura",
     "apellido": "Fernandez",
     "dni": 41235678,
-    "fecha_nacimiento": null,
+    "fecha_nacimiento": dayjs("2022-04-03"),
     "empresa": "Distribuciones Andinas", //aca deberia manejar el ID (cambiar)
-    "vehiculo": "9374",
+    "vehiculo": "Chevrolet",
     "licencia": 12345,
     "tipo_licencia": "A4",
     "telefono": 1155990556,
@@ -58,9 +59,9 @@ export const driverTypes: Driver[] = [
     "nombre": "Carlos",
     "apellido": "Gomez",
     "dni": 39785632,
-    "fecha_nacimiento": null,
+    "fecha_nacimiento": dayjs("2022-04-03"),
     "empresa": "Cargas Patagónicas", //aca deberia manejar el ID (cambiar)
-    "vehiculo": "5621",
+    "vehiculo": "Chevrolet",
     "licencia": 12345,
     "tipo_licencia": "A5",
     "telefono": 1155990556,
@@ -71,9 +72,9 @@ export const driverTypes: Driver[] = [
     "nombre": "Sofia",
     "apellido": "Martinez",
     "dni": 42896321,
-    "fecha_nacimiento": null,
+    "fecha_nacimiento": dayjs("2022-04-03"),
     "empresa": "Norte Cargo", //aca deberia manejar el ID (cambiar)
-    "vehiculo": "2145",
+    "vehiculo": "Ford",
     "licencia": 12345,
     "tipo_licencia": "A6",
     "telefono": 1155990556,

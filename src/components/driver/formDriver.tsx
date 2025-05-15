@@ -47,6 +47,7 @@ export const FormDriver = ({onSubmit, editingDriver, onCancel, isEditing} : Form
                 tipo_licencia: editingDriver.tipo_licencia,
                 telefono: editingDriver.telefono,
                 email: editingDriver.email,
+                licencia: editingDriver.licencia,
             })
         }
     }, [editingDriver]);
@@ -91,7 +92,7 @@ export const FormDriver = ({onSubmit, editingDriver, onCancel, isEditing} : Form
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker  
                                 value={formData.fecha_nacimiento ? dayjs(formData.fecha_nacimiento) : null}
-                                onChange={(date) => setFormData(prev => ({...prev, date_birth: date}))}
+                                onChange={(date) => setFormData(prev => ({...prev, fecha_nacimiento: date}))}
                                 slots={{ textField: (params) => <TextField {...params} fullWidth /> }}
                                 slotProps={{textField: {className: "date-pciker", variant: "outlined", 
                                     sx: {"& .MuiInputBase-root": {height:48},}}}}
@@ -107,7 +108,7 @@ export const FormDriver = ({onSubmit, editingDriver, onCancel, isEditing} : Form
                     </Grid>
                     <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
                         <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Licencia</Typography>
-                        <TextField className="inside-paper" name="licencia" placeholder="Ingresar" value={formData.licencia} onChange={handleChange} fullWidth />
+                        <TextField className="inside-paper" type="number"  name="licencia" placeholder="Ingresar" value={formData.licencia} onChange={handleChange} fullWidth />
                     </Grid>
                 </Grid>
 
@@ -135,7 +136,7 @@ export const FormDriver = ({onSubmit, editingDriver, onCancel, isEditing} : Form
                     </Grid>
                     <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
                         <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Vehículo a utilizar</Typography>
-                        <Select name="vehiculo" value={formData.empresa} onChange={handleSelectChange} fullWidth>
+                        <Select name="vehiculo" value={formData.vehiculo} onChange={handleSelectChange} fullWidth>
                             {vehicles.map((vehiculo) => (
                                 <MenuItem key={vehiculo._id} value={vehiculo.marca}>{vehiculo.marca}</MenuItem>
                             ))}

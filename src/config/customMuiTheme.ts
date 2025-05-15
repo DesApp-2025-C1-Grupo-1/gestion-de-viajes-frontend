@@ -76,10 +76,10 @@ export const customMuiTheme = createTheme({
             justifyContent: "center",
             fontSize: '0.900rem',
             "& input": {
-              padding: "12px 12px",
+              padding: "12px 12px", 
             },
           },
-          "&.inside-paper .MuiOutlinedInput-root fieldset": {
+          "&.inside-paper .MuiOutlinedInput-root fieldset": { 
             border: "0.5px solid #C7C7C7",
             borderRadius: 6,
           },

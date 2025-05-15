@@ -1,4 +1,3 @@
-// components/ConfirmDialog.tsx
 import { Dialog, DialogContent, DialogTitle, Button, DialogActions } from "@mui/material";
 
 interface ConfirmDialogProps {

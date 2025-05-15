@@ -1,3 +1,4 @@
+import { Dayjs } from "dayjs"
 
 export type VehicleType = {
   _id: string
@@ -27,3 +28,19 @@ export type Company = {
   mail: string
   nombre_contacto: string
 }
+
+export type Driver = {
+  _id: string 
+  nombre: string
+  apellido: string
+  dni: number
+  fecha_nacimiento: Dayjs | null
+  empresa: string
+  vehiculo: string
+  licencia: number
+  tipo_licencia: string
+  telefono: number
+  email: string
+}
+
+

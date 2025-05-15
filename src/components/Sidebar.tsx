@@ -5,7 +5,6 @@ import VehicleIcon from "./icons/VehicleIcon";
 import DepotIcon from "./icons/DepotIcon";
 import TripIcon from "./icons/TripIcon";
 import CompanyIcon from "./icons/CompanyIcon";
-
 import { useState } from "react";
 import OptionMenu from "./OptionMenu";
 
@@ -47,7 +46,6 @@ export default function Sidebar() {
             >
             Logística Acme SRL
             </h2>
-            
         </div>
 
         {/* Menú */}
@@ -66,19 +64,19 @@ export default function Sidebar() {
         </nav>
 
         <button
-            onClick={toggleSidebar}
-            aria-label={isCollapsed ? "Expandir menú" : "Contraer menú"}
-            className={`
-                absolute top-7  -right-3 bg-white p-1 rounded-full border border-gray-300
-                hover:bg-gray-100 transition-all shadow-sm z-10
-            `}
-            >
-            {isCollapsed ? (
-                <ChevronRight className="size-4 text-gray-600" />
-            ) : (
-                <ChevronLeft className="size-4 text-gray-600" />
-            )}
-            </button>
+          onClick={toggleSidebar}
+          aria-label={isCollapsed ? "Expandir menú" : "Contraer menú"}
+          className={`
+            absolute top-7  -right-3 bg-white p-1 rounded-full border border-gray-300
+            hover:bg-gray-100 transition-all shadow-sm z-10
+          `}
+        >
+          {isCollapsed ? (
+              <ChevronRight className="size-4 text-gray-600" />
+          ) : (
+              <ChevronLeft className="size-4 text-gray-600" />
+          )}
+        </button>
     </aside>
   );
 }

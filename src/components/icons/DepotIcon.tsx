@@ -10,4 +10,9 @@ export default function DepotIcon({color }: IconProps) {
         </svg>
 
     )
+<<<<<<< HEAD
 }
+=======
+}
+
+>>>>>>> feature-driver

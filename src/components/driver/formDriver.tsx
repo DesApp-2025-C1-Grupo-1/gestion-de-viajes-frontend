@@ -115,11 +115,11 @@ export const FormDriver = ({onSubmit, editingDriver, onCancel, isEditing} : Form
                 <Grid container spacing={5} mb={3}>
                     <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
                         <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Teléfono</Typography>
-                        <TextField className="inside-paper" name="telefono" placeholder="Ingresar" value={formData.telefono} onChange={handleChange} fullWidth />        
+                        <TextField className="inside-paper" type="tel" name="telefono" placeholder="Ingresar" value={formData.telefono} onChange={handleChange} fullWidth />        
                     </Grid>
                     <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
                         <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Email</Typography>
-                        <TextField className="inside-paper" name="email" placeholder="Ingresar" value={formData.email} onChange={handleChange} fullWidth />
+                        <TextField className="inside-paper" type="email" name="email" placeholder="Ingresar" value={formData.email} onChange={handleChange} fullWidth />
                     </Grid>
                 </Grid>
 

@@ -38,7 +38,7 @@ export const vehicles: Vehicle[] = [
     volumen_carga: 1000,
     peso_carga: 1500,
     tipo: "Camión Articulado",
-    empresa: "Transportista A",
+    empresa: "Distribuciones andina",
   },
   {
     _id: "veh2",
@@ -49,7 +49,7 @@ export const vehicles: Vehicle[] = [
     volumen_carga: 1500,
     peso_carga: 2000,
     tipo: "Camioneta",
-    empresa: "Transportista B",
+    empresa: "Transportes del Sur",
   },
   {
     _id: "veh3",
@@ -60,7 +60,7 @@ export const vehicles: Vehicle[] = [
     volumen_carga: 1200,
     peso_carga: 1800,
     tipo: "Tractor con Semirremolque",
-    empresa: "Transportista C",
+    empresa: "Transportes del Sur",
   },
   {
     _id: "veh4",
@@ -71,7 +71,7 @@ export const vehicles: Vehicle[] = [
     volumen_carga: 800,
     peso_carga: 1200,
     tipo: "Camión Articulado",
-    empresa: "Transportista D",
+    empresa: "Transportes Rápidos SA",
   },
   {
     _id: "veh5",
@@ -82,7 +82,7 @@ export const vehicles: Vehicle[] = [
     volumen_carga: 900,
     peso_carga: 1300,
     tipo: "Camión Rígido",
-    empresa: "Transportista E",
+    empresa: "Lógista Express",
   },
   {
     _id: "veh6",
@@ -93,66 +93,79 @@ export const vehicles: Vehicle[] = [
     volumen_carga: 1100,
     peso_carga: 1600,
     tipo: "Camión Articulado",
-    empresa: "Transportista F",
+    empresa: "Transportes Rápidos SA",
   }
 ]
 
-export const empresas: Company[] = [
+export const companies: Company[] = [
   {
-    _id: "comp1",
-    name: "Transportista A",
-    trade_name: "TransA",
-    cuit: "20-12345678-9",
-    address: "Calle Falsa 123",
-    phone: "1234-5678",
-    email: "prueba@gmail.com",
-    drivers: [
-      {
-        _id: "driver1",
-        name: "Juan Pérez",
-      },
-      {
-        _id: "driver2",
-        name: "María López",
-      },
-    ],
+    _id:"com1",
+    razon_social:"Transportes Rápidos sociedad anónima",
+    nombre_comercial:"Transportes Rápidos SA",
+    cuit: 30-123456-9,
+    domicilio_fiscal:"Av Principal 123",
+    telefono: 1155990776,
+    mail: "contacto@empresa.com",
+    nombre_contacto: "Administrador"
   },
   {
-    _id: "comp2",
-    name: "Transportista B",
-    trade_name: "TransB",
-    cuit: "20-23456789-0",
-    address: "Avenida Siempre Viva 456",
-    phone: "2345-6789",
-    email: "test@gmail.com",
-    drivers: [
-      {
-        _id: "driver3",
-        name: "Carlos García",
-      },
-      {
-        _id: "driver4",
-        name: "Ana Martínez",
-      },
-    ],
+    _id:"com2",
+    razon_social:"Lógista Express",
+    nombre_comercial:"Lógista Express",
+    cuit: 30-123456-9,
+    domicilio_fiscal:"Av Principal 123",
+    telefono: 1155990776,
+    mail: "contacto@empresa.com",
+    nombre_contacto: "Administrador"
   },
   {
-    _id: "comp3",
-    name: "Transportista C",
-    trade_name: "TransC",
-    cuit: "20-34567890-1",
-    address: "Boulevard de los Sueños Rotos 789",
-    phone: "3456-7890",
-    email: "fasfs@gmail.com",
-    drivers: [
-      {
-        _id: "driver5",
-        name: "Luis Fernández",
-      },
-      {
-        _id: "driver6",
-        name: "Laura González",
-      },
-    ],
+    _id:"com3",
+    razon_social:"Transportes del Sur",
+    nombre_comercial:"Transportes del Sur",
+    cuit: 30-123456-9,
+    domicilio_fiscal:"Av Principal 123",
+    telefono: 1155990776,
+    mail: "contacto@empresa.com",
+    nombre_contacto: "Administrador"
   },
+  {
+    _id:"com4",
+    razon_social:"Distribuciones andinas sociedad",
+    nombre_comercial:"Distribuciones andinas",
+    cuit: 30-123456-9,
+    domicilio_fiscal:"Av Principal 123",
+    telefono: 1155990776,
+    mail: "contacto@empresa.com",
+    nombre_contacto: "Administrador"
+  },
+  {
+    _id:"com5",
+    razon_social:"Cargas Patagónicas",
+    nombre_comercial:"Cargas Patagónicas",
+    cuit: 30-123456-9,
+    domicilio_fiscal:"Av Principal 123",
+    telefono: 1155990776,
+    mail: "contacto@empresa.com",
+    nombre_contacto: "Administrador"
+  },
+  {
+    _id:"com6",
+    razon_social:"Transportes Rápidos sociedad anónima",
+    nombre_comercial:"Transportes Rápidos SA",
+    cuit: 30-123456-9,
+    domicilio_fiscal:"Av Principal 123",
+    telefono: 1155990776,
+    mail: "contacto@empresa.com",
+    nombre_contacto: "Administrador"
+  },
+  {
+    _id:"com7",
+    razon_social:"Norte cargo logística",
+    nombre_comercial:"Norte cargo",
+    cuit: 30-123456-9,
+    domicilio_fiscal:"Av Principal 123",
+    telefono: 1155990776,
+    mail: "contacto@empresa.com",
+    nombre_contacto: "Administrador"
+  }
 ]

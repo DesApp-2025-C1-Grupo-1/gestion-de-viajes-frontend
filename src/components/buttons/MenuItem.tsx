@@ -2,9 +2,6 @@ import { Edit, Ellipsis, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const icons = {edit: Edit, delete: Trash2}
-const colors = {edit: Edit, delete: Trash2}
-
 interface MenuItemProps{
     handleOpenDialog:() => void;
     id:string;

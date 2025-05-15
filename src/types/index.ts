@@ -1,3 +1,4 @@
+
 export type VehicleType = {
   _id: string
   name: string
@@ -16,22 +17,13 @@ export type Vehicle = {
   empresa: string
 }
 
-export type VehicleDriver = {
-  _id: string
-  name: string
-}
-
-export type CompanyDriver = {
-  _id: string
-  name: string
-}
 export type Company = {
   _id: string
-  name: string
-  trade_name: string
-  cuit: string
-  address: string
-  phone: string
-  email: string
-  drivers: CompanyDriver[]
+  razon_social: string
+  nombre_comercial: string
+  cuit: number
+  domicilio_fiscal: string
+  telefono: number
+  mail: string
+  nombre_contacto: string
 }

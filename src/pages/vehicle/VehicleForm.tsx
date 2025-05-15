@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { SectionHeader } from "../../components/SectionHeader";
 import { Box, Button, Paper, TextField, Select, MenuItem, Typography, Backdrop, CircularProgress, Grid} from "@mui/material";
-import { empresas, vehicleTypes } from "../../lib/mock-data";
+import { companies, vehicleTypes } from "../../lib/mock-data";
 import { useVehicleForm } from "../../hooks/useVehicleForm";
 
 export default function VehicleFormPage() {
@@ -118,9 +118,9 @@ export default function VehicleFormPage() {
                                 error={!!touched.empresa && !!errors.empresa}
                                 disabled={loading}
                             >
-                                {empresas.map((empresa) => (
-                                    <MenuItem key={empresa._id} value={empresa.name}>
-                                        {empresa.name}
+                                {companies.map((empresa) => (
+                                    <MenuItem key={empresa._id} value={empresa.nombre_comercial}>
+                                        {empresa.nombre_comercial}
                                     </MenuItem>
                                 ))}
                             </Select>

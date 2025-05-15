@@ -1,16 +1,13 @@
 import { Edit, Ellipsis, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { RouteAction } from "../../types"; //SACARRRRR
-
-const icons = {edit: Edit, delete: Trash2}
-const colors = {edit: Edit, delete: Trash2}
 
 interface MenuItemProps{
-    handleOpenDailog:() => void;
+    handleOpenDialog:() => void;
+    id:string;
 }
 
-export default function MenuItem({handleOpenDailog}: MenuItemProps){
+export default function MenuItem({handleOpenDialog, id}: MenuItemProps){
     const navigate = useNavigate();
     const location = useLocation();
     const [isActionOpen, setIsActionOpen] = useState(false);
@@ -21,7 +18,6 @@ export default function MenuItem({handleOpenDailog}: MenuItemProps){
 
     const pathPats = location.pathname.split("/");
     const module = pathPats[1];
-    const id = pathPats[2];
 
     return(
         <div className="relative">
@@ -29,9 +25,7 @@ export default function MenuItem({handleOpenDailog}: MenuItemProps){
                 className=" flex items-center justify-center p-2 rounded-md hover:bg-gray-200 transition-colors duration-200" 
                 onClick={handleActionClick}
             >
-                <Ellipsis
-                    className=" text-gray-500 hover:text-gray-700 size-4"
-                />
+                <Ellipsis className=" text-gray-500 hover:text-gray-700 size-4"/>
             </button>
             <div className={`absolute right-0 top-9 z-10 py-2 bg-white shadow-md rounded-md border border-line ${isActionOpen ? "block" : "hidden"}`}>
                 <p className="font-bold py-1 mb-1 text-xs text-center px-4">Acciones</p>
@@ -40,7 +34,7 @@ export default function MenuItem({handleOpenDailog}: MenuItemProps){
                         <Edit className="size-4 mr-2" />
                         Editar
                     </li>
-                    <li className="flex items-center  py-2 px-4 cursor-pointer hover:bg-gray-100 text-[#DC2626] text-xs" onClick={handleOpenDailog}>
+                    <li className="flex items-center  py-2 px-4 cursor-pointer hover:bg-gray-100 text-[#DC2626] text-xs" onClick={handleOpenDialog}>
                         <Trash2 className="size-4 mr-2" />
                         Eliminar
                     </li>

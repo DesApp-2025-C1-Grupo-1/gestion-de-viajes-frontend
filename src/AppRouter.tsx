@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import TypeVehicle from "./pages/vehicle/TypeVehicle";
 import VehiclePage from "./pages/vehicle/VehiclePage";
-import DriverCreateEdit from "./pages/driver/driverCreateEdit"; 
+import DriverCreateEdit from "./pages/driver/driverCreateEdit";
 import DriverPage from "./pages/driver/driverPage";
 import Layout from "./components/Layout";
 import VehicleForm from "./pages/vehicle/VehicleForm";

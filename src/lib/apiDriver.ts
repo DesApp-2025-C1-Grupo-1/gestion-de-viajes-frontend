@@ -49,7 +49,6 @@ export const deleteDriver = async(id:string) : Promise<void> => {
     const index = driverTypes.findIndex((dri) => dri._id === id)
     if (index === -1) throw new Error("Driver not found")
     driverTypes.splice(index,1)
-    return
 };
 
 export const fetchDriverById = async(id:string): Promise<Driver> => {

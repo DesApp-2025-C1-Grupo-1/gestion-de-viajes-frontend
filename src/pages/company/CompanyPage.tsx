@@ -1,25 +1,26 @@
-import { Button, InputAdornment, Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
+import { useEffect, useState } from "react";
+import { Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import { SectionHeader } from "../../components/SectionHeader";
-import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDriver } from "../../hooks/useDrivers";
+import { useCompany } from "../../hooks/useCompany";
 import LoadingState from "../../components/LoadingState";
-import { useAutoRowsPerPage } from "../../hooks/useAutoRowsPerPage";
+import { useAutoRowsPerPage } from '../../hooks/useAutoRowsPerPage';
 import SearchBar from "../../components/SearchBar";
 import MenuItem from "../../components/buttons/MenuItem";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
-import { Driver } from "../../types";
+import { Company } from "../../types";
+import { every } from "lodash";
 
-export default function DriverPage() {
-    const {driver, isLoading, removeDriver} = useDriver();
+export default function CompanyPage(){
+    const {company, isLoading, removeCompany} = useCompany();
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);
     const {rowsPerPage} = useAutoRowsPerPage();
     const [openDialog, setOpenDialog] = useState(false);
-    const [driverSelect, setDriverSelect] = useState<Driver>();
+    const [companySelect, setCompanySelect] = useState<Company>();
 
-    const filtered = driver.filter((dri) =>
-        dri.nombre.toLocaleLowerCase().includes(searchQuery.toLocaleLowerCase()) || dri.empresa.toLocaleLowerCase().includes(searchQuery.toLocaleLowerCase())
+    const filtered = company.filter((com) => 
+        com.nombre_comercial.toLocaleLowerCase().includes(searchQuery.toLocaleLowerCase())
     );
 
     const totalPages = Math.ceil(filtered.length / rowsPerPage);
@@ -29,18 +30,18 @@ export default function DriverPage() {
         setPage(value)
     };
 
-    const handleOpenDialog = (driver: Driver) => {
+    const handleOpenDialog = (company: Company) => {
         setOpenDialog(true);
-        setDriverSelect(driver);
-    }
+        setCompanySelect(company);
+    };
 
     const handleDelete = async(id: string) => {
         try{
-            await removeDriver(id);
+            await removeCompany(id);
             setOpenDialog(false);
         }
         catch(err){
-            console.error("Error deleting driver", err);
+            console.error("Error deleting company", err)
         }
     };
 
@@ -51,14 +52,13 @@ export default function DriverPage() {
     return(
         <>
             <SectionHeader
-                title="Listado de choferes"
-                description="Gestione los choferes disponibles del sistema"
-                buttonText="Nuevo chofer"
-                onAdd={() => navigate("/driver/create")}
-            />  
+                title="Listado de empresas transportistas"
+                description="Gestione las empresas transportistas del sistema"
+                buttonText="Nueva empresa"
+                onAdd={() => navigate("/company/create")}
+            /> 
 
-            <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} placeholder="Buscar por nombre o empresa"></SearchBar>
-
+            <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} placeholder="Buscar por nombre"></SearchBar>
             <div className="bg-white rounded-lg overflow-hidden" style={{
                 boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
                 border: "0.5px solid #C7C7C7",
@@ -68,10 +68,10 @@ export default function DriverPage() {
                     <Table aria-label="simple table">
                         <TableHead>
                             <TableRow>
-                                <TableCell>Nombre</TableCell>
-                                <TableCell>Licencia</TableCell>
-                                <TableCell>Tipo de licencia</TableCell>
-                                <TableCell>Transportista</TableCell>
+                                <TableCell>Razón social</TableCell>
+                                <TableCell>Nombre comercial</TableCell>
+                                <TableCell>CUIT/RUT</TableCell>
+                                <TableCell>Domicilio fiscal</TableCell>
                                 <TableCell>Teléfono</TableCell>
                                 <TableCell>Email</TableCell>
                                 <TableCell align="center" sx={{width:72}}>Acciones</TableCell>
@@ -81,37 +81,37 @@ export default function DriverPage() {
                             {isLoading? ( 
                             <TableRow key="loading">
                                 <TableCell colSpan={7}>
-                                    <LoadingState title="choferes"/>
+                                    <LoadingState title="empresas"/>
                                 </TableCell>
                             </TableRow>
                             ): paginated.length === 0? (
-                                <TableRow key="no-driver">
-                                    <TableCell colSpan={7} sx={{textAlign: "center", paddingY: "2xpx"}}>No se encontraron choferes</TableCell>
+                                <TableRow key="no-company">
+                                    <TableCell colSpan={7} sx={{textAlign: "center", paddingY: "2xpx"}}>No se encontraron empresas</TableCell>
                                 </TableRow>
                             ): (
-                                paginated.map((driver) => (
-                                    <TableRow key={driver._id} className="hover:-bg-gray-50 overflow-hidden">
-                                        <TableCell sx={{fontWeight: "bold"}}>{driver.nombre}</TableCell>
-                                        <TableCell>{driver.licencia}</TableCell>
-                                        <TableCell>{driver.tipo_licencia}</TableCell>
-                                        <TableCell>{driver.empresa}</TableCell>
-                                        <TableCell>{driver.telefono}</TableCell>
-                                        <TableCell>{driver.email}</TableCell>
+                                paginated.map((company) => (
+                                    <TableRow key={company._id} className="hover:-bg-gray-50 overflow-hidden">
+                                        <TableCell sx={{fontWeight: "bold"}}>{company.razon_social}</TableCell>
+                                        <TableCell>{company.nombre_comercial}</TableCell>
+                                        <TableCell>{company.cuit}</TableCell>
+                                        <TableCell>{company.domicilio_fiscal}</TableCell>
+                                        <TableCell>{company.telefono}</TableCell>
+                                        <TableCell>{company.mail}</TableCell>
                                         <TableCell sx={{display:"flex", justifyContent:"center", alignItems:"center", maxHeight:72}}>
-                                            <MenuItem  handleOpenDialog={() => handleOpenDialog(driver)} id={driver._id}/>
+                                            <MenuItem  handleOpenDialog={() => handleOpenDialog(company)} id={company._id}/>
                                         </TableCell>
                                     </TableRow>
                                 ))
                             )}
                         </TableBody>
                     </Table>
-                </TableContainer>
+                </TableContainer>               
             </div>
 
             <div className="flex justify-between gap-2 items-center sm:px-4 py-4 ">
                 <p className="text-sm w-full">
                     Mostrando {Math.min((page - 1) * rowsPerPage + 1, filtered.length)}– 
-                    {Math.min(page * rowsPerPage, filtered.length)} de {filtered.length} choferes
+                    {Math.min(page * rowsPerPage, filtered.length)} de {filtered.length} empresas transportistas
                 </p>
                 <Pagination 
                     count={totalPages}
@@ -121,20 +121,22 @@ export default function DriverPage() {
                     color="primary"
                     sx={{width: "100%", display: "flex", justifyContent: "flex-end"}}
                 />
-            </div>
+            </div>            
 
-            {driverSelect && (
+            {companySelect && (
                 <ConfirmDialog 
                     open={openDialog}
                     onClose={() => setOpenDialog(false)}
-                    title="Eliminar Chofer"
+                    title="Eliminar Empresa transportista"
                     content={<p>
-                        ¿Estás seguro que deseas eliminar el chofer{" "}
-                        <strong>{driverSelect?.nombre}</strong>?
+                        ¿Estás seguro que deseas eliminar la empresa{" "}
+                        <strong>{companySelect?.nombre_comercial}</strong>?
                     </p>}
-                    onConfirm={() => handleDelete(driverSelect?._id)}
+                    onConfirm={() => handleDelete(companySelect?._id)}
                 />
             )}
+
         </>
     )
-}
+
+};

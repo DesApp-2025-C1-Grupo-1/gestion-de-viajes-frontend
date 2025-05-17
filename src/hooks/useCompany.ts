@@ -13,6 +13,7 @@ export const useCompany = () => {
         try{
             setIsLoading(true);
             const data = await fetchCompany();
+            //parseed a str cuit
             setCompany(data);
         }
         catch(err){

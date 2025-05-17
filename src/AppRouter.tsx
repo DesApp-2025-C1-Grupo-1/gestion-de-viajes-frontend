@@ -1,11 +1,14 @@
 import { Route, Routes } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
+import Layout from "./components/Layout";
 import TypeVehicle from "./pages/vehicle/TypeVehicle";
 import VehiclePage from "./pages/vehicle/VehiclePage";
-import DriverCreateEdit from "./pages/driver/driverCreateEdit";
-import DriverPage from "./pages/driver/driverPage";
-import Layout from "./components/Layout";
 import VehicleForm from "./pages/vehicle/VehicleForm";
+import DriverCreateEdit from "./pages/driver/DriverCreateEdit";
+import DriverPage from "./pages/driver/DriverPage";
+import CompanyPage from "./pages/company/CompanyPage";
+import CompanyCreateEdit from "./pages/company/CompanyCreateEdit";
+
 
 export function AppRouter() {
   return (
@@ -19,6 +22,9 @@ export function AppRouter() {
         <Route path='/drivers' element={<DriverPage />} />
         <Route path='/driver/create' element={<DriverCreateEdit />} />
         <Route path="/drivers/edit/:id" element={<DriverCreateEdit />} />
+        <Route path="/companies" element={<CompanyPage />} />
+        <Route path="/company/create" element={<CompanyCreateEdit />} />
+        <Route path="/companies/edit/:id" element={<CompanyCreateEdit />} />
       </Route>
     </Routes>
   );

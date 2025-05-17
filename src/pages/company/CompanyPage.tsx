@@ -9,7 +9,6 @@ import SearchBar from "../../components/SearchBar";
 import MenuItem from "../../components/buttons/MenuItem";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { Company } from "../../types";
-import { every } from "lodash";
 
 export default function CompanyPage(){
     const {company, isLoading, removeCompany} = useCompany();

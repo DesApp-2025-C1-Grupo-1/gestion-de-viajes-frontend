@@ -6,7 +6,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, { Dayjs } from 'dayjs';
 import { Company, Driver, Vehicle} from "../../types";
 import { companies, vehicles } from "../../lib/mock-data";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface FormDriverProps{
     onSubmit: (formData: Partial<Driver>) => void;
@@ -18,7 +18,7 @@ interface FormDriverProps{
 }
 
 export const FormDriver = ({onSubmit, editingDriver, onCancel, isEditing} : FormDriverProps) => {
-    const {id} = useParams();
+    //const {id} = useParams();
     const navigate = useNavigate();
     const [formData, setFormData] = useState<Partial<Driver>>({
         _id: "", 

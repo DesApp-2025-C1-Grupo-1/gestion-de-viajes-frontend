@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { Vehicle, VehicleType, Driver, Company} from "../types";
+import { Vehicle, VehicleType, Driver, Company, Deposit} from "../types";
 
 export const driverTypes: Driver[] = [
   {
@@ -249,5 +249,103 @@ export const vehicleTypes: VehicleType[] = [
     _id: "vtype5",
     name: "Tractor con Semirremolque",
     description: "Combinación de tractor y semirremolque",
+  },
+]
+
+export const deposits : Deposit[] = [
+  {
+    _id: "1",
+    nombre: "Centro de Distribución Santiago",
+    direccion: "Av. Américo Vespucio 1234",
+    ciudad: "Santiago",
+    estado_provincia: "Región Metropolitana",
+    pais: "Chile",
+    lat: "-33.4489",
+    long: "-70.6693",
+    tipo: "propio",
+    horario_entrada: "08:00",
+    horario_salida: "18:00",
+    restricciones: "Sin restricciones",
+    contacto: {
+      nombre: "Carlos Pérez",
+      telefono: "+56 2 2345 6789",
+      email: "cperez@empresa.cl",
+    },
+  },
+  {
+    _id: "2",
+    nombre: "Bodega Central Concepción",
+    direccion: "Camino Industrial 567",
+    ciudad: "Concepción",
+    estado_provincia: "Región del Bío Bío",
+    pais: "Chile",
+    lat: "-36.8201",
+    long: "-73.0444",
+    tipo: "tercero",
+    horario_entrada: "07:30",
+    horario_salida: "17:00",
+    restricciones: "Requiere cita previa",
+    contacto: {
+      nombre: "María Ríos",
+      telefono: "+56 41 234 5678",
+      email: "mrios@proveedor.cl",
+    },
+  },
+  {
+    _id: "3",
+    nombre: "Centro Logístico Norte",
+    direccion: "Ruta 5 Norte Km 15",
+    ciudad: "Antofagasta",
+    estado_provincia: "Región de Antofagasta",
+    pais: "Chile",
+    lat: "-23.6524",
+    long: "-70.3954",
+    tipo: "propio",
+    horario_entrada: "06:00",
+    horario_salida: "15:00",
+    restricciones: "Acceso solo a vehículos autorizados",
+    contacto: {
+      nombre: "Javier Silva",
+      telefono: "+56 55 765 4321",
+      email: "jsilva@empresa.cl",
+    },
+  },
+  {
+    _id: "4",
+    nombre: "Centro de Distribución Sur",
+    direccion: "Calle Juan B. Justo 10500",
+    ciudad: "Malvinas Argentinas",
+    estado_provincia: "Buenos Aires",
+    pais: "Argentina",
+    lat: "-34.5133",
+    long: "-58.7076",
+    tipo: "tercero",
+    horario_entrada: "09:00",
+    horario_salida: "18:00",
+    restricciones: "Ingreso con DNI y casco obligatorio",
+    contacto: {
+      nombre: "Lucía Martínez",
+      telefono: "+54 9 11 3344 5566",
+      email: "lmartinez@distribuidora.com",
+    },
+  },
+  {
+    _id: "5",
+    nombre: "Patagonia Logística",
+    direccion: "Av. Los Cipreses 456",
+    ciudad: "Neuquén",
+    estado_provincia: "Neuquén",
+    pais: "Argentina",
+    lat: "-38.9516",
+    long: "-68.0591",
+    tipo: "propio",
+    horario_entrada: "08:00",
+    horario_salida: "16:00",
+    restricciones: "Zanja en el ingreso, circular con precaución",
+    contacto: {
+      nombre: "Federico Gómez",
+      telefono: "+54 9 299 512 3456",
+      email: "fgomez@patagonialog.com",
+    },
   },
 ]

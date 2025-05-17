@@ -118,7 +118,7 @@ export default function DepositPage() {
                                         <TableCell sx={{fontWeight: "bold"}}>{deposit.nombre}</TableCell>
                                         <TableCell>{deposit.direccion}</TableCell>
                                         <TableCell>{deposit.ciudad}</TableCell>
-                                        <TableCell>{deposit.estado_provincia} kg</TableCell>
+                                        <TableCell>{deposit.estado_provincia}</TableCell>
                                         <TableCell>{deposit.pais}</TableCell>
                                         <TableCell>{deposit.contacto.telefono}</TableCell>
                                         <TableCell sx={{ display: "flex", justifyContent: "center", alignItems: "center", maxHeight: 72 }}>

@@ -7,6 +7,7 @@ import DriverPage from "./pages/driver/driverPage";
 import Layout from "./components/Layout";
 import VehicleForm from "./pages/vehicle/VehicleForm";
 import DepositPage from "./pages/deposit/DepositPage";
+import DepositFormPage from "./pages/deposit/DepositForm";
 
 export function AppRouter() {
   return (
@@ -21,6 +22,8 @@ export function AppRouter() {
         <Route path='/driver/create' element={<DriverCreateEdit />} />
         <Route path="/drivers/edit/:id" element={<DriverCreateEdit />} />
         <Route path="/depots" element={<DepositPage />} />
+        <Route path="/depots/form" element={<DepositFormPage />} />
+        <Route path="/depots/edit/:id" element={<DepositFormPage />} />
       </Route>
     </Routes>
   );

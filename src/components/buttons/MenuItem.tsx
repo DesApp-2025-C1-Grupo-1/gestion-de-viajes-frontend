@@ -1,3 +1,4 @@
+import { Popover, Typography, ListItemButton, ListItemIcon, ListItemText, List } from "@mui/material";
 import { Edit, Ellipsis, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -10,36 +11,79 @@ interface MenuItemProps{
 export default function MenuItem({handleOpenDialog, id}: MenuItemProps){
     const navigate = useNavigate();
     const location = useLocation();
-    const [isActionOpen, setIsActionOpen] = useState(false);
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-    const handleActionClick = () => {
-        setIsActionOpen(prev => !prev);
+    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
     };
 
-    const pathPats = location.pathname.split("/");
-    const module = pathPats[1];
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const open = Boolean(anchorEl);
+    const pathParts = location.pathname.split("/");
+    const module = pathParts[1];
+    
 
     return(
-        <div className="relative">
+        <div className="relative h-full flex items-center justify-center">
             <button 
                 className=" flex items-center justify-center p-2 rounded-md hover:bg-gray-200 transition-colors duration-200" 
-                onClick={handleActionClick}
+                onClick={handleClick}
             >
                 <Ellipsis className=" text-gray-500 hover:text-gray-700 size-4"/>
             </button>
-            <div className={`absolute right-0 top-9 z-10 py-2 bg-white shadow-md rounded-md border border-line ${isActionOpen ? "block" : "hidden"}`}>
-                <p className="font-bold py-1 mb-1 text-xs text-center px-4">Acciones</p>
-                <ul className="flex flex-col gap-2">
-                    <li className="flex items-center  py-2 px-4 cursor-pointer hover:bg-gray-100 text-[#2563EB] text-xs" onClick={() => navigate(`/${module}/edit/${id ?? ""}`)}>
-                        <Edit className="size-4 mr-2" />
-                        Editar
-                    </li>
-                    <li className="flex items-center  py-2 px-4 cursor-pointer hover:bg-gray-100 text-[#DC2626] text-xs" onClick={handleOpenDialog}>
-                        <Trash2 className="size-4 mr-2" />
-                        Eliminar
-                    </li>
-                </ul>
-            </div>
+            <Popover
+                open={open}
+                anchorEl={anchorEl}
+                onClose={handleClose}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                slotProps={{
+                    paper: {
+                        elevation: 2,
+                        style: {
+                            borderRadius: 8,
+                            minWidth: 100,
+                            paddingTop: 8,
+                            paddingBottom: 8,
+                            border: '1px solid #E5E7EB'
+                        }
+                    }
+                }}
+            >
+                <Typography variant="subtitle2" align="center" sx={{ px: 2, pb: 1, fontWeight: "bold", fontSize: 12 }}>
+                Acciones
+                </Typography>
+                <List dense disablePadding>
+                    <ListItemButton
+                        onClick={() => {
+                        navigate(`/${module}/edit/${id ?? ""}`);
+                        handleClose();
+                        }}
+                        sx={{ gap: 1, px: 2 }}
+                    >
+                        <ListItemIcon sx={{ minWidth: 20 }}>
+                            <Edit size={16} color="#2563EB" />
+                        </ListItemIcon>
+                        <ListItemText primary="Editar" primaryTypographyProps={{ fontSize: 13, color: "#2563EB" }} />
+                    </ListItemButton>
+
+                    <ListItemButton
+                        onClick={() => {
+                        handleOpenDialog();
+                        handleClose();
+                        }}
+                        sx={{ gap: 1, px: 2 }}
+                    >
+                        <ListItemIcon sx={{ minWidth: 20 }}>
+                            <Trash2 size={16} color="#DC2626" />
+                        </ListItemIcon>
+                        <ListItemText primary="Eliminar" primaryTypographyProps={{ fontSize: 13, color: "#DC2626" }} />
+                    </ListItemButton>
+                </List>
+            </Popover>
         </div>
     )
 }

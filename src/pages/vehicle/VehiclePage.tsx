@@ -141,7 +141,7 @@ export default function VehiclePage() {
                                         <TableCell>{vehicle.volumen_carga} kg</TableCell>
                                         <TableCell>{vehicle.tipo}</TableCell>
                                         <TableCell>{vehicle.empresa}</TableCell>
-                                        <TableCell sx={{ display: "flex", justifyContent: "center", alignItems: "center", maxHeight: 72 }}>
+                                        <TableCell sx={{ verticalAlign: "middle"}}>
                                             <MenuItem  handleOpenDialog={() => handleOpenDialog(vehicle)}
                                             id={vehicle._id}
                                             />

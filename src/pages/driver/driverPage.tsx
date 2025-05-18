@@ -97,7 +97,7 @@ export default function DriverPage() {
                                         <TableCell>{driver.empresa}</TableCell>
                                         <TableCell>{driver.telefono}</TableCell>
                                         <TableCell>{driver.email}</TableCell>
-                                        <TableCell sx={{display:"flex", justifyContent:"center", alignItems:"center", maxHeight:72}}>
+                                        <TableCell sx={{verticalAlign: "middle"}}>
                                             <MenuItem  handleOpenDialog={() => handleOpenDialog(driver)} id={driver._id}/>
                                         </TableCell>
                                     </TableRow>
@@ -134,7 +134,7 @@ export default function DriverPage() {
                     </p>}
                     onConfirm={() => handleDelete(driverSelect?._id)}
                 />
-            )};
+            )}
         </>
     );
 }

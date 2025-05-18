@@ -9,6 +9,7 @@ import { useAutoRowsPerPage } from "../../hooks/useAutoRowsPerPage";
 import { Deposit } from "../../types";
 import { useDeposits } from "../../hooks/deposits/useDeposits";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
+import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 
 
 export default function DepositPage() {
@@ -18,6 +19,8 @@ export default function DepositPage() {
     const {rowsPerPage} = useAutoRowsPerPage();
     const [openDialog, setOpenDialog] = useState(false);
     const [depositSelected, setDepositSelected] = useState<Deposit>();
+    const debouncedQuery = useDebouncedValue(searchQuery, 500);
+
 
     const handleOpenDialog = (deposit : Deposit) => {
         setOpenDialog(true);
@@ -35,8 +38,8 @@ export default function DepositPage() {
 
 
     const filtered = deposits.filter((d) =>
-        d.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        d.direccion.toLowerCase().includes(searchQuery.toLowerCase())
+        d.nombre.toLowerCase().includes(debouncedQuery.toLowerCase()) ||
+        d.direccion.toLowerCase().includes(debouncedQuery.toLowerCase())
     );
 
     const totalPages = Math.ceil(filtered.length / rowsPerPage);
@@ -49,7 +52,7 @@ export default function DepositPage() {
     useEffect(() => {
         // Si el search cambia, reseteamos a página 1
         setPage(1);
-    }, [searchQuery]);
+    }, [debouncedQuery]);
 
     const navigate = useNavigate();
 
@@ -121,7 +124,7 @@ export default function DepositPage() {
                                         <TableCell>{deposit.estado_provincia}</TableCell>
                                         <TableCell>{deposit.pais}</TableCell>
                                         <TableCell>{deposit.contacto.telefono}</TableCell>
-                                        <TableCell sx={{ display: "flex", justifyContent: "center", alignItems: "center", maxHeight: 72 }}>
+                                        <TableCell sx={{ verticalAlign: "middle"}}>
                                             <MenuItem  handleOpenDialog={() => handleOpenDialog(deposit)}
                                             id={deposit._id}
                                             />

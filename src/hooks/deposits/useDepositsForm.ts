@@ -1,38 +1,76 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Deposit } from "../../types";
+
+type DepositContact = {
+  nombre: string;
+  telefono: string;
+  email: string;
+};
 import { SelectChangeEvent } from "@mui/material";
 import { useNotify } from "../useNotify";
 import { createDeposit, fetchDepositById, updateDeposit } from "../../lib/apiDeposit";
 
+// Tipo para las reglas de validación
+type ValidationRule = {
+  required?: boolean;
+  minLength?: number;
+  isNumber?: boolean;
+  min?: number;
+  max?: number;
+  isEmail?: boolean;
+  isPhone?: boolean;
+};
+
+const validationRules: Record<string, ValidationRule> = {
+  nombre: { required: true, minLength: 3 },
+  direccion: { required: true, minLength: 5 },
+  ciudad: { required: true, minLength: 3 },
+  estado_provincia: { required: true, minLength: 3 },
+  pais: { required: true, minLength: 3 },
+  tipo: { required: true },
+  lat: { required: true, isNumber: true, min: -90, max: 90 },
+  long: { required: true, isNumber: true, min: -180, max: 180 },
+  horario_entrada: { required: true },
+  horario_salida: { required: true },
+  restricciones: { required: false },
+  "contacto.nombre": { required: true, minLength: 3 },
+  "contacto.telefono": { required: true, isPhone: true },
+  "contacto.email": { required: true, isEmail: true }
+};
+
+// Estado inicial del formulario
+const initialFormState: Deposit = {
+  _id: "",
+  nombre: "",
+  direccion: "",
+  ciudad: "",
+  estado_provincia: "",
+  pais: "",
+  tipo: "propio",
+  lat: "",
+  long: "",
+  horario_entrada: "",
+  horario_salida: "",
+  restricciones: "",
+  contacto: {
+    nombre: "",
+    telefono: "",
+    email: "",
+  }
+};
 
 export const useDepositForm = (id? : string) => {
     const navigate = useNavigate();
+    const {notify} = useNotify("Vehículo");
     const isEditing = !!(id);
-    const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
-    const [formData, setFormData] = useState<Partial<Deposit>>({
-        _id: "",
-        nombre: "",
-        direccion: "",
-        ciudad: "",
-        estado_provincia: "",
-        pais: "",
-        tipo: "propio",
-        lat: "",
-        long: "",
-        horario_entrada: "",
-        horario_salida: "",
-        contacto: {
-            nombre: "",
-            telefono: "",
-            email: "",
-        }
-    });
 
-    const [loading, setLoading] = useState(false);
+    
+    const [formData, setFormData] = useState<Partial<Deposit>>(initialFormState);
+    const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
+    const [loading, setLoading] = useState<boolean>(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
 
-    const {notify} = useNotify("Vehículo");
 
     useEffect(() => {
         if(isEditing && id){
@@ -45,151 +83,145 @@ export const useDepositForm = (id? : string) => {
         }
     }, [id]);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | { name?: string; value: unknown }>) => {
+
+    const validateField = useCallback((name: string, value: any): string => {
+        const fieldRules = validationRules[name as keyof typeof validationRules];
+        if (!fieldRules) return "";
+
+        // Required check
+        if (fieldRules.required && (!value || (typeof value === "string" && value.trim() === ""))) {
+        return "Este campo es obligatorio";
+        }
+
+        // Min length check
+        if (fieldRules.minLength && typeof value === "string" && value.trim().length < fieldRules.minLength) {
+        return `Debe tener al menos ${fieldRules.minLength} caracteres`;
+        }
+
+        // Number validation
+        if (fieldRules.isNumber) {
+        const numValue = Number(value);
+        if (isNaN(numValue)) return "Debe ser un número válido";
+        if (fieldRules.min !== undefined && numValue < fieldRules.min) {
+            return `El valor mínimo es ${fieldRules.min}`;
+        }
+        if (fieldRules.max !== undefined && numValue > fieldRules.max) {
+            return `El valor máximo es ${fieldRules.max}`;
+        }
+        }
+
+        // Email validation
+        if (fieldRules.isEmail && !/\S+@\S+\.\S+/.test(value)) {
+        return "Email inválido";
+        }
+
+        // Phone validation
+        if (fieldRules.isPhone && !/^[+\d][\d\s-]+$/.test(value)) {
+        return "Teléfono inválido";
+        }
+
+        return "";
+    }, []);
+
+    const validateForm = useCallback((data: Deposit): boolean => {
+        const newErrors: Record<string, string> = {};
+        let isValid = true;
+
+        Object.keys(validationRules).forEach(key => {
+        const value = key.startsWith("contacto.") 
+            ? data.contacto[key.split(".")[1] as keyof DepositContact]
+            : data[key as keyof Deposit];
+        
+        const error = validateField(key, value);
+        if (error) {
+            newErrors[key] = error;
+            isValid = false;
+        }
+        });
+
+        setErrors(newErrors);
+        return isValid;
+    }, [validateField]);
+
+    
+    const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | { name?: string; value: unknown }>) => {
         const { name, value } = e.target;
-
-        // Castear a number si corresponde
-        const parsedValue =
-            e.target instanceof HTMLInputElement && e.target.type === "number"
-                ? Number(value)
-                : value;
-
-
         if (!name) return;
 
-        // Si el campo es un campo de contacto, actualiza el objeto contacto
-        // de lo contrario, actualiza el objeto formData directamente
-        setFormData((prev) => {
+        // Update form data
+        setFormData(prev => {
             if (name.startsWith("contacto.")) {
-                const key = name.split(".")[1];
+                const contactField = name.split(".")[1] as keyof DepositContact;
                 return {
                     ...prev,
                     contacto: {
-                        nombre: prev.contacto?.nombre ?? "",
-                        telefono: prev.contacto?.telefono ?? "",
-                        email: prev.contacto?.email ?? "",
-                        [key]: parsedValue,
-                    },
+                        ...((prev.contacto as DepositContact) ?? { nombre: "", telefono: "", email: "" }),
+                        [contactField]: value as string
+                    }
                 };
             }
-
             return {
                 ...prev,
-                [name]: parsedValue,
+                [name]: value as string
             };
         });
-        // Marcar el campo como tocado
-        setTouched((prev) => ({
-            ...prev,
-            [name!]: true,
-        }));
 
-        if (touched[name!]) {
-            validateField(name!, parsedValue);
-        }
-    };
+        // Mark as touched and validate
+        setTouched(prev => ({ ...prev, [name]: true }));
+        setErrors(prev => ({ ...prev, [name]: validateField(name, value) }));
+        },
+        [validateField]
+    );
 
-    /* const handleSelectChange = (event: SelectChangeEvent<string>) => {
+    const handleSelectChange = useCallback(
+        (event: SelectChangeEvent<string>) => {
         const { name, value } = event.target;
-        if (name) {
-            setFormData((prev) => ({ ...prev, [name]: value as string }));
-            setTouched((prev) => ({ ...prev, [name]: true }));
+        if (!name) return;
 
-            validateField(name, value as string);
-        }
-    }; */
+        setFormData(prev => ({ ...prev, [name]: value }));
+        setTouched(prev => ({ ...prev, [name]: true }));
+        setErrors(prev => ({ ...prev, [name]: validateField(name, value) }));
+        },
+        [validateField]
+    );
 
-    const validateField = (name: string, value: any) => {
-        let error = "";
 
-        const isEmpty = (v: any) => !v || (typeof v === "string" && v.trim() === "");
-
-        switch (name) {
-            case "nombre":
-            case "direccion":
-            case "ciudad":
-            case "estado_provincia":
-            case "pais":
-            case "lat":
-            case "long":
-            case "horario_entrada":
-            case "horario_salida":
-            case "tipo":
-            case "contacto.nombre":
-            case "contacto.telefono":
-            case "contacto.email":
-            if (isEmpty(value)) {
-                error = "Este campo es obligatorio.";
-            } else if (typeof value === "string" && value.trim().length < 3) {
-                error = "Debe tener al menos 3 caracteres.";
-            }
-            break;
-        }
-
-        setErrors((prev) => ({ ...prev, [name]: error }));
-        };
-
-    const validate = (data: Partial<Deposit>): boolean => {
-        const newErrors: { [key: string]: string } = {};
-
-        const requiredString = (value: any, label: string, minLength = 3, text?: string) => {
-        if (!value || typeof value !== "string" || value.trim().length < minLength) {
-            newErrors[label] = text ? `${text}` :`Debe tener al menos ${minLength} caracteres.`;
-        }
-        };
-
-        requiredString(data.nombre, "patente", 6);
-        requiredString(data.direccion, "modelo");
-        requiredString(data.ciudad, "marca");
-        requiredString(data.estado_provincia, "estado_provincia");
-        requiredString(data.pais, "pais");
-        requiredString(data.tipo, "tipo");
-        requiredString(data.lat, "latitud");
-        requiredString(data.long, "longitud");
-        requiredString(data.horario_entrada, "horario_entrada");
-        requiredString(data.horario_salida, "horario_salida");
-        requiredString(data.contacto?.nombre, "contacto.nombre");
-        requiredString(data.contacto?.telefono, "contacto.telefono");
-        requiredString(data.contacto?.email, "contacto.email", 3, "Campo obligatorio.");
-        if (data.contacto?.email && !/\S+@\S+\.\S+/.test(data.contacto.email)) {
-            newErrors["contacto.email"] = "Email inválido.";
-        }
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
-
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = useCallback(async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        const isValid = validate(formData);
-        if (!isValid) {
-            // Marcar todos los campos como tocados
-            const allTouched: Record<string, boolean> = {};
-            Object.keys(formData).forEach((key) => {
-                allTouched[key] = true;
-            });
-            setTouched(allTouched);
-            setTimeout(() => {
-                setLoading(false);
-            },500);
+
+        // Mark all fields as touched
+        const allTouched = Object.keys(validationRules).reduce((acc, key) => {
+        acc[key] = true;
+        return acc;
+        }, {} as Record<string, boolean>);
+        setTouched(allTouched);
+
+        // Validate form
+        const fullFormData = formData as Deposit;
+        if (!validateForm(fullFormData)) {
+            setLoading(false);
             return;
         }
+
         try {
-            if (isEditing) {
-                await updateDeposit(id!, formData as Omit<Deposit, "_id">);
-                notify("update");
-            } else {
-                await createDeposit(formData as Omit<Deposit, "_id">);
-                notify("create");
-            }
-            navigate("/depots");
-        } catch (err) {
-            notify("error");
-        } finally {
-            setLoading(false);
+        if (isEditing) {
+            await updateDeposit(id, fullFormData);
+            notify("update");
+        } else {
+            // Omit _id for createDeposit
+            const { _id, ...depositData } = fullFormData;
+            await createDeposit(depositData);
+            notify("create");
         }
-    };
+        navigate("/depots");
+        } catch (error) {
+        notify("error");
+        } finally {
+        setLoading(false);
+        }
+    }, [formData, isEditing, id, navigate, notify, validateForm]);
 
 
     return {
@@ -198,7 +230,7 @@ export const useDepositForm = (id? : string) => {
         errors,
         touched,
         handleChange,
-        /* handleSelectChange, */
+        handleSelectChange,
         handleSubmit,
         isEditing,
     };

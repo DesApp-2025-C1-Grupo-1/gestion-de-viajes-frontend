@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Driver } from "../../types";
-import { FormDriver } from "../../components/driver/formDriver";  //arreglar
+import { FormDriver } from "../../components/driver/formDriver";
 import { SectionHeader } from "../../components/SectionHeader";
 import { companies, vehicles } from "../../lib/mock-data";
 import { fetchDriverById , createDriver, updateDriver, deleteDriver} from "../../lib/apiDriver";
@@ -39,7 +39,7 @@ export default function DriverCreateEdit ()  {
     return(
         <>
             <SectionHeader
-                title= {isEditing? "Editar chofer" : "Crear chofer"}
+                title= {isEditing? "Editar chofer" : "Registrar chofer"}
                 description= {isEditing? "Modificar los datos del chofer" : "Cargar datos del chofer"}
             />
             <FormDriver  

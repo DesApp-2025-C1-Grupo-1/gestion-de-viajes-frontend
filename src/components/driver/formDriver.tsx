@@ -17,7 +17,7 @@ interface FormDriverProps{
     vehicles?: Vehicle[]
 }
 
-export const FormDriver = ({onSubmit, editingDriver, onCancel, isEditing} : FormDriverProps) => {
+export const FormDriver = ({onSubmit, editingDriver} : FormDriverProps) => {
     const {id} = useParams();
     const navigate = useNavigate();
     const [formData, setFormData] = useState<Partial<Driver>>({

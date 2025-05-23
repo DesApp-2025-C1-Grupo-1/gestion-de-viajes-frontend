@@ -9,24 +9,26 @@ import SearchBar from "../../components/SearchBar";
 import MenuItem from "../../components/buttons/MenuItem";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { Vehicle } from "../../types";
+import { useVehiculoControllerFindAll, vehiculoControllerRemove, VehiculoDto } from "../../api/generated";
 
 
 export default function VehiclePage() {
-    const { vehicles, isLoading ,removeVehicle} = useVehicles();
+    const {data, isLoading, error} = useVehiculoControllerFindAll()
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);
     const {rowsPerPage} = useAutoRowsPerPage();
     const [openDialog, setOpenDialog] = useState(false);
-    const [vehicleSelected, setVehicleSelected] = useState<Vehicle>();
+    const [vehicleSelected, setVehicleSelected] = useState<VehiculoDto>();
+    const vehicles = data?.data || [];
 
-    const handleOpenDialog = (vehicle : Vehicle) => {
+    const handleOpenDialog = (vehicle : VehiculoDto) => {
         setOpenDialog(true);
         setVehicleSelected(vehicle);
     };
 
     const handleDelete = async (id: string) => {
         try {
-            await removeVehicle(id);
+            await vehiculoControllerRemove(id);
             setOpenDialog(false);
         } catch (error) {
             console.error("Error deleting vehicle:", error);
@@ -51,7 +53,6 @@ export default function VehiclePage() {
     }, [searchQuery]);
 
     const navigate = useNavigate();
-
     return (
         <>
             <SectionHeader 
@@ -139,8 +140,8 @@ export default function VehiclePage() {
                                         <TableCell>{vehicle.modelo}</TableCell>
                                         <TableCell>{vehicle.año}</TableCell>
                                         <TableCell>{vehicle.volumen_carga} kg</TableCell>
-                                        <TableCell>{vehicle.tipo}</TableCell>
-                                        <TableCell>{vehicle.empresa}</TableCell>
+                                        <TableCell>{vehicle.tipo?.nombre || '-'}</TableCell>
+                                        <TableCell>{vehicle.empresa.nombre_comercial}</TableCell>
                                         <TableCell sx={{ verticalAlign: "middle"}}>
                                             <MenuItem  handleOpenDialog={() => handleOpenDialog(vehicle)}
                                             id={vehicle._id}

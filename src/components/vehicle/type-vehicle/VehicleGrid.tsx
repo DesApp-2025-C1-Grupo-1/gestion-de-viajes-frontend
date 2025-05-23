@@ -1,10 +1,11 @@
-import { VehicleType } from "../../../types";
+
+import { TipoVehiculoDto } from "../../../api/generated";
 import CardVehicle from "../CardVehicle";
 
 interface VehicleGridProps {
-  vehicleTypes: VehicleType[];
-  onEdit: (vehicleType: VehicleType) => void;
-  onDelete: (vehicleType: VehicleType) => void;
+  vehicleTypes: TipoVehiculoDto[];
+  onEdit: (vehicleType: TipoVehiculoDto) => void;
+  onDelete: (vehicleType: TipoVehiculoDto) => void;
 }
 
 export const VehicleGrid = ({ vehicleTypes, onEdit, onDelete }: VehicleGridProps) => (
@@ -12,8 +13,8 @@ export const VehicleGrid = ({ vehicleTypes, onEdit, onDelete }: VehicleGridProps
     {vehicleTypes.map((vehicleType) => (
       <CardVehicle
         key={vehicleType._id}
-        name={vehicleType.name}
-        description={vehicleType.description || ""}
+        name={vehicleType.nombre}
+        description={vehicleType.descripcion || ""}
         handleEdit={() => onEdit(vehicleType)}
         handleDelete={() => onDelete(vehicleType)}
       />

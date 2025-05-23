@@ -4,6 +4,7 @@ import { Vehicle } from "../types";
 import { createVehicle, fetchVehicleById, updateVehicle } from "../lib/api";
 import { SelectChangeEvent } from "@mui/material";
 import { useNotify } from "./useNotify";
+import { vehiculoControllerCreate, vehiculoControllerUpdate } from "../api/generated";
 
 
 export const useVehicleForm = (id? : string) => {
@@ -164,10 +165,10 @@ export const useVehicleForm = (id? : string) => {
         }
         try {
             if (isEditing) {
-                await updateVehicle(id!, formData as Omit<Vehicle, "_id">);
+                await vehiculoControllerUpdate(id!, formData as Omit<Vehicle, "_id">);
                 notify("update");
             } else {
-                await createVehicle(formData as Omit<Vehicle, "_id">);
+                await vehiculoControllerCreate(formData as Omit<Vehicle, "_id">);
                 notify("create");
             }
             navigate("/vehicles");

@@ -1,5 +1,5 @@
 import { Dayjs } from "dayjs"
-
+// TODO usar los tipos provistos por orval :)
 export type VehicleType = {
   _id: string
   name: string

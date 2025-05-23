@@ -2,24 +2,24 @@ import { Button, InputAdornment, Pagination, Table, TableBody, TableCell, TableC
 import { SectionHeader } from "../../components/SectionHeader";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDriver } from "../../hooks/useDrivers";
 import LoadingState from "../../components/LoadingState";
 import { useAutoRowsPerPage } from "../../hooks/useAutoRowsPerPega";
 import SearchBar from "../../components/SearchBar";
 import MenuItem from "../../components/buttons/MenuItem";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
-import { Driver } from "../../types";
+import { choferControllerRemove, ChoferDto, useChoferControllerFindAll } from "../../api/generated";
 
 export default function DriverPage() {
-    const {driver, isLoading, removeDriver} = useDriver();
+    const {data, isLoading, error} = useChoferControllerFindAll()
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);
     const {rowsPerPage} = useAutoRowsPerPage();
     const [openDialog, setOpenDialog] = useState(false);
-    const [driverSelect, setDriverSelect] = useState<Driver>();
+    const [driverSelect, setDriverSelect] = useState<ChoferDto>();
+    const driver = data?.data || [];
 
     const filtered = driver.filter((dri) =>
-        dri.nombre.toLocaleLowerCase().includes(searchQuery.toLocaleLowerCase()) || dri.empresa.toLocaleLowerCase().includes(searchQuery.toLocaleLowerCase())
+        dri.nombre.toLocaleLowerCase().includes(searchQuery.toLocaleLowerCase()) || dri.empresa.nombre_comercial.toLocaleLowerCase().includes(searchQuery.toLocaleLowerCase())
     );
 
     const totalPages = Math.ceil(filtered.length / rowsPerPage);
@@ -29,14 +29,14 @@ export default function DriverPage() {
         setPage(value)
     };
 
-    const handleOpenDialog = (driver: Driver) => {
+    const handleOpenDialog = (driver: ChoferDto) => {
         setOpenDialog(true);
         setDriverSelect(driver);
     }
 
     const handleDelete = async(id: string) => {
         try{
-            await removeDriver(id);
+            await choferControllerRemove(id);
             setOpenDialog(false);
         }
         catch(err){
@@ -94,7 +94,7 @@ export default function DriverPage() {
                                         <TableCell sx={{fontWeight: "bold"}}>{driver.nombre}</TableCell>
                                         <TableCell>{driver.licencia}</TableCell>
                                         <TableCell>{driver.tipo_licencia}</TableCell>
-                                        <TableCell>{driver.empresa}</TableCell>
+                                        <TableCell>{driver.empresa.razon_social}</TableCell>
                                         <TableCell>{driver.telefono}</TableCell>
                                         <TableCell>{driver.email}</TableCell>
                                         <TableCell sx={{verticalAlign: "middle"}}>

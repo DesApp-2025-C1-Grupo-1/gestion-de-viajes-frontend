@@ -18,15 +18,18 @@ const ContactSection = ({
 }: ContactSectionProps) => {
   return (
     <>
-      <Typography variant="h6" sx={{ color: "text.secondary", mb: 3 }}>
+      <Typography variant="h6" sx={{color: "#5A5A65" , fontWeight: 550 , fontSize: "1.2rem", mb:2}}>
         Información de Contacto
       </Typography>
       
       <Grid container spacing={3} mb={4}>
         <Grid item xs={12} sm={6} md={4}>
+          <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Nombre de contacto</Typography>
           <TextField
             name="contacto.nombre"
-            label="Nombre de contacto"
+            placeholder="Ingresar"
+            fullWidth
+            className="inside-paper"
             value={formData.contacto?.nombre}
             onChange={handleChange}
             error={touched['contacto.nombre'] && !!errors['contacto.nombre']}
@@ -36,9 +39,12 @@ const ContactSection = ({
         </Grid>
 
         <Grid item xs={12} sm={6} md={4}>
+          <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Telefono</Typography>
           <TextField
             name="contacto.telefono"
-            label="Teléfono"
+            placeholder="Ingresar"
+            fullWidth
+            className="inside-paper"
             value={formData.contacto?.telefono}
             onChange={handleChange}
             error={touched['contacto.telefono'] && !!errors['contacto.telefono']}
@@ -48,9 +54,12 @@ const ContactSection = ({
         </Grid>
 
         <Grid item xs={12} sm={6} md={4}>
+          <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Email</Typography>
           <TextField
             name="contacto.email"
-            label="Email"
+            placeholder="Ingresar"
+            fullWidth
+            className="inside-paper"
             type="email"
             value={formData.contacto?.email}
             onChange={handleChange}

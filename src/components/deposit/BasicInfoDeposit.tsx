@@ -21,15 +21,18 @@ const BasicInfoSection = ({
 }: BasicInfoSectionProps) => {
   return (
     <>
-      <Typography variant="h6" sx={{ color: "text.secondary", mb: 3 }}>
+      <Typography variant="h6" sx={{color: "#5A5A65" , fontWeight: 550 , fontSize: "1.2rem", mb:2}}>
         Información Básica
       </Typography>
       
       <Grid container spacing={3} mb={4}>
         <Grid item xs={12} sm={6} md={4}>
+          <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Nombre de depósito</Typography>
           <TextField
             name="nombre"
-            label="Nombre"
+            placeholder="Ingresar"
+            fullWidth
+            className="inside-paper"
             value={formData.nombre}
             onChange={handleChange}
             error={touched.nombre && !!errors.nombre}
@@ -39,9 +42,12 @@ const BasicInfoSection = ({
         </Grid>
 
         <Grid item xs={12} sm={6} md={4}>
+          <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Dirección</Typography>
           <TextField
             name="direccion"
-            label="Dirección"
+            placeholder="Ingresar"
+            fullWidth
+            className="inside-paper"
             value={formData.direccion}
             onChange={handleChange}
             error={touched.direccion && !!errors.direccion}
@@ -51,9 +57,12 @@ const BasicInfoSection = ({
         </Grid>
 
         <Grid item xs={12} sm={6} md={4}>
+          <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Ciudad</Typography>
           <TextField
             name="ciudad"
-            label="Ciudad"
+            placeholder="Ingresar"
+            fullWidth
+            className="inside-paper"
             value={formData.ciudad}
             onChange={handleChange}
             error={touched.ciudad && !!errors.ciudad}
@@ -63,9 +72,12 @@ const BasicInfoSection = ({
         </Grid>
 
         <Grid item xs={12} sm={6} md={4}>
+          <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Estado/Provincia</Typography>
           <TextField
             name="estado_provincia"
-            label="Estado/Provincia"
+            placeholder="Ingresar"
+            fullWidth
+            className="inside-paper"
             value={formData.estado_provincia}
             onChange={handleChange}
             error={touched.estado_provincia && !!errors.estado_provincia}
@@ -75,9 +87,12 @@ const BasicInfoSection = ({
         </Grid>
 
         <Grid item xs={12} sm={6} md={4}>
+          <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>País</Typography>
           <TextField
             name="pais"
-            label="País"
+            placeholder="Ingresar"
+            fullWidth
+            className="inside-paper"
             value={formData.pais}
             onChange={handleChange}
             error={touched.pais && !!errors.pais}
@@ -88,12 +103,13 @@ const BasicInfoSection = ({
 
         <Grid item xs={12} sm={6} md={4}>
           <FormControl fullWidth>
-            <InputLabel>Tipo</InputLabel>
+            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Tipo</Typography>
             <Select
               name="tipo"
+              fullWidth
+              className="inside-paper"
               value={formData.tipo}
               onChange={handleSelectChange}
-              label="Tipo"
               error={touched.tipo && !!errors.tipo}
               disabled={loading}
             >

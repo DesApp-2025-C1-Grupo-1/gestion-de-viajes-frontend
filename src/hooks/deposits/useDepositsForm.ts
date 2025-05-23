@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Deposit } from "../../types";
+import { SelectChangeEvent } from "@mui/material";
+import { useNotify } from "../useNotify";
+import { createDeposit, fetchDepositById, updateDeposit } from "../../lib/apiDeposit";
 
 type DepositContact = {
   nombre: string;
   telefono: string;
   email: string;
 };
-import { SelectChangeEvent } from "@mui/material";
-import { useNotify } from "../useNotify";
-import { createDeposit, fetchDepositById, updateDeposit } from "../../lib/apiDeposit";
 
 // Tipo para las reglas de validación
 type ValidationRule = {

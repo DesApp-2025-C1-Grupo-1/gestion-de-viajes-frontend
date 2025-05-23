@@ -18,15 +18,18 @@ const LocationSection = ({
 }: LocationSectionProps) => {
   return (
     <>
-      <Typography variant="h6" sx={{ color: "text.secondary", mb: 3 }}>
-        Ubicación
+      <Typography variant="h6" sx={{color: "#5A5A65" , fontWeight: 550 , fontSize: "1.2rem", mb:2}}>
+        Coordernadas
       </Typography>
       
       <Grid container spacing={3} mb={4}>
         <Grid item xs={12} sm={6} md={4}>
+          <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Latitud</Typography>
           <TextField
             name="lat"
-            label="Latitud"
+            placeholder="Ingresar"
+            fullWidth
+            className="inside-paper"
             value={formData.lat}
             onChange={handleChange}
             error={touched.lat && !!errors.lat}
@@ -36,9 +39,12 @@ const LocationSection = ({
         </Grid>
 
         <Grid item xs={12} sm={6} md={4}>
+          <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Longitud</Typography>
           <TextField
             name="long"
-            label="Longitud"
+            placeholder="Ingresar"
+            fullWidth
+            className="inside-paper"
             value={formData.long}
             onChange={handleChange}
             error={touched.long && !!errors.long}

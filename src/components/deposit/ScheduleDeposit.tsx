@@ -18,15 +18,17 @@ const ScheduleSection = ({
 }: ScheduleSectionProps) => {
   return (
     <>
-      <Typography variant="h6" sx={{ color: "text.secondary", mb: 3 }}>
+      <Typography variant="h6" sx={{color: "#5A5A65" , fontWeight: 550 , fontSize: "1.2rem", mb:2}}>
         Horario
       </Typography>
       
       <Grid container spacing={3} mb={4}>
         <Grid item xs={12} sm={6} md={4}>
+          <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Horario de entrada</Typography>
           <TextField
             name="horario_entrada"
-            label="Horario Entrada"
+            fullWidth
+            className="inside-paper"
             type="time"
             value={formData.horario_entrada}
             onChange={handleChange}
@@ -38,9 +40,11 @@ const ScheduleSection = ({
         </Grid>
 
         <Grid item xs={12} sm={6} md={4}>
+          <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Horario de salida</Typography>
           <TextField
             name="horario_salida"
-            label="Horario Salida"
+            fullWidth
+            className="inside-paper"
             type="time"
             value={formData.horario_salida}
             onChange={handleChange}
@@ -52,17 +56,17 @@ const ScheduleSection = ({
         </Grid>
 
         <Grid item xs={12} md={4}>
+          <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Restricciones</Typography>
           <TextField
             name="restricciones"
-            label="Restricciones"
+            fullWidth
+            className="inside-paper"
+            placeholder="Ingresar"
             value={formData.restricciones || ''}
             onChange={handleChange}
             error={touched.restricciones && !!errors.restricciones}
             helperText={touched.restricciones && errors.restricciones}
             disabled={loading}
-            multiline
-            rows={3}
-            fullWidth
           />
         </Grid>
       </Grid>

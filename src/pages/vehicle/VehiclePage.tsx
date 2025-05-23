@@ -53,7 +53,6 @@ export default function VehiclePage() {
     }, [searchQuery]);
 
     const navigate = useNavigate();
-    console.log("vehiculos", paginated);
     return (
         <>
             <SectionHeader 

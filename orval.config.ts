@@ -8,7 +8,7 @@ export default defineConfig({
         output: {
             mode: 'single',
             target: './src/api/generated.ts',
-            client: 'axios',
+            client: 'react-query'
         },
     },
 });

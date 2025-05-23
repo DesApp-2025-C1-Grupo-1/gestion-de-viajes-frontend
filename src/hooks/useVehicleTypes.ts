@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { VehicleType } from "../types";
 import { createVehicleType, deleteVehicleType, fetchVehicleTypes, updateVehicleType } from "../lib/api";
 import { useNotify } from "./useNotify";
-
+// TODO eliminar este hook
 export const useVehicleTypes = () => {
   const [vehicleTypes, setVehicleTypes] = useState<VehicleType[]>([]);
   const [isLoading, setIsLoading] = useState(false);

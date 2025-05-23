@@ -39,6 +39,8 @@ export interface CreateTipoVehiculoDto {
 }
 
 export interface TipoVehiculoDto {
+  /** ID del tipo de vehículo */
+  _id: string;
   /** Nombre del tipo de vehículo */
   nombre: string;
   /** Descripción del tipo de vehículo */

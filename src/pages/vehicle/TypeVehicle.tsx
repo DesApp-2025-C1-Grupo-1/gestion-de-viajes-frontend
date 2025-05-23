@@ -1,28 +1,21 @@
 import { useCallback, useState } from "react";
-import { VehicleType } from "../../types";
-import { useVehicleTypes } from "../../hooks/useVehicleTypes";
 import { VehicleTypeDialog } from "../../components/vehicle/type-vehicle/VehicleTypeDialog";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { VehicleGrid } from "../../components/vehicle/type-vehicle/VehicleGrid";
 import { EmptyState } from "../../components/EmptyState";
 import  LoadingState  from "../../components/LoadingState";
 import { SectionHeader } from "../../components/SectionHeader";
+import { tipoVehiculoControllerCreate, tipoVehiculoControllerRemove, tipoVehiculoControllerUpdate, TipoVehiculoDto, useTipoVehiculoControllerFindAll, useTipoVehiculoControllerRemove } from "../../api/generated";
 
 export default function TypeVehicle() {
-
-    const {
-        vehicleTypes,
-        isLoading,
-        addVehicleType,
-        editVehicleType,
-        removeVehicleType
-    } = useVehicleTypes();
-
+    const {data, isLoading, error} = useTipoVehiculoControllerFindAll()
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [editingType, setEditingType] = useState<VehicleType | null>(null);
-    const [typeToDelete, setTypeToDelete] = useState<VehicleType | null>(null);
+    const [editingType, setEditingType] = useState<TipoVehiculoDto | null>(null);
+    const [typeToDelete, setTypeToDelete] = useState<TipoVehiculoDto | null>(null);
 
-    const handleOpenDialog = useCallback((vehicleType?: VehicleType) => {
+    const vehicleTypes = data?.data || [];
+
+    const handleOpenDialog = useCallback((vehicleType?: TipoVehiculoDto) => {
         if (vehicleType) {
         setEditingType(vehicleType);
         } else {
@@ -36,32 +29,38 @@ export default function TypeVehicle() {
         setEditingType(null);
     }, []);
 
-    const handleSubmit = useCallback(async (formData: Partial<VehicleType>) => {
+    const handleSubmit = useCallback(async (formData: Partial<TipoVehiculoDto>) => {
         try {
         if (editingType) {
-            await editVehicleType(editingType._id, formData);
+            await tipoVehiculoControllerUpdate(editingType._id, formData);
         } else {
-            await addVehicleType(formData);
+            if (formData.descripcion && formData.nombre) {
+                await tipoVehiculoControllerCreate({
+                    nombre: formData.nombre,
+                    descripcion: formData.descripcion
+                });
+            }
+
         }
         handleCloseDialog();
         } catch (error) {
         console.error("Error saving vehicle type:", error);
         }
-    }, [editingType, editVehicleType, addVehicleType, handleCloseDialog]);
+    }, [editingType, handleCloseDialog]);
 
-    const handleDeleteClick = useCallback((vehicleType: VehicleType) => {
+    const handleDeleteClick = useCallback((vehicleType: TipoVehiculoDto) => {
         setTypeToDelete(vehicleType);
     }, []);
 
     const confirmDelete = useCallback(async () => {
     if (!typeToDelete) return;
     try {
-      await removeVehicleType(typeToDelete._id);
+      await tipoVehiculoControllerRemove(typeToDelete._id);
       setTypeToDelete(null);
     } catch (error) {
       console.error("Error deleting vehicle type:", error);
     }
-    }, [typeToDelete, removeVehicleType]);
+    }, [typeToDelete]);
 
     const closeConfirmDialog = useCallback(() => {
         setTypeToDelete(null);
@@ -104,7 +103,7 @@ export default function TypeVehicle() {
                 content={
                 <p>
                     ¿Estás seguro que deseas eliminar el tipo de vehículo{" "}
-                    <strong>{typeToDelete?.name}</strong>?
+                    <strong>{typeToDelete?.nombre}</strong>?
                 </p>
                 }
             />

@@ -46,20 +46,36 @@ export type Driver = {
 export type Deposit = {
   _id: string
   nombre: string
-  direccion: string
-  ciudad: string
-  estado_provincia: string
-  pais: string
+  direccion: Direccion
   lat: string
   long: string
   tipo: "propio" | "tercero"
   horario_entrada: string
   horario_salida: string
   restricciones: string
-  contacto: {
-    nombre: string
-    telefono: string
-    email: string
-  }
+  contacto: Contacto
 }
 
+export type Contacto = {
+  _id?: string
+  nombre: string
+  telefono: Telefono
+  email: string
+}
+
+export type Telefono = {
+  _id?: string
+  codigo_pais: string
+  codigo_area: string
+  numero: string
+}
+
+export type Direccion = {
+  _id?: string
+  calle: string
+  numero: string
+  ciudad: string
+  estado_provincia: string
+  pais: string
+  tipo?: string
+}

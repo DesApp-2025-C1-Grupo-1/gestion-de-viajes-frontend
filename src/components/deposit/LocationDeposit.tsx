@@ -23,11 +23,11 @@ const LocationSection = ({
       </Typography>
       
       <Grid container spacing={3} mb={4}>
-        <Grid item xs={12} sm={6} md={4}>
+        <Grid item xs={12} md={6}>
           <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Latitud</Typography>
           <TextField
             name="lat"
-            placeholder="Ingresar"
+            placeholder="Ej: -34.6037"
             fullWidth
             className="inside-paper"
             value={formData.lat}
@@ -38,11 +38,11 @@ const LocationSection = ({
           />
         </Grid>
 
-        <Grid item xs={12} sm={6} md={4}>
+        <Grid item xs={12} md={6}>
           <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Longitud</Typography>
           <TextField
             name="long"
-            placeholder="Ingresar"
+            placeholder="Ej: -58.3816"
             fullWidth
             className="inside-paper"
             value={formData.long}

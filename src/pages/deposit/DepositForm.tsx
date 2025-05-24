@@ -4,9 +4,10 @@ import { Box, Button, Paper, TextField, Typography, Backdrop, CircularProgress, 
 import { useDepositForm } from "../../hooks/deposits/useDepositsForm";
 import BasicInfoSection from "../../components/deposit/BasicInfoDeposit";
 import LocationSection from "../../components/deposit/LocationDeposit";
-import ScheduleSection from "../../components/deposit/ScheduleDeposit";
 import ContactSection from "../../components/deposit/ContactDeposit";
 import FormActions from "../../components/deposit/FormActions";
+import AdressSection from "../../components/deposit/AddressDeposit";
+import TimeSection from "../../components/deposit/TimeSection";
 
 export default function DepositFormPage() {
     const {id} = useParams();
@@ -30,7 +31,7 @@ export default function DepositFormPage() {
                 description={isEditing ? "Modifica los datos del depósito" : "Aquí puedes registrar un nuevo depósito."}
             />
 
-            <Paper  sx={{maxHeight:"85%", padding:3, overflow:"auto", mx:'auto', width:"100%", borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "0.5px solid #C7C7C7", pb: 5} }>
+            <Paper  sx={{maxHeight:"90%", padding:3, overflow:"auto", mx:'auto', width:"100%", borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "0.5px solid #C7C7C7", pb: 5} }>
                 <form onSubmit={handleSubmit}>
                     <BasicInfoSection 
                         formData={formData}
@@ -41,6 +42,15 @@ export default function DepositFormPage() {
                         handleSelectChange={handleSelectChange}
                     />
 
+                    <AdressSection 
+                        formData={formData}
+                        errors={errors}
+                        touched={touched}
+                        loading={loading}
+                        handleChange={handleChange}
+                        handleSelectChange={handleSelectChange}
+                    />
+                    
                     <LocationSection 
                         formData={formData}
                         errors={errors}
@@ -48,15 +58,6 @@ export default function DepositFormPage() {
                         loading={loading}
                         handleChange={handleChange}
                     />
-
-                    <ScheduleSection 
-                        formData={formData}
-                        errors={errors}
-                        touched={touched}
-                        loading={loading}
-                        handleChange={handleChange}
-                    />
-
                     <ContactSection 
                         formData={formData}
                         errors={errors}
@@ -64,14 +65,22 @@ export default function DepositFormPage() {
                         loading={loading}
                         handleChange={handleChange}
                     />
+                    <TimeSection
+                        formData={formData}
+                        errors={errors}
+                        touched={touched}
+                        loading={loading}
+                        handleChange={handleChange}
+                    />
+                    
 
                     <FormActions 
                         loading={loading}
                         isEditing={isEditing}
                         onCancel={() => navigate("/depots")}
                     />
-                    </form>
-                 <Backdrop open={loading} sx={{ zIndex: 9999, color: "#fff" }}>
+                </form>
+                <Backdrop open={loading} sx={{ zIndex: 9999, color: "#fff" }}>
                     <CircularProgress color="inherit" />
                 </Backdrop>
             </Paper>

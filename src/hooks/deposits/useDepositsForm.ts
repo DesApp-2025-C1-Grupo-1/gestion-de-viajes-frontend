@@ -1,15 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Deposit } from "../../types";
+import { Deposit, Telefono } from "../../types";
 import { SelectChangeEvent } from "@mui/material";
 import { useNotify } from "../useNotify";
 import { createDeposit, fetchDepositById, updateDeposit } from "../../lib/apiDeposit";
-
-type DepositContact = {
-  nombre: string;
-  telefono: string;
-  email: string;
-};
 
 // Tipo para las reglas de validación
 type ValidationRule = {
@@ -23,40 +17,49 @@ type ValidationRule = {
 };
 
 const validationRules: Record<string, ValidationRule> = {
-  nombre: { required: true, minLength: 3 },
-  direccion: { required: true, minLength: 5 },
-  ciudad: { required: true, minLength: 3 },
-  estado_provincia: { required: true, minLength: 3 },
-  pais: { required: true, minLength: 3 },
-  tipo: { required: true },
-  lat: { required: true, isNumber: true, min: -90, max: 90 },
-  long: { required: true, isNumber: true, min: -180, max: 180 },
-  horario_entrada: { required: true },
-  horario_salida: { required: true },
-  restricciones: { required: false },
-  "contacto.nombre": { required: true, minLength: 3 },
-  "contacto.telefono": { required: true, isPhone: true },
-  "contacto.email": { required: true, isEmail: true }
+    nombre: { required: true, minLength: 3 },
+    tipo: { required: true },
+    lat: { required: true, isNumber: true, min: -90, max: 90 },
+    long: { required: true, isNumber: true, min: -180, max: 180 },
+    horario_entrada: { required: true },
+    horario_salida: { required: true },
+    restricciones: { required: false },
+    "contacto.nombre": { required: true, minLength: 3 },
+    "contacto.email": { required: true, isEmail: true },
+    "contacto.telefono.codigo_pais": { required: true},
+    "contacto.telefono.codigo_area": { required: false},
+    "contacto.telefono.numero": { required: true},
+    "direccion.calle": { required: true },
+    "direccion.numero": { required: true },
+    "direccion.ciudad": { required: true },
+    "direccion.estado_provincia": { required: true },
+    "direccion.pais": { required: true },
 };
-
 // Estado inicial del formulario
 const initialFormState: Deposit = {
   _id: "",
   nombre: "",
-  direccion: "",
-  ciudad: "",
-  estado_provincia: "",
-  pais: "",
-  tipo: "propio",
+  direccion: {
+    calle: "",
+    numero: "",
+    ciudad: "",
+    estado_provincia: "",
+    pais: "",
+  },
   lat: "",
   long: "",
+  tipo: "propio",
   horario_entrada: "",
   horario_salida: "",
   restricciones: "",
   contacto: {
     nombre: "",
-    telefono: "",
-    email: "",
+    telefono: {
+      codigo_pais: "",
+      codigo_area: "",
+      numero: ""
+    },
+    email: ""
   }
 };
 
@@ -83,6 +86,26 @@ export const useDepositForm = (id? : string) => {
         }
     }, [id]);
 
+    const validatePhone = (data: Deposit): Record<string, string> => {
+        const errors: Record<string, string> = {};
+        const { codigo_pais, codigo_area, numero } = data.contacto.telefono;
+
+        if (!codigo_pais || !codigo_pais.trim().startsWith("+")) {
+            errors["contacto.telefono.codigo_pais"] = "Código país requerido y debe incluir el símbolo '+'";
+        }
+
+        if (!codigo_area && codigo_pais === "+54") {
+            errors["contacto.telefono.codigo_area"] = "Código de área requerido";
+        }
+
+        if (!numero) {
+            errors["contacto.telefono.numero"] = "Número requerido";
+        } else if (numero.length < 6) {
+            errors["contacto.telefono.numero"] = "El número debe tener al menos 6 dígitos";
+        }
+
+        return errors;
+    };
 
     const validateField = useCallback((name: string, value: any): string => {
         const fieldRules = validationRules[name as keyof typeof validationRules];
@@ -115,11 +138,6 @@ export const useDepositForm = (id? : string) => {
         return "Email inválido";
         }
 
-        // Phone validation
-        if (fieldRules.isPhone && !/^[+\d][\d\s-]+$/.test(value)) {
-        return "Teléfono inválido";
-        }
-
         return "";
     }, []);
 
@@ -128,16 +146,25 @@ export const useDepositForm = (id? : string) => {
         let isValid = true;
 
         Object.keys(validationRules).forEach(key => {
-        const value = key.startsWith("contacto.") 
-            ? data.contacto[key.split(".")[1] as keyof DepositContact]
-            : data[key as keyof Deposit];
-        
-        const error = validateField(key, value);
-        if (error) {
+            const parts = key.split(".");
+            let value: any = data;
+            for (const part of parts) {
+            value = value?.[part];
+            }
+
+            const error = validateField(key, value);
+            if (error) {
             newErrors[key] = error;
             isValid = false;
-        }
+            }
         });
+
+        // Validación adicional para el teléfono
+        const phoneErrors = validatePhone(data);
+        Object.assign(newErrors, phoneErrors);
+        if (Object.keys(phoneErrors).length > 0) {
+            isValid = false;
+        }
 
         setErrors(newErrors);
         return isValid;
@@ -145,29 +172,26 @@ export const useDepositForm = (id? : string) => {
 
     
     const handleChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | { name?: string; value: unknown }>) => {
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         if (!name) return;
 
-        // Update form data
+        const parts = name.split(".");
         setFormData(prev => {
-            if (name.startsWith("contacto.")) {
-                const contactField = name.split(".")[1] as keyof DepositContact;
-                return {
-                    ...prev,
-                    contacto: {
-                        ...((prev.contacto as DepositContact) ?? { nombre: "", telefono: "", email: "" }),
-                        [contactField]: value as string
-                    }
-                };
-            }
-            return {
-                ...prev,
-                [name]: value as string
-            };
+        const updated = { ...prev } as any;
+        let current = updated;
+
+        for (let i = 0; i < parts.length - 1; i++) {
+            const key = parts[i];
+            if (!current[key]) current[key] = {};
+            current = current[key];
+        }
+
+        current[parts[parts.length - 1]] = value;
+
+        return updated;
         });
 
-        // Mark as touched and validate
         setTouched(prev => ({ ...prev, [name]: true }));
         setErrors(prev => ({ ...prev, [name]: validateField(name, value) }));
         },

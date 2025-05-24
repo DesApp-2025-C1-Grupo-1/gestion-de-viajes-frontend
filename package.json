@@ -11,6 +11,7 @@
     "orval": "orval"
   },
   "dependencies": {
+    "@date-io/date-fns": "^3.2.1",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.0",
     "@mui/material": "^5.15.11",
@@ -19,6 +20,7 @@
     "@tailwindcss/vite": "^4.1.4",
     "@tanstack/react-query": "^5.76.2",
     "axios": "^1.6.7",
+    "date-fns": "^2.30.0",
     "dayjs": "^1.11.13",
     "lodash": "^4.17.21",
     "lucide-react": "^0.503.0",

@@ -1,7 +1,5 @@
-import { Grid, Typography, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent, TextField } from "@mui/material";
-
+import { Grid, Typography, FormControl, Select, MenuItem, SelectChangeEvent, TextField } from "@mui/material";
 import { Deposit } from "../../types";
-
 interface BasicInfoSectionProps {
   formData: Partial<Deposit>;
   errors: Record<string, string>;
@@ -19,6 +17,7 @@ const BasicInfoSection = ({
   handleChange,
   handleSelectChange
 }: BasicInfoSectionProps) => {
+
   return (
     <>
       <Typography variant="h6" sx={{color: "#5A5A65" , fontWeight: 550 , fontSize: "1.2rem", mb:2}}>
@@ -26,11 +25,11 @@ const BasicInfoSection = ({
       </Typography>
       
       <Grid container spacing={3} mb={4}>
-        <Grid item xs={12} sm={6} md={4}>
+        <Grid item xs={12} md={6}>
           <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Nombre de depósito</Typography>
           <TextField
             name="nombre"
-            placeholder="Ingresar"
+            placeholder="Ej: Centro de distribución Norte"
             fullWidth
             className="inside-paper"
             value={formData.nombre}
@@ -41,69 +40,11 @@ const BasicInfoSection = ({
           />
         </Grid>
 
-        <Grid item xs={12} sm={6} md={4}>
-          <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Dirección</Typography>
-          <TextField
-            name="direccion"
-            placeholder="Ingresar"
-            fullWidth
-            className="inside-paper"
-            value={formData.direccion}
-            onChange={handleChange}
-            error={touched.direccion && !!errors.direccion}
-            helperText={touched.direccion && errors.direccion}
-            disabled={loading}
-          />
-        </Grid>
+        
 
-        <Grid item xs={12} sm={6} md={4}>
-          <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Ciudad</Typography>
-          <TextField
-            name="ciudad"
-            placeholder="Ingresar"
-            fullWidth
-            className="inside-paper"
-            value={formData.ciudad}
-            onChange={handleChange}
-            error={touched.ciudad && !!errors.ciudad}
-            helperText={touched.ciudad && errors.ciudad}
-            disabled={loading}
-          />
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={4}>
-          <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Estado/Provincia</Typography>
-          <TextField
-            name="estado_provincia"
-            placeholder="Ingresar"
-            fullWidth
-            className="inside-paper"
-            value={formData.estado_provincia}
-            onChange={handleChange}
-            error={touched.estado_provincia && !!errors.estado_provincia}
-            helperText={touched.estado_provincia && errors.estado_provincia}
-            disabled={loading}
-          />
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={4}>
-          <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>País</Typography>
-          <TextField
-            name="pais"
-            placeholder="Ingresar"
-            fullWidth
-            className="inside-paper"
-            value={formData.pais}
-            onChange={handleChange}
-            error={touched.pais && !!errors.pais}
-            helperText={touched.pais && errors.pais}
-            disabled={loading}
-          />
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={4}>
+        <Grid item xs={12} md={6}>
           <FormControl fullWidth>
-            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Tipo</Typography>
+            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Tipo de depósito</Typography>
             <Select
               name="tipo"
               fullWidth
@@ -122,6 +63,21 @@ const BasicInfoSection = ({
               </Typography>
             )}
           </FormControl>
+        </Grid>
+
+        <Grid item xs={12}>
+          <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Restricciones de acceso</Typography>
+          <TextField
+            name="restricciones"
+            placeholder="Ej: Vehiculos de más de 3.5 toneladas no pueden ingresar"
+            fullWidth
+            value={formData.restricciones || ''}
+            onChange={handleChange}
+            disabled={loading}
+            multiline
+            minRows={3}
+          />
+          
         </Grid>
       </Grid>
     </>

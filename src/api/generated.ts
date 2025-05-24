@@ -121,7 +121,7 @@ export interface ContactoDto {
 
 export interface EmpresaDto {
   /** ID de la empresa */
-  id: number;
+  _id: string;
   /** Razón social de la empresa */
   razon_social: string;
   /** Nombre comercial de la empresa */

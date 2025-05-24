@@ -8,9 +8,10 @@ export function useAutoRowsPerPage() {
     useEffect(() => {
         const handleResize = () => {
             const paginationHeight = 64;
-            const sectionHeaderHeight = 88 + 40;
-            const sectionHeaderHeightMobile = 138.5 + 84.5;
-            const sectionHeaderHeightTablet = 88 + 40;
+            const headerTableHeight = 54;
+            const sectionHeaderHeight = 88 + headerTableHeight;
+            const sectionHeaderHeightMobile = 138.5 + headerTableHeight;
+            const sectionHeaderHeightTablet = 88 + headerTableHeight;
             const isMobile = window.innerWidth < 640; // sm breakpoint de tailwind
             const isTablet = window.innerWidth < 1024; // md breakpoint de tailwind
             const isDesktop = window.innerWidth >= 1024; // lg breakpoint de tailwind

@@ -2,14 +2,13 @@ import { Button, Pagination, Table, TableBody, TableCell, TableContainer, TableH
 import { SectionHeader } from "../../components/SectionHeader";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useVehicles } from "../../hooks/useVechicle";
 import  LoadingState  from "../../components/LoadingState";
 import { useAutoRowsPerPage } from "../../hooks/useAutoRowsPerPage";
 import SearchBar from "../../components/SearchBar";
 import MenuItem from "../../components/buttons/MenuItem";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
-import { Vehicle } from "../../types";
 import { useVehiculoControllerFindAll, vehiculoControllerRemove, VehiculoDto } from "../../api/generated";
+import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 
 
 export default function VehiclePage() {
@@ -20,6 +19,7 @@ export default function VehiclePage() {
     const [openDialog, setOpenDialog] = useState(false);
     const [vehicleSelected, setVehicleSelected] = useState<VehiculoDto>();
     const vehicles = data?.data || [];
+    const debouncedQuery = useDebouncedValue(searchQuery, 500);
 
     const handleOpenDialog = (vehicle : VehiculoDto) => {
         setOpenDialog(true);
@@ -36,8 +36,8 @@ export default function VehiclePage() {
     };
 
     const filtered = vehicles.filter((v) =>
-        v.patente.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        v.modelo.toLowerCase().includes(searchQuery.toLowerCase())
+        v.patente.toLowerCase().includes(debouncedQuery.toLowerCase()) ||
+        v.modelo.toLowerCase().includes(debouncedQuery.toLowerCase())
     );
 
     const totalPages = Math.ceil(filtered.length / rowsPerPage);

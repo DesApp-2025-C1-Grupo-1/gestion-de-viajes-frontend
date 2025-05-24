@@ -1,9 +1,9 @@
-import { Button, InputAdornment, Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
+import {Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
 import { SectionHeader } from "../../components/SectionHeader";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoadingState from "../../components/LoadingState";
-import { useAutoRowsPerPage } from "../../hooks/useAutoRowsPerPega";
+import { useAutoRowsPerPage } from "../../hooks/useAutoRowsPerPage";
 import SearchBar from "../../components/SearchBar";
 import MenuItem from "../../components/buttons/MenuItem";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
@@ -70,7 +70,7 @@ export default function DriverPage() {
                             <TableRow>
                                 <TableCell>Nombre</TableCell>
                                 <TableCell>Licencia</TableCell>
-                                <TableCell>Tipo de licencia</TableCell>
+                                <TableCell  sx={{minWidth: 150}}>Tipo de licencia</TableCell>
                                 <TableCell>Transportista</TableCell>
                                 <TableCell>Teléfono</TableCell>
                                 <TableCell>Email</TableCell>

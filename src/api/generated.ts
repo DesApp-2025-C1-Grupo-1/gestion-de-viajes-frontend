@@ -78,52 +78,6 @@ export interface CreateVehiculoDto {
   empresa: string;
 }
 
-export interface CreateEmpresaDto {
-  /** Razón social de la empresa */
-  razon_social: string;
-  /** Nombre comercial de la empresa */
-  nombre_comercial: string;
-  /** CUIT de la empresa (único) */
-  cuit: string;
-  /** ID de la direccion */
-  direccion: string;
-  /** ID del contacto */
-  contacto: string;
-}
-
-export interface VehiculoDto {
-  /** ID del vehículo */
-  _id: string;
-  /** Patente del vehículo (formato válido: ABC123 o AB123CD) */
-  patente: string;
-  /** Marca del vehículo */
-  marca: string;
-  /** Modelo del vehículo */
-  modelo: string;
-  /**
-   * Año de fabricación (entre 1900 y el año actual)
-   * @minimum 1900
-   * @maximum 2025
-   */
-  año: number;
-  /**
-   * Volumen máximo de carga en m³
-   * @minimum 0.01
-   */
-  volumen_carga: number;
-  /**
-   * Peso máximo de carga en kilogramos
-   * @minimum 0.01
-   */
-  peso_carga: number;
-  /** ID del tipo de vehículo (referencia a tipoVehiculo) */
-  tipo: TipoVehiculoDto;
-  /** ID de la empresa a la que pertenece el vehículo */
-  empresa: CreateEmpresaDto;
-}
-
-export interface UpdateVehiculoDto { [key: string]: unknown }
-
 export interface DireccionDto {
   /** ID de la dirección */
   _id: string;
@@ -182,6 +136,52 @@ export interface EmpresaDto {
   mail: string;
   /** ID del contacto */
   nombre_contacto: ContactoDto;
+}
+
+export interface VehiculoDto {
+  /** ID del vehículo */
+  _id: string;
+  /** Patente del vehículo (formato válido: ABC123 o AB123CD) */
+  patente: string;
+  /** Marca del vehículo */
+  marca: string;
+  /** Modelo del vehículo */
+  modelo: string;
+  /**
+   * Año de fabricación (entre 1900 y el año actual)
+   * @minimum 1900
+   * @maximum 2025
+   */
+  año: number;
+  /**
+   * Volumen máximo de carga en m³
+   * @minimum 0.01
+   */
+  volumen_carga: number;
+  /**
+   * Peso máximo de carga en kilogramos
+   * @minimum 0.01
+   */
+  peso_carga: number;
+  /** ID del tipo de vehículo (referencia a tipoVehiculo) */
+  tipo: TipoVehiculoDto;
+  /** ID de la empresa a la que pertenece el vehículo */
+  empresa: EmpresaDto;
+}
+
+export interface UpdateVehiculoDto { [key: string]: unknown }
+
+export interface CreateEmpresaDto {
+  /** Razón social de la empresa */
+  razon_social: string;
+  /** Nombre comercial de la empresa */
+  nombre_comercial: string;
+  /** CUIT de la empresa (único) */
+  cuit: string;
+  /** ID de la direccion */
+  direccion: string;
+  /** ID del contacto */
+  contacto: string;
 }
 
 export interface UpdateEmpresaDto { [key: string]: unknown }

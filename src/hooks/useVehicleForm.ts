@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Vehicle } from "../types";
-import { createVehicle, fetchVehicleById, updateVehicle } from "../lib/api";
 import { SelectChangeEvent } from "@mui/material";
 import { useNotify } from "./useNotify";
+import { vehiculoControllerCreate, vehiculoControllerUpdate } from "../api/generated";
 
 
 export const useVehicleForm = (id? : string) => {
@@ -27,7 +27,7 @@ export const useVehicleForm = (id? : string) => {
 
     const {notify} = useNotify("Vehículo");
 
-    useEffect(() => {
+    /* useEffect(() => {
         if(isEditing && id){
             setLoading(true);
             fetchVehicleById(id!)
@@ -36,7 +36,7 @@ export const useVehicleForm = (id? : string) => {
                 setLoading(false);
             }, 1000);
         }
-    }, [id]);
+    }, [id]); */
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | { name?: string; value: unknown }>) => {
         const { name, value } = e.target;
@@ -164,10 +164,10 @@ export const useVehicleForm = (id? : string) => {
         }
         try {
             if (isEditing) {
-                await updateVehicle(id!, formData as Omit<Vehicle, "_id">);
+                await vehiculoControllerUpdate(id!, formData as Omit<Vehicle, "_id">);
                 notify("update");
             } else {
-                await createVehicle(formData as Omit<Vehicle, "_id">);
+                await vehiculoControllerCreate(formData as Omit<Vehicle, "_id">);
                 notify("create");
             }
             navigate("/vehicles");

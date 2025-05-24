@@ -2,31 +2,33 @@ import { Button, Pagination, Table, TableBody, TableCell, TableContainer, TableH
 import { SectionHeader } from "../../components/SectionHeader";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useVehicles } from "../../hooks/useVechicle";
 import  LoadingState  from "../../components/LoadingState";
 import { useAutoRowsPerPage } from "../../hooks/useAutoRowsPerPage";
 import SearchBar from "../../components/SearchBar";
 import MenuItem from "../../components/buttons/MenuItem";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
-import { Vehicle } from "../../types";
+import { useVehiculoControllerFindAll, vehiculoControllerRemove, VehiculoDto } from "../../api/generated";
+import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 
 
 export default function VehiclePage() {
-    const { vehicles, isLoading ,removeVehicle} = useVehicles();
+    const {data, isLoading, error} = useVehiculoControllerFindAll()
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);
     const {rowsPerPage} = useAutoRowsPerPage();
     const [openDialog, setOpenDialog] = useState(false);
-    const [vehicleSelected, setVehicleSelected] = useState<Vehicle>();
+    const [vehicleSelected, setVehicleSelected] = useState<VehiculoDto>();
+    const vehicles = data?.data || [];
+    const debouncedQuery = useDebouncedValue(searchQuery, 500);
 
-    const handleOpenDialog = (vehicle : Vehicle) => {
+    const handleOpenDialog = (vehicle : VehiculoDto) => {
         setOpenDialog(true);
         setVehicleSelected(vehicle);
     };
 
     const handleDelete = async (id: string) => {
         try {
-            await removeVehicle(id);
+            await vehiculoControllerRemove(id);
             setOpenDialog(false);
         } catch (error) {
             console.error("Error deleting vehicle:", error);
@@ -34,8 +36,8 @@ export default function VehiclePage() {
     };
 
     const filtered = vehicles.filter((v) =>
-        v.patente.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        v.modelo.toLowerCase().includes(searchQuery.toLowerCase())
+        v.patente.toLowerCase().includes(debouncedQuery.toLowerCase()) ||
+        v.modelo.toLowerCase().includes(debouncedQuery.toLowerCase())
     );
 
     const totalPages = Math.ceil(filtered.length / rowsPerPage);
@@ -51,7 +53,6 @@ export default function VehiclePage() {
     }, [searchQuery]);
 
     const navigate = useNavigate();
-
     return (
         <>
             <SectionHeader 
@@ -139,9 +140,9 @@ export default function VehiclePage() {
                                         <TableCell>{vehicle.modelo}</TableCell>
                                         <TableCell>{vehicle.año}</TableCell>
                                         <TableCell>{vehicle.volumen_carga} kg</TableCell>
-                                        <TableCell>{vehicle.tipo}</TableCell>
-                                        <TableCell>{vehicle.empresa}</TableCell>
-                                        <TableCell sx={{ display: "flex", justifyContent: "center", alignItems: "center", maxHeight: 72 }}>
+                                        <TableCell>{vehicle.tipo?.nombre || '-'}</TableCell>
+                                        <TableCell>{vehicle.empresa.nombre_comercial}</TableCell>
+                                        <TableCell sx={{ verticalAlign: "middle"}}>
                                             <MenuItem  handleOpenDialog={() => handleOpenDialog(vehicle)}
                                             id={vehicle._id}
                                             />

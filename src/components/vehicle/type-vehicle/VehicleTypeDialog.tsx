@@ -1,30 +1,31 @@
 import { Dialog, DialogContent, DialogTitle, TextField, DialogActions, Button } from "@mui/material";
 import { VehicleType } from "../../../types";
 import { useEffect, useState } from "react";
+import { TipoVehiculoDto } from "../../../api/generated";
 
 interface VehicleTypeDialogProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (formData: Partial<VehicleType>) => void;
-  editingType?: VehicleType | null;
+  onSubmit: (formData: Partial<TipoVehiculoDto>) => void;
+  editingType?: TipoVehiculoDto | null;
 }
 
 export const VehicleTypeDialog = ({ open, onClose, onSubmit, editingType }: VehicleTypeDialogProps) => {
-  const [formData, setFormData] = useState<Partial<VehicleType>>({
-    name: "",
-    description: "",
+  const [formData, setFormData] = useState<Partial<TipoVehiculoDto>>({
+    nombre: "",
+    descripcion: "",
   });
 
   useEffect(() => {
     if (editingType) {
       setFormData({
-        name: editingType.name,
-        description: editingType.description || "",
+        nombre: editingType.nombre,
+        descripcion: editingType.descripcion || "",
       });
     } else {
       setFormData({
-        name: "",
-        description: "",
+        nombre: "",
+        descripcion: "",
       });
     }
   }, [editingType]);
@@ -47,10 +48,10 @@ export const VehicleTypeDialog = ({ open, onClose, onSubmit, editingType }: Vehi
         </DialogTitle>
         <DialogContent sx={{ gap: 2, display: "flex", flexDirection: "column" }}>
           <TextField
-            id="name"
-            name="name"
+            id="nombre"
+            name="nombre"
             label="Nombre"
-            value={formData.name}
+            value={formData.nombre}
             onChange={handleChange}
             placeholder="Ej: Camión Articulado"
             fullWidth
@@ -62,10 +63,10 @@ export const VehicleTypeDialog = ({ open, onClose, onSubmit, editingType }: Vehi
             }}
           />
           <TextField
-            id="description"
-            name="description"
+            id="descripcion"
+            name="descripcion"
             label="Descripción"
-            value={formData.description}
+            value={formData.descripcion}
             onChange={handleChange}
             placeholder="Descripción del tipo de vehículo"
             fullWidth
@@ -82,7 +83,7 @@ export const VehicleTypeDialog = ({ open, onClose, onSubmit, editingType }: Vehi
           <Button onClick={onClose} variant="outlined">
             Cancelar
           </Button>
-          <Button type="submit" variant="contained" sx={{ backgroundColor: "#E65F2B" }} disabled={!formData.name}>
+          <Button type="submit" variant="contained" sx={{ backgroundColor: "#E65F2B" }} disabled={!formData.nombre}>
             {editingType ? "Actualizar" : "Crear"}
           </Button>
         </DialogActions>

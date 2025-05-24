@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Paper, TextField, Select, MenuItem, Typography, Grid, Container, SelectChangeEvent} from "@mui/material";
+import { Box, Button, Paper, TextField, Select, MenuItem, Typography, Grid, SelectChangeEvent} from "@mui/material";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, { Dayjs } from 'dayjs';
 import { Company, Driver, Vehicle} from "../../types";
 import { companies, vehicles } from "../../lib/mock-data";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 interface FormDriverProps{
     onSubmit: (formData: Partial<Driver>) => void;
@@ -17,8 +17,8 @@ interface FormDriverProps{
     vehicles?: Vehicle[]
 }
 
-export const FormDriver = ({onSubmit, editingDriver, onCancel, isEditing} : FormDriverProps) => {
-    //const {id} = useParams();
+export const FormDriver = ({onSubmit, editingDriver} : FormDriverProps) => {
+    const {id} = useParams();
     const navigate = useNavigate();
     const [formData, setFormData] = useState<Partial<Driver>>({
         _id: "", 

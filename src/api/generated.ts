@@ -85,14 +85,10 @@ export interface CreateEmpresaDto {
   nombre_comercial: string;
   /** CUIT de la empresa (único) */
   cuit: string;
-  /** Domicilio fiscal */
-  domicilio_fiscal: string;
-  /** Teléfono de contacto */
-  telefono: string;
-  /** Correo electrónico */
-  mail: string;
-  /** Nombre del contacto de la empresa */
-  nombre_contacto: string;
+  /** ID de la direccion */
+  direccion: string;
+  /** ID del contacto */
+  contacto: string;
 }
 
 export interface VehiculoDto {
@@ -128,7 +124,65 @@ export interface VehiculoDto {
 
 export interface UpdateVehiculoDto { [key: string]: unknown }
 
-export interface Empresa { [key: string]: unknown }
+export interface DireccionDto {
+  /** ID de la dirección */
+  _id: string;
+  /** Calle y número de la dirección */
+  calle: string;
+  /** Numero de la dirección */
+  numero: string;
+  /** Ciudad de la dirección */
+  ciudad: string;
+  /** Estado de la dirección */
+  estado_provincia: string;
+  /** País de la dirección */
+  pais: string;
+  /** Tipo de dirección */
+  tipo: string;
+}
+
+export interface TelefonoDto {
+  /** ID del teléfono */
+  _id: string;
+  /** Código de país del teléfono */
+  codigo_pais: string;
+  /** Código de área del teléfono */
+  codigo_area: string;
+  /** Número de teléfono */
+  numero: string;
+}
+
+export interface ContactoDto {
+  /** ID del contacto */
+  _id: string;
+  /** Nombre del contacto */
+  nombre: string;
+  /** Apellido del contacto */
+  apellido: string;
+  /** ID Teléfono de contacto */
+  telefono: TelefonoDto;
+  /** Correo electrónico del contacto */
+  mail: string;
+}
+
+export interface EmpresaDto {
+  /** ID de la empresa */
+  id: number;
+  /** Razón social de la empresa */
+  razon_social: string;
+  /** Nombre comercial de la empresa */
+  nombre_comercial: string;
+  /** CUIT de la empresa (único) */
+  cuit: string;
+  /** Id de la dirección */
+  domicilio_fiscal: DireccionDto;
+  /** Teléfono de contacto */
+  telefono: string;
+  /** Correo electrónico */
+  mail: string;
+  /** ID del contacto */
+  nombre_contacto: ContactoDto;
+}
 
 export interface UpdateEmpresaDto { [key: string]: unknown }
 
@@ -981,7 +1035,7 @@ export const useVehiculoControllerRemove = <TError = AxiosError<void>,
  */
 export const empresaControllerFindAll = (
      options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Empresa[]>> => {
+ ): Promise<AxiosResponse<EmpresaDto[]>> => {
     
     
     return axios.get(
@@ -1067,7 +1121,7 @@ export function useEmpresaControllerFindAll<TData = Awaited<ReturnType<typeof em
  */
 export const empresaControllerCreate = (
     createEmpresaDto: CreateEmpresaDto, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Empresa>> => {
+ ): Promise<AxiosResponse<EmpresaDto>> => {
     
     
     return axios.post(
@@ -1129,7 +1183,7 @@ export const useEmpresaControllerCreate = <TError = AxiosError<void>,
  */
 export const empresaControllerFindOne = (
     id: string, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Empresa>> => {
+ ): Promise<AxiosResponse<EmpresaDto>> => {
     
     
     return axios.get(
@@ -1216,7 +1270,7 @@ export function useEmpresaControllerFindOne<TData = Awaited<ReturnType<typeof em
 export const empresaControllerUpdate = (
     id: string,
     updateEmpresaDto: UpdateEmpresaDto, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Empresa>> => {
+ ): Promise<AxiosResponse<EmpresaDto>> => {
     
     
     return axios.patch(

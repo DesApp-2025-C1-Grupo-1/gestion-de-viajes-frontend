@@ -14,7 +14,6 @@ export default function VehicleFormPage() {
         loading,
         touched,
         handleChange,
-        handleSelectChange,
         handleSubmit,
         isEditing,
     } = useVehicleForm(id);
@@ -105,7 +104,7 @@ export default function VehicleFormPage() {
 
                     <Typography sx={{color: "#5A5A65" , fontWeight: 550 , fontSize: "1.2rem", mb:4}}>Asignar recursos</Typography>
 
-                    <Grid container spacing={5} mb={3} > 
+                    {/* <Grid container spacing={5} mb={3} > 
                         <Grid item xs={12} sm={6} md={6} lg={4} xl={3}> 
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>Empresa Transportista</Typography>
                             <Select 
@@ -150,7 +149,7 @@ export default function VehicleFormPage() {
                                 {touched.tipo && errors.tipo}
                             </Typography>
                         </Grid>
-                    </Grid>
+                    </Grid> */}
                     <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 , mt: 3 }}>
                         <Button onClick={() => navigate("/vehicles")} variant="outlined">Cancelar</Button>
                         <Button type="submit" variant="contained" sx={{ backgroundColor: "#E65F2B" }} disabled={loading }>

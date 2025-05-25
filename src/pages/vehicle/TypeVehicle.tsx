@@ -6,9 +6,11 @@ import { EmptyState } from "../../components/EmptyState";
 import  LoadingState  from "../../components/LoadingState";
 import { SectionHeader } from "../../components/SectionHeader";
 import { tipoVehiculoControllerCreate, tipoVehiculoControllerRemove, tipoVehiculoControllerUpdate, TipoVehiculoDto, useTipoVehiculoControllerFindAll, useTipoVehiculoControllerRemove } from "../../api/generated";
+import { useNotify } from "../../hooks/useNotify";
 
 export default function TypeVehicle() {
-    const {data, isLoading, error} = useTipoVehiculoControllerFindAll()
+    const {notify} = useNotify("Tipo de vehículo");
+    const {data, isLoading, refetch, error} = useTipoVehiculoControllerFindAll()
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [editingType, setEditingType] = useState<TipoVehiculoDto | null>(null);
     const [typeToDelete, setTypeToDelete] = useState<TipoVehiculoDto | null>(null);
@@ -31,21 +33,25 @@ export default function TypeVehicle() {
 
     const handleSubmit = useCallback(async (formData: Partial<TipoVehiculoDto>) => {
         try {
-        if (editingType) {
-            await tipoVehiculoControllerUpdate(editingType._id, formData);
-        } else {
-            if (formData.descripcion && formData.nombre) {
-                await tipoVehiculoControllerCreate({
-                    nombre: formData.nombre,
-                    descripcion: formData.descripcion
-                });
-            }
+            if (editingType) {
+                await tipoVehiculoControllerUpdate(editingType._id, formData);
+            } else {
+                if (formData.nombre) {
+                    await tipoVehiculoControllerCreate({
+                        nombre: formData.nombre,
+                        descripcion: formData.descripcion || "",
+                    });
 
+                }
+            }
+            handleCloseDialog();
+        } catch (e) {
+            const error = e as { response: { data: { message: string } } };
+            if (error.response?.data?.message) {
+                notify("error", error.response.data.message);
+            }
         }
-        handleCloseDialog();
-        } catch (error) {
-        console.error("Error saving vehicle type:", error);
-        }
+        await refetch();
     }, [editingType, handleCloseDialog]);
 
     const handleDeleteClick = useCallback((vehicleType: TipoVehiculoDto) => {
@@ -57,8 +63,12 @@ export default function TypeVehicle() {
     try {
       await tipoVehiculoControllerRemove(typeToDelete._id);
       setTypeToDelete(null);
-    } catch (error) {
-      console.error("Error deleting vehicle type:", error);
+      await refetch();
+    } catch (e) {
+        const error = e as { response: { data: { message: string } } };
+        if (error.response?.data?.message) {
+            notify("error", error.response.data.message);
+        }
     }
     }, [typeToDelete]);
 

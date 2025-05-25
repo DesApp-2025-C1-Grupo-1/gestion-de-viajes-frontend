@@ -1,4 +1,4 @@
-import { Button, Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { Backdrop, Button, CircularProgress, Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import { SectionHeader } from "../../components/SectionHeader";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -9,10 +9,12 @@ import MenuItem from "../../components/buttons/MenuItem";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { useVehiculoControllerFindAll, vehiculoControllerRemove, VehiculoDto } from "../../api/generated";
 import { useDebouncedValue } from "../../hooks/useDebouncedValue";
+import { useNotify } from "../../hooks/useNotify";
 
 
 export default function VehiclePage() {
-    const {data, isLoading, error} = useVehiculoControllerFindAll()
+    const {notify} = useNotify("Vehículo");
+    const {data, isLoading, refetch} = useVehiculoControllerFindAll()
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);
     const {rowsPerPage} = useAutoRowsPerPage();
@@ -20,18 +22,30 @@ export default function VehiclePage() {
     const [vehicleSelected, setVehicleSelected] = useState<VehiculoDto>();
     const vehicles = data?.data || [];
     const debouncedQuery = useDebouncedValue(searchQuery, 500);
+    const [loadingDelete, setLoadingDelete] = useState<boolean>(false);
 
     const handleOpenDialog = (vehicle : VehiculoDto) => {
         setOpenDialog(true);
         setVehicleSelected(vehicle);
     };
 
-    const handleDelete = async (id: string) => {
+    const handleDelete = async () => {
+        const id = vehicleSelected?._id
         try {
-            await vehiculoControllerRemove(id);
+            setLoadingDelete(true);
+            await vehiculoControllerRemove(id!);
+            await refetch();
             setOpenDialog(false);
-        } catch (error) {
-            console.error("Error deleting vehicle:", error);
+            notify("delete", `Vehículo ${vehicleSelected?.patente} eliminado correctamente.`);
+        } catch (e) {
+            const error = e as { response: { data: { message: string } } };
+            if (error.response?.data?.message) {
+                notify("error", error.response.data.message);
+            }
+        }
+        finally{
+            setLoadingDelete(false);
+            setVehicleSelected(undefined);
         }
     };
 
@@ -53,6 +67,8 @@ export default function VehiclePage() {
     }, [searchQuery]);
 
     const navigate = useNavigate();
+
+
     return (
         <>
             <SectionHeader 
@@ -184,7 +200,7 @@ export default function VehiclePage() {
                         ¿Estás seguro que deseas eliminar el vehículo{" "}
                         <strong>{vehicleSelected?.patente}</strong>?
                     </p>}
-                    onConfirm={() => handleDelete(vehicleSelected?._id)}
+                    onConfirm={handleDelete}
                 />
             )}
             

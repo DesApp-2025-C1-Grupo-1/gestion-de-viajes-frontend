@@ -1,8 +1,8 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { SectionHeader } from "../../components/SectionHeader";
-import { Box, Button, Paper, TextField, Select, MenuItem, Typography, Backdrop, CircularProgress, Grid} from "@mui/material";
-import { companies, vehicleTypes } from "../../lib/mock-data";
+import { Box, Button, Paper, TextField, Select, MenuItem, Typography, Backdrop, CircularProgress, Grid, Alert, SelectChangeEvent} from "@mui/material";
 import { useVehicleForm } from "../../hooks/useVehicleForm";
+import {useEmpresaControllerFindAll, useTipoVehiculoControllerFindAll } from "../../api/generated";
 
 export default function VehicleFormPage() {
     const {id} = useParams();
@@ -14,17 +14,38 @@ export default function VehicleFormPage() {
         loading,
         touched,
         handleChange,
+        handleEmpresaChange,
+        handleTipoChange,
         handleSubmit,
         isEditing,
     } = useVehicleForm(id);
+
+    const handleTipoChangeSelect = (event: SelectChangeEvent) => {
+        const selectedTipo = vehicleTypes?.data?.find((tipo) => tipo.nombre === event.target.value);
+        if (selectedTipo) {
+            handleTipoChange(selectedTipo);
+        }
+    }
+
+    const handleEmpresaChangeSelect = (event: SelectChangeEvent) => {
+        const selectedEmpresa= companies?.data?.find((empresa) => empresa.nombre_comercial === event.target.value);
+        if (selectedEmpresa) {
+            handleEmpresaChange(selectedEmpresa);
+        }
+    }
+
+    const {data: companies, isLoading, error} = useEmpresaControllerFindAll();
+
+    const {data: vehicleTypes} = useTipoVehiculoControllerFindAll();
+
+    if (isLoading) return <CircularProgress />;
+    if (error) return <Alert severity="error">Error al cargar empresas</Alert>;
 
     return (
         <>
             <SectionHeader 
                 title={isEditing ? "Editar vehículo" : "Crear vehículo"}
                 description={isEditing ? "Modifica los datos del vehículo" : "Aquí puedes registrar un nuevo vehículo."}
-                buttonText="Volver a vehículos"
-                onAdd={() => history.back()}
             />
 
             <Paper  sx={{maxHeight:"85%", padding:3, overflow:"auto", mx:'auto', width:"100%", borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "0.5px solid #C7C7C7", pb: 5} }>
@@ -36,7 +57,7 @@ export default function VehicleFormPage() {
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>Patente</Typography>
                             <TextField
                                 name="patente" 
-                                placeholder="Ingresar" 
+                                placeholder="Ej: ABC123" 
                                 value={formData.patente} 
                                 onChange={handleChange} 
                                 fullWidth 
@@ -51,7 +72,7 @@ export default function VehicleFormPage() {
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>Modelo</Typography>
                             <TextField  
                                 name="modelo" 
-                                placeholder="Ingresar" 
+                                placeholder="Ej: Corolla" 
                                 value={formData.modelo} 
                                 onChange={handleChange} 
                                 fullWidth 
@@ -67,7 +88,7 @@ export default function VehicleFormPage() {
                     <Grid container spacing={5} mb={3} > 
                         <Grid item xs={12} sm={6} md={6} lg={4} xl={3}> 
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>Marca</Typography>
-                            <TextField className="inside-paper" name="marca" placeholder="Ingresar" value={formData.marca} onChange={handleChange} fullWidth inputProps={{ "aria-label": "Marca del vehículo" }}
+                            <TextField className="inside-paper" name="marca" placeholder="Ej: Toyota" value={formData.marca} onChange={handleChange} fullWidth inputProps={{ "aria-label": "Marca del vehículo" }}
                                 error={!!touched.marca  && !!errors.marca}
                                 helperText={touched.marca && errors.marca}
                                 disabled={loading}
@@ -104,24 +125,25 @@ export default function VehicleFormPage() {
 
                     <Typography sx={{color: "#5A5A65" , fontWeight: 550 , fontSize: "1.2rem", mb:4}}>Asignar recursos</Typography>
 
-                    {/* <Grid container spacing={5} mb={3} > 
+                    <Grid container spacing={5} mb={3} > 
                         <Grid item xs={12} sm={6} md={6} lg={4} xl={3}> 
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>Empresa Transportista</Typography>
                             <Select 
                                 name="empresa" 
-                                value={formData.empresa ?? ""}
+                                value={formData.empresa?.nombre_comercial ?? ""}
                                 fullWidth
-                                onChange={handleSelectChange}
+                                onChange={handleEmpresaChangeSelect}
                                 displayEmpty
                                 inputProps={{ "aria-label": "Empresa transportista" }}
                                 error={!!touched.empresa && !!errors.empresa}
                                 disabled={loading}
                             >
-                                {companies.map((empresa) => (
-                                    <MenuItem key={empresa._id} value={empresa.nombre_comercial}>
-                                        {empresa.nombre_comercial}
+                                {companies?.data?.map((company) => (
+                                    <MenuItem key={company._id} value={company.nombre_comercial}>
+                                        {company.nombre_comercial}
                                     </MenuItem>
                                 ))}
+                                
                             </Select>
                             <Typography color="error" fontSize={12}>
                                 {touched.empresa && errors.empresa}
@@ -131,17 +153,17 @@ export default function VehicleFormPage() {
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>Tipo de vehículo a utilizar</Typography>
                             <Select 
                                 name="tipo" 
-                                value={formData.tipo} 
+                                value={formData.tipo?.nombre ?? ""} 
                                 fullWidth
-                                onChange={handleSelectChange}
+                                onChange={handleTipoChangeSelect}
                                 displayEmpty
                                 inputProps={{ "aria-label": "Tipo de vehículo" }}
                                 error={!!errors.tipo && !!touched.tipo}
                                 disabled={loading}
                             >
-                                {vehicleTypes.map((type) => (
-                                    <MenuItem key={type._id} value={type.name}>
-                                        {type.name}
+                                {vehicleTypes?.data?.map((type) => (
+                                    <MenuItem key={type._id} value={type.nombre}>
+                                        {type.nombre}
                                     </MenuItem>
                                 ))}
                             </Select>
@@ -149,7 +171,7 @@ export default function VehicleFormPage() {
                                 {touched.tipo && errors.tipo}
                             </Typography>
                         </Grid>
-                    </Grid> */}
+                    </Grid>
                     <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 , mt: 3 }}>
                         <Button onClick={() => navigate("/vehicles")} variant="outlined">Cancelar</Button>
                         <Button type="submit" variant="contained" sx={{ backgroundColor: "#E65F2B" }} disabled={loading }>

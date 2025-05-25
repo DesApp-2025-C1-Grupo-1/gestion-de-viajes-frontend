@@ -11,9 +11,11 @@ import { useDeposits } from "../../hooks/deposits/useDeposits";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 import { formatTelefono } from "../../lib/formatters";
+import { useNotify } from "../../hooks/useNotify";
 
 
 export default function DepositPage() {
+    const {notify} = useNotify("Depositos");
     const {deposits, isLoading, removeDeposit} = useDeposits();
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);
@@ -32,8 +34,11 @@ export default function DepositPage() {
         try {
             await removeDeposit(id);
             setOpenDialog(false);
-        } catch (error) {
-            console.error("Error deleting deposit:", error);
+        } catch (e) {
+            const error = e as { response: { data: { message: string } } };
+            if (error.response?.data?.message) {
+                notify("error", error.response.data.message);
+            }
         }
     };
 

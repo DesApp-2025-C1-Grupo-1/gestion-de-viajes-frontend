@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Deposit, Telefono } from "../../types";
+import { Deposit} from "../../types";
 import { SelectChangeEvent } from "@mui/material";
 import { useNotify } from "../useNotify";
 import { createDeposit, fetchDepositById, updateDeposit } from "../../lib/apiDeposit";
@@ -251,9 +251,12 @@ export const useDepositForm = (id? : string) => {
             notify("create");
         }
         navigate("/depots");
-        } catch (error) {
-        notify("error");
-        } finally {
+        } catch (e) {
+            const error = e as { response: { data: { message: string } } };
+            if (error.response?.data?.message) {
+                notify("error", error.response.data.message);
+            }
+        }finally {
         setLoading(false);
         }
     }, [formData, isEditing, id, navigate, notify, validateForm]);

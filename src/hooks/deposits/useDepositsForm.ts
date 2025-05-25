@@ -90,16 +90,27 @@ export const useDepositForm = (id? : string) => {
         const errors: Record<string, string> = {};
         const { codigo_pais, codigo_area, numero } = data.contacto.telefono;
 
-        if (!codigo_pais || !codigo_pais.trim().startsWith("+")) {
-            errors["contacto.telefono.codigo_pais"] = "Código país requerido y debe incluir el símbolo '+'";
+        // Validar código de país
+        if (!codigo_pais) {
+            errors["contacto.telefono.codigo_pais"] = "Código país requerido";
+        } else if (!/^\+?\d+$/.test(codigo_pais)) {
+            errors["contacto.telefono.codigo_pais"] = "Solo se permiten números";
         }
 
-        if (!codigo_area && codigo_pais === "+54") {
-            errors["contacto.telefono.codigo_area"] = "Código de área requerido";
+        // Validar código de área solo si es Argentina (+54)
+        if (codigo_pais === "+54") {
+            if (!codigo_area) {
+                errors["contacto.telefono.codigo_area"] = "Código de área requerido";
+            } else if (!/^\d+$/.test(codigo_area)) {
+                errors["contacto.telefono.codigo_area"] = "Solo se permiten números";
+            }
         }
 
+        // Validar número
         if (!numero) {
             errors["contacto.telefono.numero"] = "Número requerido";
+        } else if (!/^\d+$/.test(numero)) {
+            errors["contacto.telefono.numero"] = "Solo se permiten números y no debe haber espacios";
         } else if (numero.length < 6) {
             errors["contacto.telefono.numero"] = "El número debe tener al menos 6 dígitos";
         }

@@ -31,8 +31,8 @@ export default function DepositFormPage() {
                 description={isEditing ? "Modifica los datos del depósito" : "Aquí puedes registrar un nuevo depósito."}
             />
 
-            <Paper  sx={{maxHeight:"90%", padding:3, overflow:"auto", mx:'auto', width:"100%", borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "0.5px solid #C7C7C7", pb: 5} }>
-                <form onSubmit={handleSubmit}>
+            <Paper  sx={{maxHeight:"90%", padding:4, overflow:"auto", mx:'auto', width:"100%", borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "0.5px solid #C7C7C7", pb: 5} } >
+                <form onSubmit={handleSubmit} className="w-full max-w-[800px] mx-auto">
                     <BasicInfoSection 
                         formData={formData}
                         errors={errors}
@@ -73,7 +73,6 @@ export default function DepositFormPage() {
                         handleChange={handleChange}
                     />
                     
-
                     <FormActions 
                         loading={loading}
                         isEditing={isEditing}

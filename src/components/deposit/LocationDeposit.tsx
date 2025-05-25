@@ -18,7 +18,7 @@ const LocationSection = ({
 }: LocationSectionProps) => {
   return (
     <>
-      <Typography variant="h6" sx={{color: "#5A5A65" , fontWeight: 550 , fontSize: "1.2rem", mb:2}}>
+      <Typography variant="h6" sx={{color: "#5A5A65" , fontWeight: 550 , fontSize: "1.4rem", mb:2}}>
         Coordernadas
       </Typography>
       

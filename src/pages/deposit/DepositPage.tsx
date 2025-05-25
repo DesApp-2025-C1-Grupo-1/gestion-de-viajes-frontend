@@ -10,6 +10,7 @@ import { Deposit } from "../../types";
 import { useDeposits } from "../../hooks/deposits/useDeposits";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { useDebouncedValue } from "../../hooks/useDebouncedValue";
+import { formatTelefono } from "../../lib/formatters";
 
 
 export default function DepositPage() {
@@ -39,7 +40,7 @@ export default function DepositPage() {
 
     const filtered = deposits.filter((d) =>
         d.nombre.toLowerCase().includes(debouncedQuery.toLowerCase()) ||
-        d.direccion.toLowerCase().includes(debouncedQuery.toLowerCase())
+        d.direccion?.ciudad.toLowerCase().includes(debouncedQuery.toLowerCase())
     );
 
     const totalPages = Math.ceil(filtered.length / rowsPerPage);
@@ -66,7 +67,7 @@ export default function DepositPage() {
             />
 
             <SearchBar 
-                placeholder="Buscar por nombre o dirección"
+                placeholder="Buscar por nombre o ciudad"
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
             />
@@ -81,10 +82,10 @@ export default function DepositPage() {
                         <TableHead>
                             <TableRow>
                                 <TableCell>Nombre</TableCell>
-                                <TableCell>Dirección</TableCell>
                                 <TableCell>Ciudad</TableCell>
-                                <TableCell>Estado/Provincia</TableCell>
-                                <TableCell>País</TableCell>
+                                <TableCell>Tipo</TableCell>
+                                <TableCell>Horario</TableCell>
+                                <TableCell>Contacto</TableCell>
                                 <TableCell>Teléfono</TableCell>
                                 <TableCell align="center" sx={{width:72}}>Acciones</TableCell>
                             </TableRow>
@@ -119,11 +120,11 @@ export default function DepositPage() {
                                         className="hover:bg-gray-50 overflow-hidden"
                                     >
                                         <TableCell sx={{fontWeight: "bold"}}>{deposit.nombre}</TableCell>
-                                        <TableCell>{deposit.direccion}</TableCell>
-                                        <TableCell>{deposit.ciudad}</TableCell>
-                                        <TableCell>{deposit.estado_provincia}</TableCell>
-                                        <TableCell>{deposit.pais}</TableCell>
-                                        <TableCell>{deposit.contacto.telefono}</TableCell>
+                                        <TableCell>{deposit.direccion?.ciudad}</TableCell>
+                                        <TableCell>{deposit.tipo.charAt(0).toUpperCase() + deposit.tipo.slice(1)}</TableCell>
+                                        <TableCell>{deposit.horario_entrada} - {deposit.horario_salida}</TableCell>
+                                        <TableCell>{deposit.contacto?.nombre}</TableCell>
+                                        <TableCell>{formatTelefono(deposit.contacto?.telefono)}</TableCell>
                                         <TableCell sx={{ verticalAlign: "middle"}}>
                                             <MenuItem  handleOpenDialog={() => handleOpenDialog(deposit)}
                                             id={deposit._id}
@@ -144,7 +145,7 @@ export default function DepositPage() {
             <div className="flex justify-between gap-2 items-center sm:px-4 py-4 ">
                 <p className="text-sm w-full">
                     Mostrando {Math.min((page - 1) * rowsPerPage + 1, filtered.length)}– 
-                    {Math.min(page * rowsPerPage, filtered.length)} de {filtered.length} vehículos
+                    {Math.min(page * rowsPerPage, filtered.length)} de {filtered.length} depósitos
                 </p>
                 <Pagination 
                     count={totalPages}

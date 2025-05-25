@@ -21,12 +21,12 @@ const ContactSection = ({
 
   return (
     <>
-      <Typography variant="h6" sx={{color: "#5A5A65" , fontWeight: 550 , fontSize: "1.2rem", mb:2}}>
+      <Typography variant="h6" sx={{color: "#5A5A65" , fontWeight: 550 , fontSize: "1.4rem", mb:2}}>
         Información de Contacto
       </Typography>
       
       <Grid container spacing={3} mb={4}>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={7} >
           <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Nombre de contacto</Typography>
           <TextField
             name="contacto.nombre"
@@ -41,7 +41,7 @@ const ContactSection = ({
           />
         </Grid>
 
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={5} >
           <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb: 1 }}>Teléfono</Typography>
           <Grid container spacing={2}>
             <Grid item xs={mostrarCodigoArea ? 3 : 4}>
@@ -57,7 +57,7 @@ const ContactSection = ({
               />
             </Grid>
             {mostrarCodigoArea && (
-              <Grid item xs={3}>
+              <Grid item xs={2}>
                 <TextField
                   name="contacto.telefono.codigo_area"
                   placeholder="11"
@@ -70,7 +70,7 @@ const ContactSection = ({
                 />
               </Grid>
             )}
-            <Grid item xs={mostrarCodigoArea ? 6 : 8}>
+            <Grid item xs={mostrarCodigoArea ? 7 : 8}>
               <TextField
                 name="contacto.telefono.numero"
                 placeholder="12345678"
@@ -100,7 +100,7 @@ const ContactSection = ({
           )}
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid item xs={12} >
           <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Email</Typography>
           <TextField
             name="contacto.email"

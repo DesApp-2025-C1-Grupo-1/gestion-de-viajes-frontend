@@ -1,4 +1,4 @@
-import { Grid, Typography, SelectChangeEvent } from "@mui/material";
+import { Grid, Typography, SelectChangeEvent, TextField } from "@mui/material";
 import { format } from "date-fns";
 import { Deposit } from "../../types";
 import { LocalizationProvider, renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
@@ -37,11 +37,11 @@ const TimeSection = ({
 
   return (
     <>
-      <Typography variant="h6" sx={{color: "#5A5A65" , fontWeight: 550 , fontSize: "1.2rem", mb:2}}>
+      <Typography variant="h6" sx={{color: "#5A5A65" , fontWeight: 550 , fontSize: "1.4rem", mb:2}}>
         Horarios
       </Typography>
       
-      <Grid container spacing={3} mb={4}>
+      <Grid container spacing={3} mb={4} >
 
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <Grid item xs={12} sm={6}>
@@ -89,6 +89,21 @@ const TimeSection = ({
             />
           </Grid>
         </LocalizationProvider>
+
+        <Grid item xs={12}>
+          <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Restricciones de acceso</Typography>
+          <TextField
+            name="restricciones"
+            placeholder="Ej: Vehiculos de más de 3.5 toneladas no pueden ingresar"
+            fullWidth
+            value={formData.restricciones || ''}
+            onChange={handleChange}
+            disabled={loading}
+            multiline
+            minRows={3}
+          />
+          
+        </Grid>
       </Grid>
     </>
   );

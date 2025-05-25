@@ -22,7 +22,7 @@ const AdressSection = ({
 
   return (
     <>
-      <Typography variant="h6" sx={{color: "#5A5A65" , fontWeight: 550 , fontSize: "1.2rem", mb:2}}>
+      <Typography variant="h6" sx={{color: "#5A5A65" , fontWeight: 550 , fontSize: "1.4rem", mb:2}}>
         Dirección
       </Typography>
       
@@ -57,7 +57,8 @@ const AdressSection = ({
           />
         </Grid>
 
-        <Grid item xs={12} md={4}>
+        <Grid container item xs={12} spacing={3}>
+          <Grid item xs={12} md={4}>
           <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Ciudad</Typography>
           <TextField
             name="direccion.ciudad"
@@ -101,6 +102,8 @@ const AdressSection = ({
             disabled={loading}
           />
         </Grid>
+        </Grid>
+        
 
         
       </Grid>

@@ -303,8 +303,8 @@ export interface ChoferDto {
   telefono: string;
   /** Correo electrónico del chofer */
   email: string;
-  empresa: CreateEmpresaDto;
-  vehiculo: CreateVehiculoDto;
+  empresa: EmpresaDto;
+  vehiculo: VehiculoDto;
 }
 
 export interface UpdateChoferDto { [key: string]: unknown }
@@ -326,6 +326,27 @@ export interface CreateDepositoDto {
   restricciones: string;
   direccion: CreateDireccionDto;
   contacto: CreateContactoDto;
+}
+
+export interface DepositoDto {
+  /** ID del depósito */
+  _id: string;
+  /** Nombre del depósito */
+  nombre: string;
+  /** Latitud del depósito */
+  lat: number;
+  /** Longitud del depósito */
+  long: number;
+  /** Tipo de depósito si propio o de tercero */
+  tipo: string;
+  /** Horario de apertura del depósito */
+  horario_entrada: string;
+  /** Horario de cierre del depósito */
+  horario_salida: string;
+  /** Restricciones del depósito */
+  restricciones: string;
+  direccion: DireccionDto;
+  contacto: DireccionDto;
 }
 
 export interface UpdateDepositoDto {
@@ -1864,7 +1885,7 @@ export const useChoferControllerRemove = <TError = AxiosError<void>,
  */
 export const depositoControllerCreate = (
     createDepositoDto: CreateDepositoDto, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<void>> => {
+ ): Promise<AxiosResponse<DepositoDto>> => {
     
     
     return axios.post(
@@ -1926,7 +1947,7 @@ export const useDepositoControllerCreate = <TError = AxiosError<void>,
  */
 export const depositoControllerFindAll = (
      options?: AxiosRequestConfig
- ): Promise<AxiosResponse<void>> => {
+ ): Promise<AxiosResponse<DepositoDto[]>> => {
     
     
     return axios.get(
@@ -2012,7 +2033,7 @@ export function useDepositoControllerFindAll<TData = Awaited<ReturnType<typeof d
  */
 export const depositoControllerFindOne = (
     id: string, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<void>> => {
+ ): Promise<AxiosResponse<DepositoDto>> => {
     
     
     return axios.get(
@@ -2099,7 +2120,7 @@ export function useDepositoControllerFindOne<TData = Awaited<ReturnType<typeof d
 export const depositoControllerUpdate = (
     id: string,
     updateDepositoDto: UpdateDepositoDto, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<void>> => {
+ ): Promise<AxiosResponse<DepositoDto>> => {
     
     
     return axios.patch(

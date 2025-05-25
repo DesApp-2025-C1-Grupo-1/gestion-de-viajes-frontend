@@ -5,7 +5,6 @@ import axios from 'axios';
 
 import { customMuiTheme } from './config/customMuiTheme';
 import { App } from './App';
-import { store } from './store/store';
 
 import './index.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -18,11 +17,9 @@ const rootElement = document.getElementById('root') as HTMLElement;
 const queryClient = new QueryClient();
 
 ReactDOM.createRoot(rootElement).render(
-  <Provider store={store}>
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={customMuiTheme}>
         <App />
       </ThemeProvider>
     </QueryClientProvider>
-  </Provider>
 );

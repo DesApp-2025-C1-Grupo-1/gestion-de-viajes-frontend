@@ -3,18 +3,18 @@ import { SectionHeader } from "../../components/SectionHeader";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import  LoadingState  from "../../components/LoadingState";
-import { useAutoRowsPerPage } from "../../hooks/useAutoRowsPerPage";
 import SearchBar from "../../components/SearchBar";
 import MenuItem from "../../components/buttons/MenuItem";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { useVehiculoControllerFindAll, vehiculoControllerRemove, VehiculoDto } from "../../api/generated";
 import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 import { useNotify } from "../../hooks/useNotify";
+import { useAutoRowsPerPage } from "../../hooks/useAutoRowsPerPage";
 
 
 export default function VehiclePage() {
     const {notify} = useNotify("Vehículo");
-    const {data, isLoading, refetch} = useVehiculoControllerFindAll()
+    const {data, isLoading, error, refetch} = useVehiculoControllerFindAll()
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);
     const {rowsPerPage} = useAutoRowsPerPage();
@@ -28,13 +28,13 @@ export default function VehiclePage() {
         setVehicleSelected(vehicle);
     };
 
-    const handleDelete = async () => {
-        const id = vehicleSelected?._id
+    const handleDelete = async (id: string) => {
         try {
-            await vehiculoControllerRemove(id!);
-            await refetch();
+            await vehiculoControllerRemove(id);
             setOpenDialog(false);
-            notify("delete", `Vehículo ${vehicleSelected?.patente} eliminado correctamente.`);
+            await refetch();
+            notify("delete", "Vehículo eliminado correctamente");
+            setPage(1);
         } catch (e) {
             const error = e as { response: { data: { message: string } } };
             if (error.response?.data?.message) {
@@ -61,8 +61,6 @@ export default function VehiclePage() {
     }, [searchQuery]);
 
     const navigate = useNavigate();
-
-
     return (
         <>
             <SectionHeader 
@@ -96,25 +94,29 @@ export default function VehiclePage() {
             
             {/* Tabla de vehículos */}
             <div 
-                className="bg-white rounded-lg overflow-hidden"
+                className="bg-white rounded-lg "
                 style={{
                     boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
                     border: "0.5px solid #C7C7C7",
                 }}
             >         
-                <TableContainer className="h-full text-sm">
+                <TableContainer className="text-sm">
                     <Table 
                         aria-label="simple table"
+                        
                     >
                         <TableHead >
                             <TableRow>
-                                <TableCell>Patente</TableCell>
+                                <TableCell 
+                            sx={{
+                                borderRadius: "8px",
+                            }}>Patente</TableCell>
                                 <TableCell>Modelo</TableCell>
                                 <TableCell>Año</TableCell>
                                 <TableCell>Capacidad(kg)</TableCell>
                                 <TableCell>Tipo</TableCell>
                                 <TableCell>Transportista</TableCell>
-                                <TableCell align="center" sx={{width: 72}}>Acciones</TableCell>
+                                <TableCell align="center" sx={{width: 72, borderRadius: "8px"}}>Acciones</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -194,7 +196,7 @@ export default function VehiclePage() {
                         ¿Estás seguro que deseas eliminar el vehículo{" "}
                         <strong>{vehicleSelected?.patente}</strong>?
                     </p>}
-                    onConfirm={handleDelete}
+                    onConfirm={() => handleDelete(vehicleSelected?._id)}
                 />
             )}
             

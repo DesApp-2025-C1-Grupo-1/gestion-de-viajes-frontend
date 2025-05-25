@@ -16,7 +16,7 @@ export function useAutoRowsPerPage() {
             const isTablet = window.innerWidth < 1024; // md breakpoint de tailwind
             const isDesktop = window.innerWidth >= 1024; // lg breakpoint de tailwind
             const rowHeight = isDesktop? 72 : 93;
-            const margin = 90; // de margen
+            const margin = 150; // de margen
 
             // Si es mobile, el header ocupa más espacio
             // Si es tablet, el header ocupa menos espacio

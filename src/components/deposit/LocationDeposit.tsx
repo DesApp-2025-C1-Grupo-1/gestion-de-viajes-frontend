@@ -1,8 +1,8 @@
 import { Grid, TextField, Typography } from "@mui/material";
-import { Deposit } from "../../types";
+import { DepositoDto } from "../../api/generated";
 
 interface LocationSectionProps {
-  formData: Partial<Deposit>;
+  formData: Partial<DepositoDto>;
   errors: Record<string, string>;
   touched: Record<string, boolean>;
   loading: boolean;
@@ -28,6 +28,7 @@ const LocationSection = ({
           <TextField
             name="lat"
             placeholder="Ej: -34.6037"
+            type="number"
             fullWidth
             className="inside-paper"
             value={formData.lat}
@@ -43,6 +44,7 @@ const LocationSection = ({
           <TextField
             name="long"
             placeholder="Ej: -58.3816"
+            type="number"
             fullWidth
             className="inside-paper"
             value={formData.long}

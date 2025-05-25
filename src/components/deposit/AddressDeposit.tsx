@@ -1,9 +1,8 @@
 import { Grid, Typography, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent, TextField } from "@mui/material";
-
-import { Deposit, Direccion } from "../../types";
+import { DepositoDto, DireccionDto } from "../../api/generated";
 
 interface AdressSectionProps {
-  formData: Partial<Deposit>;
+  formData: Partial<DepositoDto>;
   errors: Record<string, string>;
   touched: Record<string, boolean>;
   loading: boolean;
@@ -18,7 +17,7 @@ const AdressSection = ({
   loading,
   handleChange,
 }: AdressSectionProps) => {
-  const direccion : Direccion = formData.direccion || {} as Direccion;
+  const direccion : DireccionDto = formData.direccion || {} as DireccionDto;
 
   return (
     <>

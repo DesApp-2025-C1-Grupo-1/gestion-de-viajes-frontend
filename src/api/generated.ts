@@ -111,12 +111,10 @@ export interface ContactoDto {
   _id: string;
   /** Nombre del contacto */
   nombre: string;
-  /** Apellido del contacto */
-  apellido: string;
   /** ID Teléfono de contacto */
   telefono: TelefonoDto;
   /** Correo electrónico del contacto */
-  mail: string;
+  email: string;
 }
 
 export interface EmpresaDto {
@@ -346,7 +344,7 @@ export interface DepositoDto {
   /** Restricciones del depósito */
   restricciones: string;
   direccion: DireccionDto;
-  contacto: DireccionDto;
+  contacto: ContactoDto;
 }
 
 export interface UpdateDepositoDto {

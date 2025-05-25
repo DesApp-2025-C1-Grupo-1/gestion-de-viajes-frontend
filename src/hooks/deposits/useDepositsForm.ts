@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Deposit} from "../../types";
 import { SelectChangeEvent } from "@mui/material";
 import { useNotify } from "../useNotify";
-import { createDeposit, fetchDepositById, updateDeposit } from "../../lib/apiDeposit";
+import { CreateDepositoDto, depositoControllerCreate, depositoControllerUpdate, DepositoDto, UpdateDepositoDto, useDepositoControllerFindOne } from "../../api/generated";
 
 // Tipo para las reglas de validación
 type ValidationRule = {
@@ -36,28 +35,32 @@ const validationRules: Record<string, ValidationRule> = {
     "direccion.pais": { required: true },
 };
 // Estado inicial del formulario
-const initialFormState: Deposit = {
+const initialFormState: DepositoDto = {
   _id: "",
   nombre: "",
   direccion: {
+    _id: "",
     calle: "",
     numero: "",
     ciudad: "",
     estado_provincia: "",
     pais: "",
+    tipo: "deposito",
   },
-  lat: "",
-  long: "",
+  lat: 0,
+  long: 0,
   tipo: "propio",
   horario_entrada: "",
   horario_salida: "",
   restricciones: "",
   contacto: {
+    _id: "",
     nombre: "",
     telefono: {
-      codigo_pais: "",
-      codigo_area: "",
-      numero: ""
+        _id: "",
+        codigo_pais: "",
+        codigo_area: "",
+        numero: ""
     },
     email: ""
   }
@@ -68,25 +71,20 @@ export const useDepositForm = (id? : string) => {
     const {notify} = useNotify("Vehículo");
     const isEditing = !!(id);
 
-    
-    const [formData, setFormData] = useState<Partial<Deposit>>(initialFormState);
+    const { data } = useDepositoControllerFindOne(id!, { query: { enabled: isEditing } });
+    const [formData, setFormData] = useState<DepositoDto>(initialFormState);
     const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
     const [loading, setLoading] = useState<boolean>(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
 
 
     useEffect(() => {
-        if(isEditing && id){
-            setLoading(true);
-            fetchDepositById(id!)
-                .then((vehicle: Deposit) => setFormData(vehicle))
-            setTimeout(() => {
-                setLoading(false);
-            }, 1000);
+        if (isEditing && data?.data) {
+            setFormData(data.data);
         }
-    }, [id]);
+    }, [isEditing, data, id]);
 
-    const validatePhone = (data: Deposit): Record<string, string> => {
+    const validatePhone = (data: DepositoDto): Record<string, string> => {
         const errors: Record<string, string> = {};
         const { codigo_pais, codigo_area, numero } = data.contacto.telefono;
 
@@ -152,7 +150,7 @@ export const useDepositForm = (id? : string) => {
         return "";
     }, []);
 
-    const validateForm = useCallback((data: Deposit): boolean => {
+    const validateForm = useCallback((data: DepositoDto): boolean => {
         const newErrors: Record<string, string> = {};
         let isValid = true;
 
@@ -234,7 +232,7 @@ export const useDepositForm = (id? : string) => {
         setTouched(allTouched);
 
         // Validate form
-        const fullFormData = formData as Deposit;
+        const fullFormData = formData as DepositoDto;
         if (!validateForm(fullFormData)) {
             setLoading(false);
             return;
@@ -242,12 +240,42 @@ export const useDepositForm = (id? : string) => {
 
         try {
         if (isEditing) {
-            await updateDeposit(id, fullFormData);
+            const { _id, direccion,contacto, ...rest } = fullFormData;
+            const { _id: dirId, ...direccionData } = direccion;
+            const { _id: contactoId, telefono, ...contactoData } = contacto;
+            const { _id: telId, ...telefonoData } = telefono;
+            const depositData = {
+                ...rest,
+                lat: Number(rest.lat),
+                long: Number(rest.long),
+                direccion: direccionData,
+                contacto: {
+                    ...contactoData,
+                    telefono: telefonoData,
+                },
+            };
+            
+            console.log("depositData", depositData);
+            await depositoControllerUpdate(id, depositData as UpdateDepositoDto);
             notify("update");
         } else {
             // Omit _id for createDeposit
-            const { _id, ...depositData } = fullFormData;
-            await createDeposit(depositData);
+            const { _id, direccion, contacto, ...rest } = fullFormData;
+            const { _id: dirId, ...direccionData } = direccion;
+            const { _id: contactoId, telefono, ...contactoData } = contacto;
+            const { _id: telId, ...telefonoData } = telefono;
+            const depositData = {
+                ...rest,
+                lat: Number(rest.lat),
+                long: Number(rest.long),
+                direccion: direccionData,
+                contacto: {
+                    ...contactoData,
+                    telefono: telefonoData,
+                },
+            };
+
+            await depositoControllerCreate(depositData as CreateDepositoDto);
             notify("create");
         }
         navigate("/depots");

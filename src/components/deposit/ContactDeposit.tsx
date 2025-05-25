@@ -1,8 +1,8 @@
 import { FormHelperText, Grid, TextField, Typography } from "@mui/material";
-import { Deposit } from "../../types";
+import { DepositoDto } from "../../api/generated";
 
 interface ContactSectionProps {
-  formData: Partial<Deposit>;
+  formData: Partial<DepositoDto>;
   errors: Record<string, string>;
   touched: Record<string, boolean>;
   loading: boolean;
@@ -17,7 +17,7 @@ const ContactSection = ({
   handleChange
 }: ContactSectionProps) => {
   const codigoPais = formData.contacto?.telefono.codigo_pais || "";
-  const mostrarCodigoArea = codigoPais === "+54";
+  const mostrarCodigoArea = codigoPais === "54";
 
   return (
     <>
@@ -101,7 +101,7 @@ const ContactSection = ({
         </Grid>
 
         <Grid item xs={12} >
-          <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Email</Typography>
+          <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Mail</Typography>
           <TextField
             name="contacto.email"
             placeholder="contacto@deposito.com"

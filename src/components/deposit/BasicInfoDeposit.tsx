@@ -1,7 +1,7 @@
 import { Grid, Typography, FormControl, Select, MenuItem, SelectChangeEvent, TextField } from "@mui/material";
-import { Deposit } from "../../types";
+import { DepositoDto } from "../../api/generated";
 interface BasicInfoSectionProps {
-  formData: Partial<Deposit>;
+  formData: Partial<DepositoDto>;
   errors: Record<string, string>;
   touched: Record<string, boolean>;
   loading: boolean;

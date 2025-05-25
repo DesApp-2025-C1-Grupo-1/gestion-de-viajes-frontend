@@ -6,34 +6,35 @@ import LoadingState from "../../components/LoadingState";
 import MenuItem from "../../components/buttons/MenuItem";
 import { useNavigate } from "react-router-dom";
 import { useAutoRowsPerPage } from "../../hooks/useAutoRowsPerPage";
-import { Deposit } from "../../types";
-import { useDeposits } from "../../hooks/deposits/useDeposits";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 import { formatTelefono } from "../../lib/formatters";
 import { useNotify } from "../../hooks/useNotify";
+import { depositoControllerRemove, DepositoDto, useDepositoControllerFindAll, useDepositoControllerRemove } from "../../api/generated";
 
 
 export default function DepositPage() {
     const {notify} = useNotify("Depositos");
-    const {deposits, isLoading, removeDeposit} = useDeposits();
+    const {data: deposits, isLoading, refetch} = useDepositoControllerFindAll();
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);
     const {rowsPerPage} = useAutoRowsPerPage();
     const [openDialog, setOpenDialog] = useState(false);
-    const [depositSelected, setDepositSelected] = useState<Deposit>();
+    const [depositSelected, setDepositSelected] = useState<DepositoDto>();
     const debouncedQuery = useDebouncedValue(searchQuery, 500);
 
-
-    const handleOpenDialog = (deposit : Deposit) => {
+    const handleOpenDialog = (deposit : DepositoDto) => {
         setOpenDialog(true);
         setDepositSelected(deposit);
     };
 
     const handleDelete = async (id: string) => {
         try {
-            await removeDeposit(id);
+            await depositoControllerRemove(id);
             setOpenDialog(false);
+            await refetch();
+            notify("delete", "Depósito eliminado correctamente");
+            setPage(1);
         } catch (e) {
             const error = e as { response: { data: { message: string } } };
             if (error.response?.data?.message) {
@@ -43,10 +44,10 @@ export default function DepositPage() {
     };
 
 
-    const filtered = deposits.filter((d) =>
+    const filtered = deposits?.data?.filter((d) =>
         d.nombre.toLowerCase().includes(debouncedQuery.toLowerCase()) ||
         d.direccion?.ciudad.toLowerCase().includes(debouncedQuery.toLowerCase())
-    );
+    ) || [];
 
     const totalPages = Math.ceil(filtered.length / rowsPerPage);
     const paginated = filtered.slice((page - 1) * rowsPerPage, page * rowsPerPage);

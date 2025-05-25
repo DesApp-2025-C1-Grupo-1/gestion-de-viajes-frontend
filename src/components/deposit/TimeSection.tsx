@@ -1,10 +1,10 @@
-import { Grid, Typography, SelectChangeEvent, TextField } from "@mui/material";
+import { Grid, Typography, TextField } from "@mui/material";
 import { format } from "date-fns";
-import { Deposit } from "../../types";
 import { LocalizationProvider, renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { DepositoDto } from "../../api/generated";
 interface BasicInfoSectionProps {
-  formData: Partial<Deposit>;
+  formData: Partial<DepositoDto>;
   errors: Record<string, string>;
   touched: Record<string, boolean>;
   loading: boolean;

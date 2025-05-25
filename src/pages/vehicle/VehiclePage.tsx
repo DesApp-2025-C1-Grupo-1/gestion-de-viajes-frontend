@@ -1,4 +1,4 @@
-import { Backdrop, Button, CircularProgress, Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { Button, Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import { SectionHeader } from "../../components/SectionHeader";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -22,7 +22,6 @@ export default function VehiclePage() {
     const [vehicleSelected, setVehicleSelected] = useState<VehiculoDto>();
     const vehicles = data?.data || [];
     const debouncedQuery = useDebouncedValue(searchQuery, 500);
-    const [loadingDelete, setLoadingDelete] = useState<boolean>(false);
 
     const handleOpenDialog = (vehicle : VehiculoDto) => {
         setOpenDialog(true);
@@ -32,7 +31,6 @@ export default function VehiclePage() {
     const handleDelete = async () => {
         const id = vehicleSelected?._id
         try {
-            setLoadingDelete(true);
             await vehiculoControllerRemove(id!);
             await refetch();
             setOpenDialog(false);
@@ -42,10 +40,6 @@ export default function VehiclePage() {
             if (error.response?.data?.message) {
                 notify("error", error.response.data.message);
             }
-        }
-        finally{
-            setLoadingDelete(false);
-            setVehicleSelected(undefined);
         }
     };
 

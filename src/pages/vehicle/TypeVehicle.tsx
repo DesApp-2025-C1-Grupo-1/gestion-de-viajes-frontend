@@ -5,7 +5,7 @@ import { VehicleGrid } from "../../components/vehicle/type-vehicle/VehicleGrid";
 import { EmptyState } from "../../components/EmptyState";
 import  LoadingState  from "../../components/LoadingState";
 import { SectionHeader } from "../../components/SectionHeader";
-import { tipoVehiculoControllerCreate, tipoVehiculoControllerRemove, tipoVehiculoControllerUpdate, TipoVehiculoDto, useTipoVehiculoControllerFindAll, useTipoVehiculoControllerRemove } from "../../api/generated";
+import { tipoVehiculoControllerCreate, tipoVehiculoControllerRemove, tipoVehiculoControllerUpdate, TipoVehiculoDto, useTipoVehiculoControllerFindAll } from "../../api/generated";
 import { useNotify } from "../../hooks/useNotify";
 
 export default function TypeVehicle() {

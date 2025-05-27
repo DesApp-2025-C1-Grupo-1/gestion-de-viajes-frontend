@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import SearchBar from "../../components/SearchBar";
 import { SectionHeader } from "../../components/SectionHeader";
-import { Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow ,Box, Paper, Typography, Chip} from "@mui/material";
 import LoadingState from "../../components/LoadingState";
 import MenuItem from "../../components/buttons/MenuItem";
 import { useNavigate } from "react-router-dom";
@@ -11,6 +11,11 @@ import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 import { formatTelefono } from "../../lib/formatters";
 import { useNotify } from "../../hooks/useNotify";
 import { depositoControllerRemove, DepositoDto, useDepositoControllerFindAll, useDepositoControllerRemove } from "../../api/generated";
+import {  Building2, Clock, Eye, MapPin, Users } from "lucide-react";
+import InfoSection from "../../components/InfoSection";
+import { HeaderDetails } from "../../components/detailts/HeaderDetails";
+import { Field } from "../../components/detailts/Field";
+import { DetailsDeposit } from "../../components/deposit/DetailsDeposit";
 
 
 export default function DepositPage() {
@@ -19,7 +24,8 @@ export default function DepositPage() {
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);
     const {rowsPerPage} = useAutoRowsPerPage();
-    const [openDialog, setOpenDialog] = useState(false);
+    const [openDialog, setOpenDialog] = useState<boolean>(false);
+    const [openDetailsDialog, setOpenDetailsDialog] = useState<boolean>(false);
     const [depositSelected, setDepositSelected] = useState<DepositoDto>();
     const debouncedQuery = useDebouncedValue(searchQuery, 500);
 
@@ -27,6 +33,13 @@ export default function DepositPage() {
         setOpenDialog(true);
         setDepositSelected(deposit);
     };
+
+    const handleOpenDetails = (deposit: DepositoDto) => {
+        setOpenDetailsDialog(true);
+        setDepositSelected(deposit);
+    };
+
+    const capitalize = (text: string) => text.charAt(0).toLocaleUpperCase() + text.slice(1).toLocaleLowerCase();
 
     const handleDelete = async (id: string) => {
         try {
@@ -133,8 +146,11 @@ export default function DepositPage() {
                                         <TableCell>{formatTelefono(deposit.contacto?.telefono)}</TableCell>
                                         <TableCell sx={{ verticalAlign: "middle"}}>
                                             <MenuItem  handleOpenDialog={() => handleOpenDialog(deposit)}
+                                            handleOpenDetails={() => handleOpenDetails(deposit)}
                                             id={deposit._id}
-                                            />
+                                            >
+                                                <Eye className="text-gray-500 hover:text-gray-700 size-4" />
+                                            </MenuItem>
                                             
                                         </TableCell>
                                             
@@ -168,14 +184,25 @@ export default function DepositPage() {
                 <ConfirmDialog 
                     open={openDialog}
                     onClose={() => setOpenDialog(false)}
-                    title="Eliminar vehículo"
+                    title="Eliminar Depósito"
+                    aria-labelledby="confirm-delete-title"
+                    aria-describedby="confirm-delete-description"
                     content={<p>
-                        ¿Estás seguro que deseas eliminar el vehículo{" "}
+                        ¿Estás seguro que deseas eliminar el Depósito{" "}
                         <strong>{depositSelected?.nombre}</strong>?
                     </p>}
                     onConfirm={() => handleDelete(depositSelected?._id)}
                 />
             )}
+
+            {depositSelected && (
+                <DetailsDeposit 
+                    depositSelected={depositSelected}
+                    setOpenDetailsDialog={setOpenDetailsDialog}
+                    openDetailsDialog={openDetailsDialog}
+                />
+            )}
+
         </>
     )
 }

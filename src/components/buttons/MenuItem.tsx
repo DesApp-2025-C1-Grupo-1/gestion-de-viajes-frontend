@@ -6,9 +6,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 interface MenuItemProps{
     handleOpenDialog:() => void;
     id:string;
+    children?: React.ReactNode;
+    handleOpenDetails?: () => void;
 }
 
-export default function MenuItem({handleOpenDialog, id}: MenuItemProps){
+export default function MenuItem({handleOpenDialog, id, children, handleOpenDetails}: MenuItemProps){
     const navigate = useNavigate();
     const location = useLocation();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -82,6 +84,21 @@ export default function MenuItem({handleOpenDialog, id}: MenuItemProps){
                         </ListItemIcon>
                         <ListItemText primary="Eliminar" primaryTypographyProps={{ fontSize: 13, color: "#DC2626" }} />
                     </ListItemButton>
+
+                    {children && handleOpenDetails &&(
+                        <ListItemButton
+                            onClick={() => {
+                                handleOpenDetails();
+                                handleClose();
+                            }}
+                            sx={{ gap: 1, px: 2 }}
+                        >
+                            <ListItemIcon sx={{ minWidth: 20 }}>
+                                {children}
+                            </ListItemIcon>
+                            <ListItemText primary="Detalles" primaryTypographyProps={{ fontSize: 13, color: "#4B5563" }} />
+                        </ListItemButton>
+                    )}
                 </List>
             </Popover>
         </div>

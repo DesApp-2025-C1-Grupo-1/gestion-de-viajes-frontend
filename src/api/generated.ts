@@ -116,7 +116,7 @@ export interface ContactoDto {
   /** ID Teléfono de contacto */
   telefono: TelefonoDto;
   /** Correo electrónico del contacto */
-  mail: string;
+  email: string;
 }
 
 export interface EmpresaDto {
@@ -128,14 +128,8 @@ export interface EmpresaDto {
   nombre_comercial: string;
   /** CUIT de la empresa (único) */
   cuit: string;
-  /** Id de la dirección */
-  domicilio_fiscal: DireccionDto;
-  /** Teléfono de contacto */
-  telefono: string;
-  /** Correo electrónico */
-  mail: string;
-  /** ID del contacto */
-  nombre_contacto: ContactoDto;
+  direccion: DireccionDto;
+  contacto: ContactoDto;
 }
 
 export interface VehiculoDto {
@@ -202,7 +196,7 @@ export interface CreateTelefonoDto {
   /** Código de país */
   codigo_pais: string;
   /** Código de área */
-  codigo_area: string;
+  codigo_area?: string;
   /** Número de teléfono sin código de país ni área */
   numero: string;
 }
@@ -299,10 +293,9 @@ export interface ChoferDto {
   licencia: string;
   /** Tipo de licencia según clasificación nacional */
   tipo_licencia: string;
-  /** Número de teléfono del chofer */
-  telefono: string;
   /** Correo electrónico del chofer */
   email: string;
+  telefono: TelefonoDto;
   empresa: EmpresaDto;
   vehiculo: VehiculoDto;
 }
@@ -346,7 +339,7 @@ export interface DepositoDto {
   /** Restricciones del depósito */
   restricciones: string;
   direccion: DireccionDto;
-  contacto: DireccionDto;
+  contacto: ContactoDto;
 }
 
 export interface UpdateDepositoDto {

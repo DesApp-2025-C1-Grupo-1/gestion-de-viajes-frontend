@@ -94,7 +94,7 @@ export const DetailsDeposit = ({
                 </Grid>
                 {depositSelected.restricciones && (
                   <Box mt={2}>
-                    <Typography variant="subtitle2" sx={{ color: "#4D6280" }} gutterBottom>
+                    <Typography variant="caption" color="text.secondary" gutterBottom>
                       Restricciones de Acceso
                     </Typography>
                     <Typography variant="body2">

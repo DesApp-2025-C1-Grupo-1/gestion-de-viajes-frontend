@@ -109,13 +109,8 @@ export default function TypeVehicle() {
                 open={!!typeToDelete}
                 onClose={closeConfirmDialog}
                 onConfirm={confirmDelete}
-                title="Confirmar eliminación"
-                content={
-                <p>
-                    ¿Estás seguro que deseas eliminar el tipo de vehículo{" "}
-                    <strong>{typeToDelete?.nombre}</strong>?
-                </p>
-                }
+                title="Tipo de Vehículo"
+                entityName={typeToDelete?.nombre || ""}
             />
     
         </>

@@ -191,11 +191,8 @@ export default function VehiclePage() {
                 <ConfirmDialog 
                     open={openDialog}
                     onClose={() => setOpenDialog(false)}
-                    title="Eliminar vehículo"
-                    content={<p>
-                        ¿Estás seguro que deseas eliminar el vehículo{" "}
-                        <strong>{vehicleSelected?.patente}</strong>?
-                    </p>}
+                    title="Vehículo"
+                    entityName={vehicleSelected.patente}
                     onConfirm={() => handleDelete(vehicleSelected?._id)}
                 />
             )}

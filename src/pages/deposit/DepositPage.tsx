@@ -184,13 +184,10 @@ export default function DepositPage() {
                 <ConfirmDialog 
                     open={openDialog}
                     onClose={() => setOpenDialog(false)}
-                    title="Eliminar Depósito"
+                    title="Depósito"
                     aria-labelledby="confirm-delete-title"
                     aria-describedby="confirm-delete-description"
-                    content={<p>
-                        ¿Estás seguro que deseas eliminar el Depósito{" "}
-                        <strong>{depositSelected?.nombre}</strong>?
-                    </p>}
+                    entityName={depositSelected.nombre}
                     onConfirm={() => handleDelete(depositSelected?._id)}
                 />
             )}

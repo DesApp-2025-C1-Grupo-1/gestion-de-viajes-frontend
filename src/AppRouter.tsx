@@ -2,12 +2,14 @@ import { Route, Routes } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import TypeVehicle from "./pages/vehicle/TypeVehicle";
 import VehiclePage from "./pages/vehicle/VehiclePage";
-import DriverCreateEdit from "./pages/driver/driverCreateEdit"; 
+import DriverCreateEdit from "./pages/driver/DriverCreateEdit"; 
 import DriverPage from "./pages/driver/driverPage";
 import Layout from "./components/Layout";
 import VehicleForm from "./pages/vehicle/VehicleForm";
 import DepositPage from "./pages/deposit/DepositPage";
 import DepositFormPage from "./pages/deposit/DepositForm";
+import TripPage from "./pages/trip/TripPage";
+import TripFormPage from "./pages/trip/TripForm";
 
 export function AppRouter() {
   return (
@@ -24,6 +26,9 @@ export function AppRouter() {
         <Route path="/depots" element={<DepositPage />} />
         <Route path="/depots/form" element={<DepositFormPage />} />
         <Route path="/depots/edit/:id" element={<DepositFormPage />} />
+        <Route path="/trips" element={<TripPage />} />
+        <Route path="/trips/form" element={<TripFormPage />} />
+        <Route path="/trips/edit/:id" element={<TripFormPage />} />
       </Route>
     </Routes>
   );

@@ -1,11 +1,9 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { SectionHeader } from "../../components/SectionHeader";
-import { Box, Button, Paper, TextField, Select, MenuItem, Typography, Backdrop, CircularProgress, Grid, Alert, SelectChangeEvent, FormHelperText} from "@mui/material";
+import { Box, Button, Paper, TextField, Select, MenuItem, Typography, Backdrop, CircularProgress, Grid, Alert, FormHelperText} from "@mui/material";
 import { useVehicleForm } from "../../hooks/useVehicleForm";
-import {useEmpresaControllerFindAll, useTipoVehiculoControllerFindAll } from "../../api/generated";
 import { Controller } from "react-hook-form";
 import { CreateVehiculoSchema } from "../../api/schemas";
-import { useEffect } from "react";
 
 export default function VehicleFormPage() {
     const {id} = useParams();
@@ -18,19 +16,32 @@ export default function VehicleFormPage() {
         register,
         control,
         isValid,
-        reset,
+        isLoading,
+        error: formError,
+        companies,
+        errorEmpresa,
+        vehicleTypes,
+        errorTipoVehiculo,
+        loadingAuxData
     } = useVehicleForm(id);
 
-    const {data: companies, isLoading,error} = useEmpresaControllerFindAll();
-
-    const {data: vehicleTypes} = useTipoVehiculoControllerFindAll();
-
-    if (isLoading) return <CircularProgress />;
-    if (error) return <Alert severity="error">Error al cargar empresas</Alert>;
+    if (isLoading || loadingAuxData) return <CircularProgress />;
+    if (errorEmpresa || formError || errorTipoVehiculo) return (
+        <Alert severity="error">
+            {errorEmpresa
+                ? "Error al cargar las empresas transportistas."
+                : errorTipoVehiculo
+                    ? "Error al cargar los tipos de vehículo."
+                    : typeof formError === "string"
+                        ? formError
+                        : formError?.message || "Error al cargar el formulario."
+            }
+        </Alert>
+    );
 
     const handleFormSubmit = (data: CreateVehiculoSchema) => {
         onSubmit(data);
-      };
+    };
 
 
     return (

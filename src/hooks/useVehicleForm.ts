@@ -1,15 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useNotify } from "./useNotify";
-import {
-  useVehiculoControllerFindOne,
-  vehiculoControllerCreate,
-  vehiculoControllerUpdate,
-  CreateVehiculoDto,
-  UpdateVehiculoDto,
-} from "../api/generated";
+import {useVehiculoControllerFindOne, vehiculoControllerCreate, vehiculoControllerUpdate, CreateVehiculoDto, UpdateVehiculoDto, useEmpresaControllerFindAll, useTipoVehiculoControllerFindAll} from "../api/generated";
 import { useForm } from "react-hook-form";
-import { CreateVehiculoSchema, UpdateVehiculoSchema, VehiculoSchema } from "../api/schemas";
+import { CreateVehiculoSchema, UpdateVehiculoSchema } from "../api/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 
@@ -38,7 +32,10 @@ export const useVehicleForm = (id?: string) => {
       volumen_carga: 0,
     },
   })
-  const { data } = useVehiculoControllerFindOne(id!, { query: { enabled: isEditing } });
+  const { data, isLoading, error } = useVehiculoControllerFindOne(id!, { query: { enabled: isEditing } });
+  const { data: companies, error: errorEmpresa, isLoading: loadingEmpresas } = useEmpresaControllerFindAll();
+  const { data: vehicleTypes, error: errorTipoVehiculo, isLoading: loadingTipos } = useTipoVehiculoControllerFindAll();
+
   const { notify } = useNotify("Vehículo");
 
   useEffect(() => {
@@ -103,6 +100,12 @@ export const useVehicleForm = (id?: string) => {
     control,
     isValid,
     reset,
+    isLoading,
+    error,
+    companies,
+    errorEmpresa,
+    vehicleTypes,
+    errorTipoVehiculo,
+    loadingAuxData: loadingEmpresas || loadingTipos,
   }
 }
-

@@ -108,9 +108,9 @@ export default function VehiclePage() {
                         <TableHead >
                             <TableRow>
                                 <TableCell 
-                            sx={{
-                                borderRadius: "8px",
-                            }}>Patente</TableCell>
+                                sx={{
+                                    borderRadius: "8px",
+                                }}>Patente</TableCell>
                                 <TableCell>Modelo</TableCell>
                                 <TableCell>Año</TableCell>
                                 <TableCell>Capacidad(kg)</TableCell>

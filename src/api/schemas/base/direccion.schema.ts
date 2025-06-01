@@ -1,8 +1,7 @@
 import {z} from 'zod';
 import { tipoDireccionSchema } from '../enums/tipoDireccion.schema';
 
-export const DireccionSchema = z.object({
-    id: z.string().uuid(),
+export const CreateDireccionSchema = z.object({
     calle: z.string()
         .min(1, "Calle es requerida")
         .max(100, "Máximo 100 caracteres"),
@@ -22,4 +21,14 @@ export const DireccionSchema = z.object({
 
 })
 
-export type Direccion = z.infer<typeof DireccionSchema>;
+export const DireccionSchema = CreateDireccionSchema.extend({
+    _id: z.string().uuid(),
+});
+
+export const UpdateDireccionSchema = CreateDireccionSchema.partial().extend({
+    _id: z.string().uuid(),
+});
+
+export type DireccionSchema = z.infer<typeof DireccionSchema>;
+export type CreateDireccionSchema = z.infer<typeof CreateDireccionSchema>;
+export type UpdateDireccionSchema = z.infer<typeof UpdateDireccionSchema>;

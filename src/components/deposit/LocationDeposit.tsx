@@ -1,20 +1,17 @@
 import { Grid, TextField, Typography } from "@mui/material";
-import { DepositoDto } from "../../api/generated";
+import { UseFormRegister } from "react-hook-form";
+import { CreateDepositoSchema } from "../../api/schemas";
 
 interface LocationSectionProps {
-  formData: Partial<DepositoDto>;
-  errors: Record<string, string>;
-  touched: Record<string, boolean>;
+  errors: Record<string, any>;
   loading: boolean;
-  handleChange: (e: React.ChangeEvent<any>) => void;
+  register: UseFormRegister<CreateDepositoSchema>;
 }
 
 const LocationSection = ({
-  formData,
   errors,
-  touched,
   loading,
-  handleChange
+  register,
 }: LocationSectionProps) => {
   return (
     <>
@@ -26,15 +23,14 @@ const LocationSection = ({
         <Grid item xs={12} md={6}>
           <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Latitud</Typography>
           <TextField
-            name="lat"
+            id="lat"
             placeholder="Ej: -34.6037"
             type="number"
             fullWidth
             className="inside-paper"
-            value={formData.lat}
-            onChange={handleChange}
-            error={touched.lat && !!errors.lat}
-            helperText={touched.lat && errors.lat}
+            {...register("lat", {valueAsNumber:true})}
+            error={!!errors.lat}
+            helperText={errors.lat?.message}
             disabled={loading}
           />
         </Grid>
@@ -42,15 +38,14 @@ const LocationSection = ({
         <Grid item xs={12} md={6}>
           <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Longitud</Typography>
           <TextField
-            name="long"
+            id="long"
             placeholder="Ej: -58.3816"
             type="number"
             fullWidth
             className="inside-paper"
-            value={formData.long}
-            onChange={handleChange}
-            error={touched.long && !!errors.long}
-            helperText={touched.long && errors.long}
+            {...register("long", {valueAsNumber:true})}
+            error={!!errors.long}
+            helperText={errors.long?.message}
             disabled={loading}
           />
         </Grid>

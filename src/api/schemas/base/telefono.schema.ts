@@ -1,7 +1,6 @@
 import {z} from 'zod';
 
-export const TelefonoSchema = z.object({
-    id: z.string().uuid(),
+export const CreateTelefonoSchema = z.object({
     codigo_pais: z.string()
         .min(1, "Código de país es requerido")	
         .regex(/^\d+$/, "El código de país debe contener solo números"),
@@ -16,4 +15,14 @@ export const TelefonoSchema = z.object({
         .regex(/^\d+$/, "El número debe contener solo números"),
 });
 
-export type Telefono = z.infer<typeof TelefonoSchema>;
+export const TelefonoSchema = CreateTelefonoSchema.extend({
+    _id: z.string().uuid("El ID debe ser un UUID válido"),
+});
+
+export const UpdateTelefonoSchema = CreateTelefonoSchema.extend({
+    _id: z.string().uuid("El ID debe ser un UUID válido"),
+});
+
+export type TelefonoSchema = z.infer<typeof TelefonoSchema>;    
+export type CreateTelefonoSchema = z.infer<typeof CreateTelefonoSchema>;
+export type UpdateTelefonoSchema = z.infer<typeof UpdateTelefonoSchema>;

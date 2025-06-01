@@ -1,21 +1,18 @@
-import { Grid, Typography, FormControl, Select, MenuItem, SelectChangeEvent, TextField } from "@mui/material";
-import { DepositoDto } from "../../api/generated";
+import { Grid, Typography, FormControl, Select, MenuItem, TextField } from "@mui/material";
+import { Control, Controller, UseFormRegister } from "react-hook-form";
+import { CreateDepositoSchema } from "../../api/schemas";
 interface BasicInfoSectionProps {
-  formData: Partial<DepositoDto>;
-  errors: Record<string, string>;
-  touched: Record<string, boolean>;
+  errors: Record<string, any>;
   loading: boolean;
-  handleChange: (e: React.ChangeEvent<any>) => void;
-  handleSelectChange: (e: SelectChangeEvent<string>) => void;
+  register: UseFormRegister<CreateDepositoSchema>;
+  control: Control<CreateDepositoSchema>; // Asegúrate de pasar el control del formulario
 }
 
 const BasicInfoSection = ({
-  formData,
   errors,
-  touched,
   loading,
-  handleChange,
-  handleSelectChange
+  register,
+  control,
 }: BasicInfoSectionProps) => {
 
   return (
@@ -28,14 +25,13 @@ const BasicInfoSection = ({
         <Grid item xs={12} md={6}>
           <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Nombre de depósito</Typography>
           <TextField
-            name="nombre"
+            id="nombre"
             placeholder="Ej: Centro de distribución Norte"
             fullWidth
             className="inside-paper"
-            value={formData.nombre}
-            onChange={handleChange}
-            error={touched.nombre && !!errors.nombre}
-            helperText={touched.nombre && errors.nombre}
+            {...register("nombre")}
+            error={!!errors.nombre}
+            helperText={errors.nombre?.message}
             disabled={loading}
           />
         </Grid>
@@ -45,23 +41,25 @@ const BasicInfoSection = ({
         <Grid item xs={12} md={6}>
           <FormControl fullWidth>
             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Tipo de depósito</Typography>
-            <Select
+            <Controller 
               name="tipo"
-              fullWidth
-              className="inside-paper"
-              value={formData.tipo}
-              onChange={handleSelectChange}
-              error={touched.tipo && !!errors.tipo}
-              disabled={loading}
-            >
-              <MenuItem value="propio">Propio</MenuItem>
-              <MenuItem value="tercero">Tercero</MenuItem>
-            </Select>
-            {touched.tipo && errors.tipo && (
-              <Typography color="error" variant="caption" display="block">
-                {errors.tipo}
-              </Typography>
-            )}
+              control={control}
+              render={({ field }) => (
+                <Select
+                  fullWidth
+                  className="inside-paper"
+                  {...field}
+                  value={field.value || "propio"} // Asegura que tenga un valor por defecto
+                  error={!!errors.tipo}
+                  onChange={(event) => field.onChange(event.target.value)}
+                  disabled={loading}
+                >
+                  <MenuItem value="propio">Propio</MenuItem>
+                  <MenuItem value="tercero">Tercero</MenuItem>
+                </Select>
+              )}
+            
+            />
           </FormControl>
         </Grid>
       </Grid>

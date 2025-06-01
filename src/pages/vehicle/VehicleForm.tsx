@@ -51,13 +51,13 @@ export default function VehicleFormPage() {
                 description={isEditing ? "Modifica los datos del vehículo" : "Aquí puedes registrar un nuevo vehículo."}
             />
 
-            <Paper  sx={{maxHeight:"85%", padding:3, overflow:"auto", mx:'auto', width:"100%", borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "0.5px solid #C7C7C7", pb: 5} }>
-                <form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-col">
-                    <Typography sx={{color: "#5A5A65" , fontWeight: 550 , fontSize: "1.2rem", mb:4}}>Datos personales</Typography>
+            <Paper  sx={{maxHeight:"90%", padding:4, overflow:"auto", mx:'auto', width:"100%", borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "0.5px solid #C7C7C7", pb: 5}  }>
+                <form onSubmit={handleSubmit(handleFormSubmit)} className="w-full max-w-[800px] mx-auto">
+                    <Typography variant="h6" sx={{color: "#5A5A65" , fontWeight: 550 , fontSize: "1.4rem", mb:2}}>Datos personales</Typography>
 
-                    <Grid container spacing={5} mb={3} > 
-                        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}> 
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>Patente</Typography>
+                    <Grid container spacing={3} mb={4} > 
+                        <Grid item xs={12} sm={6} > 
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Patente</Typography>
                             <TextField
                                 id="patente" 
                                 {...register("patente")}
@@ -70,8 +70,8 @@ export default function VehicleFormPage() {
                                 disabled={isLoading}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={6} md={6} lg={4} xl={3} >
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>Modelo</Typography>
+                        <Grid item xs={12} sm={6} >
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Modelo</Typography>
                             <TextField  
                                 id="modelo"
                                 placeholder="Ej: Corolla" 
@@ -86,17 +86,17 @@ export default function VehicleFormPage() {
                         </Grid>
                     </Grid>
 
-                    <Grid container spacing={5} mb={3} > 
-                        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}> 
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>Marca</Typography>
+                    <Grid container spacing={3} mb={4} > 
+                        <Grid item xs={12} sm={6} > 
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Marca</Typography>
                             <TextField className="inside-paper" id="marca" {...register("marca")} placeholder="Ej: Toyota"  fullWidth inputProps={{ "aria-label": "Marca del vehículo" }}
                                 error={!!formErrors.marca}
                                 helperText={formErrors.marca?.message}
                                 disabled={isLoading}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}> 
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>Año</Typography>
+                        <Grid item xs={12} sm={6} > 
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Año</Typography>
                             <TextField className="inside-paper"  type="number" id="año" placeholder="Ingresar" {...register("año", {valueAsNumber:true})} fullWidth inputProps={{ "aria-label": "Año del vehículo" }} 
                                 error={!!formErrors.año}
                                 helperText={formErrors.año?.message}
@@ -105,17 +105,17 @@ export default function VehicleFormPage() {
                         </Grid>
                     </Grid>
 
-                    <Grid container spacing={5} mb={3} > 
-                        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}> 
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>Volumen de carga</Typography>
+                    <Grid container spacing={3} mb={4} > 
+                        <Grid item xs={12} sm={6}> 
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Volumen de carga</Typography>
                             <TextField className="inside-paper" id="volumen_carga" type="number" placeholder="Ingresar" {...register("volumen_carga", {valueAsNumber:true})} fullWidth inputProps={{ "aria-label": "Volumen de carga del vehículo" }} 
                                 error={!!formErrors.volumen_carga}
                                 helperText={formErrors.volumen_carga?.message}
                                 disabled={isLoading}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}> 
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>Peso de carga</Typography>
+                        <Grid item xs={12} sm={6}> 
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Peso de carga</Typography>
                             <TextField className="inside-paper" id="peso_carga" type="number"  placeholder="Ingresar" {...register("peso_carga", {valueAsNumber:true})} fullWidth inputProps={{ "aria-label": "Peso de carga del vehículo" }} 
                                 error={!!formErrors.peso_carga}
                                 helperText={formErrors.peso_carga?.message}
@@ -124,11 +124,11 @@ export default function VehicleFormPage() {
                         </Grid>
                     </Grid>
 
-                    <Typography sx={{color: "#5A5A65" , fontWeight: 550 , fontSize: "1.2rem", mb:4}}>Asignar recursos</Typography>
+                    <Typography variant="h6" sx={{color: "#5A5A65" , fontWeight: 550 , fontSize: "1.4rem", mb:2}}>Asignar recursos</Typography>
 
-                    <Grid container spacing={5} mb={3} > 
-                        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}> 
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>Empresa Transportista</Typography>
+                    <Grid container spacing={3} mb={4} > 
+                        <Grid item xs={12} sm={6}> 
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Empresa Transportista</Typography>
                             <Controller
                             control={control}
                             name="empresa"
@@ -154,8 +154,8 @@ export default function VehicleFormPage() {
                                 {formErrors.empresa?.message}
                             </FormHelperText>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}> 
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>Tipo de vehículo a utilizar</Typography>
+                        <Grid item xs={12} sm={6}> 
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Tipo de vehículo a utilizar</Typography>
                             <Controller
                                 control={control}
                                 name="tipo"

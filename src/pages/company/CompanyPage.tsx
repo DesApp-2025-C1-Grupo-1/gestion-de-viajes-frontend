@@ -108,7 +108,7 @@ export default function CompanyPage(){
                                         <TableCell sx={{fontWeight: "bold"}}>{company.razon_social}</TableCell>
                                         <TableCell>{company.nombre_comercial}</TableCell>
                                         <TableCell>{company.cuit}</TableCell>
-                                        <TableCell>{company.direccion?.calle}</TableCell>
+                                        <TableCell>{`${company.direccion?.calle} ${company.direccion?.numero}`}</TableCell>
                                         <TableCell>{company.contacto?.email}</TableCell>
                                         <TableCell sx={{ verticalAlign: "middle"}}>
                                             <MenuItem  handleOpenDialog={() => handleOpenDialog(company)}
@@ -120,14 +120,38 @@ export default function CompanyPage(){
                         </TableBody>
                     </Table>
                 </TableContainer>
-                
             </div>
+
+            <div className="flex justify-between gap-2 items-center sm:px-4 py-4 ">
+                <p className="text-sm w-full">
+                    Mostrando {Math.min((page-1) * rowsPerPage+1, filtered.length)} - {Math.min(page* rowsPerPage, filtered.length)} de {filtered.length} empresas
+                </p>
+                <Pagination 
+                    count={totalPages}
+                    page={page}
+                    onChange={handleChangePage}
+                    shape="rounded"
+                     color="primary"
+                    sx={{width: "100%", display: "flex", justifyContent: "flex-end"}}
+                />
+            </div>
+
+            {empresaSelected && (
+                <ConfirmDialog 
+                    open= {openDialog}
+                    onClose={() => setOpenDialog(false)}
+                    title="empresa"
+                    entityName={empresaSelected.nombre_comercial}
+                    onConfirm={() => handleDelete(empresaSelected?._id)}
+                />
+            )}
         </>
     );
 }
 /*
 export default function CompanyPage(){
-    const {company, isLoading, removeCompany} = useCompany();
+    const {company, isLoading, removeCompany} = useCompany(
+    );
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);
     const {rowsPerPage} = useAutoRowsPerPage();

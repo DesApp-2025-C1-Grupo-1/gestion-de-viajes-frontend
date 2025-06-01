@@ -161,7 +161,7 @@ export default function CompanyFormPage() {
                     <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Información de Contacto</Typography>
                      
                     <Grid container spacing={5} mb={3}>
-                        <Grid item xs={12} sm={6} md={6} lg={6} xl={5}>
+                        <Grid item xs={12} sm={6} md={6} lg={8} xl={6}>
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>Nombre de contacto</Typography>
                             <TextField
                                 name="contacto.nombre"
@@ -176,7 +176,7 @@ export default function CompanyFormPage() {
                                 disabled={loading}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={6} md={6} lg={6} xl={5}>
+                        <Grid item xs={12} sm={6} md={6} lg={8} xl={6}>
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem' }}>Correo electrónico</Typography>
                             <TextField
                                 name="contacto.email"

@@ -41,7 +41,6 @@ const initialFormState: EmpresaDto = {
         nombre: "",
         telefono: {
             _id: "",
-
             codigo_pais: "",
             codigo_area: "",
             numero: ""
@@ -151,13 +150,24 @@ export const useFormCompany = (id?: string) => {
             }
         });
 
+        /*
+        const cleanedCuit = data.cuit.replace(/-/g, ""); 
+
+        console.log("CUIT ingresado:", data.cuit);
+        console.log("CUIT sin guiones:", cleanedCuit);
+        console.log("Longitud final del CUIT:", cleanedCuit?.length);
+
+        if (!cleanedCuit || cleanedCuit.length !== 11) {
+            newErrors["cuit"] = "El CUIT debe contener exactamente 11 números.";
+            isValid = false;
+        }*/
+
         const phoneErrors = validateTelefono(data);
         Object.assign(newErrors, phoneErrors);
         if (Object.keys(phoneErrors).length > 0){
             isValid = false;
         };
         
-        //setErrors(newErrors);
         setErrors(prev => ({ ...prev, ...newErrors }));
         return isValid;
     },[validateField]);
@@ -186,14 +196,40 @@ export const useFormCompany = (id?: string) => {
         setErrors(prev => ({...prev, [name]: validateField(name, value)}));
     }, [validateField]);
 
-    const handleSelectChange = useCallback((event: SelectChangeEvent<string>) => {
-        const {name,value} = event.target;
-        if(!name) return;
+    const formatCuit = (value: string): string => {
+        let initialValue = value.replace(/-/g, "");
 
-        setFormData(prev => ({...prev, [name]: value}));
-        setTouched(prev => ({...prev, [name]: true}));
-        setErrors(prev => ({...prev, [name]: validateField(name,value)}));
-    }, [validateField]);
+        if (initialValue.length > 2){
+            initialValue = initialValue.slice(0,2) + "-" + initialValue.slice(2);
+        }
+        if (initialValue.length > 10){
+            initialValue = initialValue.slice(0,11) + "-" + initialValue.slice(11);
+        }
+        return initialValue;
+    };
+   
+    /*
+    const handleChangeCuit = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        if (!name) return;
+
+        const formattedCuit = formatCuit(value); 
+
+        setFormData((prev) => {
+            const updated = { ...prev } as any;
+            let current = updated;
+
+            const parts = name.split(".");
+            for (let i = 0; i < parts.length - 1; i++) {
+                const key = parts[i];
+                if (!current[key]) current[key] = {};
+                current = current[key];
+            }
+
+            current[parts[parts.length - 1]] = formattedCuit; 
+            return updated;
+        });
+    }, [setFormData]);*/
 
     const handleSubmit = useCallback(async(e: React.FormEvent) => {
         e.preventDefault();
@@ -262,7 +298,6 @@ export const useFormCompany = (id?: string) => {
     
     }, [formData, isEditing, id, navigate, notify, validateForm]);
 
-    console.log(formData)
-
-    return { formData, loading, errors, touched, handleChange, handleSelectChange, handleSubmit, isEditing, setFormData};
+    return { formData, loading, errors, touched, handleChange, handleSubmit, isEditing, setFormData};
 }
+//handleChangeCuit

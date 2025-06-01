@@ -111,8 +111,6 @@ export interface ContactoDto {
   _id: string;
   /** Nombre del contacto */
   nombre: string;
-  /** Apellido del contacto */
-  apellido: string;
   /** ID Teléfono de contacto */
   telefono: TelefonoDto;
   /** Correo electrónico del contacto */

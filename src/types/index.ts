@@ -64,7 +64,7 @@ export type Contacto = {
 export type Telefono = {
   _id?: string
   codigo_pais: string
-  codigo_area: string
+  codigo_area?: string
   numero: string
 }
 

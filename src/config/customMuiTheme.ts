@@ -6,7 +6,20 @@ export const customMuiTheme = createTheme({
       main: '#E65F2B',
     },
     secondary: {
-      main: '#f44336',
+      main: '#f44336', // Usado como color de alerta por defecto, puedes cambiarlo
+    },
+    error: {
+      main: '#DD5050', // --color-delete
+    },
+    warning: {
+      main: '#E01414', // --color-delete-hover
+    },
+    grey: {
+      100: '#F6F7FB', // --color-table-header
+      200: '#C7C7C7', // --color-line
+    },
+    success: {
+      main: '#2F691D', // --color-title-type
     },
   },
   typography: {
@@ -128,6 +141,15 @@ export const customMuiTheme = createTheme({
           fontSize: '0.900rem'
         }
       }
+    },
+    MuiDialog: {
+      styleOverrides: {
+        paper: {
+          borderRadius: '12px',
+          padding: '10px',
+          boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.1)',
+        },
+      },
     },
   }
 });

@@ -108,9 +108,9 @@ export default function VehiclePage() {
                         <TableHead >
                             <TableRow>
                                 <TableCell 
-                            sx={{
-                                borderRadius: "8px",
-                            }}>Patente</TableCell>
+                                sx={{
+                                    borderRadius: "8px",
+                                }}>Patente</TableCell>
                                 <TableCell>Modelo</TableCell>
                                 <TableCell>Año</TableCell>
                                 <TableCell>Capacidad(kg)</TableCell>
@@ -191,11 +191,8 @@ export default function VehiclePage() {
                 <ConfirmDialog 
                     open={openDialog}
                     onClose={() => setOpenDialog(false)}
-                    title="Eliminar vehículo"
-                    content={<p>
-                        ¿Estás seguro que deseas eliminar el vehículo{" "}
-                        <strong>{vehicleSelected?.patente}</strong>?
-                    </p>}
+                    title="Vehículo"
+                    entityName={vehicleSelected.patente}
                     onConfirm={() => handleDelete(vehicleSelected?._id)}
                 />
             )}

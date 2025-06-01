@@ -39,7 +39,6 @@ const initialFormState: EmpresaDto = {
     contacto: {
         _id: "",
         nombre: "",
-        apellido: "",
         telefono: {
             _id: "",
 

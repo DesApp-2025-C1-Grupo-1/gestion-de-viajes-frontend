@@ -11,6 +11,8 @@ import CompanyFormPage from "./pages/company/companyForm";
 //import CompanyCreateEdit from "./pages/company/CompanyCreateEdit";
 //import CompanyFormPage from "./pages/driver/driverForm";
 
+import DepositPage from "./pages/deposit/DepositPage";
+import DepositFormPage from "./pages/deposit/DepositForm";
 
 export function AppRouter() {
   return (
@@ -29,6 +31,9 @@ export function AppRouter() {
         <Route path="/companies/edit/:id" element={<CompanyFormPage />} />
         {/*<Route path="/company/create" element={<CompanyCreateEdit />} />
         <Route path="/companies/edit/:id" element={<CompanyCreateEdit />} />*/}
+        <Route path="/depots" element={<DepositPage />} />
+        <Route path="/depots/form" element={<DepositFormPage />} />
+        <Route path="/depots/edit/:id" element={<DepositFormPage />} />
       </Route>
     </Routes>
   );

@@ -1,6 +1,7 @@
-import { FormHelperText, Grid, TextField, Typography } from "@mui/material";
+import { FormHelperText, Grid, InputAdornment, TextField, Typography } from "@mui/material";
 import { UseFormRegister, UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { CreateDepositoSchema } from "../../api/schemas";
+import { Plus } from "lucide-react";
 
 interface ContactSectionProps {
   errors: Record<string, any>;
@@ -45,12 +46,27 @@ const ContactSection = ({
             <Grid item xs={mostrarCodigoArea ? 3 : 4}>
               <TextField
                 id="contacto.telefono.codigo_pais"
-                placeholder="+54"
+                placeholder="54"
                 fullWidth
                 className="inside-paper"
                 {...register("contacto.telefono.codigo_pais")}
                 error={!!errors.contacto?.telefono?.codigo_pais}
                 disabled={loading}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment
+                      position="start"
+                      sx={{
+                        minWidth: '0.1rem',
+                        color: '#5A5A65',
+                        fontWeight: 500,
+                        fontSize: '1rem',
+                      }}
+                    >
+                      +
+                    </InputAdornment>
+                  ),
+                }}
               />
             </Grid>
             {mostrarCodigoArea && (

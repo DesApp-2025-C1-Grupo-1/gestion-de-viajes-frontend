@@ -250,13 +250,13 @@ export default function CompanyFormPage() {
                             {(touched['contacto.telefono.codigo_pais'] ||
                                 touched['contacto.telefono.codigo_area'] ||
                                 touched['contacto.telefono.numero']) && (
-                                    <FormHelperText error sx={{mt:1}}>
+                                    <Box sx={{ mt: 1, color: 'error.main', fontSize: '0.75rem' }}>
                                         <ul style={{margin: 0, paddingLeft: '1.25rem'}}>
                                         {errors['contacto.telefono.codigo_pais'] && <li>{errors['contacto.telefono.codigo_pais']}</li>}
                                         {errors['contacto.telefono.codigo_area'] && <li>{errors['contacto.telefono.codigo_area']}</li>}
                                         {errors['contacto.telefono.numero'] && <li>{errors['contacto.telefono.numero']}</li>}
                                         </ul>
-                                    </FormHelperText>
+                                    </Box>
                             )}
 
                         </Grid>

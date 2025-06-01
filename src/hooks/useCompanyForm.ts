@@ -1,9 +1,9 @@
 //api company orval
 import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { SelectChangeEvent } from "@mui/material";
 import { useNotify } from "./useNotify";
-import { CreateEmpresaDto, empresaControllerCreate, EmpresaDto, UpdateEmpresaDto, useEmpresaControllerFindOne, empresaControllerUpdate, ContactoDto, DireccionDto } from "../api/generated";
+import { CreateEmpresaDto, empresaControllerCreate, EmpresaDto, UpdateEmpresaDto, useEmpresaControllerFindOne, empresaControllerUpdate} from "../api/generated";
+import { useForm } from "react-hook-form";
 
 type ValidationRule = {
     required?: boolean;
@@ -132,6 +132,22 @@ export const useFormCompany = (id?: string) => {
         return "";  
     }, []);
 
+    const cleanEmpresaData = (data: EmpresaDto): UpdateEmpresaDto => {
+        const removeIdAndV = <T extends { _id?: any; __v?: any }>(obj: T): Omit<T, '_id' | '__v'> => {
+            const { _id, __v, ...rest } = obj;
+            return rest;
+        };
+
+        return {
+            ...removeIdAndV(data),
+            direccion: removeIdAndV(data.direccion),
+            contacto: {
+                ...removeIdAndV(data.contacto),
+                telefono: removeIdAndV(data.contacto.telefono),
+            },
+        };
+    };
+
     const validateForm = useCallback((data: EmpresaDto): boolean => {
         const newErrors: Record<string, string> = {};
         let isValid = true;
@@ -149,7 +165,7 @@ export const useFormCompany = (id?: string) => {
                 isValid = false;
             }
         });
-
+        
         /*
         const cleanedCuit = data.cuit.replace(/-/g, ""); 
 
@@ -249,23 +265,9 @@ export const useFormCompany = (id?: string) => {
         };
 
         try{
-            if(isEditing){
-                const {_id, direccion, contacto, ...reset} = fullFormData;
-                const { _id: dirId, ...direccionData } = direccion;
-                const { _id: contactoId, telefono, ...contactoData } = contacto;
-                const { _id: telId, ...telefonoData } = telefono;
-                const empresaData = {
-                    ...reset,
-                    //ver esto
-                    direccion: direccionData,
-                    contacto: {
-                        ...contactoData,
-                        telefono: telefonoData,
-                    },
-                };
-
-                console.log("empresaData", empresaData);
-                await empresaControllerUpdate(id, empresaData as UpdateEmpresaDto);
+           if (isEditing) {
+                const empresaData = cleanEmpresaData(fullFormData);
+                await empresaControllerUpdate(id, empresaData);
                 notify("update");
             }
             else{
@@ -298,6 +300,8 @@ export const useFormCompany = (id?: string) => {
     
     }, [formData, isEditing, id, navigate, notify, validateForm]);
 
+
+
     return { formData, loading, errors, touched, handleChange, handleSubmit, isEditing, setFormData};
 }
-//handleChangeCuit
+

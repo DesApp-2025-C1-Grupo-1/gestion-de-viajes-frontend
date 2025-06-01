@@ -66,11 +66,7 @@ export const useFormCompany = (id?: string) => {
 
     const isEditing = !!(id);
     const {data} = useEmpresaControllerFindOne(id!, {query: {enabled:isEditing}});
-    /*const {data} = useEmpresaControllerFindOne(id ?? "", {
-        query:{
-            enabled: isEditing,
-        },
-    });*/
+
 
     const [formData, setFormData] = useState<EmpresaDto>(initialFormState);
     const [touched, setTouched] = useState<{[key:string]: boolean}>({});
@@ -146,13 +142,13 @@ export const useFormCompany = (id?: string) => {
             const parts = key.split(".");
             let value: any = data;
             for (const part of parts) {
-            value = value?.[part];
+                value = value?.[part];
             }
 
             const error = validateField(key, value);
             if (error) {
-            newErrors[key] = error;
-            isValid = false;
+                newErrors[key] = error;
+                isValid = false;
             }
         });
 
@@ -162,7 +158,8 @@ export const useFormCompany = (id?: string) => {
             isValid = false;
         };
         
-        setErrors(newErrors);
+        //setErrors(newErrors);
+        setErrors(prev => ({ ...prev, ...newErrors }));
         return isValid;
     },[validateField]);
 

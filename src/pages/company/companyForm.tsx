@@ -1,14 +1,14 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { SectionHeader } from "../../components/SectionHeader";
-import { Box, Button, Paper, TextField, Select, MenuItem, Typography, Backdrop, CircularProgress, Grid, Alert, SelectChangeEvent, FormHelperText } from "@mui/material";
+import { Box, Button, Paper, TextField, Typography, Backdrop, CircularProgress, Grid, Alert, FormHelperText } from "@mui/material";
 import { useFormCompany } from "../../hooks/useCompanyForm";
-import { useEmpresaControllerFindAll, useEmpresaControllerFindOne } from "../../api/generated";
+import { useEmpresaControllerFindAll} from "../../api/generated";
 
 export default function CompanyFormPage() {
     const { id } = useParams();
     const navigate = useNavigate();
 
-    const { formData, errors, loading, touched, handleChange, handleSubmit, isEditing, setFormData} = useFormCompany(id);
+    const { formData, errors, loading, touched, handleChange, handleSubmit, isEditing} = useFormCompany(id);
 
     const { data: companies, isLoading} = useEmpresaControllerFindAll();
     if (isLoading) return <CircularProgress />;
@@ -29,7 +29,7 @@ export default function CompanyFormPage() {
 
                     <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Datos de la Empresa</Typography>
                     <Grid container spacing={5} mb={3}>
-                        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
+                        <Grid item xs={12} sm={6} md={6} lg={6} xl={4}>
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem' }}>Razon social</Typography>
                             <TextField
                                 name="razon_social"
@@ -44,7 +44,7 @@ export default function CompanyFormPage() {
                                 disabled={loading}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
+                        <Grid item xs={12} sm={6} md={6} lg={6} xl={4}>
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem' }}>Nombre comercial</Typography>
                             <TextField 
                                 name="nombre_comercial" 
@@ -59,7 +59,7 @@ export default function CompanyFormPage() {
                                 disabled={loading} 
                             />
                         </Grid>
-                        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
+                        <Grid item xs={12} sm={6} md={6} lg={6} xl={4}>
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem' }}>CUIT/RUT</Typography>
                             <TextField
                                 name="cuit"
@@ -78,7 +78,7 @@ export default function CompanyFormPage() {
 
                     <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Domicilio Fiscal</Typography>
                     <Grid container spacing={5} mb={3}>
-                        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
+                        <Grid item xs={12} sm={6} md={6} lg={6} xl={4}>
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem' }}>Calle</Typography>
                             <TextField
                                 name="direccion.calle"
@@ -93,7 +93,7 @@ export default function CompanyFormPage() {
                                 disabled={loading}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
+                        <Grid item xs={12} sm={6} md={6} lg={6} xl={4}>
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem' }}>Numero</Typography>
                             <TextField
                                 name="direccion.numero"
@@ -109,7 +109,7 @@ export default function CompanyFormPage() {
                                 disabled={loading}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
+                        <Grid item xs={12} sm={6} md={6} lg={6} xl={4}>
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem' }}>Ciudad</Typography>
                             <TextField
                                 name="direccion.ciudad"
@@ -126,7 +126,7 @@ export default function CompanyFormPage() {
                         </Grid>
                     </Grid>
                     <Grid container spacing={5} mb={3}>
-                        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
+                        <Grid item xs={12} sm={6} md={6} lg={6} xl={4}>
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem' }}>Estado/provincia</Typography>
                             <TextField
                                 name="direccion.estado_provincia"
@@ -141,7 +141,7 @@ export default function CompanyFormPage() {
                                 disabled={loading}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
+                        <Grid item xs={12} sm={6} md={6} lg={6} xl={4}>
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem' }}>Pais</Typography>
                             <TextField
                                 name="direccion.pais"
@@ -161,7 +161,7 @@ export default function CompanyFormPage() {
                     <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Información de Contacto</Typography>
                      
                     <Grid container spacing={5} mb={3}>
-                        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
+                        <Grid item xs={12} sm={6} md={6} lg={6} xl={5}>
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>Nombre de contacto</Typography>
                             <TextField
                                 name="contacto.nombre"
@@ -176,7 +176,7 @@ export default function CompanyFormPage() {
                                 disabled={loading}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
+                        <Grid item xs={12} sm={6} md={6} lg={6} xl={5}>
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem' }}>Correo electrónico</Typography>
                             <TextField
                                 name="contacto.email"
@@ -194,7 +194,7 @@ export default function CompanyFormPage() {
                     </Grid>
 
                     <Grid container spacing={5} mb={3}>
-                        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
+                        <Grid item xs={12} sm={6} md={6} lg={6} xl={4}>
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem' }}>Telefono</Typography>
                             
                             <Grid container spacing={2}>

@@ -34,13 +34,14 @@ export type Driver = {
   nombre: string
   apellido: string
   dni: number
-  fecha_nacimiento: Dayjs | null
-  empresa: string
-  vehiculo: string
-  licencia: number
-  tipo_licencia: string
-  telefono: number
-  email: string
+  //fecha_nacimiento: Dayjs | null
+  fecha_nacimiento: string;
+  licencia: string;
+  tipo_licencia: string;
+  telefono: Telefono;
+  email: string;
+  empresa: Company;
+  vehiculo: Vehicle;
 }
 
 export type Deposit = {

@@ -95,11 +95,6 @@ export const useCompanyForm = (id?: string) => {
         }
     };
 
-
-    console.log(isValid)
-
-    console.log(formErrors)
-
     return{
         onSubmit,
         handleSubmit,

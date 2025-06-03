@@ -1,13 +1,13 @@
 import { z } from "zod"
-import { DireccionSchema } from "./base/direccion.schema"
-import { ContactoSchema } from "./base/contacto.schema"
+import { CreateDireccionSchema, DireccionSchema } from "./base/direccion.schema"
+import { ContactoSchema, CreateContactoSchema } from "./base/contacto.schema"
 
 export const CreateEmpresaSchema = z.object({
   razon_social: z.string().min(1),
   nombre_comercial: z.string().min(1),
   cuit: z.string().regex(/^\d{11}$/, "El CUIT debe tener 11 dígitos"),
-  direccion: DireccionSchema,
-  contacto: ContactoSchema,
+  direccion: CreateDireccionSchema,
+  contacto: CreateContactoSchema,
 })
 
 export const EmpresaSchema = CreateEmpresaSchema.extend({

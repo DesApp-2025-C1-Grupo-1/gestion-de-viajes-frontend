@@ -28,7 +28,7 @@ export const useDriverForm = (id?: string) => {
       nombre: "",
       apellido: "",
       dni: undefined,
-      fecha_nacimiento: dayjs(),
+      fecha_nacimiento: dayjs().toISOString(),
       licencia: "",
       tipo_licencia: licenciasValidas[0],
       telefono: {
@@ -55,7 +55,8 @@ export const useDriverForm = (id?: string) => {
       const {_id: idEmpresa} = empresa;
       reset({
         ...rest,
-        fecha_nacimiento: dayjs(fecha_nacimiento),
+        //fecha_nacimiento: dayjs(fecha_nacimiento).toISOString(),
+        fecha_nacimiento: new Date(fecha_nacimiento).toISOString(),
         _id,
         vehiculo: idVehiculo,
         empresa: idEmpresa,
@@ -64,7 +65,7 @@ export const useDriverForm = (id?: string) => {
   }, [isEditing, data]);
 
   const onSubmit = async(FormData: CreateChoferSchema | UpdateChoferSchema) => {
-     console.log("[DEBUG] onSubmit ejecutado", FormData);
+    console.log("Datos del formulario:", data);
     if(isEditing){
       await handleUpdate(FormData as UpdateChoferSchema);
     }
@@ -90,10 +91,12 @@ export const useDriverForm = (id?: string) => {
 
   const handleCreate = async(FormData: CreateChoferSchema) => {
     try{
-    
+     
       const payload: CreateChoferDto = {
         ...FormData,
-        fecha_nacimiento: FormData.fecha_nacimiento.toISOString(),
+        //fecha_nacimiento: dayjs(FormData.fecha_nacimiento).toISOString(),
+        fecha_nacimiento: dayjs(FormData.fecha_nacimiento, "DD-MM-YYYY").format("YYYY-MM-DDT00:00:00.000Z"),
+
         //para no redefinir telefono y si fecha de nac (arreglar)
         telefono: {
           codigo_pais: FormData.telefono.codigo_pais ?? "",

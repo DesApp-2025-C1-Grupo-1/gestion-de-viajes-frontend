@@ -9,8 +9,6 @@ import { App } from './App';
 import './index.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 axios.defaults.baseURL = 'http://localhost:3000';
 
@@ -22,9 +20,8 @@ const queryClient = new QueryClient();
 ReactDOM.createRoot(rootElement).render(
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={customMuiTheme}>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
+     
           <App />
-        </LocalizationProvider>
       </ThemeProvider>
     </QueryClientProvider>
 );

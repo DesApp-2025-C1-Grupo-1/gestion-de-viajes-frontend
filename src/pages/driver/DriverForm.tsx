@@ -105,7 +105,19 @@ export default function DriverFormPage(){
                         </Grid>
                         <Grid item xs={12} sm={6} md={6} lg={8} xl={6}>
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Fecha de nacimiento</Typography>
-                            <Controller
+                            <TextField
+                                id="fecha_nacimiento"
+                                {...register("fecha_nacimiento")}
+                                fullWidth
+                                placeholder="AAAA-MM-DD"
+                                inputProps={{ "aria-label": "fecha_nacimiento" }}
+                                error={!!formErrors.fecha_nacimiento}
+                                helperText={formErrors.fecha_nacimiento?.message}
+                                className="inside-paper"
+                                disabled={isLoading}
+                
+                            />
+                            {/*<Controller
                                 name="fecha_nacimiento"
                                 control={control}
                                 //defaultValue={null}
@@ -113,7 +125,6 @@ export default function DriverFormPage(){
                                     <DatePicker                     
                                         value={field.value}
                                         onChange={(date) => field.onChange(date)}
-                                        maxDate={dayjs()} 
                                         slotProps={{
                                             textField: {
                                             fullWidth: true,
@@ -123,9 +134,7 @@ export default function DriverFormPage(){
                                         }}
                                     />
                                 )}
-                            />
-
-                            
+                            />*/}
                         </Grid>
                     </Grid>
 
@@ -247,20 +256,6 @@ export default function DriverFormPage(){
                                         )}
                                     </ul>
                                 </Box>
-                                /*
-                                <FormHelperText error sx={{ mt: 1 }}>
-                                    <ul style={{ margin: 0, paddingLeft: '1.25rem' }}>
-                                        {formErrors.telefono?.codigo_pais?.message && (
-                                        <li>{formErrors.telefono?.codigo_pais?.message}</li>
-                                        )}
-                                        {formErrors.telefono?.codigo_area?.message && (
-                                        <li>{formErrors.telefono?.codigo_area?.message}</li>
-                                        )}
-                                        {formErrors.telefono?.numero?.message && (
-                                        <li>{formErrors.telefono?.numero?.message}</li>
-                                        )}
-                                    </ul>
-                                </FormHelperText>*/
                             )}
                         </Grid>
                     </Grid>

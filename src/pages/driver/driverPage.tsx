@@ -95,7 +95,7 @@ export default function DriverPage() {
                                         <TableCell>{driver.licencia}</TableCell>
                                         <TableCell>{driver.tipo_licencia}</TableCell>
                                         <TableCell>{driver.empresa.razon_social}</TableCell>
-                                        <TableCell>{driver.telefono}</TableCell>
+                                        {/*<TableCell>{driver.telefono}</TableCell>*/}
                                         <TableCell>{driver.email}</TableCell>
                                         <TableCell sx={{verticalAlign: "middle"}}>
                                             <MenuItem  handleOpenDialog={() => handleOpenDialog(driver)} id={driver._id}/>
@@ -136,5 +136,5 @@ export default function DriverPage() {
                 />
             )}
         </>
-    );
+    )
 }

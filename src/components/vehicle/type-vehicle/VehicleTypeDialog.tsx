@@ -1,7 +1,9 @@
-import { Dialog, DialogContent, DialogTitle, TextField, DialogActions, Button } from "@mui/material";
-import { VehicleType } from "../../../types";
-import { useEffect, useState } from "react";
+import { Dialog, DialogContent, DialogTitle, TextField, DialogActions, Button, FormHelperText } from "@mui/material";
 import { TipoVehiculoDto } from "../../../api/generated";
+import { useForm } from "react-hook-form";
+import { CreateTipoVehiculoForm, createTipoVehiculoSchema, tipoVehiculoSchema } from "../../../api/schemas";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
 
 interface VehicleTypeDialogProps {
   open: boolean;
@@ -11,51 +13,53 @@ interface VehicleTypeDialogProps {
 }
 
 export const VehicleTypeDialog = ({ open, onClose, onSubmit, editingType }: VehicleTypeDialogProps) => {
-  const [formData, setFormData] = useState<Partial<TipoVehiculoDto>>({
-    nombre: "",
-    descripcion: "",
-  });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors , isValid},
+    reset,
+  } = useForm<CreateTipoVehiculoForm>({
+    resolver: zodResolver(createTipoVehiculoSchema),
+    mode: "onBlur",
+    defaultValues: {
+      nombre: "",
+      descripcion: "",
+    },
+  })
 
   useEffect(() => {
     if (editingType) {
-      setFormData({
+      reset({
         nombre: editingType.nombre,
         descripcion: editingType.descripcion || "",
       });
     } else {
-      setFormData({
+      reset({
         nombre: "",
         descripcion: "",
       });
     }
-  }, [editingType]);
+  }, [open, reset]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit(formData);
+  const handleFormSubmit = (data: CreateTipoVehiculoForm) => {
+    onSubmit(data);
   };
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth sx={{ "& .MuiDialog-paper": { borderRadius: "0.5rem", padding: "12px 8px "} }}>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(handleFormSubmit)}>
         <DialogTitle sx={{ color: "#5A5A65" , fontWeight: 600 , fontSize: "1.4rem"}}>
           {editingType ? "Editar Tipo de Vehículo" : "Nuevo Tipo de Vehículo"}
         </DialogTitle>
         <DialogContent sx={{ gap: 2, display: "flex", flexDirection: "column" }}>
           <TextField
             id="nombre"
-            name="nombre"
             label="Nombre"
-            value={formData.nombre}
-            onChange={handleChange}
+            {...register("nombre")}
+            error={!!errors.nombre}
+            helperText={errors.nombre?.message}
             placeholder="Ej: Camión Articulado"
             fullWidth
-            required
             margin="normal"
             variant="outlined"
             InputProps={{
@@ -64,10 +68,10 @@ export const VehicleTypeDialog = ({ open, onClose, onSubmit, editingType }: Vehi
           />
           <TextField
             id="descripcion"
-            name="descripcion"
             label="Descripción"
-            value={formData.descripcion}
-            onChange={handleChange}
+            {...register("descripcion")}
+            error={!!errors.descripcion}
+            helperText={errors.descripcion?.message}
             placeholder="Descripción del tipo de vehículo"
             fullWidth
             multiline
@@ -78,12 +82,13 @@ export const VehicleTypeDialog = ({ open, onClose, onSubmit, editingType }: Vehi
               style: { height: "100px"},
             }}
           />
+        
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose} variant="outlined">
             Cancelar
           </Button>
-          <Button type="submit" variant="contained" sx={{ backgroundColor: "#E65F2B" }} disabled={!formData.nombre}>
+          <Button type="submit" variant="contained" sx={{ backgroundColor: "#E65F2B" }} disabled={!isValid}>
             {editingType ? "Actualizar" : "Crear"}
           </Button>
         </DialogActions>

@@ -1,23 +1,19 @@
 import { Grid, Typography, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent, TextField } from "@mui/material";
 import { DepositoDto, DireccionDto } from "../../api/generated";
+import { CreateDepositoSchema } from "../../api/schemas";
+import { UseFormRegister } from "react-hook-form";
 
 interface AdressSectionProps {
-  formData: Partial<DepositoDto>;
-  errors: Record<string, string>;
-  touched: Record<string, boolean>;
+  errors: Record<string, any>;
   loading: boolean;
-  handleChange: (e: React.ChangeEvent<any>) => void;
-  handleSelectChange: (e: SelectChangeEvent<string>) => void;
+  register: UseFormRegister<CreateDepositoSchema>;
 }
 
 const AdressSection = ({
-  formData,
   errors,
-  touched,
   loading,
-  handleChange,
+  register,
 }: AdressSectionProps) => {
-  const direccion : DireccionDto = formData.direccion || {} as DireccionDto;
 
   return (
     <>
@@ -29,14 +25,13 @@ const AdressSection = ({
         <Grid item xs={12} md={8}>
           <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Calle</Typography>
           <TextField
-            name="direccion.calle"
+            id="direccion.calle"
             placeholder="Ej: Avenida Libertador"
             fullWidth
             className="inside-paper"
-            value={direccion.calle ?? ""}
-            onChange={handleChange}
-             error={touched["direccion.calle"] && !!errors["direccion.calle"]}
-            helperText={touched["direccion.calle"] && errors["direccion.calle"]}
+            {...register("direccion.calle")}
+            error={!!errors.direccion?.calle}
+            helperText={errors.direccion?.calle?.message}
             disabled={loading}
           />
         </Grid>
@@ -44,14 +39,13 @@ const AdressSection = ({
         <Grid item xs={12} md={4}>
           <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Número</Typography>
           <TextField
-            name="direccion.numero"
+            id="direccion.numero"
             placeholder="Ej: 1234"
             fullWidth
             className="inside-paper"
-            value={direccion.numero ?? ""}
-            onChange={handleChange}
-            error={touched["direccion.numero"] && !!errors["direccion.numero"]}
-            helperText={touched["direccion.numero"] && errors["direccion.numero"]}
+            {...register("direccion.numero")}
+            error={!!errors.direccion?.numero}
+            helperText={errors.direccion?.numero?.message}
             disabled={loading}
           />
         </Grid>
@@ -60,14 +54,13 @@ const AdressSection = ({
           <Grid item xs={12} md={4}>
           <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Ciudad</Typography>
           <TextField
-            name="direccion.ciudad"
+            id="direccion.ciudad"
             placeholder="Ej: Palermo"
             fullWidth
             className="inside-paper"
-            value={direccion.ciudad ?? ""}
-            onChange={handleChange}
-            error={touched["direccion.ciudad"] && !!errors["direccion.ciudad"]}
-            helperText={touched["direccion.ciudad"] && errors["direccion.ciudad"]}
+            {...register("direccion.ciudad")}
+            error={!!errors.direccion?.ciudad}
+            helperText={errors.direccion?.ciudad?.message}
             disabled={loading}
           />
         </Grid>
@@ -75,14 +68,13 @@ const AdressSection = ({
         <Grid item xs={12} md={4}>
           <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Estado/Provincia</Typography>
           <TextField
-            name="direccion.estado_provincia"
+            id="direccion.estado_provincia"
             placeholder="Ej: Buenos Aires"
             fullWidth
             className="inside-paper"
-            value={direccion.estado_provincia ?? ""}
-            onChange={handleChange}
-            error={touched["direccion.estado_provincia"] && !!errors["direccion.estado_provincia"]}
-            helperText={touched["direccion.estado_provincia"] && errors["direccion.estado_provincia"]}
+            {...register("direccion.estado_provincia")}
+            error={!!errors.direccion?.estado_provincia}
+            helperText={errors.direccion?.estado_provincia?.message}
             disabled={loading}
           />
         </Grid>
@@ -90,14 +82,13 @@ const AdressSection = ({
         <Grid item xs={12} md={4}>
           <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>País</Typography>
           <TextField
-            name="direccion.pais"
+            id="direccion.pais"
             placeholder="Ej: Argentina"
             fullWidth
             className="inside-paper"
-            value={direccion.pais ?? ""}
-            onChange={handleChange}
-            error={touched["direccion.pais"] && !!errors["direccion.pais"]}
-            helperText={touched["direccion.pais"] && errors["direccion.pais"]}
+            {...register("direccion.pais")}
+            error={!!errors.direccion?.pais}
+            helperText={errors.direccion?.pais?.message}
             disabled={loading}
           />
         </Grid>

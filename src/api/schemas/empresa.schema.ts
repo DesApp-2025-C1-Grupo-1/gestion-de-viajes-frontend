@@ -2,7 +2,7 @@ import { z } from "zod"
 import { DireccionSchema } from "./base/direccion.schema"
 import { ContactoSchema } from "./base/contacto.schema"
 
-export const createEmpresaSchema = z.object({
+export const CreateEmpresaSchema = z.object({
   razon_social: z.string().min(1),
   nombre_comercial: z.string().min(1),
   cuit: z.string().regex(/^\d{11}$/, "El CUIT debe tener 11 dígitos"),
@@ -10,9 +10,14 @@ export const createEmpresaSchema = z.object({
   contacto: ContactoSchema,
 })
 
-export const empresaSchema = createEmpresaSchema.extend({
+export const EmpresaSchema = CreateEmpresaSchema.extend({
   _id: z.string().regex(/^[a-f\d]{24}$/i),
 })
 
-export type CreateEmpresaSchema = z.infer<typeof createEmpresaSchema>
-export type EmpresaSchema = z.infer<typeof empresaSchema>
+export const UpdateEmpresaSchema = CreateEmpresaSchema.extend({
+  _id: z.string().regex(/^[a-f\d]{24}$/i),
+})
+
+export type CreateEmpresaSchema = z.infer<typeof CreateEmpresaSchema>
+export type UpdateEmpresaSchema = z.infer<typeof UpdateEmpresaSchema>
+export type EmpresaSchema = z.infer<typeof EmpresaSchema>

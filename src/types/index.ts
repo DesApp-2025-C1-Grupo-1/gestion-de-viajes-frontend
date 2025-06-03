@@ -34,8 +34,8 @@ export type Driver = {
   nombre: string
   apellido: string
   dni: number
-  //fecha_nacimiento: Dayjs | null
-  fecha_nacimiento: string;
+  fecha_nacimiento: Dayjs | null
+  //fecha_nacimiento: string;
   licencia: string;
   tipo_licencia: string;
   telefono: Telefono;

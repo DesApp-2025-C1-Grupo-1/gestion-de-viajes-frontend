@@ -28,7 +28,7 @@ export const useDriverForm = (id?: string) => {
       nombre: "",
       apellido: "",
       dni: undefined,
-      fecha_nacimiento: Date(),
+      fecha_nacimiento: dayjs(),
       licencia: "",
       tipo_licencia: licenciasValidas[0],
       telefono: {
@@ -50,11 +50,12 @@ export const useDriverForm = (id?: string) => {
 
   useEffect(() => {
     if (isEditing && data && data.data) {
-      const { _id, empresa, vehiculo, ...rest } = data.data ;
+      const { _id, empresa, vehiculo, fecha_nacimiento, ...rest } = data.data ;
       const {_id: idVehiculo} = vehiculo;
       const {_id: idEmpresa} = empresa;
       reset({
         ...rest,
+        fecha_nacimiento: dayjs(fecha_nacimiento),
         _id,
         vehiculo: idVehiculo,
         empresa: idEmpresa,
@@ -63,6 +64,7 @@ export const useDriverForm = (id?: string) => {
   }, [isEditing, data]);
 
   const onSubmit = async(FormData: CreateChoferSchema | UpdateChoferSchema) => {
+     console.log("[DEBUG] onSubmit ejecutado", FormData);
     if(isEditing){
       await handleUpdate(FormData as UpdateChoferSchema);
     }
@@ -88,7 +90,19 @@ export const useDriverForm = (id?: string) => {
 
   const handleCreate = async(FormData: CreateChoferSchema) => {
     try{
-      await choferControllerCreate(FormData as CreateChoferDto);
+    
+      const payload: CreateChoferDto = {
+        ...FormData,
+        fecha_nacimiento: FormData.fecha_nacimiento.toISOString(),
+        //para no redefinir telefono y si fecha de nac (arreglar)
+        telefono: {
+          codigo_pais: FormData.telefono.codigo_pais ?? "",
+          codigo_area: FormData.telefono.codigo_area ?? "",
+          numero: FormData.telefono.numero ?? "",
+        },
+      };
+
+      await choferControllerCreate(payload);
       notify("create");
       navigate("/drivers");
     } catch(e) {

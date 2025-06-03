@@ -2,10 +2,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { SectionHeader } from "../../components/SectionHeader";
 import { Box, Button, Paper, TextField, Typography, Backdrop, CircularProgress, Grid, Alert, FormHelperText, Select, MenuItem, InputAdornment } from "@mui/material";
 import { useDriverForm } from '../../hooks/useDriverForm';
-//import { useChoferControllerFindAll } from "../../api/generated";
-import { Controller, UseFormRegister } from 'react-hook-form';
+import { Controller} from 'react-hook-form';
 import { CreateChoferSchema } from "../../api/schemas";
-import { vehicles } from "../../lib/mock-data";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs from "dayjs"
 
 export default function DriverFormPage(){
     const {id} = useParams();
@@ -92,7 +92,8 @@ export default function DriverFormPage(){
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>DNI</Typography>
                             <TextField
                                 id="dni"
-                                {...register("dni")}
+                                type="text"
+                                {...register("dni", { valueAsNumber: true, })}
                                 fullWidth
                                 placeholder="Ej: 44258393"
                                 inputProps={{ "aria-label": "dni" }}
@@ -104,17 +105,27 @@ export default function DriverFormPage(){
                         </Grid>
                         <Grid item xs={12} sm={6} md={6} lg={8} xl={6}>
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Fecha de nacimiento</Typography>
-                            <TextField
-                                id="fecha_nacimiento"
-                                {...register("fecha_nacimiento")}
-                                fullWidth
-                                placeholder="xx-xx-xx"
-                                inputProps={{ "aria-label": "fecha_nacimiento" }}
-                                error={!!formErrors.fecha_nacimiento}
-                                helperText={formErrors.fecha_nacimiento?.message}
-                                className="inside-paper"
-                                disabled={isLoading}
+                            <Controller
+                                name="fecha_nacimiento"
+                                control={control}
+                                //defaultValue={null}
+                                render={({ field, fieldState }) => (
+                                    <DatePicker                     
+                                        value={field.value}
+                                        onChange={(date) => field.onChange(date)}
+                                        maxDate={dayjs()} 
+                                        slotProps={{
+                                            textField: {
+                                            fullWidth: true,
+                                            error: !!fieldState.error,
+                                            helperText: fieldState.error?.message,
+                                            },
+                                        }}
+                                    />
+                                )}
                             />
+
+                            
                         </Grid>
                     </Grid>
 
@@ -223,6 +234,20 @@ export default function DriverFormPage(){
                             {(formErrors.telefono?.codigo_pais ||
                                 formErrors.telefono?.codigo_area ||
                                 formErrors.telefono?.numero) && (
+                                <Box sx={{ mt: 1, color: 'error.main', fontSize: '0.75rem' }}>
+                                    <ul style={{ margin: 0, paddingLeft: '1.25rem' }}>
+                                        {formErrors.telefono?.codigo_pais?.message && (
+                                        <li>{formErrors.telefono?.codigo_pais?.message}</li>
+                                        )}
+                                        {formErrors.telefono?.codigo_area?.message && (
+                                        <li>{formErrors.telefono?.codigo_area?.message}</li>
+                                        )}
+                                        {formErrors.telefono?.numero?.message && (
+                                        <li>{formErrors.telefono?.numero?.message}</li>
+                                        )}
+                                    </ul>
+                                </Box>
+                                /*
                                 <FormHelperText error sx={{ mt: 1 }}>
                                     <ul style={{ margin: 0, paddingLeft: '1.25rem' }}>
                                         {formErrors.telefono?.codigo_pais?.message && (
@@ -235,7 +260,7 @@ export default function DriverFormPage(){
                                         <li>{formErrors.telefono?.numero?.message}</li>
                                         )}
                                     </ul>
-                                </FormHelperText>
+                                </FormHelperText>*/
                             )}
                         </Grid>
                     </Grid>

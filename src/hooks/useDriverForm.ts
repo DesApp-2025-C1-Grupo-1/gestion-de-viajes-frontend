@@ -1,13 +1,111 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useNotify } from "./useNotify";
-import { CreateChoferDto, choferControllerCreate, ChoferDto, UpdateChoferDto, useChoferControllerFindOne, choferControllerUpdate, EmpresaDto, CreateChoferDtoTipoLicencia } from '../api/generated';
-import { useForm } from "react-hook-form";
+import { CreateChoferDto, choferControllerCreate, ChoferDto, UpdateChoferDto, useChoferControllerFindOne, choferControllerUpdate, EmpresaDto, CreateChoferDtoTipoLicencia, useEmpresaControllerFindAll, useVehiculoControllerFindAll } from '../api/generated';
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
-import LoadingState from '../components/LoadingState';
-import { getTokenSourceMapRange } from "typescript";
-import { boolean, isValid } from 'zod';
+import { CreateChoferSchema, UpdateChoferSchema, createChoferSchema} from '../api/schemas/chofer.schema';
+import { tipoLicenciaSchema } from "../api/schemas/enums/tipoLicencia.schema";
 
+export const useDriverForm = (id?: string) => {
+  const navigate = useNavigate();
+  const isEditing = !!id;
+  const licenciasValidas = Object.values(tipoLicenciaSchema.enum);
+  
+  const {
+    register,
+    control,
+    reset,
+    handleSubmit,
+    watch,
+    formState: { errors: formErrors , isValid},
+  } = useForm<CreateChoferSchema>({
+    resolver: zodResolver(createChoferSchema),
+    mode: "onBlur",
+    reValidateMode: "onChange",
+    defaultValues: {
+      nombre: "",
+      apellido: "",
+      dni: undefined,
+      fecha_nacimiento: Date(),
+      licencia: "",
+      tipo_licencia: licenciasValidas[0],
+      telefono: {
+        codigo_pais: "",
+        codigo_area: "",
+        numero: ""
+      },
+      email: "",
+      empresa: "",
+      vehiculo: "",
+    },
+  })
+
+  const { data, isLoading, error } = useChoferControllerFindOne(id!, { query: { enabled: isEditing } });
+  const { data: companies, error: errorEmpresa, isLoading: loadingEmpresas } = useEmpresaControllerFindAll();
+  const { data: vehiculos, error: errorVehicles, isLoading: loadingVehicles } = useVehiculoControllerFindAll();
+
+  const { notify } = useNotify("Chofer");
+
+  useEffect(() => {
+    if (isEditing && data && data.data) {
+      const { _id, empresa, vehiculo, ...rest } = data.data ;
+      const {_id: idVehiculo} = vehiculo;
+      const {_id: idEmpresa} = empresa;
+      reset({
+        ...rest,
+        _id,
+        vehiculo: idVehiculo,
+        empresa: idEmpresa,
+      } as CreateChoferSchema);
+    }
+  }, [isEditing, data]);
+
+  const onSubmit = async(FormData: CreateChoferSchema | UpdateChoferSchema) => {
+    if(isEditing){
+      await handleUpdate(FormData as UpdateChoferSchema);
+    }
+    else{
+      await handleCreate(FormData as CreateChoferSchema);
+    }
+  };
+
+  const handleUpdate = async(FormData: UpdateChoferSchema) => {
+    try{
+      const {_id, ...dataToUpdate} = FormData;
+
+      await choferControllerUpdate(id!, dataToUpdate as UpdateChoferDto);
+      notify("update");
+      navigate("/drivers");
+    } catch(e) {
+      const error = e as {response?: {data?: {message?: string}}};
+      if(error.response?.data?.message){
+        notify("error", error.response.data.message);
+      }
+    }
+  };
+
+  const handleCreate = async(FormData: CreateChoferSchema) => {
+    try{
+      await choferControllerCreate(FormData as CreateChoferDto);
+      notify("create");
+      navigate("/drivers");
+    } catch(e) {
+      const error = e as {response?: {data?: {message?: string}}};
+      if(error.response?.data?.message){
+        notify("error", error.response.data.message);
+      }
+    }
+  };
+
+  return{
+    onSubmit, handleSubmit, handleCreate, handleUpdate, isEditing, formErrors, register, control, isValid, reset, isLoading, error, companies, vehiculos, errorEmpresa, errorVehicles, licenciasValidas, watch, loadingAuxData: loadingEmpresas || loadingVehicles,
+  }
+
+}
+
+/*
 type ValidationRule = {
     required?: boolean;
     minLength?: number;
@@ -59,7 +157,6 @@ export type ChoferFormData = {
 };
 
 //funciones para mapear de dto a form y vis (arreglar)
-
 const mapChoferDtoToForm = (dto: ChoferDto): ChoferFormData => ({
   _id: dto._id,
   nombre: dto.nombre,
@@ -109,8 +206,10 @@ const mapFormToUpdateChoferDto = (form: ChoferFormData): UpdateChoferDto => ({
     numero: form.telefono.numero,
   },
   email: form.email,
-  empresa: { _id: form.empresa },
-  vehiculo: { _id: form.vehiculo },
+  empresa: form.empresa,
+  vehiculo: form.vehiculo,
+  //empresa: { _id: form.empresa },
+  //vehiculo: { _id: form.vehiculo },
 });
 
 const initialFormState: ChoferFormData = {
@@ -143,6 +242,8 @@ export const useFormDriver = (id?: string) => {
     const [touched, setTouched] = useState<{[key:string]: boolean}>({});
     const [loading, setLoading] = useState<boolean>(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
+
+    
 
     useEffect(() => {
         if(isEditing && data?.data){
@@ -312,153 +413,4 @@ export const useFormDriver = (id?: string) => {
     return {formData, loading, errors, touched, handleChange, handleSubmit, isEditing, setFormData}
 
 }
-
-
-
-/*import { SelectChangeEvent } from "@mui/material";
-import { useEffect, useState } from "react";
-import { Driver } from "../types";
-import { createDriver, fetchDriverById, updateDriver } from "../lib/apiDriver";
-import { useNavigate } from "react-router-dom";
-import dayjs from "dayjs";
-
-export const useDriverForm = (id?:string) => {
-    const navigate = useNavigate();
-    const isEditing = !!(id);
-    const [touched, setTouched] = useState<{[key:string]: Boolean}>({});
-    const [formData, setFormData] = useState<Partial<Driver>>({
-        _id: "",
-        nombre:"",
-        apellido:"",
-        dni:0,
-        fecha_nacimiento: dayjs(),
-        empresa: "",
-        vehiculo: "",
-        licencia: 0,
-        tipo_licencia: "",
-        telefono: 0,
-        email:"",
-    });
-
-    const [loading, setLoading] = useState(false);
-    const [errs, setErrs] = useState<Record<string, string>> ({});
-
-    useEffect(() => {
-        if(isEditing && id){
-            fetchDriverById(id!).then((driver: Driver) => setFormData(driver))
-        }
-    }, [id])
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | 
-                                HTMLTextAreaElement | 
-                                {name?: string; value:unknown}>) => {
-                                    const {name,value} = e.target
-                            
-    const parsed = e.target instanceof HTMLInputElement && e.target.type === "number" ? Number(value) : value;
-    setFormData((prev) => ({...prev, [name!]: parsed,}));
-    setTouched((prev) => ({...prev, [name!]: true}));
-    };
-
-    const handleSelectChange = (event: SelectChangeEvent<string>) => {
-        const { name, value } = event.target;
-        if (name) {
-            setFormData((prev) => ({ ...prev, [name]: value as string }));
-            setTouched((prev) => ({ ...prev, [name]: true }));
-
-            validateField(name, value as string);
-        }
-    };
-
-    const validateField = (name: string, value: any) => {
-        let error = "";
-
-        const isEmpty = (v: any) => !v || (typeof v === "string" && v.trim() === "");
-
-        switch (name) {
-            case "nombre":
-            case "apellido":
-            case "dni":
-            case "fecha de nacimiento":
-            case "empresa transportista":
-            case "vehiculo":
-        }
-
-        setErrs((prev) => ({ ...prev, [name]: error }));
-        };
-
-    const validate = (data: Partial<Driver>): boolean => {
-        const newErrors: { [key: string]: string } = {};
-
-        const requiredString = (value: any, label: string, minLength = 3, text?: string) => {
-        if (!value || typeof value !== "string" || value.trim().length < minLength) {
-            newErrors[label] = text ? `${text}` :`Debe tener al menos ${minLength} caracteres.`;
-        }
-        };
-
-        const requiredNumber = (value: any, label: string, options?: { min?: number; max?: number }) => {
-        if (value === null || value === undefined || isNaN(value)) {
-            newErrors[label] = "Este campo es obligatorio.";
-        } else {
-            if (options?.min !== undefined && value < options.min ) {
-            newErrors[label] = `Debe ser mayor o igual a ${options.min}.`;
-            }
-            if (options?.max !== undefined && value > options.max) {
-            newErrors[label] = `Debe ser menor o igual a ${options.max}.`;
-            }
-        }
-        };
-
-        requiredString(data.nombre, "nombre");
-        requiredString(data.apellido, "apellido");
-        requiredNumber(data.dni, "dni");
-        //fecha de nac
-        requiredString(data.empresa, "empresa", 3,"Debe seleccionar una empresa");
-        requiredString(data.vehiculo, "tipo",  3,"Debe seleccionar un tipo de vehículo");
-
-        setErrs(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        const isValid = validate(formData);
-        if (!isValid) {
-            // Marcar todos los campos como tocados
-            const allTouched: Record<string, boolean> = {};
-            Object.keys(formData).forEach((key) => {
-                allTouched[key] = true;
-            });
-            setTouched(allTouched);
-            return;
-        }
-
-        setLoading(true);
-        try {
-            if (isEditing) {
-                await updateDriver(id!, formData as Omit<Driver, "_id">);
-            } else {
-                await createDriver(formData as Omit<Driver, "_id">);
-            }
-            navigate("/vehicles");
-        } catch (err) {
-            alert("Error al guardar el chofer");
-        } finally {
-            setLoading(false);
-        }
-    };
-
-
-    return {
-        formData,
-        loading,
-        errs,
-        touched,
-        handleChange,
-        handleSelectChange,
-        handleSubmit,
-        isEditing,
-    };
-
-
-}*/
+    */

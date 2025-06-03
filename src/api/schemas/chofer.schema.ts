@@ -26,4 +26,5 @@ export const choferSchema = createChoferSchema.extend({
 })
 
 export type CreateChoferSchema = z.infer<typeof createChoferSchema>
+export type UpdateChoferSchema = z.infer<typeof choferSchema>
 export type ChoferSchema = z.infer<typeof choferSchema>

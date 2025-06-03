@@ -58,7 +58,7 @@ export default function DriverFormPage(){
                     <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Datos personales</Typography>
                     <Grid container spacing={3} mb={4}>
                         <Grid item xs={12} sm={6} md={6} lg={8} xl={6}>
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem' }}>Nombre</Typography>
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Nombre</Typography>
                             <TextField
                                 id="nombre"
                                 {...register("nombre")}
@@ -72,7 +72,7 @@ export default function DriverFormPage(){
                             />
                         </Grid>
                         <Grid item xs={12} sm={6} md={6} lg={8} xl={6}>
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem' }}>Apellido</Typography>
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Apellido</Typography>
                             <TextField
                                 id="apellido"
                                 {...register("apellido")}
@@ -89,7 +89,7 @@ export default function DriverFormPage(){
 
                     <Grid container spacing={3} mb={4}>
                         <Grid item xs={12} sm={6} md={6} lg={8} xl={6}>
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem' }}>DNI</Typography>
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>DNI</Typography>
                             <TextField
                                 id="dni"
                                 {...register("dni")}
@@ -103,7 +103,7 @@ export default function DriverFormPage(){
                             />
                         </Grid>
                         <Grid item xs={12} sm={6} md={6} lg={8} xl={6}>
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem' }}>Fecha de nacimiento</Typography>
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Fecha de nacimiento</Typography>
                             <TextField
                                 id="fecha_nacimiento"
                                 {...register("fecha_nacimiento")}
@@ -121,7 +121,7 @@ export default function DriverFormPage(){
                     <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Datos de la licencia</Typography>
                     <Grid container spacing={3} mb={4}>
                         <Grid item xs={12} sm={6} md={6} lg={8} xl={6}>
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem' }}>Licencia</Typography>                                  
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Licencia</Typography>                                  
                             <TextField
                                 id="licencia"
                                 {...register("licencia")}
@@ -135,7 +135,7 @@ export default function DriverFormPage(){
                             />
                         </Grid>
                         <Grid item xs={12} sm={6} md={6} lg={8} xl={6}>
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem' }}>Tipo de licencia</Typography>
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Tipo de licencia</Typography>
                             <Controller
                                 control={control}
                                 name="tipo_licencia"
@@ -166,8 +166,7 @@ export default function DriverFormPage(){
                     <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Información de Contacto</Typography>
                     <Grid container spacing={3} mb={4}>
                         <Grid item xs={12} sm={6} md={6} lg={6} xl={4}>
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem' }}>Telefono</Typography>
-                            
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Telefono</Typography>
                             <Grid container spacing={2}>
                                 <Grid item xs={mostrarCodigoArea ? 3 : 4}>
                                 <TextField

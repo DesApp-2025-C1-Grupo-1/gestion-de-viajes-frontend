@@ -4,7 +4,7 @@ import { Driver } from "../../types";
 import { FormDriver } from "../../components/driver/formDriver";
 import { SectionHeader } from "../../components/SectionHeader";
 import { companies, vehicles } from "../../lib/mock-data";
-import { fetchDriverById , createDriver, updateDriver, deleteDriver} from "../../lib/apiDriver";
+import { fetchDriverById , createDriver, updateDriver } from "../../lib/apiDriver";
 
 export default function DriverCreateEdit ()  {
     const {id} = useParams();
@@ -16,7 +16,7 @@ export default function DriverCreateEdit ()  {
 
     useEffect(() => {
         if(isEditing && id){
-            //setLoading(true);
+            setLoading(true);
             fetchDriverById(id!).then((driver) => setEditingDriver(driver));
         }
     },[id])
@@ -32,7 +32,7 @@ export default function DriverCreateEdit ()  {
             navigate('/drivers');
         }
         catch (err) {
-            console.error("Error al guardar chofer", err);
+            console.error("Error al guardar el chofer", err);
         }
 };
 

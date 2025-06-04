@@ -1,16 +1,17 @@
 import { Box, Button } from "@mui/material";
+import { isValid } from "zod";
 
 interface FormActionsProps {
   loading: boolean;
   isEditing: boolean;
-  onCancel: () => void;
+  isValid?: boolean;
 }
 
-const FormActions = ({ loading, isEditing, onCancel }: FormActionsProps) => {
+const FormActions = ({ loading, isEditing}: FormActionsProps) => {
   return (
     <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2, mt: 4 }}>
       <Button 
-        onClick={onCancel} 
+        onClick={()=> window.history.back()} 
         variant="outlined"
         disabled={loading}
       >
@@ -20,7 +21,7 @@ const FormActions = ({ loading, isEditing, onCancel }: FormActionsProps) => {
         type="submit" 
         variant="contained" 
         color="primary"
-        disabled={loading}
+        disabled={!isValid}
       >
         {isEditing ? "Actualizar" : "Crear"}
       </Button>

@@ -194,7 +194,7 @@ export interface CreateTelefonoDto {
   /** Código de país */
   codigo_pais: string;
   /** Código de área */
-  codigo_area?: string;
+  codigo_area: string;
   /** Número de teléfono sin código de país ni área */
   numero: string;
 }

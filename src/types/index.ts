@@ -22,11 +22,9 @@ export type Company = {
   _id: string
   razon_social: string
   nombre_comercial: string
-  cuit: number
-  domicilio_fiscal: string
-  telefono: number
-  mail: string
-  nombre_contacto: string
+  cuit: string
+  contacto: Contacto
+  direccion: Direccion
 }
 
 export type Driver = {
@@ -79,3 +77,6 @@ export type Direccion = {
   pais: string
   tipo?: string
 }
+
+
+

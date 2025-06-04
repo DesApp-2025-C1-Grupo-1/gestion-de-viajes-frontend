@@ -2,38 +2,26 @@ import { Grid, Typography, TextField } from "@mui/material";
 import { format } from "date-fns";
 import { LocalizationProvider, renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { DepositoDto } from "../../api/generated";
+import { Control, Controller, UseFormRegister } from "react-hook-form";
+import { CreateDepositoSchema } from "../../api/schemas";
 interface BasicInfoSectionProps {
-  formData: Partial<DepositoDto>;
-  errors: Record<string, string>;
-  touched: Record<string, boolean>;
+  errors: Record<string, any>;
   loading: boolean;
-  handleChange: (e: React.ChangeEvent<any>) => void;
+  register: UseFormRegister<CreateDepositoSchema>;
+  control: Control<CreateDepositoSchema>;
 }
 
+// Helper: convierte string "HH:mm" a Date
+const timeStringToDate = (timeStr: string | undefined) => {
+  return timeStr ? new Date(`2000-01-01T${timeStr}`) : null;
+};
+
 const TimeSection = ({
-  formData,
   errors,
-  touched,
   loading,
-  handleChange,
+  register,
+  control,
 }: BasicInfoSectionProps) => {
-
-  // Helper: convierte string "HH:mm" a Date
-  const timeStringToDate = (timeStr: string | undefined) => {
-    return timeStr ? new Date(`2000-01-01T${timeStr}`) : null;
-  };
-
-  // Wrapper para simular evento y reutilizar handleChange
-  const handleTimePickerChange = (name: string, value: Date | null) => {
-    const stringValue = value ? format(value, "HH:mm") : "";
-    handleChange({
-      target: {
-        name,
-        value: stringValue
-      }
-    } as React.ChangeEvent<any>);
-  };
 
   return (
     <>
@@ -45,47 +33,66 @@ const TimeSection = ({
 
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <Grid item xs={12} sm={6}>
-            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb: 1 }}>Horario de entrada</Typography>
-            <TimePicker
-              value={timeStringToDate(formData.horario_entrada)}
-              onChange={(value) => handleTimePickerChange("horario_entrada", value)}
-              disabled={loading}
-              slotProps={{
-                textField: {
-                  fullWidth: true,
-                  className: "inside-paper",
-                  error: touched.horario_entrada && !!errors.horario_entrada,
-                  helperText: touched.horario_entrada && errors.horario_entrada,
-                }
-              }}
-              viewRenderers={{
-                hours: renderTimeViewClock,
-                minutes: renderTimeViewClock,
-                seconds: renderTimeViewClock,
-              }}
+            <Typography sx={{ color: "#5A5A65", fontSize: "0.900rem", mb: 1 }}>Horario de entrada</Typography>
+            <Controller
+              name="horario_entrada"
+              control={control}
+              render={({ field }) => (
+                <TimePicker
+                  {...field}
+                  ampm={false}
+                  disabled={loading}
+                  value={timeStringToDate(field.value)}
+                  onChange={(date) => {
+                    field.onChange(date ? date.toTimeString().slice(0, 5) : "");
+                  }}
+                  slotProps={{
+                    textField: {
+                      fullWidth: true,
+                      className: "inside-paper",
+                      error: !!errors.horario_entrada,
+                      helperText: errors.horario_entrada?.message,
+                    },
+                  }}
+                  viewRenderers={{
+                    hours: renderTimeViewClock,
+                    minutes: renderTimeViewClock,
+                    seconds: renderTimeViewClock,
+                  }}
+                />
+              )}
             />
-            
           </Grid>
 
           <Grid item xs={12} sm={6}>
-            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb: 1 }}>Horario de salida</Typography>
-            <TimePicker
-              value={timeStringToDate(formData.horario_salida)}
-              onChange={(value) => handleTimePickerChange("horario_salida", value)}
-              disabled={loading}
-              slotProps={{
-                textField: {
-                  fullWidth: true,
-                  className: "inside-paper",
-                  error: touched.horario_salida && !!errors.horario_salida,
-                  helperText: touched.horario_salida && errors.horario_salida,
-                }
-              }}
-              viewRenderers={{
-                hours: renderTimeViewClock,
-                minutes: renderTimeViewClock,
-                seconds: renderTimeViewClock,
-              }}
+            <Typography sx={{ color: "#5A5A65", fontSize: "0.900rem", mb: 1 }}>Horario de salida</Typography>
+            <Controller
+              name="horario_salida"
+              control={control}
+              render={({ field }) => (
+                <TimePicker
+                  {...field}
+                  ampm={false}
+                  disabled={loading}
+                  value={timeStringToDate(field.value)}
+                  onChange={(date) => {
+                    field.onChange(date ? date.toTimeString().slice(0, 5) : "");
+                  }}
+                  slotProps={{
+                    textField: {
+                      fullWidth: true,
+                      className: "inside-paper",
+                      error: !!errors.horario_salida,
+                      helperText: errors.horario_salida?.message,
+                    },
+                  }}
+                  viewRenderers={{
+                    hours: renderTimeViewClock,
+                    minutes: renderTimeViewClock,
+                    seconds: renderTimeViewClock,
+                  }}
+                />
+              )}
             />
           </Grid>
         </LocalizationProvider>
@@ -93,11 +100,10 @@ const TimeSection = ({
         <Grid item xs={12}>
           <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Restricciones de acceso</Typography>
           <TextField
-            name="restricciones"
+            id="restricciones"
             placeholder="Ej: Vehiculos de más de 3.5 toneladas no pueden ingresar"
             fullWidth
-            value={formData.restricciones || ''}
-            onChange={handleChange}
+            {...register("restricciones")}
             disabled={loading}
             multiline
             minRows={3}

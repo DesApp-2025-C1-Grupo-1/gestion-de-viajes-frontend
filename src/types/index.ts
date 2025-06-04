@@ -78,5 +78,14 @@ export type Direccion = {
   tipo?: string
 }
 
-
-
+export type Trip = {
+  _id: string
+  deposito_origen: Deposit
+  deposito_destino: Deposit
+  fecha_inicio: Dayjs | null
+  fecha_llegada: Dayjs | null
+  tipo_viaje: "nacional" | "internacional"
+  empresa: Company
+  chofer: Driver
+  vehiculo: Vehicle
+}

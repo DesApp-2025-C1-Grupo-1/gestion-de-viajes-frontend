@@ -304,9 +304,9 @@ export interface UpdateChoferDto { [key: string]: unknown }
 
 export interface CreateViajeDto {
   /** Fecha y hora de inicio del viaje */
-  fecha_inicio: string;
+  fecha_inicio: Date;
   /** Fecha y hora estimada de llegada */
-  fecha_llegada: string;
+  fecha_llegada: Date;
   /** Tipo de viaje */
   tipo_viaje: string;
   /** ID del depósito de origen */
@@ -346,9 +346,9 @@ export interface ViajeDto {
   /** ID del viaje */
   _id: string;
   /** Fecha y hora de inicio del viaje */
-  fecha_inicio: string;
+  fecha_inicio: Date;
   /** Fecha y hora estimada de llegada */
-  fecha_llegada: string;
+  fecha_llegada: Date;
   /** Tipo de viaje */
   tipo_viaje: string;
   /** ID del depósito de origen */
@@ -365,9 +365,9 @@ export interface ViajeDto {
 
 export interface UpdateViajeDto {
   /** Fecha y hora de inicio del viaje */
-  fecha_inicio?: string;
+  fecha_inicio?: Date;
   /** Fecha y hora estimada de llegada */
-  fecha_llegada?: string;
+  fecha_llegada?: Date;
   /** Tipo de viaje */
   tipo_viaje?: string;
   /** ID del depósito de origen */

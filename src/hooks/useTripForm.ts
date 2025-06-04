@@ -22,8 +22,10 @@ export const useTripForm = (id?: string) => {
         mode: "onBlur",
         reValidateMode: "onChange",
         defaultValues: {
-            fecha_inicio: "",
-            fecha_llegada: "",
+            //fecha_inicio: "",
+            //fecha_llegada: "",
+            fecha_inicio: undefined,
+            fecha_llegada: undefined,
             tipo_viaje: "nacional",
             deposito_origen: "",
             deposito_destino: "",

@@ -1,10 +1,11 @@
 import { SectionHeader } from "../../components/SectionHeader";
 import { useNavigate, useParams } from "react-router-dom";
-import { Box, Button, Paper, TextField, Select, MenuItem, Typography, Backdrop, CircularProgress, Grid, Alert, FormHelperText, FormControl} from "@mui/material";
+import { Box, Button, Paper, Select, MenuItem, Typography, Backdrop, CircularProgress, Grid, Alert, FormHelperText, FormControl} from "@mui/material";
 import { useTripForm } from "../../hooks/useTripForm";
-import { Import } from "lucide-react";
 import { Controller } from "react-hook-form";
 import { CreateViajeSchema } from "../../api/schemas";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 export default function TripFormPage() {
     const {id} = useParams();
@@ -64,17 +65,60 @@ export default function TripFormPage() {
             />
             <Paper sx={{maxHeight:"85%", padding: 4, overflow: "auto", mx: 'auto', width: "100%", borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "0.5px solid #C7C7C7", pb: 5 }} >
                 <form onSubmit={handleSubmit(handleFormSubmit)} className="w-full max-w-[800px] mx-auto">
-                    
+                    {/*? dayjs(field.value) :  */}
                     {/* FECHA INICIO FECHA LLEGADA TIPO DE VIAJE*/}
                     <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Datos del Viaje</Typography>
                     <Grid container spacing={3} mb={4}>
-                        <Grid item xs={12} md={6}>
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Fecha estimada de inicio</Typography>
-                        </Grid>
-
-                        <Grid item xs={12} md={6}>
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Fecha estimada de llegada</Typography>
-                        </Grid>
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <Grid item xs={12} md={6}>
+                                <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Fecha estimada de inicio</Typography>
+                                <Controller
+                                    name="fecha_inicio"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <DatePicker
+                                        {...field}
+                                        disabled={isLoading}
+                                        value={new Date (field.value)||null}
+                                        onChange={(date) => field.onChange(date)}
+                                        slotProps={{
+                                            textField: {
+                                            fullWidth: true,
+                                            className: "inside-paper",
+                                            error: !!formErrors.fecha_inicio,
+                                            helperText: formErrors.fecha_inicio?.message,
+                                            },
+                                        }}                         
+                                    />
+                                    )}
+                                />
+                            </Grid>
+                        
+                            <Grid item xs={12} md={6}>
+                                <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Fecha estimada de llegada</Typography>
+                                <Controller
+                                    name="fecha_llegada"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <DatePicker
+                                        {...field}
+                                        disabled={isLoading}
+                                        value={new Date (field.value) ||null}
+                                        onChange={(date) => field.onChange(date)}
+                                        //onChange={(date) => field.onChange(date?.getTime())}
+                                        slotProps={{
+                                            textField: {
+                                            fullWidth: true,
+                                            className: "inside-paper",
+                                            error: !!formErrors.fecha_llegada,
+                                            helperText: formErrors.fecha_llegada?.message,
+                                            },
+                                        }}                              
+                                    />
+                                    )}
+                                />
+                            </Grid>
+                        </LocalizationProvider>
 
                         <Grid item xs={12} md={6}>
                             <FormControl fullWidth>

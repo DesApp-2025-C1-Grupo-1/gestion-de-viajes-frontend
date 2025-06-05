@@ -7,32 +7,32 @@ import { useAutoRowsPerPage } from '../../hooks/useAutoRowsPerPage';
 import SearchBar from "../../components/SearchBar";
 import MenuItem from "../../components/buttons/MenuItem";
 import { useNotify } from "../../hooks/useNotify";
-import { choferControllerRemove, ChoferDto, useChoferControllerFindAll } from "../../api/generated";
+import { empresaControllerDelete, EmpresaDto, useEmpresaControllerFindAll} from "../../api/generated";
 import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 
-export default function DriverPage(){
-    const {notify} = useNotify("Chofer");
-    const {data, isLoading, error, refetch} = useChoferControllerFindAll();
+export default function CompanyPage(){
+    const {notify} = useNotify("Empresa");
+    const {data, isLoading, error, refetch} = useEmpresaControllerFindAll();
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);
     const [openDialog, setOpenDialog] = useState(false);
     const {rowsPerPage} = useAutoRowsPerPage();
-    const [choferSelect, setChoferSelect] = useState<ChoferDto>();
-    const choferes = data?.data || [];
+    const [empresaSelected, setEmpresaSelected] = useState<EmpresaDto>();
+    const empresas = data?.data || [];
     const debouncedQuery = useDebouncedValue(searchQuery, 500);
 
-    const handleOpenDialog = (company: ChoferDto) => {
+    const handleOpenDialog = (company: EmpresaDto) => {
         setOpenDialog(true);
-        setChoferSelect(company);
+        setEmpresaSelected(company);
     };
 
     const handleDelete = async(id:string) => {
         try{
-            await choferControllerRemove(id);
+            await empresaControllerDelete(id);
             setOpenDialog(false);
             await refetch();
-            notify("delete", "Chofer eliminado correctamente.")
+            notify("delete", "Empresa eliminada correctamente.")
             setPage(1);
         } catch(err){
             const error = err as {response:{data:{message:string}}};
@@ -42,8 +42,8 @@ export default function DriverPage(){
         }
     };
 
-    const filtered = choferes.filter((dri) => 
-        dri.apellido.toLocaleLowerCase().includes(debouncedQuery.toLocaleLowerCase())
+    const filtered = empresas.filter((com) => 
+    com.nombre_comercial.toLocaleLowerCase().includes(debouncedQuery.toLocaleLowerCase())
     );
 
     const totalPages = Math.ceil(filtered.length / rowsPerPage);
@@ -61,12 +61,12 @@ export default function DriverPage(){
     return(
         <>
             <SectionHeader
-                title="Listado de choferes"
-                description="Gestione los choferes disponibles del sistema"
-                buttonText="Nuevo chofer"
-                onAdd={() => navigate("/driver/create")}
+                title="Listado de empresas transportistas"
+                description="Gestione las empresas transportistas del sistema"
+                buttonText="Nueva empresa"
+                onAdd={() => navigate("/company/create")}
             /> 
-            <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} placeholder="Buscar por apellido"></SearchBar>
+            <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} placeholder="Buscar por nombre"></SearchBar>
 
             {/*tabla*/}
             <div className="bg-white rounded-lg overflow-hidden" style={{
@@ -78,45 +78,41 @@ export default function DriverPage(){
                     <Table aria-label="simple table">
                         <TableHead >
                             <TableRow>
-                                <TableCell sx={{borderRadius: "8px"}}>Nombre completo</TableCell>
-                                <TableCell>DNI</TableCell>
-                                <TableCell>Fecha de nacimiento</TableCell>
-                                <TableCell>Licencia</TableCell>
-                                <TableCell>Datos de contacto</TableCell>
-                                <TableCell>Empresa</TableCell>
-                                <TableCell>vehiculo asignado</TableCell>
-                                <TableCell align="center" sx={{width: 72, borderRadius: "8px"}}>Acciones</TableCell>
+                                <TableCell sx={{borderTopLeftRadius: "8px"}}>Razon social</TableCell>
+                                <TableCell>Nombre comercial</TableCell>
+                                <TableCell>CUIT/RUT</TableCell>
+                                <TableCell>Domicilio fiscal</TableCell>
+                                <TableCell>Contacto</TableCell>
+                                <TableCell align="center" sx={{width: 72, borderTopRightRadius: "8px"}}>Acciones</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {isLoading ? (
                                 <TableRow key="loading">
                                     <TableCell colSpan={7} >
-                                        <LoadingState title="choferes"/>
+                                        <LoadingState title="empresas"/>
                                     </TableCell>
                                 </TableRow>
                             ) : paginated.length === 0 ? (
-                                <TableRow key="no-drivers">
+                                <TableRow key="no-companies">
                                     <TableCell 
                                         colSpan={7} 
                                         sx={{textAlign: "center", paddingY: "26px",}}
                                     >
-                                        No se encontraron choferes
+                                        No se encontraron empresas
                                     </TableCell>
                                 </TableRow>
                             ):(
-                                paginated.map((driver) => (
-                                    <TableRow key={driver._id} className="hover:bg-gray-50 overflow-hidden">
-                                        <TableCell sx={{fontWeight: "bold"}}>{`${driver.nombre} ${driver.apellido}`}</TableCell>
-                                        <TableCell>{driver.dni}</TableCell>
-                                        <TableCell>{driver.fecha_nacimiento}</TableCell>
-                                        <TableCell>{`${driver.licencia} - ${driver.tipo_licencia}`}</TableCell>
-                                        <TableCell>{`${driver.telefono?.numero} - ${driver.email}`}</TableCell>
-                                        <TableCell>{driver.empresa?.nombre_comercial}</TableCell>
-                                        <TableCell>{driver.vehiculo?.modelo}</TableCell>
+                                paginated.map((company) => (
+                                    <TableRow key={company._id} className="hover:bg-gray-50 overflow-hidden">
+                                        <TableCell sx={{fontWeight: "bold"}}>{company.razon_social}</TableCell>
+                                        <TableCell>{company.nombre_comercial}</TableCell>
+                                        <TableCell>{company.cuit}</TableCell>
+                                        <TableCell>{`${company.direccion?.ciudad}, ${company.direccion?.calle} ${company.direccion?.numero}`}</TableCell>
+                                        <TableCell>{company.contacto?.email}</TableCell>
                                         <TableCell sx={{ verticalAlign: "middle"}}>
-                                            <MenuItem  handleOpenDialog={() => handleOpenDialog(driver)}
-                                            id={driver._id}
+                                            <MenuItem  handleOpenDialog={() => handleOpenDialog(company)}
+                                            id={company._id}
                                             /></TableCell>
                                     </TableRow>
                                 ))
@@ -140,15 +136,15 @@ export default function DriverPage(){
                 />
             </div>
 
-            {choferSelect && (
+            {empresaSelected && (
                 <ConfirmDialog 
                     open= {openDialog}
                     onClose={() => setOpenDialog(false)}
                     title="empresa"
-                    entityName={choferSelect.apellido}
-                    onConfirm={() => handleDelete(choferSelect?._id)}
+                    entityName={empresaSelected.nombre_comercial}
+                    onConfirm={() => handleDelete(empresaSelected?._id)}
                 />
             )}
         </>
-    )
+    );
 }

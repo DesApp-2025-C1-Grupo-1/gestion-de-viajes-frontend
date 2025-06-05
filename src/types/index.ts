@@ -22,11 +22,9 @@ export type Company = {
   _id: string
   razon_social: string
   nombre_comercial: string
-  cuit: number
-  domicilio_fiscal: string
-  telefono: number
-  mail: string
-  nombre_contacto: string
+  cuit: string
+  contacto: Contacto
+  direccion: Direccion
 }
 
 export type Driver = {
@@ -79,4 +77,16 @@ export type Direccion = {
   estado_provincia: string
   pais: string
   tipo?: string
+}
+
+export type Trip = {
+  _id: string
+  deposito_origen: Deposit
+  deposito_destino: Deposit
+  fecha_inicio: Dayjs | null
+  fecha_llegada: Dayjs | null
+  tipo_viaje: "nacional" | "internacional"
+  empresa: Company
+  chofer: Driver
+  vehiculo: Vehicle
 }

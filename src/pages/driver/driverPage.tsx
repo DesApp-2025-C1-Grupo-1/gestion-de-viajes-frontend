@@ -84,7 +84,7 @@ export default function DriverPage(){
                                 <TableCell>Licencia</TableCell>
                                 <TableCell>Datos de contacto</TableCell>
                                 <TableCell>Empresa</TableCell>
-                                <TableCell>vehiculo asignado</TableCell>
+                                <TableCell>Vehiculo asignado</TableCell>
                                 <TableCell align="center" sx={{width: 72, borderRadius: "8px"}}>Acciones</TableCell>
                             </TableRow>
                         </TableHead>

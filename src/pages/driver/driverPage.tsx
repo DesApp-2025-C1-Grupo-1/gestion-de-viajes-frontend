@@ -109,7 +109,7 @@ export default function DriverPage(){
                                     <TableRow key={driver._id} className="hover:bg-gray-50 overflow-hidden">
                                         <TableCell sx={{fontWeight: "bold"}}>{`${driver.nombre} ${driver.apellido}`}</TableCell>
                                         <TableCell>{driver.dni}</TableCell>
-                                        <TableCell>{driver.fecha_nacimiento}</TableCell>
+                                        <TableCell>{driver.fecha_nacimiento.split('T')[0]}</TableCell>
                                         <TableCell>{`${driver.licencia} - ${driver.tipo_licencia}`}</TableCell>
                                         <TableCell>{`${driver.telefono?.numero} - ${driver.email}`}</TableCell>
                                         <TableCell>{driver.empresa?.nombre_comercial}</TableCell>

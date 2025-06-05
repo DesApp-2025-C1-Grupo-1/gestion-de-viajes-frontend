@@ -64,21 +64,6 @@ export const useDriverForm = (id?: string) => {
     }
   }, [isEditing, data]);
 
-  /*
-  useEffect(() => {
-    if (isEditing && data && data.data) {
-      const { _id, empresa, vehiculo, ...rest } = data.data ;
-      const {_id: idVehiculo} = vehiculo;
-      const {_id: idEmpresa} = empresa;
-      reset({
-        ...rest,
-        _id,
-        vehiculo: idVehiculo,
-        empresa: idEmpresa,
-      } as CreateChoferSchema);
-    }
-  }, [isEditing, data]);*/
-
   const onSubmit = async(FormData: CreateChoferSchema | UpdateChoferSchema) => {
     console.log("Datos del formulario:", data);
     if(isEditing){

@@ -6,6 +6,8 @@ import { Controller} from 'react-hook-form';
 import { CreateChoferSchema } from "../../api/schemas";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs"
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 export default function DriverFormPage(){
     const {id} = useParams();
@@ -43,6 +45,7 @@ export default function DriverFormPage(){
     );
 
     const handleFormSubmit = (data: CreateChoferSchema) => {
+        console.log(data)
         onSubmit(data);
     };
 
@@ -103,39 +106,32 @@ export default function DriverFormPage(){
                                 disabled={isLoading}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={6} md={6} lg={8} xl={6}>
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Fecha de nacimiento</Typography>
-                            <TextField
-                                id="fecha_nacimiento"
-                                {...register("fecha_nacimiento")}
-                                fullWidth
-                                placeholder="AAAA-MM-DD"
-                                inputProps={{ "aria-label": "fecha_nacimiento" }}
-                                error={!!formErrors.fecha_nacimiento}
-                                helperText={formErrors.fecha_nacimiento?.message}
-                                className="inside-paper"
-                                disabled={isLoading}
-                
-                            />
-                            {/*<Controller
-                                name="fecha_nacimiento"
-                                control={control}
-                                //defaultValue={null}
-                                render={({ field, fieldState }) => (
-                                    <DatePicker                     
-                                        value={field.value}
-                                        onChange={(date) => field.onChange(date)}
-                                        slotProps={{
-                                            textField: {
-                                            fullWidth: true,
-                                            error: !!fieldState.error,
-                                            helperText: fieldState.error?.message,
-                                            },
-                                        }}
-                                    />
-                                )}
-                            />*/}
-                        </Grid>
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <Grid item xs={12} sm={6}>
+                                <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Fecha de nacimiento</Typography>
+                                <Controller
+                                    name="fecha_nacimiento"
+                                    control={control}
+                                    render={({ field}) => (
+                                        <DatePicker                     
+                                            value={field.value ? new Date(field.value) : null}
+                                            onChange={(date) => {
+                                                field.onChange(date ? new Date(date) : null)
+                                                console.log(date)
+                                            }}
+                                            slotProps={{
+                                                textField: {
+                                                fullWidth: true,
+                                                error: !!formErrors.fecha_nacimiento,
+                                                helperText: formErrors.fecha_nacimiento?.message,
+                                                },
+                                            }}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                        </LocalizationProvider>
+                        
                     </Grid>
 
                     <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Datos de la licencia</Typography>
@@ -181,6 +177,20 @@ export default function DriverFormPage(){
                                 {formErrors.tipo_licencia?.message}
                             </FormHelperText>
                         </Grid>
+                    </Grid>
+
+                    <Grid item xs={12} >
+                        <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Mail</Typography>
+                        <TextField
+                            id="email"
+                            placeholder="contacto@deposito.com"
+                            fullWidth
+                            className="inside-paper"
+                            type="email"
+                            {...register("email")}
+                            error={!!formErrors.email}
+                            helperText={formErrors.email?.message}
+                        />
                     </Grid>
 
                     <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Información de Contacto</Typography>

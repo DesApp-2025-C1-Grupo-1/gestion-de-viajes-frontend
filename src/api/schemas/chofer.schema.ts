@@ -1,7 +1,6 @@
 import { z } from "zod"
-import { TelefonoSchema } from "./base/telefono.schema"
+import { CreateTelefonoSchema, TelefonoSchema } from "./base/telefono.schema"
 import { tipoLicenciaSchema } from "./enums/tipoLicencia.schema"
-import dayjs, { Dayjs } from "dayjs";
 
 export const createChoferSchema = z.object({
   nombre: z.string().min(1, "El nombre es obligatorio"),
@@ -20,20 +19,14 @@ export const createChoferSchema = z.object({
     }, { message: "Debe ser mayor de edad" }),*/
 
     //intento
-  fecha_nacimiento: z
-    .string()
-    .refine((val) => {
-      const date = new Date(val)
-      const age = new Date().getFullYear() - date.getFullYear()
-      return age >= 18
-    }, "El chofer debe ser mayor de edad"),
+  fecha_nacimiento: z.date().max(new Date("2005-01-01"), { message: "Too old!" }),
 
   licencia: z.string().min(1, "La licencia es obligatoria"),
   tipo_licencia: tipoLicenciaSchema,
   email: z.string().email(),
   empresa: z.string().regex(/^[a-f\d]{24}$/i, "ID de empresa inválido"),
   vehiculo: z.string().regex(/^[a-f\d]{24}$/i, "ID de vehículo inválido"),
-  telefono: TelefonoSchema,
+  telefono: CreateTelefonoSchema,
 })
 
 export const choferSchema = createChoferSchema.extend({

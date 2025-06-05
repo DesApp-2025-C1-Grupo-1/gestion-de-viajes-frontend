@@ -6,7 +6,7 @@ import Layout from "./components/Layout";
 import VehicleForm from "./pages/vehicle/VehicleForm";
 import DepositPage from "./pages/deposit/DepositPage";
 import DepositFormPage from "./pages/deposit/DepositForm";
-import DriverPage from "./pages/driver/DriverPage";
+import DriverPage from "./pages/driver/driverPage";
 import DriverFormPage from "./pages/driver/DriverForm";
 
 export function AppRouter() {

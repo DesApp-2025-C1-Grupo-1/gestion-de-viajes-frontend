@@ -111,6 +111,8 @@ export interface ContactoDto {
   _id: string;
   /** Nombre del contacto */
   nombre: string;
+  /** Apellido del contacto */
+  apellido: string;
   /** ID Teléfono de contacto */
   telefono: TelefonoDto;
   /** Correo electrónico del contacto */
@@ -261,7 +263,7 @@ export interface CreateChoferDto {
   /** DNI del chofer */
   dni: number;
   /** Fecha de nacimiento */
-  fecha_nacimiento: string;
+  fecha_nacimiento: Date;
   /** Número de licencia del conductor */
   licencia: string;
   /** Tipo de licencia según clasificación nacional */
@@ -286,7 +288,7 @@ export interface ChoferDto {
   /** DNI del chofer */
   dni: number;
   /** Fecha de nacimiento */
-  fecha_nacimiento: string;
+  fecha_nacimiento: Date;
   /** Número de licencia del conductor */
   licencia: string;
   /** Tipo de licencia según clasificación nacional */
@@ -300,23 +302,23 @@ export interface ChoferDto {
 
 export interface UpdateChoferDto { [key: string]: unknown }
 
-export interface CreateDepositoDto {
-  /** Nombre del depósito */
-  nombre: string;
-  /** Latitud del depósito */
-  lat: number;
-  /** Longitud del depósito */
-  long: number;
-  /** Tipo de depósito si propio o de tercero */
-  tipo: string;
-  /** Horario de apertura del depósito */
-  horario_entrada: string;
-  /** Horario de cierre del depósito */
-  horario_salida: string;
-  /** Restricciones del depósito */
-  restricciones: string;
-  direccion: CreateDireccionDto;
-  contacto: CreateContactoDto;
+export interface CreateViajeDto {
+  /** Fecha y hora de inicio del viaje */
+  fecha_inicio: Date;
+  /** Fecha y hora estimada de llegada */
+  fecha_llegada: Date;
+  /** Tipo de viaje */
+  tipo_viaje: string;
+  /** ID del depósito de origen */
+  deposito_origen: string;
+  /** ID del depósito de destino */
+  deposito_destino: string;
+  /** ID de la empresa */
+  empresa: string;
+  /** ID del chofer */
+  chofer: string;
+  /** ID del vehículo */
+  vehiculo: string;
 }
 
 export interface DepositoDto {
@@ -338,6 +340,65 @@ export interface DepositoDto {
   restricciones: string;
   direccion: DireccionDto;
   contacto: ContactoDto;
+}
+
+export interface ViajeDto {
+  /** ID del viaje */
+  _id: string;
+  /** Fecha y hora de inicio del viaje */
+  fecha_inicio: string;
+  /** Fecha y hora estimada de llegada */
+  fecha_llegada: string;
+  /** Tipo de viaje */
+  tipo_viaje: string;
+  /** ID del depósito de origen */
+  deposito_origen: DepositoDto;
+  /** ID del depósito de destino */
+  deposito_destino: DepositoDto;
+  /** ID de la empresa */
+  empresa: EmpresaDto;
+  /** ID del chofer */
+  chofer: ChoferDto;
+  /** ID del vehículo */
+  vehiculo: VehiculoDto;
+}
+
+export interface UpdateViajeDto {
+  /** Fecha y hora de inicio del viaje */
+  fecha_inicio?: string;
+  /** Fecha y hora estimada de llegada */
+  fecha_llegada?: string;
+  /** Tipo de viaje */
+  tipo_viaje?: string;
+  /** ID del depósito de origen */
+  deposito_origen?: string;
+  /** ID del depósito de destino */
+  deposito_destino?: string;
+  /** ID de la empresa */
+  empresa?: string;
+  /** ID del chofer */
+  chofer?: string;
+  /** ID del vehículo */
+  vehiculo?: string;
+}
+
+export interface CreateDepositoDto {
+  /** Nombre del depósito */
+  nombre: string;
+  /** Latitud del depósito */
+  lat: number;
+  /** Longitud del depósito */
+  long: number;
+  /** Tipo de depósito si propio o de tercero */
+  tipo: string;
+  /** Horario de apertura del depósito */
+  horario_entrada: string;
+  /** Horario de cierre del depósito */
+  horario_salida: string;
+  /** Restricciones del depósito */
+  restricciones: string;
+  direccion: CreateDireccionDto;
+  contacto: CreateContactoDto;
 }
 
 export interface UpdateDepositoDto {
@@ -1867,6 +1928,364 @@ export const useChoferControllerRemove = <TError = AxiosError<void>,
       > => {
 
       const mutationOptions = getChoferControllerRemoveMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * @summary Crear un viaje
+ */
+export const viajeControllerCreate = (
+    createViajeDto: CreateViajeDto, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<ViajeDto>> => {
+    
+    
+    return axios.post(
+      `/viaje`,
+      createViajeDto,options
+    );
+  }
+
+
+
+export const getViajeControllerCreateMutationOptions = <TError = AxiosError<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof viajeControllerCreate>>, TError,{data: CreateViajeDto}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof viajeControllerCreate>>, TError,{data: CreateViajeDto}, TContext> => {
+
+const mutationKey = ['viajeControllerCreate'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, axios: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof viajeControllerCreate>>, {data: CreateViajeDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  viajeControllerCreate(data,axiosOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ViajeControllerCreateMutationResult = NonNullable<Awaited<ReturnType<typeof viajeControllerCreate>>>
+    export type ViajeControllerCreateMutationBody = CreateViajeDto
+    export type ViajeControllerCreateMutationError = AxiosError<void>
+
+    /**
+ * @summary Crear un viaje
+ */
+export const useViajeControllerCreate = <TError = AxiosError<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof viajeControllerCreate>>, TError,{data: CreateViajeDto}, TContext>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof viajeControllerCreate>>,
+        TError,
+        {data: CreateViajeDto},
+        TContext
+      > => {
+
+      const mutationOptions = getViajeControllerCreateMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * @summary Obtener todos los viajes
+ */
+export const viajeControllerFindAll = (
+     options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<ViajeDto[]>> => {
+    
+    
+    return axios.get(
+      `/viaje`,options
+    );
+  }
+
+
+export const getViajeControllerFindAllQueryKey = () => {
+    return [`/viaje`] as const;
+    }
+
+    
+export const getViajeControllerFindAllQueryOptions = <TData = Awaited<ReturnType<typeof viajeControllerFindAll>>, TError = AxiosError<void>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof viajeControllerFindAll>>, TError, TData>>, axios?: AxiosRequestConfig}
+) => {
+
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getViajeControllerFindAllQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof viajeControllerFindAll>>> = ({ signal }) => viajeControllerFindAll({ signal, ...axiosOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof viajeControllerFindAll>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ViajeControllerFindAllQueryResult = NonNullable<Awaited<ReturnType<typeof viajeControllerFindAll>>>
+export type ViajeControllerFindAllQueryError = AxiosError<void>
+
+
+export function useViajeControllerFindAll<TData = Awaited<ReturnType<typeof viajeControllerFindAll>>, TError = AxiosError<void>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof viajeControllerFindAll>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof viajeControllerFindAll>>,
+          TError,
+          Awaited<ReturnType<typeof viajeControllerFindAll>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useViajeControllerFindAll<TData = Awaited<ReturnType<typeof viajeControllerFindAll>>, TError = AxiosError<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof viajeControllerFindAll>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof viajeControllerFindAll>>,
+          TError,
+          Awaited<ReturnType<typeof viajeControllerFindAll>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useViajeControllerFindAll<TData = Awaited<ReturnType<typeof viajeControllerFindAll>>, TError = AxiosError<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof viajeControllerFindAll>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Obtener todos los viajes
+ */
+
+export function useViajeControllerFindAll<TData = Awaited<ReturnType<typeof viajeControllerFindAll>>, TError = AxiosError<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof viajeControllerFindAll>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getViajeControllerFindAllQueryOptions(options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * @summary Obtener un viaje por ID
+ */
+export const viajeControllerFindOne = (
+    id: string, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<ViajeDto>> => {
+    
+    
+    return axios.get(
+      `/viaje/${id}`,options
+    );
+  }
+
+
+export const getViajeControllerFindOneQueryKey = (id: string,) => {
+    return [`/viaje/${id}`] as const;
+    }
+
+    
+export const getViajeControllerFindOneQueryOptions = <TData = Awaited<ReturnType<typeof viajeControllerFindOne>>, TError = AxiosError<void>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof viajeControllerFindOne>>, TError, TData>>, axios?: AxiosRequestConfig}
+) => {
+
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getViajeControllerFindOneQueryKey(id);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof viajeControllerFindOne>>> = ({ signal }) => viajeControllerFindOne(id, { signal, ...axiosOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof viajeControllerFindOne>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ViajeControllerFindOneQueryResult = NonNullable<Awaited<ReturnType<typeof viajeControllerFindOne>>>
+export type ViajeControllerFindOneQueryError = AxiosError<void>
+
+
+export function useViajeControllerFindOne<TData = Awaited<ReturnType<typeof viajeControllerFindOne>>, TError = AxiosError<void>>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof viajeControllerFindOne>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof viajeControllerFindOne>>,
+          TError,
+          Awaited<ReturnType<typeof viajeControllerFindOne>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useViajeControllerFindOne<TData = Awaited<ReturnType<typeof viajeControllerFindOne>>, TError = AxiosError<void>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof viajeControllerFindOne>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof viajeControllerFindOne>>,
+          TError,
+          Awaited<ReturnType<typeof viajeControllerFindOne>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useViajeControllerFindOne<TData = Awaited<ReturnType<typeof viajeControllerFindOne>>, TError = AxiosError<void>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof viajeControllerFindOne>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Obtener un viaje por ID
+ */
+
+export function useViajeControllerFindOne<TData = Awaited<ReturnType<typeof viajeControllerFindOne>>, TError = AxiosError<void>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof viajeControllerFindOne>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getViajeControllerFindOneQueryOptions(id,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * @summary Actualizar un viaje
+ */
+export const viajeControllerUpdate = (
+    id: string,
+    updateViajeDto: UpdateViajeDto, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<ViajeDto>> => {
+    
+    
+    return axios.patch(
+      `/viaje/${id}`,
+      updateViajeDto,options
+    );
+  }
+
+
+
+export const getViajeControllerUpdateMutationOptions = <TError = AxiosError<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof viajeControllerUpdate>>, TError,{id: string;data: UpdateViajeDto}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof viajeControllerUpdate>>, TError,{id: string;data: UpdateViajeDto}, TContext> => {
+
+const mutationKey = ['viajeControllerUpdate'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, axios: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof viajeControllerUpdate>>, {id: string;data: UpdateViajeDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  viajeControllerUpdate(id,data,axiosOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ViajeControllerUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof viajeControllerUpdate>>>
+    export type ViajeControllerUpdateMutationBody = UpdateViajeDto
+    export type ViajeControllerUpdateMutationError = AxiosError<void>
+
+    /**
+ * @summary Actualizar un viaje
+ */
+export const useViajeControllerUpdate = <TError = AxiosError<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof viajeControllerUpdate>>, TError,{id: string;data: UpdateViajeDto}, TContext>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof viajeControllerUpdate>>,
+        TError,
+        {id: string;data: UpdateViajeDto},
+        TContext
+      > => {
+
+      const mutationOptions = getViajeControllerUpdateMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * @summary Eliminar un viaje por ID
+ */
+export const viajeControllerRemove = (
+    id: string, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<void>> => {
+    
+    
+    return axios.delete(
+      `/viaje/${id}`,options
+    );
+  }
+
+
+
+export const getViajeControllerRemoveMutationOptions = <TError = AxiosError<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof viajeControllerRemove>>, TError,{id: string}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof viajeControllerRemove>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['viajeControllerRemove'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, axios: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof viajeControllerRemove>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  viajeControllerRemove(id,axiosOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ViajeControllerRemoveMutationResult = NonNullable<Awaited<ReturnType<typeof viajeControllerRemove>>>
+    
+    export type ViajeControllerRemoveMutationError = AxiosError<void>
+
+    /**
+ * @summary Eliminar un viaje por ID
+ */
+export const useViajeControllerRemove = <TError = AxiosError<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof viajeControllerRemove>>, TError,{id: string}, TContext>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof viajeControllerRemove>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+
+      const mutationOptions = getViajeControllerRemoveMutationOptions(options);
 
       return useMutation(mutationOptions , queryClient);
     }

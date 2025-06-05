@@ -60,7 +60,7 @@ export default function DriverFormPage(){
 
                     <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Datos personales</Typography>
                     <Grid container spacing={3} mb={4}>
-                        <Grid item xs={12} sm={6} md={6} lg={8} xl={6}>
+                        <Grid item xs={12} sm={6}>
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Nombre</Typography>
                             <TextField
                                 id="nombre"
@@ -74,7 +74,7 @@ export default function DriverFormPage(){
                                 disabled={isLoading}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={6} md={6} lg={8} xl={6}>
+                        <Grid item xs={12} sm={6}>
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Apellido</Typography>
                             <TextField
                                 id="apellido"
@@ -91,7 +91,7 @@ export default function DriverFormPage(){
                     </Grid>
 
                     <Grid container spacing={3} mb={4}>
-                        <Grid item xs={12} sm={6} md={6} lg={8} xl={6}>
+                        <Grid item xs={12} sm={6}>
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>DNI</Typography>
                             <TextField
                                 id="dni"
@@ -106,6 +106,20 @@ export default function DriverFormPage(){
                                 disabled={isLoading}
                             />
                         </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Mail</Typography>
+                            <TextField
+                                id="email"
+                                placeholder="contacto@deposito.com"
+                                fullWidth
+                                className="inside-paper"
+                                type="email"
+                                {...register("email")}
+                                error={!!formErrors.email}
+                                helperText={formErrors.email?.message}
+                            />
+                        </Grid>
+
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <Grid item xs={12} sm={6}>
                                 <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Fecha de nacimiento</Typography>
@@ -136,7 +150,7 @@ export default function DriverFormPage(){
 
                     <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Datos de la licencia</Typography>
                     <Grid container spacing={3} mb={4}>
-                        <Grid item xs={12} sm={6} md={6} lg={8} xl={6}>
+                        <Grid item xs={12} sm={6}>
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Licencia</Typography>                                  
                             <TextField
                                 id="licencia"
@@ -150,7 +164,7 @@ export default function DriverFormPage(){
                                 disabled={isLoading}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={6} md={6} lg={8} xl={6}>
+                        <Grid item xs={12} sm={6}>
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Tipo de licencia</Typography>
                             <Controller
                                 control={control}
@@ -179,23 +193,9 @@ export default function DriverFormPage(){
                         </Grid>
                     </Grid>
 
-                    <Grid item xs={12} >
-                        <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Mail</Typography>
-                        <TextField
-                            id="email"
-                            placeholder="contacto@deposito.com"
-                            fullWidth
-                            className="inside-paper"
-                            type="email"
-                            {...register("email")}
-                            error={!!formErrors.email}
-                            helperText={formErrors.email?.message}
-                        />
-                    </Grid>
-
                     <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Información de Contacto</Typography>
                     <Grid container spacing={3} mb={4}>
-                        <Grid item xs={12} sm={6} md={6} lg={6} xl={4}>
+                        <Grid item xs={12} sm={6}>
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Telefono</Typography>
                             <Grid container spacing={2}>
                                 <Grid item xs={mostrarCodigoArea ? 3 : 4}>

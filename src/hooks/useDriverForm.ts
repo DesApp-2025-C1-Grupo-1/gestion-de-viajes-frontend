@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useNotify } from "./useNotify";
 import { CreateChoferDto, choferControllerCreate, ChoferDto, UpdateChoferDto, useChoferControllerFindOne, choferControllerUpdate, EmpresaDto, CreateChoferDtoTipoLicencia, useEmpresaControllerFindAll, useVehiculoControllerFindAll } from '../api/generated';
 import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import dayjs from "dayjs";
+import { zodResolver } from "@hookform/resolvers/zod";;
 import { CreateChoferSchema, UpdateChoferSchema, createChoferSchema} from '../api/schemas/chofer.schema';
 import { tipoLicenciaSchema } from "../api/schemas/enums/tipoLicencia.schema";
 
@@ -95,6 +94,7 @@ export const useDriverForm = (id?: string) => {
         ...FormData,
         //fecha_nacimiento: dayjs(FormData.fecha_nacimiento).toISOString(),
         //para no redefinir telefono y si fecha de nac (arreglar)
+        fecha_nacimiento: FormData.fecha_nacimiento?.toISOString(),
         telefono: {
           codigo_pais: FormData.telefono.codigo_pais ?? "",
           codigo_area: FormData.telefono.codigo_area ?? "",

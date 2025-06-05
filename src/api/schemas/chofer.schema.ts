@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { CreateTelefonoSchema, TelefonoSchema } from "./base/telefono.schema"
+import { CreateTelefonoSchema} from "./base/telefono.schema"
 import { tipoLicenciaSchema } from "./enums/tipoLicencia.schema"
 
 export const createChoferSchema = z.object({

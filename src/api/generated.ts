@@ -263,7 +263,7 @@ export interface CreateChoferDto {
   /** DNI del chofer */
   dni: number;
   /** Fecha de nacimiento */
-  fecha_nacimiento: Date;
+  fecha_nacimiento: string;
   /** Número de licencia del conductor */
   licencia: string;
   /** Tipo de licencia según clasificación nacional */
@@ -288,7 +288,7 @@ export interface ChoferDto {
   /** DNI del chofer */
   dni: number;
   /** Fecha de nacimiento */
-  fecha_nacimiento: Date;
+  fecha_nacimiento: string;
   /** Número de licencia del conductor */
   licencia: string;
   /** Tipo de licencia según clasificación nacional */
@@ -304,9 +304,9 @@ export interface UpdateChoferDto { [key: string]: unknown }
 
 export interface CreateViajeDto {
   /** Fecha y hora de inicio del viaje */
-  fecha_inicio: Date;
+  fecha_inicio: string;
   /** Fecha y hora estimada de llegada */
-  fecha_llegada: Date;
+  fecha_llegada: string;
   /** Tipo de viaje */
   tipo_viaje: string;
   /** ID del depósito de origen */

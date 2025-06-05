@@ -10,7 +10,7 @@ export const CreateDepositoSchema = z.object({
     tipo: TipoDepositoSchema,
     direccion: CreateDireccionSchema,
     contacto: CreateContactoSchema,
-    restricciones: z.string().optional(),
+    restricciones: z.string().min(1, 'Las restricciones son obligatorias'),
     horario_entrada: z.string().regex(/^\d{2}:\d{2}$/, "Formato HH:mm inválido"),
     horario_salida: z.string().regex(/^\d{2}:\d{2}$/, "Formato HH:mm inválido"),
 

@@ -110,9 +110,22 @@ export const useDepositForm = (id? : string) => {
     
       const handleUpdate = async (formData: UpdateDepositoSchema) => {
         try {
-          const {_id, ...dataToUpdate} = formData;
-          console.log("dataToUpdate", dataToUpdate);
-          await depositoControllerUpdate(id!, dataToUpdate as UpdateDepositoSchema);
+          const { _id, contacto, ...rest } = formData;
+          const { telefono, ...contactoData } = contacto;
+          // Asegúrese de que los campos de teléfono no estén indefinidos
+          const safeTelefono = {
+            codigo_pais: telefono.codigo_pais ?? "",
+            codigo_area: telefono.codigo_area ?? "",
+            numero: telefono.numero ?? ""
+          };
+          const dataToUpdate = {
+            ...rest,
+            contacto: {
+              ...contactoData,
+              telefono: safeTelefono
+            }
+          };
+          await depositoControllerUpdate(id!, dataToUpdate);
           notify("update");
           navigate("/depots");
         } catch (e) {

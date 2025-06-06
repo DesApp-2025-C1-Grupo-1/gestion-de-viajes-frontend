@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { ObjectIdSchema } from "./commons"
+import { ObjectIdSchema, RequireSelectSchema } from "./commons"
 
 const patenteRegex = /^[A-Z]{3}\d{3}$|^[A-Z]{2}\d{3}[A-Z]{2}$/
 
@@ -14,8 +14,8 @@ export const CreateVehiculoSchema = z.object({
   peso_carga: z
     .number({ required_error: "El peso es obligatorio" })
     .positive({ message: "El peso debe ser un número positivo" }),
-  tipo: ObjectIdSchema,
-  empresa: ObjectIdSchema,
+  tipo: RequireSelectSchema,
+  empresa: RequireSelectSchema,
 })
 
 export const VehiculoSchema = CreateVehiculoSchema.extend({

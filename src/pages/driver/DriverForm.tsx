@@ -22,7 +22,8 @@ export default function DriverFormPage(){
         isLoading,
         error: formError,
         companies,
-        vehiculos,
+        filteredVehicles,
+        handleCompanyChange,
         errorEmpresa,
         errorVehicles,
         licenciasValidas,
@@ -283,9 +284,15 @@ export default function DriverFormPage(){
                                     value={field.value || ""}
                                     fullWidth
                                     displayEmpty
-                                    onChange={(event) => field.onChange(event.target.value)}
+                                    onChange={(event) => {
+                                        field.onChange(event.target.value)
+                                        handleCompanyChange(event.target.value)
+                                    }}
                                     error={!!formErrors.empresa}
                                     >
+                                    <MenuItem value="" disabled>
+                                        Seleccione una empresa
+                                    </MenuItem>
                                     {companies?.data?.map((company) => (
                                         <MenuItem key={company._id} value={company._id}>
                                         {company.nombre_comercial}
@@ -312,8 +319,15 @@ export default function DriverFormPage(){
                                     displayEmpty
                                     onChange={(event) => field.onChange(event.target.value)}
                                     error={!!formErrors.vehiculo}
+                                    disabled={!control._formValues.empresa}
                                     >
-                                    {vehiculos?.data?.map((vehiculos) => (
+                                    <MenuItem value="" disabled>
+                                        {control._formValues.empresa ? "Seleccione un vehiculo" : "Seleccione una empresa primero"}
+                                    </MenuItem>
+                                    {filteredVehicles.length === 0 && (
+                                        <MenuItem disabled>No hay vehículos disponibles</MenuItem>
+                                    )}
+                                    {filteredVehicles.map((vehiculos) => (
                                         <MenuItem key={vehiculos._id} value={vehiculos._id}>
                                         {vehiculos.marca} - {vehiculos.patente}
                                         </MenuItem>

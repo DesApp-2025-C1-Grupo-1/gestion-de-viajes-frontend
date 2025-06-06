@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useNotify } from "./useNotify";
-import { CreateChoferDto, choferControllerCreate, ChoferDto, UpdateChoferDto, useChoferControllerFindOne, choferControllerUpdate, EmpresaDto, CreateChoferDtoTipoLicencia, useEmpresaControllerFindAll, useVehiculoControllerFindAll } from '../api/generated';
-import { useForm, Controller } from "react-hook-form";
+import { CreateChoferDto, choferControllerCreate, UpdateChoferDto, useChoferControllerFindOne, choferControllerUpdate, useEmpresaControllerFindAll, useVehiculoControllerFindAll, VehiculoDto } from '../api/generated';
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";;
 import { CreateChoferSchema, UpdateChoferSchema, createChoferSchema} from '../api/schemas/chofer.schema';
 import { tipoLicenciaSchema } from "../api/schemas/enums/tipoLicencia.schema";
@@ -11,13 +11,15 @@ export const useDriverForm = (id?: string) => {
   const navigate = useNavigate();
   const isEditing = !!id;
   const licenciasValidas = Object.values(tipoLicenciaSchema.enum);
-  
+  const [filteredVehicles, setFilteredVehicles] = useState<VehiculoDto[]>([]);
+
   const {
     register,
     control,
     reset,
     handleSubmit,
     watch,
+    resetField,
     formState: { errors: formErrors , isValid},
   } = useForm<CreateChoferSchema>({
     resolver: zodResolver(createChoferSchema),
@@ -64,6 +66,27 @@ export const useDriverForm = (id?: string) => {
     }
   }, [isEditing, data]);
 
+  // Filtrar vehículos cuando se selecciona una empresa
+  const handleCompanyChange = (companyId: string) => {
+    if (!companyId) {
+      setFilteredVehicles(vehiculos?.data || []); // Si no hay empresa seleccionada, mostrar todos
+      return;
+    }
+    const filtered = vehiculos?.data?.filter(
+      (vehicle) => vehicle.empresa?._id === companyId
+    ) || [];
+    setFilteredVehicles(filtered);
+
+    const currentVehicleId = control._formValues.vehiculo;
+    // Si el vehículo actual no está en la lista filtrada, limpiar el campo
+    if (currentVehicleId) {
+      const currentVehicle = vehiculos?.data?.find(v => v._id === currentVehicleId);
+      if (currentVehicle?.empresa?._id !== companyId) {
+        resetField("vehiculo"); // Limpiar el campo vehiculo si no pertenece a la empresa seleccionada
+      }
+    }
+  };
+
   const onSubmit = async(FormData: CreateChoferSchema | UpdateChoferSchema) => {
     console.log("Datos del formulario:", data);
     if(isEditing){
@@ -94,10 +117,6 @@ export const useDriverForm = (id?: string) => {
     try{
       const payload: CreateChoferDto = {
         ...FormData,
-        //fecha_nacimiento: dayjs(FormData.fecha_nacimiento).toISOString(),
-        //para no redefinir telefono y si fecha de nac (arreglar)
-        //fecha_nacimiento: FormData.fecha_nacimiento?.toISOString(),
-
         fecha_nacimiento: FormData.fecha_nacimiento.toISOString(),
 
         telefono: {
@@ -121,6 +140,6 @@ export const useDriverForm = (id?: string) => {
   };
 
   return{
-    onSubmit, handleSubmit, handleCreate, handleUpdate, isEditing, formErrors, register, control, isValid, reset, isLoading, error, companies, vehiculos, errorEmpresa, errorVehicles, licenciasValidas, watch, loadingAuxData: loadingEmpresas || loadingVehicles,
+    onSubmit, handleSubmit, handleCreate, handleUpdate, isEditing, formErrors, register, control, isValid, reset, isLoading, error, companies, filteredVehicles, errorEmpresa, errorVehicles, licenciasValidas, watch, loadingAuxData: loadingEmpresas || loadingVehicles, handleCompanyChange,
   }
 }

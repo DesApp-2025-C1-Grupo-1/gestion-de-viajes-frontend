@@ -1,6 +1,7 @@
 import { z } from "zod"
 import { CreateTelefonoSchema} from "./base/telefono.schema"
 import { tipoLicenciaSchema } from "./enums/tipoLicencia.schema"
+import { RequireSelectSchema } from "./commons"
 
 export const createChoferSchema = z.object({
   nombre: z.string().min(1, "El nombre es obligatorio"),
@@ -12,8 +13,8 @@ export const createChoferSchema = z.object({
   licencia: z.string().min(1, "La licencia es obligatoria"),
   tipo_licencia: tipoLicenciaSchema,
   email: z.string().email(),
-  empresa: z.string().regex(/^[a-f\d]{24}$/i, "ID de empresa inválido"),
-  vehiculo: z.string().regex(/^[a-f\d]{24}$/i, "ID de vehículo inválido"),
+  empresa: RequireSelectSchema,
+  vehiculo: RequireSelectSchema,
   telefono: CreateTelefonoSchema,
 })
 

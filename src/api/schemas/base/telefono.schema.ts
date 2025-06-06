@@ -16,11 +16,11 @@ export const CreateTelefonoSchema = z.object({
 });
 
 export const TelefonoSchema = CreateTelefonoSchema.extend({
-    _id: z.string().uuid("El ID debe ser un UUID válido"),
+    _id: z.string().regex(/^[a-f\d]{24}$/i, "ID de telefono inválido (esperado ObjectId de 24 caracteres hexadecimales)"),
 });
 
 export const UpdateTelefonoSchema = CreateTelefonoSchema.extend({
-    _id: z.string().uuid("El ID debe ser un UUID válido"),
+    _id: z.string().regex(/^[a-f\d]{24}$/i, "ID de telefono inválido (esperado ObjectId de 24 caracteres hexadecimales)"),
 });
 
 export type TelefonoSchema = z.infer<typeof TelefonoSchema>;    

@@ -5,7 +5,6 @@ import { useDriverForm } from '../../hooks/useDriverForm';
 import { Controller} from 'react-hook-form';
 import { CreateChoferSchema } from "../../api/schemas";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import dayjs from "dayjs"
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 

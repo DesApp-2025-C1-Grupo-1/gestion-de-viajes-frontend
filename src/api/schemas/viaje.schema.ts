@@ -1,25 +1,46 @@
 import { z } from "zod"
 import { TipoViajeSchema } from "./enums/tipoViajeSchema"
+import { DateSchema, ObjectIdSchema } from "./commons";
 
-export const CreateViajeSchema = z.object({
-  //fecha_llegada: z.string().datetime({message: "Formato AAAA-MM-DD"}),
-  fecha_inicio: z.date(),
-  fecha_llegada: z.date(),
-  tipo_viaje: TipoViajeSchema,
-  deposito_origen: z.string().regex(/^[a-f\d]{24}$/i,  "ID de deposito origen inválido"),
-  deposito_destino: z.string().regex(/^[a-f\d]{24}$/i,  "ID de deposito destino inválido"),
-  empresa: z.string().regex(/^[a-f\d]{24}$/i, "ID de empresa inválido"),
-  chofer: z.string().regex(/^[a-f\d]{24}$/i, "ID de chofer inválido"),
-  vehiculo: z.string().regex(/^[a-f\d]{24}$/i, "ID de vehiculo inválido"),
+
+export const BaseViajeSchema = z.
+  object({
+    fecha_inicio: DateSchema,
+    fecha_llegada: DateSchema,
+    tipo_viaje: TipoViajeSchema,
+    deposito_origen: ObjectIdSchema,
+    deposito_destino: ObjectIdSchema,
+    empresa: ObjectIdSchema,
+    chofer: ObjectIdSchema,
+    vehiculo: ObjectIdSchema,
 })
 
-export const ViajeSchema = CreateViajeSchema.extend({
-    _id: z.string().uuid('El ID debe ser un UUID válido'),
+export const CreateViajeSchema = BaseViajeSchema
+  .refine((data) => data.fecha_llegada > data.fecha_inicio, {
+    message: "La fecha de llegada debe ser posterior a la fecha de inicio",
+    path: ["fecha_llegada"],
+  })
+  .refine((data) => data.deposito_origen !== data.deposito_destino, {
+  message: "El depósito de origen y destino no pueden ser iguales",
+  path: ["deposito_destino"],
+  })
+
+export const ViajeSchema = BaseViajeSchema.extend({
+    _id: ObjectIdSchema,
 });
 
-export const UpdateViajeSchema = CreateViajeSchema.extend({
-    _id: z.string().uuid('El ID debe ser un UUID válido'),
-});
+export const UpdateViajeSchema = BaseViajeSchema
+  .extend({
+    _id: ObjectIdSchema,
+  })
+  .refine((data) => data.fecha_llegada > data.fecha_inicio, {
+    message: "La fecha de llegada debe ser posterior a la fecha de inicio",
+    path: ["fecha_llegada"],
+  })
+  .refine((data) => data.deposito_origen !== data.deposito_destino, {
+  message: "El depósito de origen y destino no pueden ser iguales",
+  path: ["deposito_destino"],
+  })
 
 
 export type CreateViajeSchema = z.infer<typeof CreateViajeSchema>

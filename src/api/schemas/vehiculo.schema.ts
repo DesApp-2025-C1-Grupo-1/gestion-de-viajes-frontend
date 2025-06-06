@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { ObjectIdSchema } from "./commons"
 
 const patenteRegex = /^[A-Z]{3}\d{3}$|^[A-Z]{2}\d{3}[A-Z]{2}$/
 
@@ -9,18 +10,16 @@ export const CreateVehiculoSchema = z.object({
   año: z.number().int().min(1900, "El año tiene que ser mayor a 1900").max(2025, "El año no puede ser mayor al actual"),
   volumen_carga: z
     .number({ required_error: "El volumen es obligatorio" })
-    
     .positive({ message: "El volumen debe ser un número positivo" }),
-
   peso_carga: z
     .number({ required_error: "El peso es obligatorio" })
     .positive({ message: "El peso debe ser un número positivo" }),
-  tipo: z.string({required_error: "El tipo de vehiculo es obligatorio"}).regex(/^[a-f\d]{24}$/i, "Formato de ID de tipo inválido"),
-  empresa: z.string({required_error: "La empresa transportista es obligatoria"}).regex(/^[a-f\d]{24}$/i, "Formato de ID de empresa inválido"),
+  tipo: ObjectIdSchema,
+  empresa: ObjectIdSchema,
 })
 
 export const VehiculoSchema = CreateVehiculoSchema.extend({
-  _id: z.string().regex(/^[a-f\d]{24}$/i),
+  _id: ObjectIdSchema,
 })
 
 export type CreateVehiculoSchema = z.infer<typeof CreateVehiculoSchema>

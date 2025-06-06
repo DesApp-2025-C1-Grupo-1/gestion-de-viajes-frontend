@@ -22,11 +22,11 @@ export const CreateDireccionSchema = z.object({
 })
 
 export const DireccionSchema = CreateDireccionSchema.extend({
-    _id: z.string().uuid(),
+    _id: z.string().regex(/^[a-f\d]{24}$/i, "ID de direccion inválido (esperado ObjectId de 24 caracteres hexadecimales)"),
 });
 
 export const UpdateDireccionSchema = CreateDireccionSchema.partial().extend({
-    _id: z.string().uuid(),
+    _id: z.string().regex(/^[a-f\d]{24}$/i, "ID de direccion inválido (esperado ObjectId de 24 caracteres hexadecimales)"),
 });
 
 export type DireccionSchema = z.infer<typeof DireccionSchema>;

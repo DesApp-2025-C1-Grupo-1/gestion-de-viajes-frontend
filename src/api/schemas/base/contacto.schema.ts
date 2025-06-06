@@ -9,11 +9,11 @@ export const CreateContactoSchema = z.object({
     telefono: CreateTelefonoSchema,
 })
 export const UpdateContactoSchema = CreateContactoSchema.extend({
-    _id: z.string().uuid('El ID debe ser un UUID válido')
+    _id: z.string().regex(/^[a-f\d]{24}$/i, "ID de contacto inválido (esperado ObjectId de 24 caracteres hexadecimales)")
 })
 
 export const ContactoSchema = CreateContactoSchema.extend({
-    _id: z.string().uuid('El ID debe ser un UUID válido')
+    _id: z.string().regex(/^[a-f\d]{24}$/i, "ID de contacto inválido (esperado ObjectId de 24 caracteres hexadecimales)")
 });
 
 export type ContactoSchema = z.infer<typeof ContactoSchema>;

@@ -17,11 +17,11 @@ export const CreateDepositoSchema = z.object({
 });
 
 export const DepositoSchema = CreateDepositoSchema.extend({
-    _id: z.string().uuid('El ID debe ser un UUID válido'),
+    _id: z.string().regex(/^[a-f\d]{24}$/i, "ID de deposito inválido (esperado ObjectId de 24 caracteres hexadecimales)"),
 });
 
 export const UpdateDepositoSchema = CreateDepositoSchema.extend({
-    _id: z.string().uuid('El ID debe ser un UUID válido'),
+    _id: z.string().regex(/^[a-f\d]{24}$/i, "ID de deposito inválido (esperado ObjectId de 24 caracteres hexadecimales)"),
 });
 
 export type CreateDepositoSchema = z.infer<typeof CreateDepositoSchema>;

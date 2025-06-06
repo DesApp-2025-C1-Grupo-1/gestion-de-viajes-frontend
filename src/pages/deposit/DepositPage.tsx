@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import SearchBar from "../../components/SearchBar";
 import { SectionHeader } from "../../components/SectionHeader";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow ,Box, Paper, Typography, Chip} from "@mui/material";
+import { Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
 import LoadingState from "../../components/LoadingState";
 import MenuItem from "../../components/buttons/MenuItem";
 import { useNavigate } from "react-router-dom";
@@ -10,11 +10,8 @@ import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 import { formatTelefono } from "../../lib/formatters";
 import { useNotify } from "../../hooks/useNotify";
-import { depositoControllerRemove, DepositoDto, useDepositoControllerFindAll, useDepositoControllerRemove } from "../../api/generated";
-import {  Building2, Clock, Eye, MapPin, Users } from "lucide-react";
-import InfoSection from "../../components/InfoSection";
-import { HeaderDetails } from "../../components/detailts/HeaderDetails";
-import { Field } from "../../components/detailts/Field";
+import { depositoControllerRemove, DepositoDto, useDepositoControllerFindAll } from "../../api/generated";
+import {  Eye } from "lucide-react";
 import { DetailsDeposit } from "../../components/deposit/DetailsDeposit";
 
 
@@ -38,8 +35,6 @@ export default function DepositPage() {
         setOpenDetailsDialog(true);
         setDepositSelected(deposit);
     };
-
-    const capitalize = (text: string) => text.charAt(0).toLocaleUpperCase() + text.slice(1).toLocaleLowerCase();
 
     const handleDelete = async (id: string) => {
         try {

@@ -16,14 +16,13 @@ export const useTripForm = (id?: string) => {
         reset,
         handleSubmit,
         watch,
+        trigger,
         formState: { errors: formErrors , isValid},
     } = useForm<CreateViajeSchema>({
         resolver: zodResolver(CreateViajeSchema),
         mode: "onBlur",
         reValidateMode: "onChange",
         defaultValues: {
-            //fecha_inicio: "",
-            //fecha_llegada: "",
             fecha_inicio: undefined,
             fecha_llegada: undefined,
             tipo_viaje: "nacional",
@@ -34,6 +33,26 @@ export const useTripForm = (id?: string) => {
             vehiculo: "",
         },
     });
+
+    // ⏱️ Forzar validación cruzada entre fechas
+    const fecha_inicio = watch("fecha_inicio");
+    const fecha_llegada = watch("fecha_llegada");
+
+    useEffect(() => {
+    if (fecha_inicio && fecha_llegada) {
+        trigger("fecha_llegada");
+    }
+    }, [fecha_inicio, fecha_llegada]);
+
+    // ⏱️ Forzar validación cruzada entre depósitos
+    const deposito_origen = watch("deposito_origen");
+    const deposito_destino = watch("deposito_destino");
+
+    useEffect(() => {
+    if (deposito_origen && deposito_destino) {
+        trigger("deposito_destino");
+    }
+    }, [deposito_origen, deposito_destino]);
 
     const { data, isLoading, error } = useViajeControllerFindOne(id!, { query: { enabled: isEditing } });
     const { data: companies, error: errorCompanies, isLoading: loadingCompanies } = useEmpresaControllerFindAll();
@@ -64,7 +83,7 @@ export const useTripForm = (id?: string) => {
 
     const handleCreate = async (formData: CreateViajeSchema) => {
         try {
-            await viajeControllerCreate(formData as CreateViajeDto);
+            await viajeControllerCreate(formData as CreateViajeSchema);
             notify("create");
             navigate("/trips");
             } catch (e) {
@@ -79,7 +98,7 @@ export const useTripForm = (id?: string) => {
         try {
             const {_id, ...dataToUpdate} = formData;
             
-            await viajeControllerUpdate(id!, dataToUpdate as UpdateViajeDto);
+            await viajeControllerUpdate(id!, dataToUpdate as UpdateViajeSchema);
             notify("update");
             navigate("/trips");
             } catch (e) {

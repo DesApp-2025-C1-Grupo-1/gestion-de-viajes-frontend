@@ -8,3 +8,8 @@ export const DateSchema = z.date({
     invalid_type_error: "Debe ser una fecha válida",
 })
 
+export const RequireSelectSchema = z
+    .string({required_error: "El campo es obligatorio"})
+    .min(1, "Debes seleccionar una opción")
+    
+

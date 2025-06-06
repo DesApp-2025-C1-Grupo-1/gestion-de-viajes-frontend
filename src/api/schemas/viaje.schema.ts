@@ -1,6 +1,6 @@
 import { z } from "zod"
 import { TipoViajeSchema } from "./enums/tipoViajeSchema"
-import { DateSchema, ObjectIdSchema } from "./commons";
+import { DateSchema, ObjectIdSchema, RequireSelectSchema } from "./commons";
 
 
 export const BaseViajeSchema = z.
@@ -8,11 +8,11 @@ export const BaseViajeSchema = z.
     fecha_inicio: DateSchema,
     fecha_llegada: DateSchema,
     tipo_viaje: TipoViajeSchema,
-    deposito_origen: ObjectIdSchema,
-    deposito_destino: ObjectIdSchema,
-    empresa: ObjectIdSchema,
-    chofer: ObjectIdSchema,
-    vehiculo: ObjectIdSchema,
+    deposito_origen: RequireSelectSchema,
+    deposito_destino: RequireSelectSchema,
+    empresa: RequireSelectSchema,
+    chofer: RequireSelectSchema,
+    vehiculo: RequireSelectSchema,
 })
 
 export const CreateViajeSchema = BaseViajeSchema

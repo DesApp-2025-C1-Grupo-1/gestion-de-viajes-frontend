@@ -15,9 +15,7 @@ export default function TripFormPage() {
         onSubmit,
         isEditing,
         formErrors,
-        register,
         control,
-        isValid,
         isLoading,
         error: formError,
         companies, 
@@ -28,7 +26,6 @@ export default function TripFormPage() {
         errorVehicles,
         errorDrivers,
         errorDepots,
-        watch,
         loadingAuxData
     } = useTripForm(id);
 
@@ -65,7 +62,6 @@ export default function TripFormPage() {
             />
             <Paper sx={{maxHeight:"85%", padding: 4, overflow: "auto", mx: 'auto', width: "100%", borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "0.5px solid #C7C7C7", pb: 5 }} >
                 <form onSubmit={handleSubmit(handleFormSubmit)} className="w-full max-w-[800px] mx-auto">
-                    {/*? dayjs(field.value) :  */}
                     {/* FECHA INICIO FECHA LLEGADA TIPO DE VIAJE*/}
                     <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Datos del Viaje</Typography>
                     <Grid container spacing={3} mb={4}>
@@ -81,6 +77,7 @@ export default function TripFormPage() {
                                         disabled={isLoading}
                                         value={new Date (field.value)||null}
                                         onChange={(date) => field.onChange(date)}
+                                        format="dd/MM/yyyy"
                                         slotProps={{
                                             textField: {
                                             fullWidth: true,
@@ -105,7 +102,7 @@ export default function TripFormPage() {
                                         disabled={isLoading}
                                         value={new Date (field.value) ||null}
                                         onChange={(date) => field.onChange(date)}
-                                        //onChange={(date) => field.onChange(date?.getTime())}
+                                        format="dd/MM/yyyy"
                                         slotProps={{
                                             textField: {
                                             fullWidth: true,

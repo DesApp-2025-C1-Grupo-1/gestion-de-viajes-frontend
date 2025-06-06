@@ -19,7 +19,6 @@ export default function DriverFormPage(){
         formErrors,
         register,
         control,
-        isValid,
         isLoading,
         error: formError,
         companies,

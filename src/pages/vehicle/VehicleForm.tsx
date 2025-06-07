@@ -107,16 +107,38 @@ export default function VehicleFormPage() {
 
                     <Grid container spacing={3} mb={4} > 
                         <Grid item xs={12} sm={6}> 
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Volumen de carga</Typography>
-                            <TextField className="inside-paper" id="volumen_carga" type="number" placeholder="Ingresar" {...register("volumen_carga", {valueAsNumber:true})} fullWidth inputProps={{ "aria-label": "Volumen de carga del vehículo" }} 
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Volumen de carga (m³)</Typography>
+                            <TextField className="inside-paper" id="volumen_carga" type="number" placeholder="Ingresar" 
+                                {...register("volumen_carga", {
+                                    valueAsNumber: true,
+                                    validate: (value) =>
+                                    !isNaN(value) && value >= 0.01 || "Mínimo 0.01 m³"
+                                })} 
+                                fullWidth 
+                                inputProps={{
+                                    "aria-label": "Volumen de carga del vehículo",
+                                    step: "0.01",
+                                    min: "0.01"
+                                }} 
                                 error={!!formErrors.volumen_carga}
                                 helperText={formErrors.volumen_carga?.message}
                                 disabled={isLoading}
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}> 
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Peso de carga</Typography>
-                            <TextField className="inside-paper" id="peso_carga" type="number"  placeholder="Ingresar" {...register("peso_carga", {valueAsNumber:true})} fullWidth inputProps={{ "aria-label": "Peso de carga del vehículo" }} 
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Peso de carga (kg)</Typography>
+                            <TextField className="inside-paper" id="peso_carga" type="number"  placeholder="Ingresar" 
+                                {...register("peso_carga", {
+                                    valueAsNumber: true,
+                                    validate: (value) =>
+                                    !isNaN(value) && value >= 0.01 || "Mínimo 0.01 kg"
+                                })}
+                                fullWidth 
+                                inputProps={{
+                                    "aria-label": "Peso de carga del vehículo",
+                                    step: "0.01",
+                                    min: "0.01"
+                                }}
                                 error={!!formErrors.peso_carga}
                                 helperText={formErrors.peso_carga?.message}
                                 disabled={isLoading}
@@ -142,6 +164,9 @@ export default function VehicleFormPage() {
                                 onChange={(event) => field.onChange(event.target.value)}
                                 error={!!formErrors.empresa}
                                 >
+                                <MenuItem value="" disabled>
+                                    Seleccionar empresa
+                                </MenuItem>
                                 {companies?.data?.map((company) => (
                                     <MenuItem key={company._id} value={company._id}>
                                     {company.nombre_comercial}
@@ -169,6 +194,9 @@ export default function VehicleFormPage() {
                                     displayEmpty
                                     error={!!formErrors.tipo}
                                     >
+                                        <MenuItem value="" disabled>
+                                            Seleccionar tipo de vehículo
+                                        </MenuItem>
                                         {vehicleTypes?.data?.map((type) => (
                                             <MenuItem key={type._id} value={type._id}>
                                                 {type.nombre}

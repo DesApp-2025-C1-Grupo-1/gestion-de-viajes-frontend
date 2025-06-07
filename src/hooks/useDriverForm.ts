@@ -20,6 +20,7 @@ export const useDriverForm = (id?: string) => {
     handleSubmit,
     watch,
     resetField,
+    trigger,
     formState: { errors: formErrors , isValid},
   } = useForm<CreateChoferSchema>({
     resolver: zodResolver(createChoferSchema),
@@ -65,6 +66,15 @@ export const useDriverForm = (id?: string) => {
       } as CreateChoferSchema);
     }
   }, [isEditing, data]);
+
+  // ⏱️ Forzar validación cruzada entre depósitos
+    const fecha_nacimiento = watch("fecha_nacimiento");
+
+    useEffect(() => {
+    if (fecha_nacimiento ) {
+        trigger("fecha_nacimiento");
+    }
+    }, [fecha_nacimiento]);
 
   // Filtrar vehículos cuando se selecciona una empresa
   const handleCompanyChange = (companyId: string) => {

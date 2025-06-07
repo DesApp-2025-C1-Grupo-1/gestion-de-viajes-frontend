@@ -213,7 +213,7 @@ export default function VehicleFormPage() {
                     </Grid>
                     <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 , mt: 3 }}>
                         <Button onClick={() => navigate("/vehicles")} variant="outlined">Cancelar</Button>
-                        <Button type="submit" variant="contained" sx={{ backgroundColor: "#E65F2B" }} disabled={!isValid }>
+                        <Button type="submit" variant="contained" sx={{ backgroundColor: "#E65F2B" }} disabled={isLoading }>
                             {isEditing ? "Actualizar" : "Crear"}
                         </Button>
                     </Box>

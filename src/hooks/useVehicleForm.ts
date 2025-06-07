@@ -28,8 +28,8 @@ export const useVehicleForm = (id?: string) => {
       tipo: "",
       empresa: "",
       año: new Date().getFullYear(),
-      peso_carga: 0,
-      volumen_carga: 0,
+      peso_carga: 0.01,
+      volumen_carga: 0.01,
     },
   })
   const { data, isLoading, error } = useVehiculoControllerFindOne(id!, { query: { enabled: isEditing } });

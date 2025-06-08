@@ -3,27 +3,39 @@ import { TipoViajeSchema } from "./enums/tipoViajeSchema"
 import { DateSchema, ObjectIdSchema, RequireSelectSchema } from "./commons";
 
 
-export const BaseViajeSchema = z.
-  object({
+export const BaseViajeSchema = z
+  .object({
     fecha_inicio: DateSchema,
     fecha_llegada: DateSchema,
     tipo_viaje: TipoViajeSchema,
-    deposito_origen: RequireSelectSchema,
-    deposito_destino: RequireSelectSchema,
+    deposito_origen: z.string({
+      errorMap: (_issue, _ctx) => {
+        return { message: "El depósito de origen es requerido" }
+      }
+    }),
+    deposito_destino: z.string({
+      errorMap: (_issue, _ctx) => {
+        return { message: "El depósito de destino es requerido" }
+      }
+    }),
     empresa: RequireSelectSchema,
     chofer: RequireSelectSchema,
     vehiculo: RequireSelectSchema,
-})
+  })
 
 export const CreateViajeSchema = BaseViajeSchema
   .refine((data) => data.fecha_llegada > data.fecha_inicio, {
     message: "La fecha de llegada debe ser posterior a la fecha de inicio",
     path: ["fecha_llegada"],
   })
-  .refine((data) => data.deposito_origen !== data.deposito_destino, {
-  message: "El depósito de origen y destino no pueden ser iguales",
-  path: ["deposito_destino"],
-  })
+  
+  .refine(
+    (data) => data.deposito_origen !== data.deposito_destino,
+    {
+      message: "El depósito de origen y destino no pueden ser iguales",
+      path: ["deposito_destino"],
+    }
+  )
 
 export const ViajeSchema = BaseViajeSchema.extend({
     _id: ObjectIdSchema,
@@ -38,8 +50,8 @@ export const UpdateViajeSchema = BaseViajeSchema
     path: ["fecha_llegada"],
   })
   .refine((data) => data.deposito_origen !== data.deposito_destino, {
-  message: "El depósito de origen y destino no pueden ser iguales",
-  path: ["deposito_destino"],
+    message: "El depósito de origen y destino no pueden ser iguales",
+    path: ["deposito_destino"],
   })
 
 

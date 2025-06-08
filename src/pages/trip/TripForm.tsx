@@ -19,14 +19,17 @@ export default function TripFormPage() {
         isLoading,
         error: formError,
         companies, 
-        vehicles, 
-        drivers,
         depots,
+        trigger,
         errorCompanies,
         errorVehicles,
         errorDrivers,
         errorDepots,
-        loadingAuxData
+        loadingAuxData,
+        filteredChoferes,
+        filteredVehiculos,
+        handleSelectCompany,
+        handleSelectChofer,
     } = useTripForm(id);
 
     if (isLoading || loadingAuxData) return <CircularProgress />;
@@ -50,6 +53,16 @@ export default function TripFormPage() {
     );
 
     const handleFormSubmit = (data: CreateViajeSchema) => {
+        console.log("Form data:", data);
+        // Trigger validation before submitting
+        trigger().then((isValid) => {
+            if (!isValid) {
+                console.error("Form validation failed");
+                return;
+            }
+            console.log("Form is valid, submitting...");
+        });
+
         onSubmit(data);
     };
 
@@ -75,7 +88,7 @@ export default function TripFormPage() {
                                         <DatePicker
                                         {...field}
                                         disabled={isLoading}
-                                        value={new Date (field.value)||null}
+                                        value={field.value? new Date (field.value) : null}
                                         onChange={(date) => field.onChange(date)}
                                         format="dd/MM/yyyy"
                                         slotProps={{
@@ -100,7 +113,7 @@ export default function TripFormPage() {
                                         <DatePicker
                                         {...field}
                                         disabled={isLoading}
-                                        value={new Date (field.value) ||null}
+                                        value={field.value? new Date (field.value) : null}
                                         onChange={(date) => field.onChange(date)}
                                         format="dd/MM/yyyy"
                                         slotProps={{
@@ -153,17 +166,23 @@ export default function TripFormPage() {
                                 render={({ field }) => (
                                     <Select
                                     {...field}
+                                    disabled={isLoading}
                                     value={field.value || ""}
                                     fullWidth
                                     displayEmpty
-                                    onChange={(event) => field.onChange(event.target.value)}
+                                    onChange={(event) => {
+                                        field.onChange(event.target.value)
+                                    }}
                                     error={!!formErrors.deposito_origen}
                                     >
-                                    {depots?.data?.map((dep) => (
-                                        <MenuItem key={dep._id} value={dep._id}>
-                                        {dep.nombre}
+                                        <MenuItem value="" disabled>
+                                            Seleccione un depósito
                                         </MenuItem>
-                                    ))}
+                                        {depots?.data?.map((dep) => (
+                                            <MenuItem key={dep._id} value={dep._id}>
+                                            {dep.nombre}
+                                            </MenuItem>
+                                        ))}
                                     </Select>
                                 )}
                             />
@@ -174,27 +193,34 @@ export default function TripFormPage() {
 
                         <Grid item xs={12} md={6}>
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Deposito de Destino</Typography>
-                                <Controller
+                            
+                            <Controller
                                 control={control}
                                 name="deposito_destino"
                                 render={({ field }) => (
                                     <Select
                                     {...field}
+                                    disabled={isLoading}
                                     value={field.value || ""}
                                     fullWidth
                                     displayEmpty
-                                    onChange={(event) => field.onChange(event.target.value)}
+                                    onChange={(event) => {
+                                        field.onChange(event.target.value);
+                                    }}
                                     error={!!formErrors.deposito_destino}
                                     >
-                                    {depots?.data?.map((dep) => (
-                                        <MenuItem key={dep._id} value={dep._id}>
-                                        {dep.nombre}
+                                        <MenuItem value="" disabled>
+                                            Seleccione un depósito
                                         </MenuItem>
-                                    ))}
+                                        {depots?.data?.map((dep) => (
+                                            <MenuItem key={dep._id} value={dep._id}>
+                                            {dep.nombre}
+                                            </MenuItem>
+                                        ))}
                                     </Select>
                                 )}
                             />
-                            <FormHelperText error={!!formErrors.deposito_destino}>
+                            <FormHelperText error={!!formErrors.deposito_destino}  >
                                 {formErrors.deposito_destino?.message}
                             </FormHelperText>
                         </Grid>
@@ -214,14 +240,20 @@ export default function TripFormPage() {
                                     value={field.value || ""}
                                     fullWidth
                                     displayEmpty
-                                    onChange={(event) => field.onChange(event.target.value)}
+                                    onChange={(event) => {
+                                        field.onChange(event.target.value)
+                                        handleSelectCompany(event.target.value);
+                                    }}
                                     error={!!formErrors.empresa}
                                     >
-                                    {companies?.data?.map((company) => (
-                                        <MenuItem key={company._id} value={company._id}>
-                                        {company.nombre_comercial}
+                                        <MenuItem value="" disabled>
+                                            Seleccione una empresa
                                         </MenuItem>
-                                    ))}
+                                        {companies?.data?.map((company) => (
+                                            <MenuItem key={company._id} value={company._id}>
+                                            {company.nombre_comercial}
+                                            </MenuItem>
+                                        ))}
                                     </Select>
                                 )}
                             />
@@ -241,14 +273,25 @@ export default function TripFormPage() {
                                     value={field.value || ""}
                                     fullWidth
                                     displayEmpty
-                                    onChange={(event) => field.onChange(event.target.value)}
+                                    onChange={(event) => {
+                                        field.onChange(event.target.value)
+                                        handleSelectChofer(event.target.value);
+                                    }}
+                                    disabled={!control._formValues.empresa}
                                     error={!!formErrors.chofer}
                                     >
-                                    {drivers?.data?.map((dri) => (
-                                        <MenuItem key={dri._id} value={dri._id}>
-                                        {dri.nombre}
+                                        <MenuItem value="" disabled>
+                                            {control._formValues.empresa ? "Seleccione un chofer" : "Seleccione una empresa primero"}
                                         </MenuItem>
-                                    ))}
+                                        {filteredChoferes.length === 0 && (
+                                            <MenuItem disabled>No hay choferes disponibles</MenuItem>
+                                        )}
+
+                                        {filteredChoferes.map((dri) => (
+                                            <MenuItem key={dri._id} value={dri._id}>
+                                            {dri.nombre}
+                                            </MenuItem>
+                                        ))}
                                     </Select>
                                 )}
                             />
@@ -269,13 +312,20 @@ export default function TripFormPage() {
                                     fullWidth
                                     displayEmpty
                                     onChange={(event) => field.onChange(event.target.value)}
+                                    disabled={!control._formValues.empresa}
                                     error={!!formErrors.vehiculo}
                                     >
-                                    {vehicles?.data?.map((veh) => (
-                                        <MenuItem key={veh._id} value={veh._id}>
-                                        {veh.marca} - {veh.patente}
+                                        <MenuItem value="" disabled>
+                                            {control._formValues.empresa ? "Seleccione un vehiculo" : "Seleccione una empresa primero"}
                                         </MenuItem>
-                                    ))}
+                                        {filteredVehiculos.length === 0 && (
+                                            <MenuItem disabled>No hay vehículos disponibles</MenuItem>
+                                        )}
+                                        {filteredVehiculos.map((veh) => (
+                                            <MenuItem key={veh._id} value={veh._id}>
+                                            {veh.marca} - {veh.patente}
+                                            </MenuItem>
+                                        ))}
                                     </Select>
                                 )}
                             />

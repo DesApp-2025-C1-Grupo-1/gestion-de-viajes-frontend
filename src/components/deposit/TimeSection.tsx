@@ -105,6 +105,8 @@ const TimeSection = ({
             fullWidth
             {...register("restricciones")}
             disabled={loading}
+            error={!!errors.restricciones}
+            helperText={errors.restricciones?.message}
             multiline
             minRows={3}
           />

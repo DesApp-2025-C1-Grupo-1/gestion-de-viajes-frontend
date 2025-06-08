@@ -8,16 +8,8 @@ export const BaseViajeSchema = z
     fecha_inicio: DateSchema,
     fecha_llegada: DateSchema,
     tipo_viaje: TipoViajeSchema,
-    deposito_origen: z.string({
-      errorMap: (_issue, _ctx) => {
-        return { message: "El depósito de origen es requerido" }
-      }
-    }),
-    deposito_destino: z.string({
-      errorMap: (_issue, _ctx) => {
-        return { message: "El depósito de destino es requerido" }
-      }
-    }),
+    deposito_origen: RequireSelectSchema,
+    deposito_destino: RequireSelectSchema,
     empresa: RequireSelectSchema,
     chofer: RequireSelectSchema,
     vehiculo: RequireSelectSchema,

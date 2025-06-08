@@ -28,7 +28,7 @@ export default function TripFormPage() {
         loadingAuxData,
         filteredChoferes,
         filteredVehiculos,
-        handleSelectCompany,
+        filterByCompany,
         handleSelectChofer,
     } = useTripForm(id);
 
@@ -53,16 +53,6 @@ export default function TripFormPage() {
     );
 
     const handleFormSubmit = (data: CreateViajeSchema) => {
-        console.log("Form data:", data);
-        // Trigger validation before submitting
-        trigger().then((isValid) => {
-            if (!isValid) {
-                console.error("Form validation failed");
-                return;
-            }
-            console.log("Form is valid, submitting...");
-        });
-
         onSubmit(data);
     };
 
@@ -242,7 +232,7 @@ export default function TripFormPage() {
                                     displayEmpty
                                     onChange={(event) => {
                                         field.onChange(event.target.value)
-                                        handleSelectCompany(event.target.value);
+                                        filterByCompany(event.target.value);
                                     }}
                                     error={!!formErrors.empresa}
                                     >
@@ -283,11 +273,11 @@ export default function TripFormPage() {
                                         <MenuItem value="" disabled>
                                             {control._formValues.empresa ? "Seleccione un chofer" : "Seleccione una empresa primero"}
                                         </MenuItem>
-                                        {filteredChoferes.length === 0 && (
+                                        {filteredChoferes.length === 0 ? (
                                             <MenuItem disabled>No hay choferes disponibles</MenuItem>
-                                        )}
+                                        ) :
 
-                                        {filteredChoferes.map((dri) => (
+                                        filteredChoferes.map((dri) => (
                                             <MenuItem key={dri._id} value={dri._id}>
                                             {dri.nombre}
                                             </MenuItem>
@@ -318,10 +308,10 @@ export default function TripFormPage() {
                                         <MenuItem value="" disabled>
                                             {control._formValues.empresa ? "Seleccione un vehiculo" : "Seleccione una empresa primero"}
                                         </MenuItem>
-                                        {filteredVehiculos.length === 0 && (
+                                        {filteredVehiculos.length === 0 ? (
                                             <MenuItem disabled>No hay vehículos disponibles</MenuItem>
-                                        )}
-                                        {filteredVehiculos.map((veh) => (
+                                        ) :
+                                        filteredVehiculos.map((veh) => (
                                             <MenuItem key={veh._id} value={veh._id}>
                                             {veh.marca} - {veh.patente}
                                             </MenuItem>

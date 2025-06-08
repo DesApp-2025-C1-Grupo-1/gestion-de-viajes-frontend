@@ -5,12 +5,15 @@ import { useViajeControllerFindOne, viajeControllerCreate, viajeControllerUpdate
 import { useForm } from "react-hook-form";
 import { CreateViajeSchema, UpdateViajeSchema } from "../api/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTripData } from "./trip/useTripData";
+import useTripAuxData from "./trip/useTripAuxData";
+import { useCrossFieldValidation } from "./trip/useCrossFieldValidation";
 
 export const useTripForm = (id?: string) => {
     const navigate = useNavigate();
     const isEditing = !!id;
-    const [filteredVehiculos, setFilteredVehiculos] = useState<VehiculoDto[]>([]);
-    const [filteredChoferes, setFilteredChoferes] = useState<ChoferDto[]>([]);
+    const { notify } = useNotify("Viaje");
+
     const {
         register,
         control,
@@ -37,80 +40,27 @@ export const useTripForm = (id?: string) => {
             vehiculo: "",
         },
     });
-
-    const deposito_origen = watch("deposito_origen");
-    const deposito_destino = watch("deposito_destino");
     
-
-    useEffect(() => {
-        if (deposito_origen && deposito_destino && deposito_origen !== "" && deposito_destino !== "") {
-            
-            trigger("deposito_destino"); // <-- Valida todo el formulario
-        }
-    }, [deposito_origen, deposito_destino]);
-
-    const fecha_inicio = watch("fecha_inicio");
-    const fecha_llegada = watch("fecha_llegada");
-    // Validaciones cruzadas
-    useEffect(() => {
-        if (fecha_llegada && fecha_inicio) {
-            trigger("fecha_llegada")
-        }
-        
-    }, [fecha_llegada, fecha_inicio, trigger]);
-
+    // 1. Cargar viaje si estamos editando
+    const {isLoading,error} = useTripData(id, reset);
     
+    // 2. Cargar datos auxiliares
 
-    const { data, isLoading, error } = useViajeControllerFindOne(id!, { query: { enabled: isEditing } });
-    const { data: companies, error: errorCompanies, isLoading: loadingCompanies } = useEmpresaControllerFindAll();
-    const { data: vehicles, error: errorVehicles, isLoading: loadingVehicles } = useVehiculoControllerFindAll();
-    const { data: drivers, error: errorDrivers, isLoading: loadingDrivers } = useChoferControllerFindAll();
-    const { data: depots, error: errorDepots, isLoading: loadingDepots } = useDepositoControllerFindAll();
-    const { notify } = useNotify("Viaje");
-
-    useEffect(() => {
-        if (isEditing && data && data.data) {
-        const { _id, deposito_origen, deposito_destino, vehiculo, empresa, chofer, ...rest } = data.data ;
-        const { _id: idDepoOrigen} = deposito_origen;
-        const { _id: idDepoDestino} = deposito_destino;
-        const { _id: idVehiculo} = vehiculo;
-        const { _id: idEmpresa} = empresa;
-        const { _id: idChofer} = chofer;
-        reset({
-            ...rest,
-            _id,
-            deposito_origen: idDepoOrigen,
-            deposito_destino: idDepoDestino,
-            vehiculo: idVehiculo,
-            empresa: idEmpresa,
-            chofer: idChofer
-        } as CreateViajeSchema);
-        }
-    }, [isEditing, data]);
-
-
-    const handleSelectCompany = (companyId: string) => {
-        if (!companyId) {
-            setFilteredVehiculos(vehicles?.data || []);
-            setFilteredChoferes(drivers?.data || []);
-            return;
-        }
-        const filteredVehicles = vehicles?.data.filter(vehicle => vehicle.empresa._id === companyId) || [];
-        const filteredDrivers = drivers?.data.filter(driver => driver.empresa._id === companyId) || [];
-        setFilteredVehiculos(filteredVehicles);
-        setFilteredChoferes(filteredDrivers);
-
-        // Si el vehículo actual no está en la lista filtrada, limpiar el campo
-        const currentVehicleId = control._formValues.vehiculo;
-        if (currentVehicleId && !filteredVehicles.some(vehicle => vehicle._id === currentVehicleId)) {
-            resetField("vehiculo");
-        }
-        // Si el chofer actual no está en la lista filtrada, limpiar el campo
-        const currentDriverId = control._formValues.chofer;
-        if (currentDriverId && !filteredDrivers.some(driver => driver._id === currentDriverId)) {
-            resetField("chofer");
-        }
-    }
+    const {
+        companies,
+        depots,
+        filteredVehiculos,
+        filteredChoferes,
+        errorCompanies,
+        errorVehicles,
+        errorDrivers,
+        errorDepots,
+        loadingAuxData,
+        filterByCompany
+    } = useTripAuxData();
+    
+    // 3. Configurar validación cruzada
+    useCrossFieldValidation(watch, (name?: string) => trigger(name as any));
 
     const handleSelectChofer = (choferId: string) => {
         if (!choferId) {
@@ -185,8 +135,8 @@ export const useTripForm = (id?: string) => {
         errorVehicles,
         errorDrivers,
         errorDepots,
-        loadingAuxData: loadingCompanies || loadingDrivers || loadingVehicles || loadingDepots,
-        handleSelectCompany,
+        loadingAuxData,
+        filterByCompany,
         filteredChoferes,
         filteredVehiculos,
         handleSelectChofer,

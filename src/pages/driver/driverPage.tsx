@@ -74,18 +74,18 @@ export default function DriverPage(){
                 border: "0.5px solid #C7C7C7",
             }}>
 
-                <TableContainer className="text-sm">
+                <TableContainer className="text-sm rounded-lg">
                     <Table aria-label="simple table">
                         <TableHead >
                             <TableRow>
-                                <TableCell sx={{borderRadius: "8px"}}>Nombre completo</TableCell>
+                                <TableCell>Nombre completo</TableCell>
                                 <TableCell>DNI</TableCell>
                                 <TableCell>Fecha de nacimiento</TableCell>
                                 <TableCell>Licencia</TableCell>
                                 <TableCell>Datos de contacto</TableCell>
                                 <TableCell>Empresa</TableCell>
                                 <TableCell>Vehiculo asignado</TableCell>
-                                <TableCell align="center" sx={{width: 72, borderRadius: "8px"}}>Acciones</TableCell>
+                                <TableCell align="center" sx={{width: 72}}>Acciones</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>

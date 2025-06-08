@@ -100,23 +100,20 @@ export default function VehiclePage() {
                     border: "0.5px solid #C7C7C7",
                 }}
             >         
-                <TableContainer className="text-sm">
+                <TableContainer className="text-sm rounded-lg">
                     <Table 
                         aria-label="simple table"
                         
                     >
                         <TableHead >
                             <TableRow>
-                                <TableCell 
-                                sx={{
-                                    borderRadius: "8px",
-                                }}>Patente</TableCell>
+                                <TableCell>Patente</TableCell>
                                 <TableCell>Modelo</TableCell>
                                 <TableCell>Año</TableCell>
                                 <TableCell>Capacidad(kg)</TableCell>
                                 <TableCell>Tipo</TableCell>
                                 <TableCell>Transportista</TableCell>
-                                <TableCell align="center" sx={{width: 72, borderRadius: "8px"}}>Acciones</TableCell>
+                                <TableCell align="center" sx={{width: 72}}>Acciones</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>

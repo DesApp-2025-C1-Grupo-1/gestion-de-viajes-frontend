@@ -74,16 +74,16 @@ export default function CompanyPage(){
                 border: "0.5px solid #C7C7C7",
             }}>
 
-                <TableContainer className="text-sm">
+                <TableContainer className="text-sm rounded-lg">
                     <Table aria-label="simple table">
                         <TableHead >
                             <TableRow>
-                                <TableCell sx={{borderTopLeftRadius: "8px"}}>Razon social</TableCell>
+                                <TableCell >Razon social</TableCell>
                                 <TableCell>Nombre comercial</TableCell>
                                 <TableCell>CUIT/RUT</TableCell>
                                 <TableCell>Domicilio fiscal</TableCell>
                                 <TableCell>Contacto</TableCell>
-                                <TableCell align="center" sx={{width: 72, borderTopRightRadius: "8px"}}>Acciones</TableCell>
+                                <TableCell align="center" sx={{width: 72}}>Acciones</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>

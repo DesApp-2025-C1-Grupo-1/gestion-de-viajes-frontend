@@ -128,7 +128,7 @@ export default function DriverPage(){
 
             <div className="flex justify-between gap-2 items-center sm:px-4 py-4 ">
                 <p className="text-sm w-full">
-                    Mostrando {Math.min((page-1) * rowsPerPage+1, filtered.length)} - {Math.min(page* rowsPerPage, filtered.length)} de {filtered.length} empresas
+                    Mostrando {Math.min((page-1) * rowsPerPage+1, filtered.length)} - {Math.min(page* rowsPerPage, filtered.length)} de {filtered.length} choferes
                 </p>
                 <Pagination 
                     count={totalPages}

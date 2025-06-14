@@ -382,6 +382,35 @@ export interface UpdateViajeDto {
   vehiculo?: string;
 }
 
+/**
+ * Tipo de viaje
+ */
+export type BuscarViajeDtoTipo = typeof BuscarViajeDtoTipo[keyof typeof BuscarViajeDtoTipo];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const BuscarViajeDtoTipo = {
+  nacional: 'nacional',
+  internacional: 'internacional',
+} as const;
+
+export interface BuscarViajeDto {
+  /** Fecha de inicio del viaje en formato ISO 8601 */
+  fecha_inicio?: string;
+  /** Fecha de llegada del viaje en formato ISO 8601 */
+  fecha_llegada?: string;
+  /** ID del viaje */
+  _id?: string;
+  /** Id de la empresa | Razon social de la empresa | nombre comercial de la empresa */
+  empresa?: string;
+  /** Id del chofer | Nombre del chofer */
+  chofer?: string;
+  /** Id del vehiculo | Patente del vehiculo */
+  vehiculo?: string;
+  /** Tipo de viaje */
+  tipo?: BuscarViajeDtoTipo;
+}
+
 export interface CreateDepositoDto {
   /** Nombre del depósito */
   nombre: string;
@@ -419,6 +448,17 @@ export interface UpdateDepositoDto {
   direccion?: CreateDireccionDto;
   contacto?: CreateContactoDto;
 }
+
+export type ViajeControllerFindAllParams = {
+/**
+ * Cuantos registros se deben omitir para la paginación
+ */
+page: number;
+/**
+ * Cuantos registros se deben devolver en la paginación
+ */
+limit: number;
+};
 
 export const appControllerGetHello = (
      options?: AxiosRequestConfig
@@ -509,7 +549,7 @@ export const tipoVehiculoControllerCreate = (
     
     
     return axios.post(
-      `/tipo_vehiculo`,
+      `/tipo-vehiculo`,
       createTipoVehiculoDto,options
     );
   }
@@ -571,13 +611,13 @@ export const tipoVehiculoControllerFindAll = (
     
     
     return axios.get(
-      `/tipo_vehiculo`,options
+      `/tipo-vehiculo`,options
     );
   }
 
 
 export const getTipoVehiculoControllerFindAllQueryKey = () => {
-    return [`/tipo_vehiculo`] as const;
+    return [`/tipo-vehiculo`] as const;
     }
 
     
@@ -657,13 +697,13 @@ export const tipoVehiculoControllerFindOne = (
     
     
     return axios.get(
-      `/tipo_vehiculo/${id}`,options
+      `/tipo-vehiculo/${id}`,options
     );
   }
 
 
 export const getTipoVehiculoControllerFindOneQueryKey = (id: string,) => {
-    return [`/tipo_vehiculo/${id}`] as const;
+    return [`/tipo-vehiculo/${id}`] as const;
     }
 
     
@@ -744,7 +784,7 @@ export const tipoVehiculoControllerUpdate = (
     
     
     return axios.patch(
-      `/tipo_vehiculo/${id}`,
+      `/tipo-vehiculo/${id}`,
       updateTipoVehiculoDto,options
     );
   }
@@ -806,7 +846,7 @@ export const tipoVehiculoControllerRemove = (
     
     
     return axios.delete(
-      `/tipo_vehiculo/${id}`,options
+      `/tipo-vehiculo/${id}`,options
     );
   }
 
@@ -1998,31 +2038,33 @@ export const useViajeControllerCreate = <TError = AxiosError<void>,
  * @summary Obtener todos los viajes
  */
 export const viajeControllerFindAll = (
-     options?: AxiosRequestConfig
+    params: ViajeControllerFindAllParams, options?: AxiosRequestConfig
  ): Promise<AxiosResponse<ViajeDto[]>> => {
     
     
     return axios.get(
-      `/viaje`,options
+      `/viaje`,{
+    ...options,
+        params: {...params, ...options?.params},}
     );
   }
 
 
-export const getViajeControllerFindAllQueryKey = () => {
-    return [`/viaje`] as const;
+export const getViajeControllerFindAllQueryKey = (params: ViajeControllerFindAllParams,) => {
+    return [`/viaje`, ...(params ? [params]: [])] as const;
     }
 
     
-export const getViajeControllerFindAllQueryOptions = <TData = Awaited<ReturnType<typeof viajeControllerFindAll>>, TError = AxiosError<void>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof viajeControllerFindAll>>, TError, TData>>, axios?: AxiosRequestConfig}
+export const getViajeControllerFindAllQueryOptions = <TData = Awaited<ReturnType<typeof viajeControllerFindAll>>, TError = AxiosError<void>>(params: ViajeControllerFindAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof viajeControllerFindAll>>, TError, TData>>, axios?: AxiosRequestConfig}
 ) => {
 
 const {query: queryOptions, axios: axiosOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getViajeControllerFindAllQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getViajeControllerFindAllQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof viajeControllerFindAll>>> = ({ signal }) => viajeControllerFindAll({ signal, ...axiosOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof viajeControllerFindAll>>> = ({ signal }) => viajeControllerFindAll(params, { signal, ...axiosOptions });
 
       
 
@@ -2036,7 +2078,7 @@ export type ViajeControllerFindAllQueryError = AxiosError<void>
 
 
 export function useViajeControllerFindAll<TData = Awaited<ReturnType<typeof viajeControllerFindAll>>, TError = AxiosError<void>>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof viajeControllerFindAll>>, TError, TData>> & Pick<
+ params: ViajeControllerFindAllParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof viajeControllerFindAll>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof viajeControllerFindAll>>,
           TError,
@@ -2046,7 +2088,7 @@ export function useViajeControllerFindAll<TData = Awaited<ReturnType<typeof viaj
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useViajeControllerFindAll<TData = Awaited<ReturnType<typeof viajeControllerFindAll>>, TError = AxiosError<void>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof viajeControllerFindAll>>, TError, TData>> & Pick<
+ params: ViajeControllerFindAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof viajeControllerFindAll>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof viajeControllerFindAll>>,
           TError,
@@ -2056,7 +2098,7 @@ export function useViajeControllerFindAll<TData = Awaited<ReturnType<typeof viaj
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useViajeControllerFindAll<TData = Awaited<ReturnType<typeof viajeControllerFindAll>>, TError = AxiosError<void>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof viajeControllerFindAll>>, TError, TData>>, axios?: AxiosRequestConfig}
+ params: ViajeControllerFindAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof viajeControllerFindAll>>, TError, TData>>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -2064,11 +2106,11 @@ export function useViajeControllerFindAll<TData = Awaited<ReturnType<typeof viaj
  */
 
 export function useViajeControllerFindAll<TData = Awaited<ReturnType<typeof viajeControllerFindAll>>, TError = AxiosError<void>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof viajeControllerFindAll>>, TError, TData>>, axios?: AxiosRequestConfig}
+ params: ViajeControllerFindAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof viajeControllerFindAll>>, TError, TData>>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getViajeControllerFindAllQueryOptions(options)
+  const queryOptions = getViajeControllerFindAllQueryOptions(params,options)
 
   const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -2286,6 +2328,68 @@ export const useViajeControllerRemove = <TError = AxiosError<void>,
       > => {
 
       const mutationOptions = getViajeControllerRemoveMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * @summary Buscar viajes por filtros
+ */
+export const viajeControllerBuscar = (
+    buscarViajeDto: BuscarViajeDto, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<ViajeDto[]>> => {
+    
+    
+    return axios.post(
+      `/viaje/buscar`,
+      buscarViajeDto,options
+    );
+  }
+
+
+
+export const getViajeControllerBuscarMutationOptions = <TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof viajeControllerBuscar>>, TError,{data: BuscarViajeDto}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof viajeControllerBuscar>>, TError,{data: BuscarViajeDto}, TContext> => {
+
+const mutationKey = ['viajeControllerBuscar'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, axios: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof viajeControllerBuscar>>, {data: BuscarViajeDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  viajeControllerBuscar(data,axiosOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ViajeControllerBuscarMutationResult = NonNullable<Awaited<ReturnType<typeof viajeControllerBuscar>>>
+    export type ViajeControllerBuscarMutationBody = BuscarViajeDto
+    export type ViajeControllerBuscarMutationError = AxiosError<unknown>
+
+    /**
+ * @summary Buscar viajes por filtros
+ */
+export const useViajeControllerBuscar = <TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof viajeControllerBuscar>>, TError,{data: BuscarViajeDto}, TContext>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof viajeControllerBuscar>>,
+        TError,
+        {data: BuscarViajeDto},
+        TContext
+      > => {
+
+      const mutationOptions = getViajeControllerBuscarMutationOptions(options);
 
       return useMutation(mutationOptions , queryClient);
     }

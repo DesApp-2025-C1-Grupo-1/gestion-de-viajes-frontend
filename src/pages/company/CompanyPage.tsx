@@ -13,7 +13,7 @@ import { ConfirmDialog } from "../../components/ConfirmDialog";
 
 export default function CompanyPage(){
     const {notify} = useNotify("Empresa");
-    const {data, isLoading, error, refetch} = useEmpresaControllerFindAll();
+    const {data, isLoading, refetch} = useEmpresaControllerFindAll();
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);
     const [openDialog, setOpenDialog] = useState(false);

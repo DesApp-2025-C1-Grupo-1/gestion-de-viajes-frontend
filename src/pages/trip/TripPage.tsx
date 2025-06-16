@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { SectionHeader } from "../../components/SectionHeader";
-import { Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
+import { Pagination, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
 import LoadingState from "../../components/LoadingState";
 import MenuItem from "../../components/buttons/MenuItem";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
@@ -16,11 +16,13 @@ export default function TripPage() {
     const navigate = useNavigate();
     const {notify} = useNotify("Viajes");
 
-    const {rowsPerPage} = useAutoRowsPerPage();
     const [page, setPage] = useState<number>(1);
-    const { data, isLoading, refetch } = useViajeControllerFindAll({page, limit: rowsPerPage}); //paso como limit al back el rows pero ver
-    //const trips = data?.items || [];
-
+    const {rowsPerPage} = useAutoRowsPerPage();
+    const { data: response, isLoading, refetch } = useViajeControllerFindAll({page, limit: rowsPerPage}); //paso como limit al back el rows pero verr
+    
+    const trips = response?.data?.data ?? [];
+    const total = response?.data?.total ?? 0;
+    
     const [openDialog, setOpenDialog] = useState<boolean>(false);
     const [tripSelect, setTripSelect] = useState<ViajeDto>();
 
@@ -74,11 +76,64 @@ export default function TripPage() {
                                 </TableRow>
                             </TableHead>
 
-                            
+                            <TableBody>
+                                {isLoading ? (
+                                    <TableRow key="loading">
+                                        <TableCell colSpan={7} >
+                                            <LoadingState title="viajes"/>
+                                        </TableCell>
+                                    </TableRow>
+                                ) : trips.length === 0 ? (
+                                    <TableRow key="no-trips">
+                                        <TableCell 
+                                            colSpan={7} 
+                                            sx={{textAlign: "center", paddingY: "26px",}}
+                                        >
+                                            No se encontraron viajes
+                                        </TableCell>
+                                    </TableRow>
+                                ) : (
+                                    trips.map((trip) => (
+                                        <TableRow 
+                                            key={trip._id} 
+                                            className="hover:bg-gray-50 overflow-hidden"
+                                        >
+                                            <TableCell sx={{fontWeight: "bold"}}>{trip._id}</TableCell>
+                                            <TableCell>{`${trip.deposito_origen?.nombre} >> ${trip.deposito_destino?.nombre}`}</TableCell>
+                                            <TableCell>{`${trip.empresa?.nombre_comercial} - ${trip.chofer?.nombre} ${trip.chofer?.apellido}`}</TableCell>
+                                            <TableCell>{`${trip.fecha_inicio.split('T')[0]} / ${trip.fecha_llegada}`}</TableCell>
+                                            <TableCell>{trip.tipo_viaje}</TableCell>
+                                            <TableCell sx={{ verticalAlign: "middle"}}>
+                                                <MenuItem  handleOpenDialog={() => handleOpenDialog(trip)}
+                                                //detalles
+                                                id={trip._id}
+                                                >
+                                                    <Eye className="text-gray-500 hover:text-gray-700 size-4" />
+                                                </MenuItem>
+                                            </TableCell>   
+                                        </TableRow>
+                                        
+                                    ))
+                                )}
+                            </TableBody>
 
                         </Table>
                     </TableContainer>
+            </div>
 
+            {/* Paginación */}
+            <div className="flex justify-between gap-2 items-center sm:px-4 py-4 ">
+                <p className="text-sm w-full">
+                    Mostrando {(page-1) * rowsPerPage+1} - {Math.min(page*rowsPerPage, total)} de {total} viajes
+                </p>
+                <Pagination 
+                    count={Math.ceil(total / rowsPerPage)}
+                    page={page}
+                    onChange={handleChangePage}
+                    shape="rounded"
+                    color="primary"
+                    sx={{width: "100%", display: "flex", justifyContent: "flex-end"}}
+                />
             </div>
 
         </>

@@ -306,6 +306,8 @@ export interface CreateViajeDto {
   /** Fecha y hora de inicio del viaje */
   fecha_inicio: string;
   /** Fecha y hora estimada de llegada */
+  fecha_llegada_estimada: string;
+  /** Fecha y hora estimada de llegada */
   fecha_llegada: string;
   /** Tipo de viaje */
   tipo_viaje: string;
@@ -348,6 +350,8 @@ export interface ViajeDto {
   /** Fecha y hora de inicio del viaje */
   fecha_inicio: string;
   /** Fecha y hora estimada de llegada */
+  fecha_llegada_estimada: string;
+  /** Fecha y hora de llegada */
   fecha_llegada: string;
   /** Tipo de viaje */
   tipo_viaje: string;
@@ -363,9 +367,18 @@ export interface ViajeDto {
   vehiculo: VehiculoDto;
 }
 
+export interface PaginacionDto {
+  data: ViajeDto[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
 export interface UpdateViajeDto {
   /** Fecha y hora de inicio del viaje */
   fecha_inicio?: string;
+  /** Fecha y hora estimada de llegada */
+  fecha_llegada_estimada?: string;
   /** Fecha y hora estimada de llegada */
   fecha_llegada?: string;
   /** Tipo de viaje */
@@ -2039,7 +2052,7 @@ export const useViajeControllerCreate = <TError = AxiosError<void>,
  */
 export const viajeControllerFindAll = (
     params: ViajeControllerFindAllParams, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<ViajeDto[]>> => {
+ ): Promise<AxiosResponse<PaginacionDto>> => {
     
     
     return axios.get(

@@ -61,8 +61,8 @@ export default function DriverPage(){
     return(
         <>
             <SectionHeader
-                title="Listado de choferes"
-                description="Gestione los choferes disponibles del sistema"
+                title="Choferes"
+                description="Gestione el personal habilitado para conducir vehículos de transporte."
                 buttonText="Nuevo chofer"
                 onAdd={() => navigate("/driver/create")}
             /> 
@@ -91,14 +91,14 @@ export default function DriverPage(){
                         <TableBody>
                             {isLoading ? (
                                 <TableRow key="loading">
-                                    <TableCell colSpan={7} >
+                                    <TableCell colSpan={8} >
                                         <LoadingState title="choferes"/>
                                     </TableCell>
                                 </TableRow>
                             ) : paginated.length === 0 ? (
                                 <TableRow key="no-drivers">
                                     <TableCell 
-                                        colSpan={7} 
+                                        colSpan={8} 
                                         sx={{textAlign: "center", paddingY: "26px",}}
                                     >
                                         No se encontraron choferes

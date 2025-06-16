@@ -15,7 +15,7 @@ export const useVehicleForm = (id?: string) => {
     control,
     reset,
     handleSubmit,
-    formState: { errors: formErrors , isValid},
+    formState: { errors: formErrors , isValid,isSubmitting},
   } = useForm<CreateVehiculoSchema>({
     resolver: zodResolver(CreateVehiculoSchema),
     mode: "onBlur",
@@ -107,5 +107,6 @@ export const useVehicleForm = (id?: string) => {
     vehicleTypes,
     errorTipoVehiculo,
     loadingAuxData: loadingEmpresas || loadingTipos,
+    isSubmitting,
   }
 }

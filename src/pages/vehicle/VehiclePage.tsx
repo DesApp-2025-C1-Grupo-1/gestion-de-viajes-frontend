@@ -64,8 +64,8 @@ export default function VehiclePage() {
     return (
         <>
             <SectionHeader 
-                title="Flota de Vehículos"
-                description="Registre y gestione los vehículos disponibles para su red de transporte."
+                title="Flota de vehículos"
+                description="Registre y gestione los vehículos asignados a las empresas transportistas."
                 buttonText="Nuevo vehículo"
                 onAdd={() => navigate("/vehicles/form")}
             />

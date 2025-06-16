@@ -4,6 +4,7 @@ import { Box, Button, Paper, TextField, Select, MenuItem, Typography, Backdrop, 
 import { useVehicleForm } from "../../hooks/useVehicleForm";
 import { Controller } from "react-hook-form";
 import { CreateVehiculoSchema } from "../../api/schemas";
+import FormActions from "../../components/deposit/FormActions";
 
 export default function VehicleFormPage() {
     const {id} = useParams();
@@ -15,7 +16,7 @@ export default function VehicleFormPage() {
         formErrors,
         register,
         control,
-        isValid,
+        isSubmitting,
         isLoading,
         error: formError,
         companies,
@@ -46,9 +47,9 @@ export default function VehicleFormPage() {
 
     return (
         <>
-            <SectionHeader 
-                title={isEditing ? "Editar vehículo" : "Crear vehículo"}
-                description={isEditing ? "Modifica los datos del vehículo" : "Aquí puedes registrar un nuevo vehículo."}
+            <SectionHeader
+                title={isEditing ? "Editar vehículo" : "Registrar vehículo"}
+                description={isEditing ? "Actualizá los datos del vehículo registrado." : "Completá el formulario para dar de alta un vehículo."}
             />
 
             <Paper  sx={{maxHeight:"90%", padding:4, overflow:"auto", mx:'auto', width:"100%", borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "0.5px solid #C7C7C7", pb: 5}  }>
@@ -211,12 +212,13 @@ export default function VehicleFormPage() {
                             </FormHelperText>
                         </Grid>
                     </Grid>
-                    <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 , mt: 3 }}>
-                        <Button onClick={() => navigate("/vehicles")} variant="outlined">Cancelar</Button>
-                        <Button type="submit" variant="contained" sx={{ backgroundColor: "#E65F2B" }} disabled={isLoading }>
-                            {isEditing ? "Actualizar" : "Crear"}
-                        </Button>
-                    </Box>
+
+                    <FormActions 
+                        loading={isLoading}
+                        isEditing={isEditing}
+                        isSubmitting={isSubmitting}
+                    />
+                    
                 </form>
                  <Backdrop open={isLoading} sx={{ zIndex: 9999, color: "#fff" }}>
                     <CircularProgress color="inherit" />

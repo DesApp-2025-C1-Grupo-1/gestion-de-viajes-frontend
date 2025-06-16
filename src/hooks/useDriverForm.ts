@@ -21,7 +21,7 @@ export const useDriverForm = (id?: string) => {
     watch,
     resetField,
     trigger,
-    formState: { errors: formErrors , isValid},
+    formState: { errors: formErrors , isValid,isSubmitting},
   } = useForm<CreateChoferSchema>({
     resolver: zodResolver(createChoferSchema),
     mode: "onBlur",
@@ -150,6 +150,6 @@ export const useDriverForm = (id?: string) => {
   };
 
   return{
-    onSubmit, handleSubmit, handleCreate, handleUpdate, isEditing, formErrors, register, control, isValid, reset, isLoading, error, companies, filteredVehicles, errorEmpresa, errorVehicles, licenciasValidas, watch, loadingAuxData: loadingEmpresas || loadingVehicles, handleCompanyChange,
+    onSubmit, handleSubmit, handleCreate, handleUpdate, isEditing, formErrors, register, control, isValid, reset, isLoading, error, companies, filteredVehicles, errorEmpresa, errorVehicles, licenciasValidas, watch, loadingAuxData: loadingEmpresas || loadingVehicles, handleCompanyChange,isSubmitting,
   }
 }

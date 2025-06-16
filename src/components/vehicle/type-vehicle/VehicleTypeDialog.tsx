@@ -16,7 +16,7 @@ export const VehicleTypeDialog = ({ open, onClose, onSubmit, editingType }: Vehi
   const {
     register,
     handleSubmit,
-    formState: { errors , isValid},
+    formState: { errors , isValid, isSubmitting},
     reset,
   } = useForm<CreateTipoVehiculoForm>({
     resolver: zodResolver(createTipoVehiculoSchema),
@@ -88,8 +88,15 @@ export const VehicleTypeDialog = ({ open, onClose, onSubmit, editingType }: Vehi
           <Button onClick={onClose} variant="outlined">
             Cancelar
           </Button>
-          <Button type="submit" variant="contained" sx={{ backgroundColor: "#E65F2B" }} disabled={!isValid}>
-            {editingType ? "Actualizar" : "Crear"}
+          <Button type="submit" variant="contained" sx={{ backgroundColor: "#E65F2B" }} disabled={isSubmitting}>
+            {isSubmitting
+                ? editingType
+                    ? "Actualizando..."
+                    : "Registrando..."
+                : editingType
+                    ? "Actualizar"
+                    : "Registrar"
+            }
           </Button>
         </DialogActions>
       </form>

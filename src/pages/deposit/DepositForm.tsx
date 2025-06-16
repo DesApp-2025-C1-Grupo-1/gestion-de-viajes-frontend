@@ -21,7 +21,7 @@ export default function DepositFormPage() {
         register,
         control,
         watch,
-        isValid,
+        isSubmitting,
         onSubmit
     } = useDepositForm(id);
 
@@ -32,9 +32,9 @@ export default function DepositFormPage() {
 
     return (
         <>
-            <SectionHeader 
-                title={isEditing ? "Editar depósito" : "Crear depósito"}
-                description={isEditing ? "Modifica los datos del depósito" : "Aquí puedes registrar un nuevo depósito."}
+            <SectionHeader
+                title={isEditing ? "Editar depósito" : "Registrar depósito"}
+                description={isEditing ? "Actualizá los datos del depósito registrado." : "Completá el formulario para dar de alta un depósito."}
             />
 
             <Paper  sx={{maxHeight:"90%", padding:4, overflow:"auto", mx:'auto', width:"100%", borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "0.5px solid #C7C7C7", pb: 5} } >
@@ -72,8 +72,8 @@ export default function DepositFormPage() {
                     
                     <FormActions 
                         loading={isLoading}
-                        isValid={isValid}
                         isEditing={isEditing}
+                        isSubmitting={isSubmitting}
                     />
                 </form>
                 <Backdrop open={isLoading} sx={{ zIndex: 9999, color: "#fff" }}>

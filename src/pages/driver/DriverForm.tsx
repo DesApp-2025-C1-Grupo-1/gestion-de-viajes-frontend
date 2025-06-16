@@ -7,6 +7,7 @@ import { CreateChoferSchema } from "../../api/schemas";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import FormActions from "../../components/deposit/FormActions";
 
 export default function DriverFormPage(){
     const {id} = useParams();
@@ -28,7 +29,8 @@ export default function DriverFormPage(){
         errorVehicles,
         licenciasValidas,
         watch,
-        loadingAuxData
+        loadingAuxData,
+        isSubmitting,
     } = useDriverForm(id);
 
     const codigoPais =  watch("telefono.codigo_pais")
@@ -51,9 +53,10 @@ export default function DriverFormPage(){
     return(
         <>
             <SectionHeader
-                title={isEditing ? "Editar chofer" : "Crear nuevo chofer"}
-                description={isEditing ? "Modifica los datos del chofer." : "Registrar un nuevo chofer."}
+                title={isEditing ? "Editar chofer" : "Registrar chofer"}
+                description={isEditing ? "Actualizá los datos del chofer registrado." : "Completá el formulario para dar de alta un chofer."}
             />
+            
             <Paper sx={{maxHeight:"85%", padding: 4, overflow: "auto", mx: 'auto', width: "100%", borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "0.5px solid #C7C7C7", pb: 5 }} >
                 <form onSubmit={handleSubmit(handleFormSubmit)} className="w-full max-w-[800px] mx-auto">
 
@@ -342,12 +345,11 @@ export default function DriverFormPage(){
                     </Grid>
 
 
-                    <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2, mt: 4 }}>
-                        <Button onClick={() => navigate("/drivers")} variant="outlined" disabled={isLoading}>Cancelar</Button>
-                        <Button type="submit" variant="contained" color="primary" disabled={isLoading}>
-                            {isEditing ? "Actualizar" : "Crear"}
-                        </Button>
-                    </Box>
+                    <FormActions 
+                        loading={isLoading}
+                        isEditing={isEditing}
+                        isSubmitting={isSubmitting}
+                    />
                 </form>
 
                 <Backdrop open={isLoading} sx={{ zIndex: 9999, color: "#fff" }}>

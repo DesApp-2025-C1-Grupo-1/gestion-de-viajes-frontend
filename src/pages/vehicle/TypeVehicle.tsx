@@ -40,14 +40,14 @@ export default function TypeVehicle() {
   return (
     <>
       <SectionHeader
-        title="Tipos de Vehículo"
-        description="Gestione los tipos de vehículos disponibles en el sistema"
+        title="Tipos de vehículo"
+        description="Defina las categorías de vehículos disponibles en el sistema."
         buttonText="Nuevo tipo"
         onAdd={() => openDialog()}
       />
 
       {isLoading ? (
-        <LoadingState title="tipos de vehículos" />
+        <LoadingState title="Tipos de vehículos" />
       ) : tiposVehiculo.length === 0 ? (
         <EmptyState onAdd={() => openDialog()} />
       ) : (

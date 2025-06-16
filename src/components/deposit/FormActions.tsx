@@ -1,29 +1,32 @@
 import { Box, Button } from "@mui/material";
-import { isValid } from "zod";
+import { useNavigate } from "react-router-dom";
 
 interface FormActionsProps {
   loading: boolean;
   isEditing: boolean;
-  isValid?: boolean;
+  isSubmitting?: boolean;
 }
 
-const FormActions = ({ loading, isEditing}: FormActionsProps) => {
+const FormActions = ({ loading, isEditing,isSubmitting}: FormActionsProps) => {
+  const navigate = useNavigate();
   return (
     <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2, mt: 4 }}>
       <Button 
-        onClick={()=> window.history.back()} 
+        onClick={()=> navigate(-1)} 
         variant="outlined"
         disabled={loading}
       >
         Cancelar
       </Button>
-      <Button 
-        type="submit" 
-        variant="contained" 
-        color="primary"
-        disabled={!isValid}
-      >
-        {isEditing ? "Actualizar" : "Crear"}
+      <Button type="submit" variant="contained" color="primary" disabled={isSubmitting}>
+          {isSubmitting
+              ? isEditing
+                  ? "Actualizando..."
+                  : "Registrando..."
+              : isEditing
+                  ? "Actualizar"
+                  : "Registrar"
+          }
       </Button>
     </Box>
   );

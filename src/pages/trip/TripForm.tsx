@@ -1,11 +1,12 @@
 import { SectionHeader } from "../../components/SectionHeader";
 import { useNavigate, useParams } from "react-router-dom";
-import { Box, Button, Paper, Select, MenuItem, Typography, Backdrop, CircularProgress, Grid, Alert, FormHelperText, FormControl} from "@mui/material";
+import { Paper, Select, MenuItem, Typography, Backdrop, CircularProgress, Grid, Alert, FormHelperText, FormControl} from "@mui/material";
 import { useTripForm } from "../../hooks/useTripForm";
 import { Controller } from "react-hook-form";
 import { CreateViajeSchema } from "../../api/schemas";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import FormActions from "../../components/deposit/FormActions";
 
 export default function TripFormPage() {
     const {id} = useParams();
@@ -20,7 +21,7 @@ export default function TripFormPage() {
         error: formError,
         companies, 
         depots,
-        trigger,
+        isSubmitting,
         errorCompanies,
         errorVehicles,
         errorDrivers,
@@ -60,8 +61,8 @@ export default function TripFormPage() {
     return(
         <>
             <SectionHeader
-                title={isEditing ? "Editar Viaje" : "Crear Viaje"}
-                description={isEditing ? "Modifica los datos del viaje." : "Registrar nuevo viaje."}
+                title={isEditing ? "Editar Viaje" : "Registrar Viaje"}
+                description={isEditing ? "Actualizá los datos del viaje registrado." : "Completá el formulario para dar de alta un viaje."}
             />
             <Paper sx={{maxHeight:"85%", padding: 4, overflow: "auto", mx: 'auto', width: "100%", borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "0.5px solid #C7C7C7", pb: 5 }} >
                 <form onSubmit={handleSubmit(handleFormSubmit)} className="w-full max-w-[800px] mx-auto">
@@ -326,12 +327,11 @@ export default function TripFormPage() {
 
                     </Grid>
 
-                    <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2, mt: 4 }}>
-                        <Button onClick={() => navigate("/trips")} variant="outlined" disabled={isLoading}>Cancelar</Button>
-                        <Button type="submit" variant="contained" color="primary" disabled={isLoading}>
-                            {isEditing ? "Actualizar" : "Crear"}
-                        </Button>
-                    </Box>
+                    <FormActions 
+                        loading={isLoading}
+                        isEditing={isEditing}
+                        isSubmitting={isSubmitting}
+                    />
 
                 </form>
 

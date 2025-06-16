@@ -3,6 +3,7 @@ import { SectionHeader } from "../../components/SectionHeader";
 import { Box, Button, Paper, TextField, Typography, Backdrop, CircularProgress, Grid, Alert, InputAdornment } from "@mui/material";
 import { CreateEmpresaSchema } from "../../api/schemas";
 import { useCompanyForm } from "../../hooks/useCompanyForm";
+import FormActions from "../../components/deposit/FormActions";
 
 export default function CompanyFormPage() {
     const {id} = useParams();
@@ -16,6 +17,7 @@ export default function CompanyFormPage() {
         isLoading,
         error: formError,
         watch,
+        isSubmitting,
     } = useCompanyForm(id);
 
     if (isLoading) return <CircularProgress />;
@@ -38,8 +40,8 @@ export default function CompanyFormPage() {
     return(
         <>
             <SectionHeader
-                title={isEditing ? "Editar empresa transportista" : "Crear empresa transportista"}
-                description={isEditing ? "Modifica los datos de la empresa transportista." : "Registrar nueva empresa transportista."}
+                title={isEditing ? "Editar empresa transportista" : "Registrar empresa transportista"}
+                description={isEditing ? "Actualizá los datos de la empresa registrada." : "Completá el formulario para dar de alta una empresa."}
             />
             <Paper sx={{maxHeight:"85%", padding: 4, overflow: "auto", mx: 'auto', width: "100%", borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "0.5px solid #C7C7C7", pb: 5 }} >
                 <form onSubmit={handleSubmit(handleFormSubmit)} className="w-full max-w-[800px] mx-auto">
@@ -267,12 +269,11 @@ export default function CompanyFormPage() {
                         </Grid>
                     </Grid>
 
-                    <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2, mt: 4 }}>
-                        <Button onClick={() => navigate("/companies")} variant="outlined" disabled={isLoading}>Cancelar</Button>
-                        <Button type="submit" variant="contained" color="primary" disabled={isLoading}>
-                            {isEditing ? "Actualizar" : "Crear"}
-                        </Button>
-                    </Box>
+                    <FormActions 
+                        loading={isLoading}
+                        isEditing={isEditing}
+                        isSubmitting={isSubmitting}
+                    />
 
                 </form>
 

@@ -17,7 +17,7 @@ export const useCompanyForm = (id?: string) => {
         reset,
         handleSubmit,
         watch,
-        formState: { errors: formErrors , isValid},
+        formState: { errors: formErrors , isValid, isSubmitting},
     } = useForm<CreateEmpresaSchema>({
         resolver: zodResolver(CreateEmpresaSchema),
         mode: "onBlur",
@@ -109,6 +109,7 @@ export const useCompanyForm = (id?: string) => {
         isLoading,
         error,
         watch,
+        isSubmitting,
     }
 }
 

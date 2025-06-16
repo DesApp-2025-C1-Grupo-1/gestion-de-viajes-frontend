@@ -74,8 +74,8 @@ export default function DepositPage() {
     return (
         <>
             <SectionHeader 
-                title="Red de Depósitos"
-                description="Administre los depósitos habilitados como origen y destino en la planificación de viajes."
+                title="Red de depósitos"
+                description="Administre la red de depósitos del sistema logístico."
                 buttonText="Nuevo depósito"
                 onAdd={() => navigate("/depots/form")}
             />

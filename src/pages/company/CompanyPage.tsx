@@ -61,8 +61,8 @@ export default function CompanyPage(){
     return(
         <>
             <SectionHeader
-                title="Listado de empresas transportistas"
-                description="Gestione las empresas transportistas del sistema"
+                title="Empresas transportistas"
+                description="Gestione las empresas habilitadas para operar en el sistema logístico."
                 buttonText="Nueva empresa"
                 onAdd={() => navigate("/company/create")}
             /> 
@@ -74,14 +74,14 @@ export default function CompanyPage(){
                 border: "0.5px solid #C7C7C7",
             }}>
 
-                <TableContainer className="text-sm rounded-lg">
+                <TableContainer className=" text-sm rounded-lg">
                     <Table aria-label="simple table">
                         <TableHead >
                             <TableRow>
-                                <TableCell >Razon social</TableCell>
+                                <TableCell>Razon social</TableCell>
                                 <TableCell>Nombre comercial</TableCell>
                                 <TableCell>CUIT/RUT</TableCell>
-                                <TableCell>Domicilio fiscal</TableCell>
+                                <TableCell sx={{minWidth: 200}}>Domicilio fiscal</TableCell>
                                 <TableCell>Contacto</TableCell>
                                 <TableCell align="center" sx={{width: 72}}>Acciones</TableCell>
                             </TableRow>
@@ -89,14 +89,14 @@ export default function CompanyPage(){
                         <TableBody>
                             {isLoading ? (
                                 <TableRow key="loading">
-                                    <TableCell colSpan={7} >
+                                    <TableCell colSpan={6} >
                                         <LoadingState title="empresas"/>
                                     </TableCell>
                                 </TableRow>
                             ) : paginated.length === 0 ? (
                                 <TableRow key="no-companies">
                                     <TableCell 
-                                        colSpan={7} 
+                                        colSpan={6} 
                                         sx={{textAlign: "center", paddingY: "26px",}}
                                     >
                                         No se encontraron empresas

@@ -24,7 +24,7 @@ export const useTripForm = (id?: string) => {
         resetField,
         setValue,
         getValues,
-        formState: { errors: formErrors , isValid},
+        formState: { errors: formErrors , isValid,isSubmitting},
     } = useForm<CreateViajeSchema>({
         resolver: zodResolver(CreateViajeSchema),
         mode: "onBlur",
@@ -142,5 +142,6 @@ export const useTripForm = (id?: string) => {
         handleSelectChofer,
         getValues,
         trigger,
+        isSubmitting,
     }
 }

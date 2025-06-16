@@ -15,7 +15,7 @@ export const useDepositForm = (id? : string) => {
         register,
         control,
         reset,
-        formState: { errors: formErrors, isValid },
+        formState: { errors: formErrors, isValid,isSubmitting},
         handleSubmit,
         watch,
     } = useForm<CreateDepositoSchema>({
@@ -148,5 +148,6 @@ export const useDepositForm = (id? : string) => {
         isValid,
         reset,
         watch,
+        isSubmitting,
     };
 }

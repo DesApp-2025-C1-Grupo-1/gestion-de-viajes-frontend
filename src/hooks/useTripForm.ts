@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useNotify } from "./useNotify";
-import { useViajeControllerFindOne, viajeControllerCreate, viajeControllerUpdate, CreateViajeDto, UpdateViajeDto, DepositoDto, useEmpresaControllerFindAll, useVehiculoControllerFindAll, useChoferControllerFindAll, useDepositoControllerFindAll, VehiculoDto, ChoferDto} from "../api/generated";
+import { viajeControllerCreate, viajeControllerUpdate} from "../api/generated";
 import { useForm } from "react-hook-form";
 import { CreateViajeSchema, UpdateViajeSchema } from "../api/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -143,5 +142,6 @@ export const useTripForm = (id?: string) => {
         getValues,
         trigger,
         isSubmitting,
+        setValue,
     }
 }

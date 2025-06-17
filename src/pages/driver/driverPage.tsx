@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { Pagination, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import { SectionHeader } from "../../components/SectionHeader";
 import { useNavigate } from "react-router-dom";
 import LoadingState from "../../components/LoadingState";
@@ -10,10 +10,16 @@ import { useNotify } from "../../hooks/useNotify";
 import { choferControllerRemove, ChoferDto, useChoferControllerFindAll } from "../../api/generated";
 import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
+import { DoubleCell } from "../../components/DoubleCell";
+import { Phone, Mail } from "lucide-react";
+
+
+import { formatTelefono } from "../../lib/formatters";
+
 
 export default function DriverPage(){
     const {notify} = useNotify("Chofer");
-    const {data, isLoading, error, refetch} = useChoferControllerFindAll();
+    const {data, isLoading, refetch} = useChoferControllerFindAll();
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);
     const [openDialog, setOpenDialog] = useState(false);
@@ -111,7 +117,16 @@ export default function DriverPage(){
                                         <TableCell>{driver.dni}</TableCell>
                                         <TableCell>{driver.fecha_nacimiento.split('T')[0]}</TableCell>
                                         <TableCell>{`${driver.licencia} - ${driver.tipo_licencia}`}</TableCell>
-                                        <TableCell>{`${driver.telefono?.numero} - ${driver.email}`}</TableCell>
+                                        <TableCell>
+                                            <DoubleCell 
+                                                primarySection={driver.email}
+                                                secondarySection={formatTelefono(driver.telefono)}
+                                                primaryIcon={<Mail  color="#AFB3B9" size={18}/>}
+                                                secondaryIcon={<Phone color="#AFB3B9" size={18}/>}
+                                            />
+                                        </TableCell>
+
+
                                         <TableCell>{driver.empresa?.nombre_comercial}</TableCell>
                                         <TableCell>{driver.vehiculo?.modelo}</TableCell>
                                         <TableCell sx={{ verticalAlign: "middle"}}>

@@ -9,7 +9,7 @@ import { useNotify } from "../../hooks/useNotify";
 import { viajeControllerRemove, ViajeDto, useViajeControllerFindAll } from '../../api/generated';
 import { useAutoRowsPerPage } from "../../hooks/useAutoRowsPerPage";
 //import de detalles
-import {  Eye, User, Building2, Calendar, MapPin, CalendarCheck2 } from "lucide-react";
+import {  Eye, User, Building2} from "lucide-react";
 import { DoubleCell } from "../../components/DoubleCell";
 import { TripType } from "../../components/TripType";
 

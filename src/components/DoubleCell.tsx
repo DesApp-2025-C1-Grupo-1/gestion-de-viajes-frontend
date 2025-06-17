@@ -16,14 +16,14 @@ export const DoubleCell = ({
 }: DoubleCellProps) => {
   return (
     <Stack spacing={1}>
-      <Box display="flex" alignItems="center" gap={0.5}>
+      <Box display="flex" alignItems="center" gap={1}>
         {primaryIcon}
         <Typography variant="body2" fontWeight={450}> 
           {primarySection}
         </Typography>
       </Box>
       {secondarySection && (
-        <Box display="flex" alignItems="center" gap={0.5}>
+        <Box display="flex" alignItems="center" gap={1}>
           {secondaryIcon}
           <Typography variant="caption">
             {secondarySection}

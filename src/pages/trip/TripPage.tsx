@@ -9,7 +9,9 @@ import { useNotify } from "../../hooks/useNotify";
 import { viajeControllerRemove, ViajeDto, useViajeControllerFindAll } from '../../api/generated';
 import { useAutoRowsPerPage } from "../../hooks/useAutoRowsPerPage";
 //import de detalles
-import {  Eye } from "lucide-react";
+import {  Eye, User, Building2, Calendar, MapPin, CalendarCheck2 } from "lucide-react";
+import { DoubleCell } from "../../components/DoubleCell";
+import { TripType } from "../../components/TripType";
 
 
 export default function TripPage() {
@@ -23,13 +25,17 @@ export default function TripPage() {
     const trips = response?.data?.data ?? [];
     const total = response?.data?.total ?? 0;
     
+    const [openDetailsDialog, setOpenDetailsDialog] = useState<boolean>(false);
+
     const [openDialog, setOpenDialog] = useState<boolean>(false);
-    const [tripSelect, setTripSelect] = useState<ViajeDto>();
+    const [tripSelected, setTripSelected] = useState<ViajeDto>();
 
     const handleOpenDialog = (trip : ViajeDto) => {
         setOpenDialog(true);
-        setTripSelect(trip);
+        setTripSelected(trip);
     };
+
+    //handleOpenDetails
 
     const handleDelete = async (id: string) => {
         try {
@@ -70,7 +76,7 @@ export default function TripPage() {
                                     <TableCell>Número</TableCell>
                                     <TableCell>Ruta</TableCell>
                                     <TableCell>Transportista</TableCell>
-                                    <TableCell>Fecha</TableCell>
+                                    <TableCell>Itinerario</TableCell>
                                     <TableCell>Tipo de Viaje</TableCell>
                                     <TableCell align="center" sx={{width:72}}>Acciones</TableCell>
                                 </TableRow>
@@ -99,10 +105,17 @@ export default function TripPage() {
                                             className="hover:bg-gray-50 overflow-hidden"
                                         >
                                             <TableCell sx={{fontWeight: "bold"}}>{trip._id}</TableCell>
-                                            <TableCell>{`${trip.deposito_origen?.nombre} >> ${trip.deposito_destino?.nombre}`}</TableCell>
-                                            <TableCell>{`${trip.empresa?.nombre_comercial} - ${trip.chofer?.nombre} ${trip.chofer?.apellido}`}</TableCell>
-                                            <TableCell>{`${trip.fecha_inicio.split('T')[0]} / ${trip.fecha_llegada}`}</TableCell>
-                                            <TableCell>{trip.tipo_viaje}</TableCell>
+                                            <TableCell><DoubleCell primarySection={trip.deposito_origen?.nombre} secondarySection={`> ${trip.deposito_destino?.nombre}`}/></TableCell>
+                                            <TableCell>
+                                                <DoubleCell 
+                                                    primarySection={trip.empresa?.nombre_comercial} 
+                                                    secondarySection={trip.chofer?.nombre}
+                                                    primaryIcon={<Building2  color="#AFB3B9"/>}
+                                                    secondaryIcon={<User color="#AFB3B9"/>}
+                                                />
+                                            </TableCell>
+                                            <TableCell><DoubleCell primarySection={`Inicio: ${trip.fecha_inicio.split('T')[0]}`} secondarySection={`Llegada: ${trip.fecha_llegada.split('T')[0]}`}/></TableCell>
+                                            <TableCell><TripType tipo={trip.tipo_viaje as "Nacional" | "Internacional"} /></TableCell>
                                             <TableCell sx={{ verticalAlign: "middle"}}>
                                                 <MenuItem  handleOpenDialog={() => handleOpenDialog(trip)}
                                                 //detalles
@@ -135,6 +148,27 @@ export default function TripPage() {
                     sx={{width: "100%", display: "flex", justifyContent: "flex-end"}}
                 />
             </div>
+
+            {/* Dialogo de eliminar */}
+            {tripSelected && (
+                <ConfirmDialog 
+                    open={openDialog}
+                    onClose={() => setOpenDialog(false)}
+                    title="Viajes"
+                    aria-labelledby="confirm-delete-title"
+                    aria-describedby="confirm-delete-description"
+                    entityName={tripSelected._id}
+                    onConfirm={() => handleDelete(tripSelected?._id)}
+                />
+            )}
+
+            {/*{tripSelected && (
+                <DetailsDeposit 
+                    depositSelected={tripSelected}
+                    setOpenDetailsDialog={setOpenDetailsDialog}
+                    openDetailsDialog={openDetailsDialog}
+                />
+            )}*/}
 
         </>
     )

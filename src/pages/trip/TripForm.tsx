@@ -10,6 +10,25 @@ import FormActions from "../../components/deposit/FormActions";
 import { useState } from "react";
 import { DepositoSelectModal } from "../../components/DepositSelectModal";
 
+export const depositoSelectButtonStyle = {
+  height: "48px",
+  textTransform: "none",
+  color: (theme: any) => (theme.selected ? "#5A5A65" : "#c7c7c7"),
+  borderRadius: "6px",
+  border: "1px solid #C7C7C7",
+  textAlign: "left",
+  display: "flex",
+  justifyContent: "space-between",
+  padding: "0 16px",
+  fontSize: "1rem",
+  fontWeight: 400,
+  backgroundColor: "#fff",
+  "&:hover": {
+    backgroundColor: "#fff",
+    borderColor: "#5A5A65",
+  },
+};
+
 export default function TripFormPage() {
     const {id} = useParams();
     const navigate = useNavigate();
@@ -128,30 +147,6 @@ export default function TripFormPage() {
                                 />
                             </Grid>
                         </LocalizationProvider>
-
-                        <Grid item xs={12} md={6}>
-                            <FormControl fullWidth>
-                                <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Tipo de viaje</Typography>
-                                <Controller 
-                                    name="tipo_viaje"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <Select
-                                        fullWidth
-                                        className="inside-paper"
-                                        {...field}
-                                        value={field.value || "nacional"} 
-                                        error={!!formErrors.tipo_viaje}
-                                        onChange={(event) => field.onChange(event.target.value)}
-                                        disabled={isLoading}
-                                        >
-                                            <MenuItem value="nacional">Nacional</MenuItem>
-                                            <MenuItem value="internacional">Internacional</MenuItem>
-                                        </Select>
-                                    )}
-                                />
-                            </FormControl>
-                        </Grid>
                     </Grid>
 
                     {/* DEPO ORIGEN Y DESTINO */}
@@ -166,7 +161,7 @@ export default function TripFormPage() {
                                     setModalOpen(true);
                                     setActiveField("deposito_origen");
                                 }}
-                                sx={{ height: "48px", textTransform: "none", color: selectedOrigen ? "#5A5A65" : "#c7c7c7", borderRadius: "6px", border: "1px solid #C7C7C7", textAlign: "left", display: "flex", justifyContent: "space-between", padding: "0 16px", fontSize: "1rem",fontWeight: 400, backgroundColor: "#fff", "&:hover": { backgroundColor: "#fff", borderColor: "#5A5A65" } }}
+                                sx={{ ...depositoSelectButtonStyle, color: selectedOrigen ? "#5A5A65" : "#c7c7c7" }}
                                 variant="outlined"
                             >
                                 {selectedOrigen ?
@@ -188,7 +183,7 @@ export default function TripFormPage() {
                                     setModalOpen(true);
                                     setActiveField("deposito_destino");
                                 }}
-                                sx={{ height: "48px", textTransform: "none", color: selectedDestino ? "#5A5A65" : "#c7c7c7", borderRadius: "6px", border: "1px solid #C7C7C7", textAlign: "left", display: "flex", justifyContent: "space-between", padding: "0 16px", fontSize: "1rem",fontWeight: 400, backgroundColor: "#fff", "&:hover": { backgroundColor: "#fff", borderColor: "#5A5A65" } }}
+                                sx={{ ...depositoSelectButtonStyle, color: selectedDestino ? "#5A5A65" : "#c7c7c7"}}
                                 variant="outlined"
                             >
                                 {selectedDestino

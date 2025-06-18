@@ -6,7 +6,7 @@ import { CreateViajeSchema, UpdateViajeSchema } from "../api/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTripData } from "./trip/useTripData";
 import useTripAuxData from "./trip/useTripAuxData";
-import { useCrossFieldValidation } from "./trip/useCrossFieldValidation";
+import useCrossFieldValidation  from "./trip/useCrossFieldValidation";
 
 export const useTripForm = (id?: string) => {
     const navigate = useNavigate();
@@ -59,7 +59,7 @@ export const useTripForm = (id?: string) => {
     } = useTripAuxData({control, resetField});
     
     // 3. Configurar validación cruzada
-    useCrossFieldValidation(watch, (name?: string) => trigger(name as any));
+    useCrossFieldValidation({watch, trigger, setValue, depots});
 
     const handleSelectChofer = (choferId: string) => {
         if (!choferId) {
@@ -107,6 +107,7 @@ export const useTripForm = (id?: string) => {
     };
 
     const onSubmit = async (formData: CreateViajeSchema | UpdateViajeSchema) => {
+        console.log("Form Data:", formData);
         if (isEditing) {
         await handleUpdate(formData as UpdateViajeSchema);
         } else {

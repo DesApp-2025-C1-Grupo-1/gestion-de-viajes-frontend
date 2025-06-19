@@ -4,13 +4,13 @@ import { Paper, Select, MenuItem, Typography, Backdrop, CircularProgress, Grid, 
 import { useTripForm } from "../../hooks/useTripForm";
 import { Controller, useWatch } from "react-hook-form";
 import { CreateViajeSchema } from "../../api/schemas";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { DatePicker, DateTimePicker, LocalizationProvider, renderTimeViewClock } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import FormActions from "../../components/deposit/FormActions";
 import { useState } from "react";
 import { DepositoSelectModal } from "../../components/DepositSelectModal";
 
-export const depositoSelectButtonStyle = {
+const depositoSelectButtonStyle = {
   height: "48px",
   textTransform: "none",
   color: (theme: any) => (theme.selected ? "#5A5A65" : "#c7c7c7"),
@@ -98,17 +98,19 @@ export default function TripFormPage() {
                     <Grid container spacing={3} mb={4}>
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <Grid item xs={12} md={6}>
-                                <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Fecha estimada de inicio</Typography>
+                                <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Fecha y hora de inicio</Typography>
                                 <Controller
                                     name="fecha_inicio"
                                     control={control}
                                     render={({ field }) => (
-                                        <DatePicker
+                                        <DateTimePicker
                                         {...field}
                                         disabled={isLoading}
                                         value={field.value? new Date (field.value) : null}
-                                        onChange={(date) => field.onChange(date)}
-                                        format="dd/MM/yyyy"
+                                        onChange={(date) => {
+                                            field.onChange(date) 
+                                            console.log(date)
+                                        }}
                                         slotProps={{
                                             textField: {
                                             fullWidth: true,
@@ -116,24 +118,28 @@ export default function TripFormPage() {
                                             error: !!formErrors.fecha_inicio,
                                             helperText: formErrors.fecha_inicio?.message,
                                             },
-                                        }}                         
+                                        }}                        
+                                        viewRenderers={{
+                                            hours: renderTimeViewClock,
+                                            minutes: renderTimeViewClock,
+                                            seconds: renderTimeViewClock,
+                                        }}
                                     />
                                     )}
                                 />
                             </Grid>
                         
                             <Grid item xs={12} md={6}>
-                                <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Fecha estimada de llegada</Typography>
+                                <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Fecha y hora de llegada</Typography>
                                 <Controller
                                     name="fecha_llegada"
                                     control={control}
                                     render={({ field }) => (
-                                        <DatePicker
+                                        <DateTimePicker
                                         {...field}
                                         disabled={isLoading}
                                         value={field.value? new Date (field.value) : null}
                                         onChange={(date) => field.onChange(date)}
-                                        format="dd/MM/yyyy"
                                         slotProps={{
                                             textField: {
                                             fullWidth: true,
@@ -141,7 +147,13 @@ export default function TripFormPage() {
                                             error: !!formErrors.fecha_llegada,
                                             helperText: formErrors.fecha_llegada?.message,
                                             },
-                                        }}                              
+                                        }}        
+                                                                
+                                        viewRenderers={{
+                                            hours: renderTimeViewClock,
+                                            minutes: renderTimeViewClock,
+                                            seconds: renderTimeViewClock,
+                                        }}                      
                                     />
                                     )}
                                 />

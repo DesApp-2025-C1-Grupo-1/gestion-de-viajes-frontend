@@ -2,6 +2,7 @@ import { Dialog, DialogTitle, DialogContent, Card, CardContent, Typography, Grid
 import { DepositoDto } from "../api/generated";
 import { Building2, Clock, MapPin, Search, X } from "lucide-react";
 import { useState } from "react";
+import { useDebouncedValue } from "../hooks/useDebouncedValue";
 
 interface DepositoSelectModalProps {
   open: boolean;
@@ -21,19 +22,22 @@ export const DepositoSelectModal = ({
   title = "Seleccionar depósito",
 }: DepositoSelectModalProps) => {
 
-  const [filteredDepots, setFilteredDepots] = useState<DepositoDto[]>(depots);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+
+  const debouncedQuery = useDebouncedValue(searchQuery, 500);
+  
+  const filtered = depots.filter((dep) =>
+    dep.nombre.toLowerCase().includes(debouncedQuery)
+  ) || [];
 
   const handleSearch = (searchTerm: string) => {
     const lowerCaseTerm = searchTerm.toLowerCase();
-    const filtered = depots.filter((dep) =>
-      dep.nombre.toLowerCase().includes(lowerCaseTerm)
-    );
-    setFilteredDepots(filtered);
+    setSearchQuery(lowerCaseTerm);
   };
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth 
-      sx={{ '& .MuiDialog-paper': { width: '80%', minHeight:600 ,maxHeight: 600 } }}
+      sx={{ '& .MuiDialog-paper': { width: '80%', minHeight:600 ,maxHeight: 600} }}
     >
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center"}}>
 
@@ -49,28 +53,7 @@ export const DepositoSelectModal = ({
           <X className="size-5 text-gray-500 hover:text-gray-700" onClick={onClose} />
         </Button>
       </Box>
-      <DialogContent sx={{display: "flex", flexDirection: "column", gap: 2}}>
-        {/* <TextField
-          variant="outlined"
-          placeholder="Buscar depósito..."
-          fullWidth
-          size="small"
-          InputProps={{
-            startAdornment: (
-              <MapPin className="h-5 w-5 text-gray-500" />
-            ),
-          }}
-          sx={{ marginBottom: 2 }}
-          onChange={(e) => {
-            const searchTerm = e.target.value.toLowerCase();
-            const filteredDepots = depots.filter((dep) =>
-              dep.nombre.toLowerCase().includes(searchTerm)
-            );
-            onSelect(filteredDepots.length > 0 ? filteredDepots[0]._id : "");
-          }}
-
-        >
-        </TextField> */}
+      <DialogContent sx={{display: "flex", flexDirection: "column",  overflowY: "hidden"}}>
         <TextField
           variant="outlined"
           placeholder="Buscar depósito..."
@@ -82,16 +65,39 @@ export const DepositoSelectModal = ({
               <Search className="h-5 w-5 text-gray-500" />
             ),
           }}
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "#ccc",
+              },
+              "&:hover fieldset": {
+                borderColor: "#8648B9",
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "#8648B9",
+              },
+            },
+            transition: "border-color 0.3s",
+          }}
           onChange={(e) => {
             handleSearch(e.target.value);
-            console.log("Filtered Depots: ", filteredDepots);
           }}
+          value={searchQuery}
 
         >
         </TextField>
 
-        <Grid container spacing={2} >
-          {filteredDepots.map((dep) => (
+        <Grid container  sx={{ overflowY: "auto", maxHeight: 500, mt: 2 }}>
+          {filtered.length === 0 ? (
+            <Grid item xs={12}>
+              <Box sx={{ textAlign: "center", padding: 2 }}>
+                <Typography variant="body1" color="textSecondary">
+                  No se encontraron depósitos.
+                </Typography>
+              </Box>  
+            </Grid>
+          ) :
+          filtered.map((dep) => (
             <Grid item xs={12}  key={dep._id}>
               <Card
                 onClick={() => {
@@ -104,6 +110,8 @@ export const DepositoSelectModal = ({
                     selectedId === dep._id
                       ? "2px solid #8648B9"
                       : "1px solid #ccc",
+                  marginRight: 0.5,
+                  marginBottom: 2,
                   backgroundColor: selectedId === dep._id ? "#E9D5FF" : "#fff",
                   borderRadius: 2,
                   boxShadow: 0,

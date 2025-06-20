@@ -17,7 +17,7 @@ export default function VehiclePage() {
     const {data, isLoading, error, refetch} = useVehiculoControllerFindAll()
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);
-    const {rowsPerPage} = useAutoRowsPerPage();
+    const { rowsPerPage, headerRef, footerRef } = useAutoRowsPerPage(93);
     const [openDialog, setOpenDialog] = useState(false);
     const [vehicleSelected, setVehicleSelected] = useState<VehiculoDto>();
     const vehicles = data?.data || [];
@@ -60,38 +60,41 @@ export default function VehiclePage() {
         setPage(1);
     }, [searchQuery]);
 
+    console.log(headerRef, footerRef);
+
     const navigate = useNavigate();
     return (
         <>
-            <SectionHeader 
-                title="Flota de vehículos"
-                description="Registre y gestione los vehículos asignados a las empresas transportistas."
-                buttonText="Nuevo vehículo"
-                onAdd={() => navigate("/vehicles/form")}
-            />
+            <div ref={headerRef} >
+                <SectionHeader 
+                    title="Flota de vehículos"
+                    description="Registre y gestione los vehículos asignados a las empresas transportistas."
+                    buttonText="Nuevo vehículo"
+                    onAdd={() => navigate("/vehicles/form")}
+                />
 
-            {/* Buscador y boton para ir a tipo de vehiculos*/}    
-            <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} placeholder="Buscar vehículo por modelo o patente" >
-                <Button
-                    variant="contained"
-                    onClick={() => navigate("/type-vehicle")} // o abrir modal
-                    sx={{
-                        backgroundColor: "#00A86B",
-                        textTransform: "none",
-                        borderRadius: "8px",
-                        fontWeight: "500",
-                        boxShadow: "none",
-                        '&:hover': {
-                            backgroundColor: "#008c5a",
+                {/* Buscador y boton para ir a tipo de vehiculos*/}    
+                <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} placeholder="Buscar vehículo por modelo o patente" >
+                    <Button
+                        variant="contained"
+                        onClick={() => navigate("/type-vehicle")} // o abrir modal
+                        sx={{
+                            backgroundColor: "#00A86B",
+                            textTransform: "none",
+                            borderRadius: "8px",
+                            fontWeight: "500",
                             boxShadow: "none",
-                        },
-                    }}
-                    className="w-full sm:max-w-max"
-                >
-                    Tipos de vehículo
-                </Button>
-            </SearchBar>
-            
+                            '&:hover': {
+                                backgroundColor: "#008c5a",
+                                boxShadow: "none",
+                            },
+                        }}
+                        className="w-full sm:max-w-max"
+                    >
+                        Tipos de vehículo
+                    </Button>
+                </SearchBar>
+            </div>
             {/* Tabla de vehículos */}
             <div 
                 className="bg-white rounded-lg "
@@ -168,10 +171,9 @@ export default function VehiclePage() {
             </div>
 
             {/* Paginación */}
-            <div className="flex justify-between gap-2 items-center sm:px-4 py-4 ">
-                <p className="text-sm w-full">
-                    Mostrando {Math.min((page - 1) * rowsPerPage + 1, filtered.length)}– 
-                    {Math.min(page * rowsPerPage, filtered.length)} de {filtered.length} vehículos
+            <div className="flex justify-between items-center  container mx-auto py-4 " ref={footerRef}>
+                <p className="text-sm w-auto sm:w-full">
+                    Mostrando {Math.min((page - 1) * rowsPerPage + 1, filtered.length)}–{Math.min(page * rowsPerPage, filtered.length)} de {filtered.length} vehículos
                 </p>
                 <Pagination 
                     count={totalPages}

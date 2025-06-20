@@ -20,7 +20,7 @@ export default function DepositPage() {
     const {data: deposits, isLoading, refetch} = useDepositoControllerFindAll();
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);
-    const {rowsPerPage} = useAutoRowsPerPage();
+    const {rowsPerPage, headerRef, footerRef} = useAutoRowsPerPage(113);
     const [openDialog, setOpenDialog] = useState<boolean>(false);
     const [openDetailsDialog, setOpenDetailsDialog] = useState<boolean>(false);
     const [depositSelected, setDepositSelected] = useState<DepositoDto>();
@@ -73,18 +73,20 @@ export default function DepositPage() {
 
     return (
         <>
-            <SectionHeader 
-                title="Red de depósitos"
-                description="Administre la red de depósitos del sistema logístico."
-                buttonText="Nuevo depósito"
-                onAdd={() => navigate("/depots/form")}
-            />
+            <div ref={headerRef}>
+                <SectionHeader 
+                    title="Red de depósitos"
+                    description="Administre la red de depósitos del sistema logístico."
+                    buttonText="Nuevo depósito"
+                    onAdd={() => navigate("/depots/form")}
+                />
 
-            <SearchBar 
-                placeholder="Buscar por nombre o ciudad"
-                searchQuery={searchQuery}
-                setSearchQuery={setSearchQuery}
-            />
+                <SearchBar 
+                    placeholder="Buscar por nombre o ciudad"
+                    searchQuery={searchQuery}
+                    setSearchQuery={setSearchQuery}
+                />
+            </div>
 
             <div className="bg-white rounded-lg overflow-hidden" style={{
                 boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
@@ -159,7 +161,7 @@ export default function DepositPage() {
             </div>
 
             {/* Paginación */}
-            <div className="flex justify-between gap-2 items-center sm:px-4 py-4 ">
+            <div className="flex justify-between gap-2 items-center sm:px-4 py-4 " ref={footerRef}>
                 <p className="text-sm w-full">
                     Mostrando {Math.min((page - 1) * rowsPerPage + 1, filtered.length)}– 
                     {Math.min(page * rowsPerPage, filtered.length)} de {filtered.length} depósitos

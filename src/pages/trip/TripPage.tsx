@@ -8,11 +8,11 @@ import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { useNotify } from "../../hooks/useNotify";
 import { viajeControllerRemove, ViajeDto, useViajeControllerFindAll } from '../../api/generated';
 import { useAutoRowsPerPage } from "../../hooks/useAutoRowsPerPage";
-//import de detalles
 import {  Eye, User, Building2} from "lucide-react";
 import { DoubleCell } from "../../components/DoubleCell";
 import { TripType } from "../../components/TripType";
-
+//import de detalles
+import { DetailsTrip } from "../../components/trip/DetailsTrip";
 
 export default function TripPage() {
     const navigate = useNavigate();
@@ -36,6 +36,10 @@ export default function TripPage() {
     };
 
     //handleOpenDetails
+    const handleOpenDetails = (trip: ViajeDto) => {
+        setOpenDetailsDialog(true);
+        setTripSelected(trip);
+    }
 
     const handleDelete = async (id: string) => {
         try {
@@ -109,7 +113,7 @@ export default function TripPage() {
                                             <TableCell>
                                                 <DoubleCell 
                                                     primarySection={trip.empresa?.nombre_comercial} 
-                                                    secondarySection={trip.chofer?.nombre}
+                                                    secondarySection={`${trip.chofer?.nombre} ${trip.chofer?.apellido}`}
                                                     primaryIcon={<Building2  color="#AFB3B9"/>}
                                                     secondaryIcon={<User color="#AFB3B9"/>}
                                                 />
@@ -119,6 +123,7 @@ export default function TripPage() {
                                             <TableCell sx={{ verticalAlign: "middle"}}>
                                                 <MenuItem  handleOpenDialog={() => handleOpenDialog(trip)}
                                                 //detalles
+                                                handleOpenDetails={() => handleOpenDetails(trip)}
                                                 id={trip._id}
                                                 >
                                                     <Eye className="text-gray-500 hover:text-gray-700 size-4" />
@@ -162,13 +167,13 @@ export default function TripPage() {
                 />
             )}
 
-            {/*{tripSelected && (
-                <DetailsDeposit 
-                    depositSelected={tripSelected}
+            *{tripSelected && (
+                <DetailsTrip 
+                    triptSelected={tripSelected}
                     setOpenDetailsDialog={setOpenDetailsDialog}
                     openDetailsDialog={openDetailsDialog}
                 />
-            )}*/}
+            )}
 
         </>
     )

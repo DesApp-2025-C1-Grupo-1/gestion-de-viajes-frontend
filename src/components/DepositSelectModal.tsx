@@ -39,20 +39,20 @@ export const DepositoSelectModal = ({
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth 
       sx={{ '& .MuiDialog-paper': { width: '80%', minHeight:600 ,maxHeight: 600} }}
     >
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center"}}>
-
-        <DialogTitle className="flex items-center gap-2 " sx={{padding: "12px 24px"}} >
-          <Building2 className="h-6 w-6" color="#8648B9" />
+      <Box sx={{ display: "flex", gap: 2, alignItems: "center", width: "100%"}}>
+        
+        <DialogTitle className="flex items-center gap-2 w-full" variant="body2" sx={{padding: "12px 24px"}} >
+          <Building2 size={24} color="#8648B9"  />
           {title}
         </DialogTitle>
-        <Button 
+      </Box>
+      <Button 
           aria-label="Cerrar"
-          sx={{ minWidth: "unset", padding: 0, marginRight: "24px" }}
+          sx={{ minWidth: "unset", padding: 0, position: "absolute", top: 24, right: 12, zIndex: 1 }}
           title="Cerrar"
         >
           <X className="size-5 text-gray-500 hover:text-gray-700" onClick={onClose} />
-        </Button>
-      </Box>
+      </Button>
       <DialogContent sx={{display: "flex", flexDirection: "column",  overflowY: "hidden"}}>
         <TextField
           variant="outlined"

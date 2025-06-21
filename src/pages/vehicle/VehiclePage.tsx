@@ -17,7 +17,7 @@ export default function VehiclePage() {
     const {data, isLoading, error, refetch} = useVehiculoControllerFindAll()
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);
-    const { rowsPerPage, headerRef, footerRef } = useAutoRowsPerPage(93);
+    const { rowsPerPage, headerRef, footerRef } = useAutoRowsPerPage(95);
     const [openDialog, setOpenDialog] = useState(false);
     const [vehicleSelected, setVehicleSelected] = useState<VehiculoDto>();
     const vehicles = data?.data || [];
@@ -114,7 +114,7 @@ export default function VehiclePage() {
                                 <TableCell>Modelo</TableCell>
                                 <TableCell>Año</TableCell>
                                 <TableCell>Capacidad(kg)</TableCell>
-                                <TableCell>Tipo</TableCell>
+                                <TableCell sx={{minWidth: 160}}>Tipo</TableCell>
                                 <TableCell>Transportista</TableCell>
                                 <TableCell align="center" sx={{width: 72}}>Acciones</TableCell>
                             </TableRow>
@@ -172,7 +172,7 @@ export default function VehiclePage() {
 
             {/* Paginación */}
             <div className="flex justify-between items-center  container mx-auto py-4 " ref={footerRef}>
-                <p className="text-sm w-auto sm:w-full">
+                <p className="text-sm w-full">
                     Mostrando {Math.min((page - 1) * rowsPerPage + 1, filtered.length)}–{Math.min(page * rowsPerPage, filtered.length)} de {filtered.length} vehículos
                 </p>
                 <Pagination 

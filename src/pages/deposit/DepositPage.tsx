@@ -161,10 +161,9 @@ export default function DepositPage() {
             </div>
 
             {/* Paginación */}
-            <div className="flex justify-between gap-2 items-center sm:px-4 py-4 " ref={footerRef}>
+            <div className="flex justify-between items-center container mx-auto py-4" ref={footerRef}>
                 <p className="text-sm w-full">
-                    Mostrando {Math.min((page - 1) * rowsPerPage + 1, filtered.length)}– 
-                    {Math.min(page * rowsPerPage, filtered.length)} de {filtered.length} depósitos
+                    Mostrando {Math.min((page - 1) * rowsPerPage + 1, filtered.length)}–{Math.min(page * rowsPerPage, filtered.length)} de {filtered.length} depósitos
                 </p>
                 <Pagination 
                     count={totalPages}

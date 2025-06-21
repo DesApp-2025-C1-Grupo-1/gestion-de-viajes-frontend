@@ -1,13 +1,12 @@
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useNotify } from "./useNotify";
-import { useViajeControllerFindOne, viajeControllerCreate, viajeControllerUpdate, CreateViajeDto, UpdateViajeDto, DepositoDto, useEmpresaControllerFindAll, useVehiculoControllerFindAll, useChoferControllerFindAll, useDepositoControllerFindAll, VehiculoDto, ChoferDto} from "../api/generated";
+import { viajeControllerCreate, viajeControllerUpdate} from "../api/generated";
 import { useForm } from "react-hook-form";
 import { CreateViajeSchema, UpdateViajeSchema } from "../api/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTripData } from "./trip/useTripData";
 import useTripAuxData from "./trip/useTripAuxData";
-import { useCrossFieldValidation } from "./trip/useCrossFieldValidation";
+import useCrossFieldValidation  from "./trip/useCrossFieldValidation";
 
 export const useTripForm = (id?: string) => {
     const navigate = useNavigate();
@@ -60,7 +59,7 @@ export const useTripForm = (id?: string) => {
     } = useTripAuxData({control, resetField});
     
     // 3. Configurar validación cruzada
-    useCrossFieldValidation(watch, (name?: string) => trigger(name as any));
+    useCrossFieldValidation({watch, trigger, setValue, depots});
 
     const handleSelectChofer = (choferId: string) => {
         if (!choferId) {
@@ -108,6 +107,7 @@ export const useTripForm = (id?: string) => {
     };
 
     const onSubmit = async (formData: CreateViajeSchema | UpdateViajeSchema) => {
+        console.log("Form Data:", formData);
         if (isEditing) {
         await handleUpdate(formData as UpdateViajeSchema);
         } else {
@@ -143,5 +143,6 @@ export const useTripForm = (id?: string) => {
         getValues,
         trigger,
         isSubmitting,
+        setValue,
     }
 }

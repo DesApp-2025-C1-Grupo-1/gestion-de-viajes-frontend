@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from "react";
 
 interface OptionMenuProps {
   isCollapsed: boolean;
-  //src: string;
   title: string;
   link?: string;
   IconComponent: React.FC<{color?: string}>;
@@ -13,14 +12,6 @@ export default function OptionMenu({ isCollapsed, IconComponent, title, link = "
   const location = useLocation();
   const textRef = useRef<HTMLParagraphElement>(null);
   const [isActive, setIsActive] = useState(false);
-  const [textWidth, setTextWidth] = useState(0);
-
-  // Calcular ancho del texto para la animación
-  useEffect(() => {
-    if (textRef.current) {
-      setTextWidth(textRef.current.offsetWidth);
-    }
-  }, []);
 
   // Verificar si la ruta actual comienza con el link asignado
   useEffect(() => {
@@ -56,10 +47,9 @@ export default function OptionMenu({ isCollapsed, IconComponent, title, link = "
           ref={textRef}
           className={`
             text-sm  whitespace-nowrap
-            transition-all duration-300
-            ${isCollapsed ? 'opacity-0 translate-x-[-10px] w-0' : 'opacity-100 translate-x-0'}
+            transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]
+            ${isCollapsed ? 'opacity-0 translate-x-[-10px] w-0' : 'opacity-100 translate-x-0 w-auto'}
           `}
-          style={{ width: isCollapsed ? 0 : textWidth }}
         >
           {title}
         </p>

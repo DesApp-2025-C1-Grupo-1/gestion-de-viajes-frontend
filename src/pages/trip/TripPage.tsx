@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { SectionHeader } from "../../components/SectionHeader";
-import { Pagination, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
+import { Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
 import LoadingState from "../../components/LoadingState";
 import MenuItem from "../../components/buttons/MenuItem";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
@@ -11,7 +11,6 @@ import { useAutoRowsPerPage } from "../../hooks/useAutoRowsPerPage";
 import {  Eye, User, Building2} from "lucide-react";
 import { DoubleCell } from "../../components/DoubleCell";
 import { TripType } from "../../components/TripType";
-//import de detalles
 import { DetailsTrip } from "../../components/trip/DetailsTrip";
 
 export default function TripPage() {
@@ -59,7 +58,6 @@ export default function TripPage() {
     const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
         setPage(value);
     };
-
 
     return(
         <>
@@ -122,15 +120,13 @@ export default function TripPage() {
                                             <TableCell><TripType tipo={trip.tipo_viaje as "Nacional" | "Internacional"} /></TableCell>
                                             <TableCell sx={{ verticalAlign: "middle"}}>
                                                 <MenuItem  handleOpenDialog={() => handleOpenDialog(trip)}
-                                                //detalles
                                                 handleOpenDetails={() => handleOpenDetails(trip)}
                                                 id={trip._id}
                                                 >
                                                     <Eye className="text-gray-500 hover:text-gray-700 size-4" />
                                                 </MenuItem>
                                             </TableCell>   
-                                        </TableRow>
-                                        
+                                        </TableRow>                            
                                     ))
                                 )}
                             </TableBody>
@@ -167,7 +163,7 @@ export default function TripPage() {
                 />
             )}
 
-            *{tripSelected && (
+            {tripSelected && (
                 <DetailsTrip 
                     triptSelected={tripSelected}
                     setOpenDetailsDialog={setOpenDetailsDialog}

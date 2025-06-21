@@ -306,8 +306,6 @@ export interface CreateViajeDto {
   /** Fecha y hora de inicio del viaje */
   fecha_inicio: string;
   /** Fecha y hora estimada de llegada */
-  fecha_llegada_estimada: string;
-  /** Fecha y hora estimada de llegada */
   fecha_llegada: string;
   /** Tipo de viaje */
   tipo_viaje: string;
@@ -349,8 +347,6 @@ export interface ViajeDto {
   _id: string;
   /** Fecha y hora de inicio del viaje */
   fecha_inicio: string;
-  /** Fecha y hora estimada de llegada */
-  fecha_llegada_estimada: string;
   /** Fecha y hora de llegada */
   fecha_llegada: string;
   /** Tipo de viaje */
@@ -377,8 +373,6 @@ export interface PaginacionDto {
 export interface UpdateViajeDto {
   /** Fecha y hora de inicio del viaje */
   fecha_inicio?: string;
-  /** Fecha y hora estimada de llegada */
-  fecha_llegada_estimada?: string;
   /** Fecha y hora estimada de llegada */
   fecha_llegada?: string;
   /** Tipo de viaje */

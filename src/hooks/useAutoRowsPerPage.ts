@@ -1,46 +1,26 @@
-import {useEffect, useState} from "react";
+import { useEffect, useRef, useState } from "react";
 
-export function useAutoRowsPerPage() {
-    const [rowsPerPage, setRowsPerPage] = useState<number>(5);
-    
-    // Este efecto se encarga de calcular el número de filas que caben en la pantalla
-    // y actualizar el estado de rowsPerPage. Se ejecuta cada vez que se redimensiona la ventana.
-    useEffect(() => {
-        const handleResize = () => {
-            const paginationHeight = 64;
-            const headerTableHeight = 54;
-            const sectionHeaderHeight = 88 + headerTableHeight;
-            const sectionHeaderHeightMobile = 138.5 + headerTableHeight;
-            const sectionHeaderHeightTablet = 88 + headerTableHeight;
-            const isMobile = window.innerWidth < 640; // sm breakpoint de tailwind
-            const isTablet = window.innerWidth < 1024; // md breakpoint de tailwind
-            const isDesktop = window.innerWidth >= 1024; // lg breakpoint de tailwind
-            const rowHeight = isDesktop? 72 : 93;
-            const margin = 180; // de margen
+export function useAutoRowsPerPage(rowHeight: number = 72) {
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const footerRef = useRef<HTMLDivElement>(null);
 
-            // Si es mobile, el header ocupa más espacio
-            // Si es tablet, el header ocupa menos espacio
-            // Si es desktop, el header ocupa lo normal
-            const headerHeight = isMobile ? sectionHeaderHeightMobile 
-                : isTablet ? sectionHeaderHeightTablet 
-                : sectionHeaderHeight; 
-            
-            // La altura disponible es la altura de la ventana menos la altura del header y la paginación
-            const availableHeight = window.innerHeight - headerHeight - paginationHeight - margin; 
+  useEffect(() => {
+    const calculate = () => {
+      const headerHeight = headerRef.current?.offsetHeight || 0;
+      const footerHeight = footerRef.current?.offsetHeight || 0;
+      const windowHeight = window.innerHeight;
+      const margin = 60; // padding/margen extra
 
-            // Calculamos el número de filas que caben en la pantalla
-            const estimated = Math.floor(availableHeight / rowHeight);
-            setRowsPerPage(Math.max(1, estimated));
-        };
+      const availableHeight = windowHeight - headerHeight - footerHeight - margin;
+      const estimated = Math.floor(availableHeight / rowHeight);
+      setRowsPerPage(Math.max(1, estimated));
+    };
 
-        handleResize(); // inicializarlo
-        window.addEventListener('resize', handleResize);
+    calculate();
+    window.addEventListener("resize", calculate);
+    return () => window.removeEventListener("resize", calculate);
+  }, [rowHeight]);
 
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
-
-    return { rowsPerPage, setRowsPerPage };
+  return { rowsPerPage, headerRef, footerRef };
 }
-

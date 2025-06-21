@@ -1,17 +1,39 @@
 import { SectionHeader } from "../../components/SectionHeader";
 import { useNavigate, useParams } from "react-router-dom";
-import { Paper, Select, MenuItem, Typography, Backdrop, CircularProgress, Grid, Alert, FormHelperText, FormControl} from "@mui/material";
+import { Paper, Select, MenuItem, Typography, Backdrop, CircularProgress, Grid, Alert, FormHelperText, FormControl, Dialog, Card, CardContent, DialogContent, DialogTitle, Button} from "@mui/material";
 import { useTripForm } from "../../hooks/useTripForm";
-import { Controller } from "react-hook-form";
+import { Controller, useWatch } from "react-hook-form";
 import { CreateViajeSchema } from "../../api/schemas";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { DatePicker, DateTimePicker, LocalizationProvider, renderTimeViewClock } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import FormActions from "../../components/deposit/FormActions";
+import { useState } from "react";
+import { DepositoSelectModal } from "../../components/DepositSelectModal";
+
+const depositoSelectButtonStyle = {
+  height: "48px",
+  textTransform: "none",
+  color: (theme: any) => (theme.selected ? "#5A5A65" : "#c7c7c7"),
+  borderRadius: "6px",
+  border: "1px solid #C7C7C7",
+  textAlign: "left",
+  display: "flex",
+  justifyContent: "space-between",
+  padding: "0 16px",
+  fontSize: "1rem",
+  fontWeight: 400,
+  backgroundColor: "#fff",
+  "&:hover": {
+    backgroundColor: "#fff",
+    borderColor: "#5A5A65",
+  },
+};
 
 export default function TripFormPage() {
     const {id} = useParams();
     const navigate = useNavigate();
-     const {
+    const [modalOpen, setModalOpen] = useState(false);
+    const {
         handleSubmit,
         onSubmit,
         isEditing,
@@ -31,7 +53,12 @@ export default function TripFormPage() {
         filteredVehiculos,
         filterByCompany,
         handleSelectChofer,
+        setValue,
     } = useTripForm(id);
+
+    const [activeField, setActiveField] = useState<"deposito_origen" | "deposito_destino" | null>(null);
+    const selectedOrigen = useWatch({ control, name: "deposito_origen" });
+    const selectedDestino = useWatch({ control, name: "deposito_destino" });
 
     if (isLoading || loadingAuxData) return <CircularProgress />;
     if (errorCompanies || formError || errorVehicles || errorDrivers || errorDepots) return (
@@ -71,17 +98,19 @@ export default function TripFormPage() {
                     <Grid container spacing={3} mb={4}>
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <Grid item xs={12} md={6}>
-                                <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Fecha estimada de inicio</Typography>
+                                <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Fecha y hora de inicio</Typography>
                                 <Controller
                                     name="fecha_inicio"
                                     control={control}
                                     render={({ field }) => (
-                                        <DatePicker
+                                        <DateTimePicker
                                         {...field}
                                         disabled={isLoading}
                                         value={field.value? new Date (field.value) : null}
-                                        onChange={(date) => field.onChange(date)}
-                                        format="dd/MM/yyyy"
+                                        onChange={(date) => {
+                                            field.onChange(date) 
+                                            console.log(date)
+                                        }}
                                         slotProps={{
                                             textField: {
                                             fullWidth: true,
@@ -89,24 +118,28 @@ export default function TripFormPage() {
                                             error: !!formErrors.fecha_inicio,
                                             helperText: formErrors.fecha_inicio?.message,
                                             },
-                                        }}                         
+                                        }}                        
+                                        viewRenderers={{
+                                            hours: renderTimeViewClock,
+                                            minutes: renderTimeViewClock,
+                                            seconds: renderTimeViewClock,
+                                        }}
                                     />
                                     )}
                                 />
                             </Grid>
                         
                             <Grid item xs={12} md={6}>
-                                <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Fecha estimada de llegada</Typography>
+                                <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Fecha y hora de llegada</Typography>
                                 <Controller
                                     name="fecha_llegada"
                                     control={control}
                                     render={({ field }) => (
-                                        <DatePicker
+                                        <DateTimePicker
                                         {...field}
                                         disabled={isLoading}
                                         value={field.value? new Date (field.value) : null}
                                         onChange={(date) => field.onChange(date)}
-                                        format="dd/MM/yyyy"
                                         slotProps={{
                                             textField: {
                                             fullWidth: true,
@@ -114,36 +147,18 @@ export default function TripFormPage() {
                                             error: !!formErrors.fecha_llegada,
                                             helperText: formErrors.fecha_llegada?.message,
                                             },
-                                        }}                              
+                                        }}        
+                                                                
+                                        viewRenderers={{
+                                            hours: renderTimeViewClock,
+                                            minutes: renderTimeViewClock,
+                                            seconds: renderTimeViewClock,
+                                        }}                      
                                     />
                                     )}
                                 />
                             </Grid>
                         </LocalizationProvider>
-
-                        <Grid item xs={12} md={6}>
-                            <FormControl fullWidth>
-                                <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Tipo de viaje</Typography>
-                                <Controller 
-                                    name="tipo_viaje"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <Select
-                                        fullWidth
-                                        className="inside-paper"
-                                        {...field}
-                                        value={field.value || "nacional"} 
-                                        error={!!formErrors.tipo_viaje}
-                                        onChange={(event) => field.onChange(event.target.value)}
-                                        disabled={isLoading}
-                                        >
-                                            <MenuItem value="nacional">Nacional</MenuItem>
-                                            <MenuItem value="internacional">Internacional</MenuItem>
-                                        </Select>
-                                    )}
-                                />
-                            </FormControl>
-                        </Grid>
                     </Grid>
 
                     {/* DEPO ORIGEN Y DESTINO */}
@@ -151,32 +166,21 @@ export default function TripFormPage() {
                     <Grid container spacing={3} mb={4}>
                         <Grid item xs={12} md={6}>
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Deposito de Origen</Typography>
-                                <Controller
-                                control={control}
-                                name="deposito_origen"
-                                render={({ field }) => (
-                                    <Select
-                                    {...field}
-                                    disabled={isLoading}
-                                    value={field.value || ""}
-                                    fullWidth
-                                    displayEmpty
-                                    onChange={(event) => {
-                                        field.onChange(event.target.value)
-                                    }}
-                                    error={!!formErrors.deposito_origen}
-                                    >
-                                        <MenuItem value="" disabled>
-                                            Seleccione un depósito
-                                        </MenuItem>
-                                        {depots?.data?.map((dep) => (
-                                            <MenuItem key={dep._id} value={dep._id}>
-                                            {dep.nombre}
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
-                                )}
-                            />
+                            <Button
+                                disabled={isLoading}
+                                fullWidth
+                                onClick={() => {
+                                    setModalOpen(true);
+                                    setActiveField("deposito_origen");
+                                }}
+                                sx={{ ...depositoSelectButtonStyle, color: selectedOrigen ? "#5A5A65" : "#c7c7c7" }}
+                                variant="outlined"
+                            >
+                                {selectedOrigen ?
+                                    depots?.data?.find(dep => dep._id === selectedOrigen)?.nombre : "Seleccionar Deposito"
+                                }
+                            </Button>
+                                                                
                             <FormHelperText error={!!formErrors.deposito_origen}>
                                 {formErrors.deposito_origen?.message}
                             </FormHelperText>
@@ -184,36 +188,27 @@ export default function TripFormPage() {
 
                         <Grid item xs={12} md={6}>
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Deposito de Destino</Typography>
-                            
-                            <Controller
-                                control={control}
-                                name="deposito_destino"
-                                render={({ field }) => (
-                                    <Select
-                                    {...field}
-                                    disabled={isLoading}
-                                    value={field.value || ""}
-                                    fullWidth
-                                    displayEmpty
-                                    onChange={(event) => {
-                                        field.onChange(event.target.value);
-                                    }}
-                                    error={!!formErrors.deposito_destino}
-                                    >
-                                        <MenuItem value="" disabled>
-                                            Seleccione un depósito
-                                        </MenuItem>
-                                        {depots?.data?.map((dep) => (
-                                            <MenuItem key={dep._id} value={dep._id}>
-                                            {dep.nombre}
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
-                                )}
-                            />
-                            <FormHelperText error={!!formErrors.deposito_destino}  >
+                            <Button
+                                disabled={isLoading}
+                                fullWidth
+                                onClick={() => {
+                                    setModalOpen(true);
+                                    setActiveField("deposito_destino");
+                                }}
+                                sx={{ ...depositoSelectButtonStyle, color: selectedDestino ? "#5A5A65" : "#c7c7c7"}}
+                                variant="outlined"
+                            >
+                                {selectedDestino
+                                    ? depots?.data?.find((d) => d._id === selectedDestino)?.nombre
+                                    : "Seleccionar depósito"
+                                }
+                            </Button>
+                                                                
+                            <FormHelperText error={!!formErrors.deposito_destino}>
                                 {formErrors.deposito_destino?.message}
                             </FormHelperText>
+                                    
+
                         </Grid>
                     </Grid>
 
@@ -335,11 +330,36 @@ export default function TripFormPage() {
 
                 </form>
 
+                    
                 <Backdrop open={isLoading} sx={{ zIndex: 9999, color: "#fff" }}>
                     <CircularProgress color="inherit" />
                 </Backdrop>
 
             </Paper>
+
+            <DepositoSelectModal
+                open={modalOpen}
+                onClose={() => setModalOpen(false)}
+                depots={depots?.data || []}
+                selectedId={
+                    activeField === "deposito_origen"
+                    ? selectedOrigen
+                    : activeField === "deposito_destino"
+                    ? selectedDestino
+                    : undefined
+                }
+                onSelect={(id) => {
+                    if (activeField) {
+                        setValue(activeField, id);
+                    }
+                }}
+                title={
+                    activeField === "deposito_origen"
+                    ? "Seleccionar depósito de origen"
+                    : "Seleccionar depósito de destino"
+                }
+            />
+
         </>
     )
 }

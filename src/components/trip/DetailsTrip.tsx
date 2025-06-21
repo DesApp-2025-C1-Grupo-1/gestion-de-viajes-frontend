@@ -8,12 +8,14 @@ import {
   DialogTitle,
   Grid,
   Paper,
+  Typography,
 } from "@mui/material";
 import { Field } from "../detailts/Field";
 import { HeaderDetails } from "../detailts/HeaderDetails";
 import { MapPinned, CalendarDays, Route, Building2, Truck} from "lucide-react";
 import { ViajeDto } from "../../api/generated";
 import { TripType } from "../TripType";
+import { DoubleCell } from "../DoubleCell";
 
 interface TripDetailsProps {
     triptSelected: ViajeDto;
@@ -101,13 +103,31 @@ export const DetailsTrip = ({triptSelected, setOpenDetailsDialog, openDetailsDia
                                     <Grid item xs={12} sm={6}>
                                         <Field
                                             label="Origen"
-                                            value={`${triptSelected.deposito_origen.nombre}`}
+                                            value={
+                                                <>
+                                                <Typography  variant="body2" >
+                                                    {triptSelected.deposito_origen.nombre}
+                                                </Typography>
+                                                <Typography variant="caption" color="text.secondary">
+                                                    {triptSelected.deposito_origen.direccion.estado_provincia}, {triptSelected.deposito_origen.direccion.pais}
+                                                </Typography>
+                                                </>
+                                            }
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <Field
                                             label="Destino"
-                                            value={`${triptSelected.deposito_destino.nombre}`}
+                                            value={
+                                                <>
+                                                <Typography  variant="body2" >
+                                                    {triptSelected.deposito_destino.nombre}
+                                                </Typography>
+                                                <Typography variant="caption" color="text.secondary">
+                                                    {triptSelected.deposito_destino.direccion.estado_provincia}, {triptSelected.deposito_destino.direccion.pais}
+                                                </Typography>
+                                                </>
+                                            }
                                         />
                                     </Grid>
                                 </Grid>
@@ -131,25 +151,25 @@ export const DetailsTrip = ({triptSelected, setOpenDetailsDialog, openDetailsDia
                                 <Grid container spacing={2}>
                                     <Grid item xs={12} sm={6}>
                                         <Field
-                                            label="Fecha de Salida"
+                                            label="Fecha de salida"
                                             value={`${triptSelected.fecha_inicio.split('T')[0]}`}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <Field
-                                            label="Fecha de Llegada"
+                                            label="Fecha de llegada"
                                             value={`${triptSelected.fecha_llegada.split('T')[0]}`}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <Field
-                                            label="Horario de Salida"
+                                            label="Horario de salida"
                                             value={`${triptSelected}`}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <Field
-                                            label="Horario de Llegada"
+                                            label="Horario de llegada"
                                             value={`${triptSelected}`}
                                         />
                                     </Grid>

@@ -23,8 +23,7 @@ export default function DriverPage(){
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);
     const [openDialog, setOpenDialog] = useState(false);
-    //const {rowsPerPage} = useAutoRowsPerPage();
-    const {rowsPerPage, headerRef, footerRef} = useAutoRowsPerPage(93);
+    const {rowsPerPage, headerRef, footerRef} = useAutoRowsPerPage(100);
     const [choferSelect, setChoferSelect] = useState<ChoferDto>();
     const choferes = data?.data || [];
     const debouncedQuery = useDebouncedValue(searchQuery, 500);
@@ -67,14 +66,6 @@ export default function DriverPage(){
 
     return(
         <>
-            {/*<SectionHeader
-                title="Choferes"
-                description="Gestione el personal habilitado para conducir vehículos de transporte."
-                buttonText="Nuevo chofer"
-                onAdd={() => navigate("/driver/create")}
-            /> 
-            <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} placeholder="Buscar por apellido"></SearchBar>
-*/}
             <div ref={headerRef}> 
                 <SectionHeader
                     title="Choferes"
@@ -137,6 +128,7 @@ export default function DriverPage(){
                                             />
                                         </TableCell>
 
+                                        {/*<TableCell>{formatTelefono(driver.telefono)}</TableCell>*/}
 
                                         <TableCell>{driver.empresa?.nombre_comercial}</TableCell>
                                         <TableCell>{driver.vehiculo?.modelo}</TableCell>

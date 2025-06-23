@@ -15,17 +15,17 @@ export const DoubleCell = ({
     secondaryIcon,
 }: DoubleCellProps) => {
   return (
-    <Stack spacing={1}>
-      <Box display="flex" alignItems="center" gap={1}>
+    <Stack spacing={1} sx={{ minWidth: 0, overflow: 'hidden' }}>
+      <Box display="flex" alignItems="center" gap={1} sx={{ minWidth: 0, overflow: 'hidden' }}>
         {primaryIcon}
-        <Typography variant="body2" fontWeight={450}> 
+        <Typography variant="body2" fontWeight={450} noWrap sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}> 
           {primarySection}
         </Typography>
       </Box>
       {secondarySection && (
-        <Box display="flex" alignItems="center" gap={1}>
+        <Box display="flex" alignItems="center" gap={1} sx={{ minWidth: 0, overflow: 'hidden' }}>
           {secondaryIcon}
-          <Typography variant="caption">
+          <Typography variant="caption" noWrap sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}> 
             {secondarySection}
           </Typography>
         </Box>

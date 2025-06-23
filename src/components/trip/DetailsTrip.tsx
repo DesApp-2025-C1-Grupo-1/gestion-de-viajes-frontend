@@ -152,25 +152,25 @@ export const DetailsTrip = ({triptSelected, setOpenDetailsDialog, openDetailsDia
                                     <Grid item xs={12} sm={6}>
                                         <Field
                                             label="Fecha de salida"
-                                            value={`${triptSelected.fecha_inicio.split('T')[0]}`}
+                                            value={`${triptSelected.fecha_inicio}`}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <Field
                                             label="Fecha de llegada"
-                                            value={`${triptSelected.fecha_llegada.split('T')[0]}`}
+                                            value={`${triptSelected.fecha_llegada}`}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <Field
                                             label="Horario de salida"
-                                            value={`${triptSelected}`}
+                                            value={`${triptSelected.fecha_inicio}`}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <Field
                                             label="Horario de llegada"
-                                            value={`${triptSelected}`}
+                                            value={`${triptSelected.fecha_llegada}`}
                                         />
                                     </Grid>
                                 </Grid>

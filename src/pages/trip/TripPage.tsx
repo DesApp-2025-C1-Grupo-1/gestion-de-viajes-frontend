@@ -116,7 +116,7 @@ export default function TripPage() {
                                                     secondaryIcon={<User color="#AFB3B9"/>}
                                                 />
                                             </TableCell>
-                                            <TableCell><DoubleCell primarySection={`Inicio: ${trip.fecha_inicio.split('T')[0]}`} secondarySection={`Llegada: ${trip.fecha_llegada.split('T')[0]}`}/></TableCell>
+                                            <TableCell><DoubleCell primarySection={`Inicio: ${trip.fecha_inicio}`} secondarySection={`Llegada: ${trip.fecha_llegada}`}/></TableCell>
                                             <TableCell><TripType tipo={trip.tipo_viaje as "Nacional" | "Internacional"} /></TableCell>
                                             <TableCell sx={{ verticalAlign: "middle"}}>
                                                 <MenuItem  handleOpenDialog={() => handleOpenDialog(trip)}

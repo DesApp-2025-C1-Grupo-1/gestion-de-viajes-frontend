@@ -11,7 +11,7 @@ import { choferControllerRemove, ChoferDto, useChoferControllerFindAll } from ".
 import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { DoubleCell } from "../../components/DoubleCell";
-import { Phone, Mail } from "lucide-react";
+import { Phone, Mail, Building2, Car } from "lucide-react";
 
 
 import { formatTelefono } from "../../lib/formatters";
@@ -23,7 +23,7 @@ export default function DriverPage(){
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);
     const [openDialog, setOpenDialog] = useState(false);
-    const {rowsPerPage, headerRef, footerRef} = useAutoRowsPerPage(100);
+    const {rowsPerPage, headerRef, footerRef} = useAutoRowsPerPage(105);
     const [choferSelect, setChoferSelect] = useState<ChoferDto>();
     const choferes = data?.data || [];
     const debouncedQuery = useDebouncedValue(searchQuery, 500);
@@ -91,8 +91,7 @@ export default function DriverPage(){
                                 <TableCell>Fecha de nacimiento</TableCell>
                                 <TableCell>Licencia</TableCell>
                                 <TableCell>Datos de contacto</TableCell>
-                                <TableCell>Empresa</TableCell>
-                                <TableCell>Vehiculo asignado</TableCell>
+                                <TableCell sx={{minWidth: 200}}>Transporte</TableCell>
                                 <TableCell align="center" sx={{width: 72}}>Acciones</TableCell>
                             </TableRow>
                         </TableHead>
@@ -119,19 +118,23 @@ export default function DriverPage(){
                                         <TableCell>{driver.dni}</TableCell>
                                         <TableCell>{driver.fecha_nacimiento.split('T')[0]}</TableCell>
                                         <TableCell>{`${driver.licencia} - ${driver.tipo_licencia}`}</TableCell>
-                                        <TableCell>
+                                        <TableCell >
                                             <DoubleCell 
                                                 primarySection={driver.email}
                                                 secondarySection={formatTelefono(driver.telefono)}
-                                                primaryIcon={<Mail  color="#AFB3B9" size={18}/>}
-                                                secondaryIcon={<Phone color="#AFB3B9" size={18}/>}
+                                                primaryIcon={<Mail size={18} color="#AFB3B9"/>}
+                                                secondaryIcon={<Phone size={18} color="#AFB3B9"/>}
+                                            />
+                                        </TableCell>
+                                        <TableCell>
+                                            <DoubleCell 
+                                                primarySection={driver.empresa?.nombre_comercial}
+                                                secondarySection={driver.vehiculo?.modelo}
+                                                primaryIcon={<Building2 size={18} color="#AFB3B9"/>}
+                                                secondaryIcon={<Car size={20} color="#AFB3B9"/>}
                                             />
                                         </TableCell>
 
-                                        {/*<TableCell>{formatTelefono(driver.telefono)}</TableCell>*/}
-
-                                        <TableCell>{driver.empresa?.nombre_comercial}</TableCell>
-                                        <TableCell>{driver.vehiculo?.modelo}</TableCell>
                                         <TableCell sx={{ verticalAlign: "middle"}}>
                                             <MenuItem  handleOpenDialog={() => handleOpenDialog(driver)}
                                             id={driver._id}
@@ -143,12 +146,9 @@ export default function DriverPage(){
                     </Table>
                 </TableContainer>
             </div>
-
-            {/*<div className="flex justify-between gap-2 items-center sm:px-4 py-4 ">*/}
             <div className="flex justify-between items-center  container mx-auto py-4 " ref={footerRef}>
                 <p className="text-sm w-full">
-                    {/*Mostrando {Math.min((page-1) * rowsPerPage+1, filtered.length)} - {Math.min(page* rowsPerPage, filtered.length)} de {filtered.length} choferes*/}
-                    Mostrando {Math.min((page - 1) * rowsPerPage + 1, filtered.length)}–{Math.min(page * rowsPerPage, filtered.length)} de {filtered.length} choferes
+                    Mostrando {Math.min((page - 1) * rowsPerPage + 1, filtered.length)} – {Math.min(page * rowsPerPage, filtered.length)} de {filtered.length} choferes
                 </p>
                 <Pagination 
                     count={totalPages}

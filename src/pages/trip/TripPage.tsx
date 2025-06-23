@@ -18,7 +18,7 @@ export default function TripPage() {
     const {notify} = useNotify("Viajes");
 
     const [page, setPage] = useState<number>(1);
-    const {rowsPerPage} = useAutoRowsPerPage();
+    const {rowsPerPage, headerRef, footerRef} = useAutoRowsPerPage(120);
     const { data: response, isLoading, refetch } = useViajeControllerFindAll({page, limit: rowsPerPage}); //paso como limit al back el rows pero verr
     
     const trips = response?.data?.data ?? [];
@@ -61,12 +61,15 @@ export default function TripPage() {
 
     return(
         <>
-            <SectionHeader
-                title="Viajes"
-                description="Consulte los viajes registrados junto con su logística asociada."
-                buttonText="Nuevo viaje"
-                onAdd={() => navigate('/trips/form')}
-            />
+            <div ref={headerRef}>
+                <SectionHeader
+                    title="Viajes"
+                    description="Consulte los viajes registrados junto con su logística asociada."
+                    buttonText="Nuevo viaje"
+                    onAdd={() => navigate('/trips/form')}
+
+                />
+            </div>
 
             <div className="bg-white rounded-lg overflow-hidden" style={{
                 boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
@@ -136,7 +139,7 @@ export default function TripPage() {
             </div>
 
             {/* Paginación */}
-            <div className="flex justify-between gap-2 items-center sm:px-4 py-4 ">
+            <div className="flex justify-between gap-2 items-center sm:px-4 py-4 " ref={footerRef}>
                 <p className="text-sm w-full">
                     Mostrando {(page-1) * rowsPerPage+1} - {Math.min(page*rowsPerPage, total)} de {total} viajes
                 </p>

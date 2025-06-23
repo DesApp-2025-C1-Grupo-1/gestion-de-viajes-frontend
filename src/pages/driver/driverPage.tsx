@@ -23,7 +23,8 @@ export default function DriverPage(){
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);
     const [openDialog, setOpenDialog] = useState(false);
-    const {rowsPerPage} = useAutoRowsPerPage();
+    //const {rowsPerPage} = useAutoRowsPerPage();
+    const {rowsPerPage, headerRef, footerRef} = useAutoRowsPerPage(93);
     const [choferSelect, setChoferSelect] = useState<ChoferDto>();
     const choferes = data?.data || [];
     const debouncedQuery = useDebouncedValue(searchQuery, 500);
@@ -66,13 +67,23 @@ export default function DriverPage(){
 
     return(
         <>
-            <SectionHeader
+            {/*<SectionHeader
                 title="Choferes"
                 description="Gestione el personal habilitado para conducir vehículos de transporte."
                 buttonText="Nuevo chofer"
                 onAdd={() => navigate("/driver/create")}
             /> 
             <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} placeholder="Buscar por apellido"></SearchBar>
+*/}
+            <div ref={headerRef}> 
+                <SectionHeader
+                    title="Choferes"
+                    description="Gestione el personal habilitado para conducir vehículos de transporte."
+                    buttonText="Nuevo chofer"
+                    onAdd={() => navigate("/driver/create")}
+                /> 
+                <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} placeholder="Buscar por apellido"></SearchBar>
+            </div>
 
             {/*tabla*/}
             <div className="bg-white rounded-lg overflow-hidden" style={{
@@ -141,9 +152,11 @@ export default function DriverPage(){
                 </TableContainer>
             </div>
 
-            <div className="flex justify-between gap-2 items-center sm:px-4 py-4 ">
+            {/*<div className="flex justify-between gap-2 items-center sm:px-4 py-4 ">*/}
+            <div className="flex justify-between items-center  container mx-auto py-4 " ref={footerRef}>
                 <p className="text-sm w-full">
-                    Mostrando {Math.min((page-1) * rowsPerPage+1, filtered.length)} - {Math.min(page* rowsPerPage, filtered.length)} de {filtered.length} choferes
+                    {/*Mostrando {Math.min((page-1) * rowsPerPage+1, filtered.length)} - {Math.min(page* rowsPerPage, filtered.length)} de {filtered.length} choferes*/}
+                    Mostrando {Math.min((page - 1) * rowsPerPage + 1, filtered.length)}–{Math.min(page * rowsPerPage, filtered.length)} de {filtered.length} choferes
                 </p>
                 <Pagination 
                     count={totalPages}

@@ -152,25 +152,25 @@ export const DetailsTrip = ({triptSelected, setOpenDetailsDialog, openDetailsDia
                                     <Grid item xs={12} sm={6}>
                                         <Field
                                             label="Fecha de salida"
-                                            value={`${triptSelected.fecha_inicio}`}
+                                            value={`${new Date(triptSelected.fecha_inicio).toISOString().split('T')[0]}`}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <Field
                                             label="Fecha de llegada"
-                                            value={`${triptSelected.fecha_llegada}`}
+                                            value={`${new Date(triptSelected.fecha_llegada).toISOString().split('T')[0]}`}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <Field
                                             label="Horario de salida"
-                                            value={`${triptSelected.fecha_inicio}`}
+                                            value={`${new Date(triptSelected.fecha_inicio).toISOString().split('T')[1].slice(0, 5)}`}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <Field
                                             label="Horario de llegada"
-                                            value={`${triptSelected.fecha_llegada}`}
+                                            value={`${new Date(triptSelected.fecha_llegada).toISOString().split('T')[1].slice(0, 5)}`}
                                         />
                                     </Grid>
                                 </Grid>

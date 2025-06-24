@@ -130,7 +130,7 @@ export default function TripFilters({filterOpen, setFilterOpen}: {filterOpen: bo
                             border: "0.5px solid #c7c7c7"
                             }}
                         >
-                            <Grid container spacing={2} sx={{color: "#5A5A65"}}>
+                            <Grid container spacing={4} sx={{color: "#5A5A65"}}>
                                 <Grid item xs={12} sm={6} lg={4}>
                                     <Typography variant="subtitle2">
                                         Rango de fechas

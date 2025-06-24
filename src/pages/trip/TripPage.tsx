@@ -20,7 +20,7 @@ export default function TripPage() {
     const [filterOpen, setFilterOpen] = useState(false);
 
     const [page, setPage] = useState<number>(1);
-    const {rowsPerPage, headerRef, footerRef} = useAutoRowsPerPage(145);
+    const {rowsPerPage, headerRef, footerRef, filterRef} = useAutoRowsPerPage(145);
     const { data: response, isLoading, refetch } = useViajeControllerFindAll({page, limit: rowsPerPage}); //paso como limit al back el rows pero verr
     
     const trips = response?.data?.data ?? [];
@@ -73,8 +73,9 @@ export default function TripPage() {
                 />
             </div>
 
-            <TripFilters filterOpen={filterOpen} setFilterOpen={setFilterOpen} />
-
+            <div ref={filterRef}>
+                <TripFilters filterOpen={filterOpen} setFilterOpen={setFilterOpen}/>
+            </div>
             <div className="bg-white rounded-lg overflow-hidden" style={{
                 boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
                 border: "0.5px solid #C7C7C7",}}>

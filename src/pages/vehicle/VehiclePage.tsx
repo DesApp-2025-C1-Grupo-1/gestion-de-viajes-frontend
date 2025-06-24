@@ -60,8 +60,6 @@ export default function VehiclePage() {
         setPage(1);
     }, [searchQuery]);
 
-    console.log(headerRef, footerRef);
-
     const navigate = useNavigate();
     return (
         <>

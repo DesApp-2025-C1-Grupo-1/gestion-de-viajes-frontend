@@ -13,8 +13,9 @@ export const Field = ({
     <Typography variant="caption" color="text.secondary">
       {label}
     </Typography>
-    <Typography variant="body2" fontFamily={mono ? "monospace" : "inherit"}>
+    <Box
+      sx={{fontFamily: mono ? "monospace" : "inherit", fontSize: "1rem",  color: "text.primary"}}>
       {value}
-    </Typography>
+    </Box>
   </Box>
 );

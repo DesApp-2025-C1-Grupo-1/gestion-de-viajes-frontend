@@ -1,7 +1,5 @@
 import {
-  Box,
   Button,
-  Chip,
   Dialog,
   DialogActions,
   DialogContent,
@@ -12,10 +10,9 @@ import {
 } from "@mui/material";
 import { Field } from "../detailts/Field";
 import { HeaderDetails } from "../detailts/HeaderDetails";
-import { MapPinned, CalendarDays, Route, Building2, Truck} from "lucide-react";
+import { MapPinned, CalendarDays, Route, Truck} from "lucide-react";
 import { ViajeDto } from "../../api/generated";
 import { TripType } from "../TripType";
-import { DoubleCell } from "../DoubleCell";
 
 interface TripDetailsProps {
     triptSelected: ViajeDto;

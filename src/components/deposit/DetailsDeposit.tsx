@@ -13,7 +13,7 @@ import {
 import { Field } from "../detailts/Field";
 import { HeaderDetails } from "../detailts/HeaderDetails";
 import { Building2, Clock, MapPin, Users } from "lucide-react";
-import { formatTelefono } from "../../lib/formatters";
+import { formatTelefono } from '../../lib/formatters';
 import { DepositoDto } from "../../api/generated";
 
 interface DepositDetailsProps {
@@ -126,10 +126,10 @@ export const DetailsDeposit = ({
                       value={`${depositSelected.direccion.calle} ${depositSelected.direccion.numero}`}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={3}>
+                  <Grid item xs={12} sm={6}>
                     <Field label="Ciudad" value={depositSelected.direccion.ciudad} />
                   </Grid>
-                  <Grid item xs={12} sm={3}>
+                  <Grid item xs={12} sm={6}>
                     <Field
                       label="Provincia - País"
                       value={`${depositSelected.direccion.estado_provincia} - ${depositSelected.direccion.pais}`}
@@ -181,18 +181,20 @@ export const DetailsDeposit = ({
                 }}
               >
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={4}>
+                  <Grid item xs={12} sm={6}>
                     <Field label="Nombre" value={depositSelected.contacto.nombre} />
                   </Grid>
-                  <Grid item xs={12} sm={4}>
+                  <Grid item xs={12} sm={6}>
                     <Field label="Email" value={depositSelected.contacto.email} />
                   </Grid>
-                  <Grid item xs={12} sm={4}>
+                  <Grid item xs={12} sm={6}>
                     <Field
                       label="Teléfono"
                       value={formatTelefono(depositSelected.contacto.telefono)}
                     />
                   </Grid>
+
+        
                 </Grid>
               </Paper>
             </Grid>

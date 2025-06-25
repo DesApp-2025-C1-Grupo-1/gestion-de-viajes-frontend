@@ -17,7 +17,7 @@ export default function CompanyPage(){
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);
     const [openDialog, setOpenDialog] = useState(false);
-    const {rowsPerPage, headerRef, footerRef} = useAutoRowsPerPage(93);
+    const {rowsPerPage, headerRef, footerRef, tableHeaderRef} = useAutoRowsPerPage(93);
     const [empresaSelected, setEmpresaSelected] = useState<EmpresaDto>();
     const empresas = data?.data || [];
     const debouncedQuery = useDebouncedValue(searchQuery, 500);
@@ -78,6 +78,7 @@ export default function CompanyPage(){
                 <TableContainer className=" text-sm rounded-lg">
                     <Table aria-label="simple table">
                         <TableHead >
+                            
                             <TableRow>
                                 <TableCell>Razon social</TableCell>
                                 <TableCell>Nombre comercial</TableCell>
@@ -86,6 +87,7 @@ export default function CompanyPage(){
                                 <TableCell>Contacto</TableCell>
                                 <TableCell align="center" sx={{width: 72}}>Acciones</TableCell>
                             </TableRow>
+                            
                         </TableHead>
                         <TableBody>
                             {isLoading ? (

@@ -8,28 +8,21 @@ export function useAutoRowsPerPage(rowHeight: number = 72) {
   const tableHeaderRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    /* const debounce = (fn: Function, ms: number) => {
-      let timeoutId: ReturnType<typeof setTimeout>;
-      return function(this: any, ...args: any[]) {
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(() => fn.apply(this, args), ms);
-      };
-    }; */
 
-    const calculate = /* debounce( */() => {
+    const calculate = () => {
       const headerHeight = headerRef.current?.offsetHeight || 0;
       const footerHeight = footerRef.current?.offsetHeight || 0;
       const filterHeight = filterRef.current?.offsetHeight || 0;
       const tableHeaderHeight = tableHeaderRef.current?.offsetHeight || 0;
       
       // Espacio adicional para márgenes y padding
-      const EXTRA_SPACE = 100; 
+      const EXTRA_SPACE = 80; 
       
       const availableHeight = window.innerHeight - headerHeight - footerHeight - filterHeight - tableHeaderHeight - EXTRA_SPACE;
 
       const calculatedRows = Math.floor(availableHeight / rowHeight);
       setRowsPerPage(Math.max(2, calculatedRows)); // Mínimo 2 filas
-    }//, 300); // 300ms de debounce
+    }
 
     // Llamada inicial
     calculate();

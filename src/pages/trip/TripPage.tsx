@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { SectionHeader } from "../../components/SectionHeader";
 import TripFilters from "../../components/TripFilters";
 import { Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
@@ -7,7 +7,7 @@ import LoadingState from "../../components/LoadingState";
 import MenuItem from "../../components/buttons/MenuItem";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { useNotify } from "../../hooks/useNotify";
-import { viajeControllerRemove, ViajeDto, useViajeControllerFindAll, BuscarViajeDto, viajeControllerBuscar, useViajeControllerBuscar, EmpresaDto, VehiculoDto, ChoferDto, empresaControllerFindAll, vehiculoControllerFindAll, choferControllerFindAll } from '../../api/generated';
+import { viajeControllerRemove, ViajeDto, BuscarViajeDto, useViajeControllerBuscar, EmpresaDto, VehiculoDto, ChoferDto, empresaControllerFindAll, vehiculoControllerFindAll, choferControllerFindAll } from '../../api/generated';
 import { useAutoRowsPerPage } from "../../hooks/useAutoRowsPerPage";
 import {  Eye, User, Building2} from "lucide-react";
 import { DoubleCell } from "../../components/DoubleCell";
@@ -19,7 +19,9 @@ export default function TripPage() {
     const {notify} = useNotify("Viajes");
     const [filterOpen, setFilterOpen] = useState(false);
     const [page, setPage] = useState<number>(1);
-    const {rowsPerPage, headerRef, footerRef, filterRef} = useAutoRowsPerPage(100);
+    const widthTableRef = useRef<HTMLDivElement>(null);
+    const widthTable = widthTableRef.current?.offsetWidth || 0;
+    const {rowsPerPage, headerRef, footerRef, filterRef, tableHeaderRef} = useAutoRowsPerPage(widthTable>= 1040 ? 100 : 150);
 
     const [trips, setTrips] = useState<ViajeDto[]>([]);
     const [total, setTotal] = useState<number>(0);
@@ -160,19 +162,19 @@ export default function TripPage() {
             <div className="bg-white rounded-lg overflow-hidden" style={{
                 boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
                 border: "0.5px solid #C7C7C7",}}>
-                    <TableContainer className="text-sm rounded-lg"> {/*className="h-full text-sm"*/}
-                        <Table aria-label="simple table">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>Número</TableCell>
-                                    <TableCell>Ruta</TableCell>
-                                    <TableCell>Transportista</TableCell>
-                                    <TableCell>Itinerario</TableCell>
-                                    <TableCell>Tipo de Viaje</TableCell>
-                                    <TableCell align="center" sx={{width:72}}>Acciones</TableCell>
-                                </TableRow>
+                    <TableContainer className="text-sm rounded-lg" ref={widthTableRef}> {/*className="h-full text-sm"*/}
+                        <Table aria-label="simple table" >
+                            <TableHead >
+                                    <TableRow >
+                                        <TableCell>Número</TableCell>
+                                        <TableCell>Ruta</TableCell>
+                                        <TableCell>Transportista</TableCell>
+                                        <TableCell>Itinerario</TableCell>
+                                        <TableCell>Tipo de Viaje</TableCell>
+                                        <TableCell align="center" sx={{width:72}}>Acciones</TableCell>
+                                    </TableRow>
+                                
                             </TableHead>
-
                             <TableBody>
                                 {isLoading ? (
                                     <TableRow key="loading">
@@ -195,9 +197,9 @@ export default function TripPage() {
                                             key={trip._id} 
                                             className="hover:bg-gray-50 overflow-hidden"
                                         >
-                                            <TableCell sx={{fontWeight: "bold", maxWidth: 200}} className="truncate">{trip._id}</TableCell>
-                                            <TableCell><DoubleCell primarySection={trip.deposito_origen?.nombre} secondarySection={`> ${trip.deposito_destino?.nombre}`}/></TableCell>
-                                            <TableCell>
+                                            <TableCell sx={{fontWeight: "bold", maxWidth: 150}} className="truncate">{trip._id}</TableCell>
+                                            <TableCell sx={{minWidth: 150,  maxWidth: 250}}><DoubleCell primarySection={trip.deposito_origen?.nombre} secondarySection={`> ${trip.deposito_destino?.nombre}`}/></TableCell>
+                                            <TableCell sx={{minWidth: 120}}>
                                                 <DoubleCell 
                                                     primarySection={trip.empresa?.nombre_comercial} 
                                                     secondarySection={`${trip.chofer?.nombre} ${trip.chofer?.apellido}`}
@@ -205,8 +207,8 @@ export default function TripPage() {
                                                     secondaryIcon={<User color="#AFB3B9"/>}
                                                 />
                                             </TableCell>
-                                            <TableCell><DoubleCell primarySection={`Inicio: ${new Date(trip.fecha_inicio).toISOString().split('T')[0]}`} secondarySection={`Llegada: ${new Date(trip.fecha_llegada).toISOString().split('T')[0]}`}/></TableCell>
-                                            <TableCell><TripType tipo={trip.tipo_viaje as "Nacional" | "Internacional"} /></TableCell>
+                                            <TableCell sx={{minWidth: 150}}><DoubleCell primarySection={`Inicio: ${new Date(trip.fecha_inicio).toISOString().split('T')[0]}`} secondarySection={`Llegada: ${new Date(trip.fecha_llegada).toISOString().split('T')[0]}`}/></TableCell>
+                                            <TableCell sx={{padding: "4px 8px", maxWidth: "fit-content"}}><TripType tipo={trip.tipo_viaje as "Nacional" | "Internacional"} /></TableCell>
                                             <TableCell sx={{ verticalAlign: "middle"}}>
                                                 <MenuItem  handleOpenDialog={() => handleOpenDialog(trip)}
                                                 handleOpenDetails={() => handleOpenDetails(trip)}

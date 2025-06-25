@@ -98,7 +98,7 @@ export default function DriverPage(){
                         <TableBody>
                             {isLoading ? (
                                 <TableRow key="loading">
-                                    <TableCell colSpan={8} >
+                                    <TableCell colSpan={7} >
                                         <LoadingState title="choferes"/>
                                     </TableCell>
                                 </TableRow>
@@ -126,7 +126,7 @@ export default function DriverPage(){
                                                 secondaryIcon={<Phone size={18} color="#AFB3B9"/>}
                                             />
                                         </TableCell>
-                                        <TableCell>
+                                        <TableCell sx={{ minWidth: 150, maxWidth: 200 }}>
                                             <DoubleCell 
                                                 primarySection={driver.empresa?.nombre_comercial}
                                                 secondarySection={driver.vehiculo?.modelo}

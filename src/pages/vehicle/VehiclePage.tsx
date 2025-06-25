@@ -17,7 +17,7 @@ export default function VehiclePage() {
     const {data, isLoading, error, refetch} = useVehiculoControllerFindAll()
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);
-    const { rowsPerPage, headerRef, footerRef } = useAutoRowsPerPage(95);
+    const { rowsPerPage, headerRef, footerRef } = useAutoRowsPerPage(89);
     const [openDialog, setOpenDialog] = useState(false);
     const [vehicleSelected, setVehicleSelected] = useState<VehiculoDto>();
     const vehicles = data?.data || [];

@@ -7,7 +7,7 @@ import LoadingState from "../../components/LoadingState";
 import MenuItem from "../../components/buttons/MenuItem";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { useNotify } from "../../hooks/useNotify";
-import { viajeControllerRemove, ViajeDto, useViajeControllerFindAll, BuscarViajeDto, viajeControllerBuscar, useViajeControllerBuscar } from '../../api/generated';
+import { viajeControllerRemove, ViajeDto, useViajeControllerFindAll, BuscarViajeDto, viajeControllerBuscar, useViajeControllerBuscar, EmpresaDto, VehiculoDto, ChoferDto, empresaControllerFindAll, vehiculoControllerFindAll, choferControllerFindAll } from '../../api/generated';
 import { useAutoRowsPerPage } from "../../hooks/useAutoRowsPerPage";
 import {  Eye, User, Building2} from "lucide-react";
 import { DoubleCell } from "../../components/DoubleCell";
@@ -30,6 +30,44 @@ export default function TripPage() {
     const [openDetailsDialog, setOpenDetailsDialog] = useState<boolean>(false);
     const [openDialog, setOpenDialog] = useState<boolean>(false);
     const [tripSelected, setTripSelected] = useState<ViajeDto>();
+
+    const [empresas, setEmpresas] = useState<EmpresaDto[]>([]);
+    const [vehiculos, setVehiculos] = useState<VehiculoDto[]>([]);
+    const [choferes, setChoferes] = useState<ChoferDto[]>([]);
+    const [loadingOptions, setLoadingOptions] = useState({
+        empresas: false,
+        vehiculos: false,
+        choferes: false
+    });
+
+    // Función para cargar las opciones de los selects
+    const loadSelectOptions = useCallback(async () => {
+        try {
+            setLoadingOptions(prev => ({...prev, empresas: true}));
+            const resEmpresas = await empresaControllerFindAll();
+            setEmpresas(resEmpresas.data);
+
+            setLoadingOptions(prev => ({...prev, vehiculos: true}));
+            const resVehiculos = await vehiculoControllerFindAll();
+            setVehiculos(resVehiculos.data);
+
+            setLoadingOptions(prev => ({...prev, choferes: true}));
+            const resChoferes = await choferControllerFindAll();
+            setChoferes(resChoferes.data);
+        } catch (error) {
+            notify("error", "Error al cargar opciones de filtros");
+        } finally {
+            setLoadingOptions({
+                empresas: false,
+                vehiculos: false,
+                choferes: false
+            });
+        }
+    }, []);
+
+    useEffect(() => {
+        loadSelectOptions();
+    }, [loadSelectOptions]);
 
     const { mutateAsync: buscarViajes } = useViajeControllerBuscar();
 
@@ -109,7 +147,15 @@ export default function TripPage() {
             </div>
 
             <div ref={filterRef}>
-                <TripFilters filterOpen={filterOpen} setFilterOpen={setFilterOpen} onApply={handleApplyFilters}/>
+                <TripFilters 
+                    filterOpen={filterOpen} 
+                    setFilterOpen={setFilterOpen} 
+                    onApply={handleApplyFilters}
+                    empresas={empresas}
+                    vehiculos={vehiculos}
+                    choferes={choferes}
+                    loadingOptions={loadingOptions}
+                />
             </div>
             <div className="bg-white rounded-lg overflow-hidden" style={{
                 boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
@@ -149,7 +195,7 @@ export default function TripPage() {
                                             key={trip._id} 
                                             className="hover:bg-gray-50 overflow-hidden"
                                         >
-                                            <TableCell sx={{fontWeight: "bold"}}>{trip._id}</TableCell>
+                                            <TableCell sx={{fontWeight: "bold", maxWidth: 200}} className="truncate">{trip._id}</TableCell>
                                             <TableCell><DoubleCell primarySection={trip.deposito_origen?.nombre} secondarySection={`> ${trip.deposito_destino?.nombre}`}/></TableCell>
                                             <TableCell>
                                                 <DoubleCell 

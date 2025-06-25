@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { BuscarViajeDto } from "../api/generated";
+import { BuscarViajeDto, ChoferDto, EmpresaDto, VehiculoDto } from "../api/generated";
 import { Stack, Button, Chip, Collapse, Paper, Typography, TextField, Select, MenuItem,Box, Grid  } from "@mui/material";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -9,6 +9,14 @@ interface TripFiltersProps {
     setFilterOpen: (open: boolean) => void;
     onApply: (filters: BuscarViajeDto) => void;
     initialFilters?: BuscarViajeDto;
+    empresas: EmpresaDto[];
+    vehiculos: VehiculoDto[];
+    choferes: ChoferDto[];
+    loadingOptions: {
+        empresas: boolean;
+        vehiculos: boolean;
+        choferes: boolean;
+    };
 }
 
 export default function TripFilters({
@@ -23,7 +31,11 @@ export default function TripFilters({
         vehiculo: '',
         chofer: '',
         tipo: undefined,
-    }
+    },
+    empresas,
+    vehiculos,
+    choferes,
+    loadingOptions
 }: TripFiltersProps) {
     const [localFilters, setLocalFilters] = useState<BuscarViajeDto>(initialFilters);
     const [appliedFilters, setAppliedFilters] = useState<BuscarViajeDto>(initialFilters);
@@ -75,6 +87,21 @@ export default function TripFilters({
         onApply(updatedFilters);
     };
 
+    const nameEmpresaChip = (id: string) => {
+        const empresa = empresas.find(e => e._id === id);
+        return empresa ? empresa.nombre_comercial : 'Empresa no encontrada';
+    };
+
+    const nameVehiculoChip = (id: string) => {
+        const vehiculo = vehiculos.find(v => v._id === id);
+        return vehiculo ? `${vehiculo.modelo} - ${vehiculo.patente}` : 'Vehículo no encontrado';
+    };
+
+    const nameChoferChip = (id: string) => {
+        const chofer = choferes.find(c => c._id === id);
+        return chofer ? `${chofer.nombre} ${chofer.apellido}` : 'Chofer no encontrado';
+    };
+
     const formatChipLabel = (key: string, value: any) => {
         const labels: Record<string, string> = {
             fecha_inicio: 'Desde',
@@ -87,6 +114,17 @@ export default function TripFilters({
             chofer: 'Chofer',
             tipoViaje: 'Tipo',
         };
+
+        if (key === 'empresa') {
+            return `${labels[key] || key}: ${nameEmpresaChip(value)}`;
+        }
+        if (key === 'vehiculo') {
+            return `${labels[key] || key}: ${nameVehiculoChip(value)}`;
+        }
+        if (key === 'chofer') {
+            return `${labels[key] || key}: ${nameChoferChip(value)}`;
+        }
+
         return `${labels[key] || key}: ${key.includes('fecha') ? new Date(value).toLocaleDateString() : value}`;
     };
 
@@ -212,10 +250,13 @@ export default function TripFilters({
                                         inputProps={{ "aria-label": "Without label" }}
                                     >
                                         <MenuItem value="" disabled>
-                                            Seleccionar empresa
+                                            {loadingOptions.empresas ? "Cargando..." : "Seleccionar empresa"}
                                         </MenuItem>
-                                        <MenuItem value="empresa1">Empresa 1</MenuItem>
-                                        <MenuItem value="empresa2">Empresa 2</MenuItem>
+                                        {empresas.map(empresa => (
+                                            <MenuItem key={empresa._id} value={empresa._id}>
+                                                {empresa.nombre_comercial}
+                                            </MenuItem>
+                                        ))}
                                     </Select>
                                 </Grid>
                                 <Grid item xs={12} sm={6} lg={4}>
@@ -237,10 +278,13 @@ export default function TripFilters({
                                         inputProps={{ "aria-label": "Without label" }}
                                     >
                                         <MenuItem value="" disabled>
-                                            Seleccionar vehículo
+                                            {loadingOptions.vehiculos ? "Cargando..." : "Seleccionar vehículo"}
                                         </MenuItem>
-                                        <MenuItem value="vehiculo1">Vehículo 1</MenuItem>
-                                        <MenuItem value="vehiculo2">Vehículo 2</MenuItem>
+                                        {vehiculos.map(vehiculo => (
+                                            <MenuItem key={vehiculo._id} value={vehiculo._id}>
+                                                {vehiculo.modelo} - {vehiculo.patente}
+                                            </MenuItem>
+                                        ))}
                                     </Select>
                                 </Grid>
                                 <Grid item xs={12} sm={6} lg={4}>
@@ -262,10 +306,13 @@ export default function TripFilters({
                                         inputProps={{ "aria-label": "Without label" }}
                                     >
                                         <MenuItem value="" disabled>
-                                            Seleccionar chofer
+                                            {loadingOptions.choferes ? "Cargando..." : "Seleccionar chofer"}
                                         </MenuItem>
-                                        <MenuItem value="chofer1">Chofer 1</MenuItem>
-                                        <MenuItem value="chofer2">Chofer 2</MenuItem>
+                                        {choferes.map(chofer => (
+                                            <MenuItem key={chofer._id} value={chofer._id}>
+                                                {chofer.nombre} {chofer.apellido}
+                                            </MenuItem>
+                                        ))}
                                     </Select>
                                 </Grid>
                                 {/* <Grid item xs={12} sm={6} lg={4}>

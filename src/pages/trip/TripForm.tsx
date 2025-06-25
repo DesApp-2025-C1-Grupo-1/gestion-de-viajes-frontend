@@ -106,7 +106,7 @@ export default function TripFormPage() {
                                         <DateTimePicker
                                         {...field}
                                         disabled={isLoading}
-                                        value={field.value? new Date (field.value) : null}
+                                        value={field.value ? new Date(field.value) : null}
                                         onChange={(date) => {
                                             field.onChange(date) 
                                             console.log(date)
@@ -139,7 +139,7 @@ export default function TripFormPage() {
                                         <DateTimePicker
                                         {...field}
                                         disabled={isLoading}
-                                        value={field.value? new Date (field.value) : null}
+                                        value={field.value ? new Date(field.value) : null}
                                         onChange={(date) => field.onChange(date)}
                                         slotProps={{
                                             textField: {

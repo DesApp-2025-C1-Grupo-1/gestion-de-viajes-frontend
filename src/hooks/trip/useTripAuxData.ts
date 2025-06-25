@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
     useEmpresaControllerFindAll,
     useVehiculoControllerFindAll,
@@ -22,6 +22,22 @@ export default function useTripAuxData({control, resetField}: UseTripAuxDataProp
 
     const [filteredVehiculos, setFilteredVehiculos] = useState<VehiculoDto[]>([]);
     const [filteredChoferes, setFilteredChoferes] = useState<ChoferDto[]>([]);
+
+    const companyIdTrip = useMemo(() => {
+        // Obtener el ID de la empresa del viaje actual desde el formulario
+        return control._formValues.empresa;
+    }, [control._formValues.empresa]);
+
+    // Filtrar vehículos y choferes por la empresa del viaje actual
+    useEffect(() => {
+        if (companyIdTrip) {
+            filterByCompany(companyIdTrip);
+        } else {
+            // Si no hay empresa seleccionada, mostrar todos los vehículos y choferes
+            setFilteredVehiculos(vehicles?.data || []);
+            setFilteredChoferes(drivers?.data || []);
+        }
+    }, [companyIdTrip, vehicles, drivers]);
 
     const filterByCompany = (companyId?: string) => {
         if (!companyId) {

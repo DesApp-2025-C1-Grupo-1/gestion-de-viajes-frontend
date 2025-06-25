@@ -406,7 +406,7 @@ export interface BuscarViajeDto {
   fecha_inicio?: string;
   /** Fecha de llegada del viaje en formato ISO 8601 */
   fecha_llegada?: string;
-  /** ID del viaje */
+  /** ID del viaje | ID parcial del viaje */
   _id?: string;
   /** Id de la empresa | Razon social de la empresa | nombre comercial de la empresa */
   empresa?: string;
@@ -416,6 +416,10 @@ export interface BuscarViajeDto {
   vehiculo?: string;
   /** Tipo de viaje */
   tipo?: BuscarViajeDtoTipo;
+  /** Id del deposito de origen */
+  origen?: string;
+  /** Id del deposito de destino */
+  destino?: string;
 }
 
 export interface CreateDepositoDto {

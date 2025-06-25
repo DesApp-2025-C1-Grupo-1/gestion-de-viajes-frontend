@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { BuscarViajeDto, ChoferDto, EmpresaDto, VehiculoDto } from "../api/generated";
+import { BuscarViajeDto, ChoferDto, DepositoDto, EmpresaDto, VehiculoDto } from "../api/generated";
 import { Stack, Button, Chip, Collapse, Paper, Typography, TextField, Select, MenuItem,Box, Grid  } from "@mui/material";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -12,10 +12,12 @@ interface TripFiltersProps {
     empresas: EmpresaDto[];
     vehiculos: VehiculoDto[];
     choferes: ChoferDto[];
+    depositos: DepositoDto[]
     loadingOptions: {
         empresas: boolean;
         vehiculos: boolean;
         choferes: boolean;
+        depositos: boolean;
     };
 }
 
@@ -30,11 +32,14 @@ export default function TripFilters({
         empresa: '',
         vehiculo: '',
         chofer: '',
+        origen: '',
+        destino: '',
         tipo: undefined,
     },
     empresas,
     vehiculos,
     choferes,
+    depositos,
     loadingOptions
 }: TripFiltersProps) {
     const [localFilters, setLocalFilters] = useState<BuscarViajeDto>(initialFilters);
@@ -71,6 +76,8 @@ export default function TripFilters({
             empresa: '',
             vehiculo: '',
             chofer: '',
+            origen: '',
+            destino: '',
             tipo: undefined,
         };
         setLocalFilters(empty);
@@ -102,6 +109,11 @@ export default function TripFilters({
         return chofer ? `${chofer.nombre} ${chofer.apellido}` : 'Chofer no encontrado';
     };
 
+    const nameDepositoChip = (id: string) => {
+        const deposito = depositos.find(d => d._id === id);
+        return deposito ? deposito.nombre : 'Depósito no encontrado';
+    };
+
     const formatChipLabel = (key: string, value: any) => {
         const labels: Record<string, string> = {
             fecha_inicio: 'Desde',
@@ -112,7 +124,7 @@ export default function TripFilters({
             empresa: 'Empresa',
             vehiculo: 'Vehículo',
             chofer: 'Chofer',
-            tipoViaje: 'Tipo',
+            tipo: 'Tipo',
         };
 
         if (key === 'empresa') {
@@ -123,6 +135,9 @@ export default function TripFilters({
         }
         if (key === 'chofer') {
             return `${labels[key] || key}: ${nameChoferChip(value)}`;
+        }
+        if (key === 'origen' || key === 'destino') {
+            return `${labels[key] || key}: ${nameDepositoChip(value)}`;
         }
 
         return `${labels[key] || key}: ${key.includes('fecha') ? new Date(value).toLocaleDateString() : value}`;
@@ -315,13 +330,13 @@ export default function TripFilters({
                                         ))}
                                     </Select>
                                 </Grid>
-                                {/* <Grid item xs={12} sm={6} lg={4}>
+                                <Grid item xs={12} sm={6} lg={4}>
                                     <Typography variant="subtitle2">
                                         Depósito de origen
                                     </Typography>
                                     <Select
                                         fullWidth
-                                        value={filters.origen}
+                                        value={localFilters.origen}
                                         onChange={(e) => handleChange('origen', e.target.value)}
                                         displayEmpty
                                         sx={{ 
@@ -334,10 +349,13 @@ export default function TripFilters({
                                         inputProps={{ "aria-label": "Without label" }}
                                     >
                                         <MenuItem value="" disabled>
-                                            Seleccionar depósito
+                                            {loadingOptions.depositos ? "Cargando..." : "Seleccionar depósito"}
                                         </MenuItem>
-                                        <MenuItem value="deposito1">Depósito 1</MenuItem>
-                                        <MenuItem value="deposito2">Depósito 2</MenuItem>
+                                        {depositos.map(deposito => (
+                                            <MenuItem key={deposito._id} value={deposito._id}>
+                                                {deposito.nombre}
+                                            </MenuItem>
+                                        ))}
                                     </Select>
                                 </Grid>
                                 <Grid item xs={12} sm={6} lg={4}>
@@ -346,7 +364,7 @@ export default function TripFilters({
                                     </Typography>
                                     <Select
                                         fullWidth
-                                        value={filters.destino}
+                                        value={localFilters.destino}
                                         onChange={(e) => handleChange('destino', e.target.value)}
                                         displayEmpty
                                         sx={{ 
@@ -359,12 +377,15 @@ export default function TripFilters({
                                         inputProps={{ "aria-label": "Without label" }}
                                     >
                                         <MenuItem value="" disabled>
-                                            Seleccionar depósito
+                                            {loadingOptions.depositos ? "Cargando..." : "Seleccionar depósito"}
                                         </MenuItem>
-                                        <MenuItem value="deposito1">Depósito 1</MenuItem>
-                                        <MenuItem value="deposito2">Depósito 2</MenuItem>
+                                        {depositos.map(deposito => (
+                                            <MenuItem key={deposito._id} value={deposito._id}>
+                                                {deposito.nombre}
+                                            </MenuItem>
+                                        ))}
                                     </Select>
-                                </Grid> */}
+                                </Grid>
                                 <Grid item xs={12} sm={6} lg={4}>
                                     <Typography variant="subtitle2">
                                         Tipo de viaje

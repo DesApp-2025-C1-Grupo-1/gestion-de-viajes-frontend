@@ -118,7 +118,8 @@ export default function TripFormPage() {
                                             error: !!formErrors.fecha_inicio,
                                             helperText: formErrors.fecha_inicio?.message,
                                             },
-                                        }}                        
+                                        }}      
+                                        format="dd/MM/yyyy HH:mm"                  
                                         viewRenderers={{
                                             hours: renderTimeViewClock,
                                             minutes: renderTimeViewClock,
@@ -148,7 +149,7 @@ export default function TripFormPage() {
                                             helperText: formErrors.fecha_llegada?.message,
                                             },
                                         }}        
-                                                                
+                                        format="dd/MM/yyyy HH:mm"            
                                         viewRenderers={{
                                             hours: renderTimeViewClock,
                                             minutes: renderTimeViewClock,

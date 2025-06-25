@@ -7,7 +7,7 @@ import LoadingState from "../../components/LoadingState";
 import MenuItem from "../../components/buttons/MenuItem";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { useNotify } from "../../hooks/useNotify";
-import { viajeControllerRemove, ViajeDto, BuscarViajeDto, useViajeControllerBuscar, EmpresaDto, VehiculoDto, ChoferDto, empresaControllerFindAll, vehiculoControllerFindAll, choferControllerFindAll } from '../../api/generated';
+import { viajeControllerRemove, ViajeDto, BuscarViajeDto, useViajeControllerBuscar, EmpresaDto, VehiculoDto, ChoferDto, empresaControllerFindAll, vehiculoControllerFindAll, choferControllerFindAll, DepositoDto, depositoControllerFindAll } from '../../api/generated';
 import { useAutoRowsPerPage } from "../../hooks/useAutoRowsPerPage";
 import {  Eye, User, Building2} from "lucide-react";
 import { DoubleCell } from "../../components/DoubleCell";
@@ -21,7 +21,7 @@ export default function TripPage() {
     const [page, setPage] = useState<number>(1);
     const widthTableRef = useRef<HTMLDivElement>(null);
     const widthTable = widthTableRef.current?.offsetWidth || 0;
-    const {rowsPerPage, headerRef, footerRef, filterRef, tableHeaderRef} = useAutoRowsPerPage(widthTable>= 1040 ? 100 : 150);
+    const {rowsPerPage, headerRef, footerRef, filterRef} = useAutoRowsPerPage(widthTable>= 1040 ? 100 : 150);
 
     const [trips, setTrips] = useState<ViajeDto[]>([]);
     const [total, setTotal] = useState<number>(0);
@@ -36,10 +36,12 @@ export default function TripPage() {
     const [empresas, setEmpresas] = useState<EmpresaDto[]>([]);
     const [vehiculos, setVehiculos] = useState<VehiculoDto[]>([]);
     const [choferes, setChoferes] = useState<ChoferDto[]>([]);
+    const [depositos, setDepositos] = useState<DepositoDto[]>([]);
     const [loadingOptions, setLoadingOptions] = useState({
         empresas: false,
         vehiculos: false,
-        choferes: false
+        choferes: false,
+        depositos: false
     });
 
     // Función para cargar las opciones de los selects
@@ -56,13 +58,18 @@ export default function TripPage() {
             setLoadingOptions(prev => ({...prev, choferes: true}));
             const resChoferes = await choferControllerFindAll();
             setChoferes(resChoferes.data);
+
+            setLoadingOptions(prev => ({...prev, depositos: true}));
+            const resDepositos = await depositoControllerFindAll();
+            setDepositos(resDepositos.data);
         } catch (error) {
             notify("error", "Error al cargar opciones de filtros");
         } finally {
             setLoadingOptions({
                 empresas: false,
                 vehiculos: false,
-                choferes: false
+                choferes: false,
+                depositos: false
             });
         }
     }, []);
@@ -85,6 +92,9 @@ export default function TripPage() {
                 },
             });
             const responseData = res.data
+
+            console.log("Response Data:", responseData);
+            console.log("Filters Applied:", appliedFilters);
             setTrips(responseData.data); // Ajustá si hay paginación en backend
             setTotal(responseData.total);
         } catch (err) {
@@ -156,6 +166,7 @@ export default function TripPage() {
                     empresas={empresas}
                     vehiculos={vehiculos}
                     choferes={choferes}
+                    depositos={depositos}
                     loadingOptions={loadingOptions}
                 />
             </div>

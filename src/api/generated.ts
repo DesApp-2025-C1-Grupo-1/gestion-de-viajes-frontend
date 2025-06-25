@@ -467,6 +467,17 @@ page: number;
 limit: number;
 };
 
+export type ViajeControllerBuscarParams = {
+/**
+ * Cuantos registros se deben omitir para la paginación
+ */
+page: number;
+/**
+ * Cuantos registros se deben devolver en la paginación
+ */
+limit: number;
+};
+
 export const appControllerGetHello = (
      options?: AxiosRequestConfig
  ): Promise<AxiosResponse<void>> => {
@@ -2343,21 +2354,24 @@ export const useViajeControllerRemove = <TError = AxiosError<void>,
  * @summary Buscar viajes por filtros
  */
 export const viajeControllerBuscar = (
-    buscarViajeDto: BuscarViajeDto, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<ViajeDto[]>> => {
+    buscarViajeDto: BuscarViajeDto,
+    params: ViajeControllerBuscarParams, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<PaginacionDto>> => {
     
     
     return axios.post(
       `/viaje/buscar`,
-      buscarViajeDto,options
+      buscarViajeDto,{
+    ...options,
+        params: {...params, ...options?.params},}
     );
   }
 
 
 
 export const getViajeControllerBuscarMutationOptions = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof viajeControllerBuscar>>, TError,{data: BuscarViajeDto}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof viajeControllerBuscar>>, TError,{data: BuscarViajeDto}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof viajeControllerBuscar>>, TError,{data: BuscarViajeDto;params: ViajeControllerBuscarParams}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof viajeControllerBuscar>>, TError,{data: BuscarViajeDto;params: ViajeControllerBuscarParams}, TContext> => {
 
 const mutationKey = ['viajeControllerBuscar'];
 const {mutation: mutationOptions, axios: axiosOptions} = options ?
@@ -2369,10 +2383,10 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof viajeControllerBuscar>>, {data: BuscarViajeDto}> = (props) => {
-          const {data} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof viajeControllerBuscar>>, {data: BuscarViajeDto;params: ViajeControllerBuscarParams}> = (props) => {
+          const {data,params} = props ?? {};
 
-          return  viajeControllerBuscar(data,axiosOptions)
+          return  viajeControllerBuscar(data,params,axiosOptions)
         }
 
         
@@ -2388,11 +2402,11 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
  * @summary Buscar viajes por filtros
  */
 export const useViajeControllerBuscar = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof viajeControllerBuscar>>, TError,{data: BuscarViajeDto}, TContext>, axios?: AxiosRequestConfig}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof viajeControllerBuscar>>, TError,{data: BuscarViajeDto;params: ViajeControllerBuscarParams}, TContext>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof viajeControllerBuscar>>,
         TError,
-        {data: BuscarViajeDto},
+        {data: BuscarViajeDto;params: ViajeControllerBuscarParams},
         TContext
       > => {
 

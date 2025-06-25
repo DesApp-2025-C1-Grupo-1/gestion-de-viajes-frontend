@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { SectionHeader } from "../../components/SectionHeader";
 import TripFilters from "../../components/TripFilters";
 import { Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
@@ -7,7 +7,7 @@ import LoadingState from "../../components/LoadingState";
 import MenuItem from "../../components/buttons/MenuItem";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { useNotify } from "../../hooks/useNotify";
-import { viajeControllerRemove, ViajeDto, useViajeControllerFindAll } from '../../api/generated';
+import { viajeControllerRemove, ViajeDto, useViajeControllerFindAll, BuscarViajeDto, viajeControllerBuscar, useViajeControllerBuscar } from '../../api/generated';
 import { useAutoRowsPerPage } from "../../hooks/useAutoRowsPerPage";
 import {  Eye, User, Building2} from "lucide-react";
 import { DoubleCell } from "../../components/DoubleCell";
@@ -18,35 +18,70 @@ export default function TripPage() {
     const navigate = useNavigate();
     const {notify} = useNotify("Viajes");
     const [filterOpen, setFilterOpen] = useState(false);
-
     const [page, setPage] = useState<number>(1);
-    const {rowsPerPage, headerRef, footerRef, filterRef} = useAutoRowsPerPage(145);
-    const { data: response, isLoading, refetch } = useViajeControllerFindAll({page, limit: rowsPerPage}); //paso como limit al back el rows pero verr
-    
-    const trips = response?.data?.data ?? [];
-    const total = response?.data?.total ?? 0;
-    
-    const [openDetailsDialog, setOpenDetailsDialog] = useState<boolean>(false);
+    const {rowsPerPage, headerRef, footerRef, filterRef} = useAutoRowsPerPage(100);
 
+    const [trips, setTrips] = useState<ViajeDto[]>([]);
+    const [total, setTotal] = useState<number>(0);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    
+    
+    const [appliedFilters, setAppliedFilters] = useState<BuscarViajeDto>({});
+    const [openDetailsDialog, setOpenDetailsDialog] = useState<boolean>(false);
     const [openDialog, setOpenDialog] = useState<boolean>(false);
     const [tripSelected, setTripSelected] = useState<ViajeDto>();
+
+    const { mutateAsync: buscarViajes } = useViajeControllerBuscar();
+
+
+    const fetchTrips = useCallback(async () => {
+        setIsLoading(true);
+        try {
+            const res = await buscarViajes({
+                data: appliedFilters,
+                params: {
+                    page: page,
+                    limit: rowsPerPage,
+                },
+            });
+            const responseData = res.data
+            setTrips(responseData.data); // Ajustá si hay paginación en backend
+            setTotal(responseData.total);
+        } catch (err) {
+            notify("error", "No se pudieron cargar los viajes.");
+        } finally {
+            setIsLoading(false);
+        }
+    }, [page, rowsPerPage, appliedFilters, buscarViajes]);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            fetchTrips();
+        }, 300); // Pequeño debounce para evitar llamadas rápidas consecutivas
+
+        return () => clearTimeout(timer);
+    }, [fetchTrips, page]);
 
     const handleOpenDialog = (trip : ViajeDto) => {
         setOpenDialog(true);
         setTripSelected(trip);
     };
 
-    //handleOpenDetails
     const handleOpenDetails = (trip: ViajeDto) => {
         setOpenDetailsDialog(true);
         setTripSelected(trip);
     }
 
+    const handleApplyFilters = useCallback((newFilters: BuscarViajeDto) => {
+        setAppliedFilters(newFilters)
+        setPage(1);
+    },[]);
+
     const handleDelete = async (id: string) => {
         try {
             await viajeControllerRemove(id);
             setOpenDialog(false);
-            await refetch();
+            await fetchTrips();
             notify("delete", "Viaje eliminado correctamente");
             setPage(1);
         } catch (e) {
@@ -57,7 +92,7 @@ export default function TripPage() {
         }
     };
 
-    const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
+    const handleChangePage = (_: React.ChangeEvent<unknown>, value: number) => {
         setPage(value);
     };
 
@@ -74,7 +109,7 @@ export default function TripPage() {
             </div>
 
             <div ref={filterRef}>
-                <TripFilters filterOpen={filterOpen} setFilterOpen={setFilterOpen}/>
+                <TripFilters filterOpen={filterOpen} setFilterOpen={setFilterOpen} onApply={handleApplyFilters}/>
             </div>
             <div className="bg-white rounded-lg overflow-hidden" style={{
                 boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",

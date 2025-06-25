@@ -1,38 +1,54 @@
 import { useEffect, useRef, useState } from "react";
 
 export function useAutoRowsPerPage(rowHeight: number = 72) {
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(5); // Valor inicial razonable
   const headerRef = useRef<HTMLDivElement>(null);
   const footerRef = useRef<HTMLDivElement>(null);
   const filterRef = useRef<HTMLDivElement>(null);
+  const tableHeaderRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const calculate = () => {
+    /* const debounce = (fn: Function, ms: number) => {
+      let timeoutId: ReturnType<typeof setTimeout>;
+      return function(this: any, ...args: any[]) {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => fn.apply(this, args), ms);
+      };
+    }; */
+
+    const calculate = /* debounce( */() => {
       const headerHeight = headerRef.current?.offsetHeight || 0;
       const footerHeight = footerRef.current?.offsetHeight || 0;
-      const windowHeight = window.innerHeight;
-      const margin = 60; // padding/margen extra
-      const filterHeight = filterRef.current?.offsetHeight || 0; 
+      const filterHeight = filterRef.current?.offsetHeight || 0;
+      const tableHeaderHeight = tableHeaderRef.current?.offsetHeight || 0;
+      
+      // Espacio adicional para márgenes y padding
+      const EXTRA_SPACE = 100; 
+      
+      const availableHeight = window.innerHeight - headerHeight - footerHeight - filterHeight - tableHeaderHeight - EXTRA_SPACE;
 
-      const availableHeight = windowHeight - headerHeight - footerHeight - margin - filterHeight;
-      const estimated = Math.floor(availableHeight / rowHeight);
-      setRowsPerPage(Math.max(1, estimated));
-    };
+      const calculatedRows = Math.floor(availableHeight / rowHeight);
+      setRowsPerPage(Math.max(2, calculatedRows)); // Mínimo 2 filas
+    }//, 300); // 300ms de debounce
 
+    // Llamada inicial
     calculate();
-    window.addEventListener("resize", calculate);
-    // Observer para detectar cambios de altura en filterRef
+
+    const resizeListener = () => calculate();
+    window.addEventListener("resize", resizeListener);
+
     const filterElement = filterRef.current;
     let resizeObserver: ResizeObserver | undefined;
     if (filterElement) {
-      resizeObserver = new ResizeObserver(() => {
-      calculate();
-      });
+      resizeObserver = new ResizeObserver(() => calculate());
       resizeObserver.observe(filterElement);
     }
 
-    return () => window.removeEventListener("resize", calculate);
+    return () => {
+      window.removeEventListener("resize", resizeListener);
+      resizeObserver?.disconnect();
+    };
   }, [rowHeight]);
 
-  return { rowsPerPage, headerRef, footerRef, filterRef };
+  return { rowsPerPage, headerRef, footerRef, filterRef, tableHeaderRef };
 }

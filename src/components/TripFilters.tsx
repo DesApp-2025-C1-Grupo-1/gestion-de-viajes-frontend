@@ -1,71 +1,84 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { BuscarViajeDto } from "../api/generated";
 import { Stack, Button, Chip, Collapse, Paper, Typography, TextField, Select, MenuItem,Box, Grid  } from "@mui/material";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { ListFilter } from "lucide-react";
-import { startOfDay, endOfDay } from "date-fns";
+interface TripFiltersProps {
+    filterOpen: boolean;
+    setFilterOpen: (open: boolean) => void;
+    onApply: (filters: BuscarViajeDto) => void;
+    initialFilters?: BuscarViajeDto;
+}
 
-export default function TripFilters({filterOpen, setFilterOpen}: {filterOpen: boolean, setFilterOpen: (open: boolean) => void}) {
-
-        const [filters, setFilters] = useState({
-        fechaDesde: null as Date | null,
-        fechaHasta: null as Date | null,
+export default function TripFilters({
+    filterOpen, 
+    setFilterOpen, 
+    onApply, 
+    initialFilters = {
+        fecha_inicio: undefined,
+        fecha_llegada: undefined,
         _id: '',
-        origen: '',
-        destino: '',
         empresa: '',
         vehiculo: '',
         chofer: '',
-        tipoViaje: '',
-    });
-    const [appliedFilters, setAppliedFilters] = useState<typeof filters>({ ...filters });
+        tipo: undefined,
+    }
+}: TripFiltersProps) {
+    const [localFilters, setLocalFilters] = useState<BuscarViajeDto>(initialFilters);
+    const [appliedFilters, setAppliedFilters] = useState<BuscarViajeDto>(initialFilters);
 
-     const handleChange = (key: keyof typeof filters, value: string | Date | null) => {
-            setFilters((prev) => ({ ...prev, [key]: value }));
-        };
+    const handleChange = useCallback((key: keyof typeof localFilters, value: string | Date | null) => {
+        let adjustedValue: any = value;
 
-     const handleApply = () => {
-        const dto: BuscarViajeDto = {
-            fecha_inicio: filters.fechaDesde? startOfDay(filters.fechaDesde).toISOString() : undefined,
-            fecha_llegada: filters.fechaHasta? endOfDay(filters.fechaHasta).toISOString() : undefined,
-            _id: filters._id || undefined,
-            empresa: filters.empresa || undefined,
-            chofer: filters.chofer || undefined,
-            vehiculo: filters.vehiculo || undefined,
-            tipo: filters.tipoViaje ? filters.tipoViaje as BuscarViajeDto['tipo'] : undefined,
-        };
+        if (value instanceof Date) {
+            const date = new Date(value);
+            if (key === 'fecha_inicio') {
+            date.setHours(0, 0, 0, 0);
+            } else if (key === 'fecha_llegada') {
+            date.setHours(23, 59, 59, 999);
+            }
+            adjustedValue = date.toISOString(); // opcional, según cómo manejes en backend
+        }
 
-        console.log("Filtros enviados al backend:", dto);
+        setLocalFilters((prev) => ({ ...prev, [key]: adjustedValue }));
 
-        setAppliedFilters(filters);
+    },[]);
+
+    const handleApply = () => {
+        setAppliedFilters(localFilters);
+        onApply(localFilters);
         setFilterOpen(false);
     };
+    
     const handleClear = () => {
-        const empty = {
-        fechaDesde: null,
-        fechaHasta: null,
-        _id: '',
-        origen: '',
-        destino: '',
-        empresa: '',
-        vehiculo: '',
-        chofer: '',
-        tipoViaje: '',
+        const empty ={
+            fecha_inicio: undefined,
+            fecha_llegada: undefined,
+            _id: '',
+            empresa: '',
+            vehiculo: '',
+            chofer: '',
+            tipo: undefined,
         };
-        setFilters(empty);
+        setLocalFilters(empty);
         setAppliedFilters(empty);
-    };
+        onApply(empty);
+    }
 
-    const handleDelete = (key: keyof typeof filters) => {
-        setAppliedFilters((prev) => ({ ...prev, [key]: key.includes('fecha') ? null : '' }));
-        setFilters((prev) => ({ ...prev, [key]: key.includes('fecha') ? null : '' }));
+    const handleDeleteChip = (key: keyof BuscarViajeDto) => {
+        const clearedValue = key.includes('fecha') || key === "tipo" ? undefined : '';
+        const updatedFilters = { ...appliedFilters, [key]: clearedValue };
+        setAppliedFilters(updatedFilters);
+        setLocalFilters(updatedFilters);
+        console.log("Updated filters after chip delete:", updatedFilters);
+        onApply(updatedFilters);
     };
 
     const formatChipLabel = (key: string, value: any) => {
         const labels: Record<string, string> = {
-            fechaDesde: 'Desde',
-            fechaHasta: 'Hasta',
+            fecha_inicio: 'Desde',
+            fecha_llegada: 'Hasta',
             _id: 'N° Viaje',
             origen: 'Origen',
             destino: 'Destino',
@@ -103,7 +116,7 @@ export default function TripFilters({filterOpen, setFilterOpen}: {filterOpen: bo
                         <Chip
                             key={key}
                             label={formatChipLabel(key, value)}
-                            onDelete={() => handleDelete(key as keyof typeof filters)}
+                            onDelete={() => handleDeleteChip(key as keyof BuscarViajeDto)}
                             variant="outlined"
                                 sx={{
                                     backgroundColor: "#F0F4F8", 
@@ -138,7 +151,6 @@ export default function TripFilters({filterOpen, setFilterOpen}: {filterOpen: bo
                                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                                         <Box display="flex" justifyContent="space-between" gap={2} mt={1}>
                                             <DatePicker
-                                                value={filters.fechaDesde}
                                                 slotProps={{
                                                     textField: {
                                                         fullWidth: true,
@@ -147,10 +159,10 @@ export default function TripFilters({filterOpen, setFilterOpen}: {filterOpen: bo
                                                     },
                                                 }} 
                                                 format="dd/MM/yyyy"
-                                                onChange={(value) => handleChange('fechaDesde', value)}
+                                                value={localFilters.fecha_inicio ? new Date(localFilters.fecha_inicio) : undefined}
+                                                onChange={(value) => handleChange('fecha_inicio', value)}
                                             />
                                             <DatePicker
-                                                value={filters.fechaHasta}
                                                 slotProps={{
                                                     textField: {
                                                         fullWidth: true,
@@ -160,7 +172,8 @@ export default function TripFilters({filterOpen, setFilterOpen}: {filterOpen: bo
                                                     },
                                                 }} 
                                                 format="dd/MM/yyyy"
-                                                onChange={(value) => handleChange('fechaHasta', value)}
+                                                value={localFilters.fecha_llegada ? new Date(localFilters.fecha_llegada) : undefined}
+                                                onChange={(value) => handleChange('fecha_llegada', value)}
                                             />
                                         </Box>
                                     </LocalizationProvider>
@@ -176,7 +189,7 @@ export default function TripFilters({filterOpen, setFilterOpen}: {filterOpen: bo
                                         sx={{
                                             mt: 1,
                                         }}
-                                        value={filters._id}
+                                        value={localFilters._id}
                                         onChange={(e) => handleChange('_id', e.target.value)}
                                     />
                                 </Grid>
@@ -186,7 +199,7 @@ export default function TripFilters({filterOpen, setFilterOpen}: {filterOpen: bo
                                     </Typography>
                                     <Select
                                         fullWidth
-                                        value={filters.empresa}
+                                        value={localFilters.empresa}
                                         onChange={(e) => handleChange('empresa', e.target.value)}
                                         displayEmpty
                                         sx={{ 
@@ -211,7 +224,7 @@ export default function TripFilters({filterOpen, setFilterOpen}: {filterOpen: bo
                                     </Typography>
                                     <Select
                                         fullWidth
-                                        value={filters.vehiculo}
+                                        value={localFilters.vehiculo}
                                         onChange={(e) => handleChange('vehiculo', e.target.value)}
                                         displayEmpty
                                         sx={{ 
@@ -236,7 +249,7 @@ export default function TripFilters({filterOpen, setFilterOpen}: {filterOpen: bo
                                     </Typography>
                                     <Select
                                         fullWidth
-                                        value={filters.chofer}
+                                        value={localFilters.chofer}
                                         onChange={(e) => handleChange('chofer', e.target.value)}
                                         displayEmpty
                                         sx={{ 
@@ -255,7 +268,7 @@ export default function TripFilters({filterOpen, setFilterOpen}: {filterOpen: bo
                                         <MenuItem value="chofer2">Chofer 2</MenuItem>
                                     </Select>
                                 </Grid>
-                                <Grid item xs={12} sm={6} lg={4}>
+                                {/* <Grid item xs={12} sm={6} lg={4}>
                                     <Typography variant="subtitle2">
                                         Depósito de origen
                                     </Typography>
@@ -304,7 +317,7 @@ export default function TripFilters({filterOpen, setFilterOpen}: {filterOpen: bo
                                         <MenuItem value="deposito1">Depósito 1</MenuItem>
                                         <MenuItem value="deposito2">Depósito 2</MenuItem>
                                     </Select>
-                                </Grid>
+                                </Grid> */}
                                 <Grid item xs={12} sm={6} lg={4}>
                                     <Typography variant="subtitle2">
                                         Tipo de viaje
@@ -318,14 +331,14 @@ export default function TripFilters({filterOpen, setFilterOpen}: {filterOpen: bo
                                                     borderRadius: "6px ",
                                                     padding: "10px 14px",
                                                     textTransform: "none",
-                                                    backgroundColor: filters.tipoViaje === 'nacional' ? '#C94715' : 'white',
-                                                    color: filters.tipoViaje === 'nacional' ? 'white' : '#5A5A65',
+                                                    backgroundColor: localFilters.tipo === 'nacional' ? '#C94715' : 'white',
+                                                    color: localFilters.tipo === 'nacional' ? 'white' : '#5A5A65',
                                                     "&:hover": {
-                                                        backgroundColor: filters.tipoViaje === 'nacional' ? '#C94715' : '#f5f5f5',
+                                                        backgroundColor: localFilters.tipo === 'nacional' ? '#C94715' : '#f5f5f5',
                                                         boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)"
                                                     }
                                                 }}
-                                                onClick={() => handleChange('tipoViaje', filters.tipoViaje === 'nacional' ? '' : 'nacional')}
+                                                onClick={() => handleChange('tipo', localFilters.tipo === 'nacional' ? '' : 'nacional')}
                                             >
                                                 Nacional
                                             </Button>
@@ -338,14 +351,14 @@ export default function TripFilters({filterOpen, setFilterOpen}: {filterOpen: bo
                                                     borderRadius: "6px ",
                                                     padding: "10px 14px",
                                                     textTransform: "none",
-                                                    backgroundColor: filters.tipoViaje === 'internacional' ? '#C94715' : 'white',
-                                                    color: filters.tipoViaje === 'internacional' ? 'white' : '#5A5A65',
+                                                    backgroundColor: localFilters.tipo === 'internacional' ? '#C94715' : 'white',
+                                                    color: localFilters.tipo === 'internacional' ? 'white' : '#5A5A65',
                                                     "&:hover": {
-                                                        backgroundColor: filters.tipoViaje === 'internacional' ? '#C94715' : '#f5f5f5',
+                                                        backgroundColor: localFilters.tipo === 'internacional' ? '#C94715' : '#f5f5f5',
                                                         boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)"
                                                     },
                                                 }}
-                                                onClick={() => handleChange('tipoViaje', filters.tipoViaje === 'internacional' ? '' : 'internacional')}
+                                                onClick={() => handleChange('tipo', localFilters.tipo === 'internacional' ? '' : 'internacional')}
                                             >
                                                 Internacional
                                             </Button>
@@ -359,8 +372,7 @@ export default function TripFilters({filterOpen, setFilterOpen}: {filterOpen: bo
                                 <Button variant="outlined" color="primary" sx={{ borderRadius: "6px", padding: "10px 20px", }}
                                     onClick={handleClear}
                                     disabled={
-                                        Object.values(filters).every(value => value === '') &&
-                                        Object.values(appliedFilters).every(value => value === '')
+                                        Object.values(localFilters).every(value => value === '')
                                     }
                                 >
                                     Limpiar filtros
@@ -368,8 +380,7 @@ export default function TripFilters({filterOpen, setFilterOpen}: {filterOpen: bo
                                 <Button variant="contained" color="primary" sx={{ borderRadius: "6px", padding: "10px 20px", boxShadow: "none" ,"&:hover": { boxShadow: "none", backgroundColor: "#C94715" }}}
                                     onClick={handleApply}
                                     disabled={
-                                        Object.values(filters).every(value => value === '') &&
-                                        Object.values(appliedFilters).every(value => value === '')
+                                        Object.values(localFilters).every(value => value === '')
                                     }
                                 >
                                     Aplicar filtros

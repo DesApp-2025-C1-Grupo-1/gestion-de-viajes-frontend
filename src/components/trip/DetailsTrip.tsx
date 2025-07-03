@@ -149,25 +149,25 @@ export const DetailsTrip = ({triptSelected, setOpenDetailsDialog, openDetailsDia
                                     <Grid item xs={12} sm={6}>
                                         <Field
                                             label="Fecha de salida"
-                                            value={`${new Date(triptSelected.fecha_inicio).toISOString().split('T')[0]}`}
+                                            value={`${new Date(triptSelected.fecha_inicio).toLocaleDateString().split('/').join('-')}`}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <Field
                                             label="Fecha de llegada"
-                                            value={`${new Date(triptSelected.fecha_llegada).toISOString().split('T')[0]}`}
+                                            value={`${new Date(triptSelected.fecha_llegada).toLocaleDateString().split('/').join('-')}`}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <Field
                                             label="Horario de salida"
-                                            value={`${new Date(triptSelected.fecha_inicio).toISOString().split('T')[1].slice(0, 5)}`}
+                                            value={`${new Date(triptSelected.fecha_inicio).toLocaleTimeString().split(":")[0].length === 1 ? "0" + new Date(triptSelected.fecha_inicio).toLocaleTimeString().slice(0, 4) : new Date(triptSelected.fecha_inicio).toLocaleTimeString().slice(0, 5)}`}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <Field
                                             label="Horario de llegada"
-                                            value={`${new Date(triptSelected.fecha_llegada).toISOString().split('T')[1].slice(0, 5)}`}
+                                            value={`${new Date(triptSelected.fecha_llegada).toLocaleTimeString().split(":")[0].length === 1 ? "0" + new Date(triptSelected.fecha_llegada).toLocaleTimeString().slice(0, 4) : new Date(triptSelected.fecha_llegada).toLocaleTimeString().slice(0, 5)}`}
                                         />
                                     </Grid>
                                 </Grid>

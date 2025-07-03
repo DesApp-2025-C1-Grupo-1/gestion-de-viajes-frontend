@@ -218,7 +218,7 @@ export default function TripPage() {
                                                     secondaryIcon={<User color="#AFB3B9"/>}
                                                 />
                                             </TableCell>
-                                            <TableCell sx={{minWidth: 150}}><DoubleCell primarySection={`Inicio: ${new Date(trip.fecha_inicio).toISOString().split('T')[0]}`} secondarySection={`Llegada: ${new Date(trip.fecha_llegada).toISOString().split('T')[0]}`}/></TableCell>
+                                            <TableCell sx={{minWidth: 150}}><DoubleCell primarySection={`Inicio: ${new Date(trip.fecha_inicio).toLocaleDateString().split('/').join('-')}`} secondarySection={`Llegada: ${new Date(trip.fecha_llegada).toLocaleDateString().split('/').join('-')}`}/></TableCell>
                                             <TableCell sx={{padding: "4px 8px", maxWidth: "fit-content"}}><TripType tipo={trip.tipo_viaje as "Nacional" | "Internacional"} /></TableCell>
                                             <TableCell sx={{ verticalAlign: "middle"}}>
                                                 <MenuItem  handleOpenDialog={() => handleOpenDialog(trip)}

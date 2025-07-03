@@ -1,14 +1,15 @@
 import { SectionHeader } from "../../components/SectionHeader";
 import { useNavigate, useParams } from "react-router-dom";
-import { Paper, Select, MenuItem, Typography, Backdrop, CircularProgress, Grid, Alert, FormHelperText, FormControl, Dialog, Card, CardContent, DialogContent, DialogTitle, Button} from "@mui/material";
+import { Paper, Select, MenuItem, Typography, Backdrop, CircularProgress, Grid, Alert, FormHelperText, Button} from "@mui/material";
 import { useTripForm } from "../../hooks/useTripForm";
 import { Controller, useWatch } from "react-hook-form";
 import { CreateViajeSchema } from "../../api/schemas";
-import { DatePicker, DateTimePicker, LocalizationProvider, renderTimeViewClock } from "@mui/x-date-pickers";
+import { DateTimePicker, LocalizationProvider, renderTimeViewClock } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import FormActions from "../../components/deposit/FormActions";
 import { useState } from "react";
 import { DepositoSelectModal } from "../../components/DepositSelectModal";
+import { zonedTimeToUtc, utcToZonedTime } from 'date-fns-tz';
 
 const depositoSelectButtonStyle = {
   height: "48px",
@@ -84,6 +85,17 @@ export default function TripFormPage() {
         onSubmit(data);
     };
 
+    const TIMEZONE = 'America/Argentina/Buenos_Aires';
+
+    const toLocalDate = (input: string | Date): Date => {
+        const date = typeof input === 'string' ? new Date(input) : input;
+        return utcToZonedTime(date, TIMEZONE);
+    };
+
+    const toUTCDate = (input: Date | null): Date | null => {
+    if (!input) return null;
+    return zonedTimeToUtc(input, TIMEZONE);
+    };
 
     return(
         <>
@@ -104,28 +116,20 @@ export default function TripFormPage() {
                                     control={control}
                                     render={({ field }) => (
                                         <DateTimePicker
-                                        {...field}
-                                        disabled={isLoading}
-                                        value={field.value ? new Date(field.value) : null}
-                                        onChange={(date) => {
-                                            field.onChange(date) 
-                                            console.log(date)
-                                        }}
-                                        slotProps={{
-                                            textField: {
-                                            fullWidth: true,
-                                            className: "inside-paper",
-                                            error: !!formErrors.fecha_inicio,
-                                            helperText: formErrors.fecha_inicio?.message,
-                                            },
-                                        }}      
-                                        format="dd/MM/yyyy HH:mm"                  
-                                        viewRenderers={{
-                                            hours: renderTimeViewClock,
-                                            minutes: renderTimeViewClock,
-                                            seconds: renderTimeViewClock,
-                                        }}
-                                    />
+                                            {...field}
+                                            disabled={isLoading}
+                                            value={field.value ?  toLocalDate(field.value) : null}
+                                            onChange={(date: Date | null) => field.onChange(toUTCDate(date))}
+                                            slotProps={{
+                                                textField: {
+                                                fullWidth: true,
+                                                className: "inside-paper",
+                                                error: !!formErrors.fecha_inicio,
+                                                helperText: formErrors.fecha_inicio?.message,
+                                                },
+                                            }}      
+                                            format="dd/MM/yyyy HH:mm" 
+                                        />
                                     )}
                                 />
                             </Grid>
@@ -137,25 +141,20 @@ export default function TripFormPage() {
                                     control={control}
                                     render={({ field }) => (
                                         <DateTimePicker
-                                        {...field}
-                                        disabled={isLoading}
-                                        value={field.value ? new Date(field.value) : null}
-                                        onChange={(date) => field.onChange(date)}
-                                        slotProps={{
-                                            textField: {
-                                            fullWidth: true,
-                                            className: "inside-paper",
-                                            error: !!formErrors.fecha_llegada,
-                                            helperText: formErrors.fecha_llegada?.message,
-                                            },
-                                        }}        
-                                        format="dd/MM/yyyy HH:mm"            
-                                        viewRenderers={{
-                                            hours: renderTimeViewClock,
-                                            minutes: renderTimeViewClock,
-                                            seconds: renderTimeViewClock,
-                                        }}                      
-                                    />
+                                            {...field}
+                                            disabled={isLoading}
+                                            value={field.value ? toLocalDate(new Date(field.value)) : null}
+                                            onChange={(date: Date | null) => field.onChange(toUTCDate(date))}
+                                            slotProps={{
+                                                textField: {
+                                                fullWidth: true,
+                                                className: "inside-paper",
+                                                error: !!formErrors.fecha_llegada,
+                                                helperText: formErrors.fecha_llegada?.message,
+                                                },
+                                            }}        
+                                            format="dd/MM/yyyy HH:mm"                
+                                        />
                                     )}
                                 />
                             </Grid>

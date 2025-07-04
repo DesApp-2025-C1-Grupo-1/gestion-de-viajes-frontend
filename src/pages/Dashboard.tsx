@@ -22,14 +22,14 @@ export default function Dashboard() {
                     title="Empresas transportistas"
                     description="Empresas registradas actualmente"
                     value={12}
-                    icon={<Building2  color="#AFB3B9"/>}
+                    icon={<Building2 className={`size-7 block`} color="#E65F2B"/>} 
                     onClick={() => navigate("/companies")}
                 />
                 <DashboardCard 
                     title="Choferes"
                     description="Choferes registrados actualmente"
                     value={12}
-                    icon={<Building2  color="#AFB3B9"/>}
+                    icon={<UserRoundCheck className={`size-7 block`} color="#E65F2B"/>}
                     onClick={() => navigate("/drivers")}
                 />
             </div>

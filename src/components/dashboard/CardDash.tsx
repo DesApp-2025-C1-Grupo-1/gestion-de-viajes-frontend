@@ -18,7 +18,6 @@ export const DashboardCard = ({title, description, value, icon, onClick }: Dashb
         minHeight: 150,
         boxShadow: 1, 
         borderRadius: 2, 
-        p: 3,
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
@@ -26,47 +25,39 @@ export const DashboardCard = ({title, description, value, icon, onClick }: Dashb
         transition: 'box-shadow 0.2s ease', //nose
       }}
     >
-        <Box display="flex" alignItems="center" gap={2} mb={4}>
+        <Box display="flex" alignItems="center" gap={2}  padding={3}>
             {icon}
             <Box>
-                <Typography variant="subtitle1"  mb={1}  fontWeight={600} sx={{color: 'primary.secondary'}}> 
+                <Typography variant="subtitle1"  mb={1}  fontWeight={600} > 
                     {title}
                 </Typography>
                 {description && (
                     <Typography variant="body2" color="text.secondary">
-                    {description}
-                </Typography>
+                        {description}
+                    </Typography>
                 )}
             </Box>
         </Box>
-
-        <Box display="flex" alignItems="center" justifyContent="space-between">
-            
-        <Typography variant="h3" color="primary" fontWeight={700}>
-            {value}
-        </Typography>
-
-        {onClick && (
-            <Box display="flex" justifyContent="flex-end" mt={2}>
-            <IconButton
-                onClick={onClick}
-                size="small"
-                sx={{
-                    width: 32,
-                    height: 32,
-                    '&:hover':{
-                        color: 'primary.main',
-                    }
-                }}
-            >
-                <ChevronRight fontSize="small" />
-            </IconButton>
-            </Box>
-        )}
-
+        <Divider />
+        <Box display="flex" alignItems="center" justifyContent="space-between" padding={3}>
+            <Typography color="primary">
+                {value}
+            </Typography>
+            {onClick && (
+                <IconButton
+                    onClick={onClick}
+                    size="small"
+                    sx={{
+                        '&:hover':{
+                            color: 'primary.main',
+                        }
+                    }}
+                >
+                    <ChevronRight  fontSize="small"/>
+                </IconButton>
+            )}
         </Box>
-        
-
+    
         
     </Card>
   );

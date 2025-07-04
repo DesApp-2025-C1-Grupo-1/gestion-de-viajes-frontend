@@ -1,9 +1,7 @@
-
 export default function Dashboard() {
     return (
-        <div>
-            <h1 className="text-4xl">Dashboard</h1>
-            <p>Welcome to the dashboard!</p>
+        <div className="flex flex-col items-center justify-center h-full">
+            Bienvenido al panel de administración de la aplicación.
         </div>
     );
 }

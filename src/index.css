@@ -1,30 +1,57 @@
 @import "tailwindcss";
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color: #242424;
-  background-color: rgba(255, 255, 255, 0.87);
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: "Poppins", sans-serif;
+  color: #5A5A65;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+@theme {
+  --color-title-type: #2F691D;
+  --color-delete: #DD5050;
+  --color-delete-hover: #E01414;
+  --color-line: #C7C7C7;
+  --color-table-header: #F6F7FB;
+  --color-primary-orange: #E65F2B;
+  --color-button-hover: #C94715;
+  --color-menu-hover: #FFEFDA;
 }
 
-body {
-  margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
+.rbc-event {
+  @apply bg-gray-500 text-white rounded-md px-2 py-1.5  text-sm hover:bg-gray-600 transition-colors duration-200;
+}
+
+.rbc-selected {
+  @apply !bg-violet-500 font-semibold;
+}
+
+.rbc-today{
+  @apply bg-gray-200;
+}
+
+.rbc-header {
+  @apply font-semibold py-1.5 px-2 text-gray-700 ; 
+}
+
+.rbc-off-range-bg{
+  @apply bg-stone-100;
+}
+
+.rbc-active {
+  @apply !bg-orange-500 !text-white !border-orange-500 !shadow-none;
+}
+
+.rbc-toolbar-label {
+  @apply text-xl font-semibold text-gray-700;
+}
+
+.rbc-toolbar button {
+  @apply bg-white text-gray-700 border border-gray-300 rounded-md px-3 py-1 hover:bg-gray-100 transition-colors duration-200;
+}
+
+.rbc-toolbar button:hover {
+  @apply bg-gray-100;
+}
+
+.rbc-month-view {
+  @apply bg-white rounded-md overflow-hidden;
 }

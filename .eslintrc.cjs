@@ -17,5 +17,11 @@ module.exports = {
       'warn',
       { allowConstantExport: true },
     ],
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": [{ "regex": "^@mui/[^/]+$" }]
+      }
+    ]
   },
 }

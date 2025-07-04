@@ -10,6 +10,7 @@ import { useVehiculoControllerFindAll, vehiculoControllerRemove, VehiculoDto } f
 import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 import { useNotify } from "../../hooks/useNotify";
 import { useAutoRowsPerPage } from "../../hooks/useAutoRowsPerPage";
+import { CalendarDays } from "lucide-react";
 
 
 export default function VehiclePage() {
@@ -153,9 +154,14 @@ export default function VehiclePage() {
                                         <TableCell>{vehicle.tipo?.nombre || '-'}</TableCell>
                                         <TableCell>{vehicle.empresa.nombre_comercial}</TableCell>
                                         <TableCell sx={{ verticalAlign: "middle"}}>
-                                            <MenuItem  handleOpenDialog={() => handleOpenDialog(vehicle)}
-                                            id={vehicle._id}
-                                            />
+                                            <MenuItem  
+                                                handleOpenDialog={() => handleOpenDialog(vehicle)}
+                                                handleOpenDetails={() => navigate(`/agenda/vehicles/${vehicle._id}`)}
+                                                titleItem="Agenda"
+                                                id={vehicle._id}
+                                            >
+                                                <CalendarDays className="size-4 text-gray-500 hover:text-gray-700" />
+                                            </MenuItem>
                                            
                                         </TableCell>
                                          

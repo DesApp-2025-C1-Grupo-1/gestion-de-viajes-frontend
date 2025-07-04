@@ -16,75 +16,58 @@ export const DashboardCard = ({title, description, value, icon, onClick }: Dashb
       sx={{
         width: "100%",
         minHeight: 150,
-        boxShadow: 2,
-        borderRadius: 2,
-        p: 2,
+        boxShadow: 1, 
+        borderRadius: 2, 
+        p: 3,
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
+        '&:hover': {boxShadow: 2 },
+        transition: 'box-shadow 0.2s ease', //nose
       }}
     >
-        <Box display="flex" alignItems="center" gap={1}>
+        <Box display="flex" alignItems="center" gap={2} mb={4}>
             {icon}
             <Box>
-                <Typography variant="subtitle1" fontWeight={600}>
+                <Typography variant="subtitle1"  mb={1}  fontWeight={600} sx={{color: 'primary.secondary'}}> 
                     {title}
                 </Typography>
                 {description && (
-                    <Typography variant="caption" color="text.secondary">
+                    <Typography variant="body2" color="text.secondary">
                     {description}
                 </Typography>
                 )}
             </Box>
         </Box>
 
+        <Box display="flex" alignItems="center" justifyContent="space-between">
+            
         <Typography variant="h3" color="primary" fontWeight={700}>
-          {value}
+            {value}
         </Typography>
 
         {onClick && (
-        <Box display="flex" justifyContent="flex-end" mt={2}>
-          <IconButton
-            onClick={onClick}
-            sx={{
-              backgroundColor: "black",
-              color: "white",
-              "&:hover": { backgroundColor: "#333" },
-              width: 36,
-              height: 36,
-            }}
-          >
-            <ChevronRight fontSize="small" />
-          </IconButton>
-        </Box>
-      )}
-
-        {/*
-      <CardHeader   
-        title={
-          <Typography variant="h6" fontWeight={600}>
-            {title}
-          </Typography>
-        }
-        action={
-          onClick && (
-            <IconButton onClick={onClick} aria-label="Ver más"> 
-              <ChevronRight className="h-6 w-6" color="#E65F2B" />
+            <Box display="flex" justifyContent="flex-end" mt={2}>
+            <IconButton
+                onClick={onClick}
+                size="small"
+                sx={{
+                    width: 32,
+                    height: 32,
+                    '&:hover':{
+                        color: 'primary.main',
+                    }
+                }}
+            >
+                <ChevronRight fontSize="small" />
             </IconButton>
-          )
-        }
-        sx={{ pb: 0 }}
-      />
-      <CardContent>
-        <Box display="flex" alignItems="center" gap={1}>
-            {icon}
-        </Box>
-        <Typography variant="h3" color="primary" fontWeight={700}>
-          {value}
-        </Typography>
-      </CardContent>
-      */}
+            </Box>
+        )}
 
+        </Box>
+        
+
+        
     </Card>
   );
 };

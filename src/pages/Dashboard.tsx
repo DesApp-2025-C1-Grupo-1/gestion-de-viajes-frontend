@@ -4,6 +4,7 @@ import { useDashboard } from "../hooks/useDashboard";
 import { useNavigate } from "react-router-dom";
 import { DashboardCard } from "../components/dashboard/CardDash";
 import { UserRoundCheck, Building2 } from "lucide-react";
+import { TableContainer } from "@mui/material";
 
 
 export default function Dashboard() {
@@ -28,12 +29,18 @@ export default function Dashboard() {
                 <DashboardCard 
                     title="Choferes"
                     description="Choferes registrados actualmente"
-                    value={12}
+                    value={7}
                     icon={<UserRoundCheck className={`size-7 block`} color="#E65F2B"/>}
                     onClick={() => navigate("/drivers")}
                 />
             </div>
-            
+
+            <div className="bg-white rounded-lg overflow-hidden" style={{
+                boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
+                border: "0.5px solid #C7C7C7",}}>
+
+
+            </div>
  
         </>      
     );

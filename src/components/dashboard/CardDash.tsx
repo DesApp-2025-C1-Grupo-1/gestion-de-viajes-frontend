@@ -1,5 +1,5 @@
 import { ChevronRight } from "lucide-react";
-import { Card, Typography, Box, Divider, IconButton, Button } from "@mui/material";
+import { Card, Typography, Box, IconButton, Divider } from "@mui/material";
 import { ReactNode } from 'react';
 
 interface DashboardCardProps {
@@ -25,77 +25,45 @@ export const DashboardCard = ({title, description, value, icon, onClick }: Dashb
         transition: "box-shadow 0.3s ease", //nose
       }}
     >
-        
-  <Box
-    sx={{
-      display: "flex",
-      justifyContent: "center",
-      bgcolor: "grey.100", //probar con 100
-      py: 2, 
-    }}
-  >
-    <Box
-      sx={{
-        bgcolor: "background.paper",
-        p: 1.5,
-        borderRadius: "50%",
-        boxShadow: 1,
-      }}
-    >
-      {icon} 
-    </Box>
-  </Box>
-
-
-  
-  <Box sx={{ gap: 2, p: 3}}  display="flex" 
-    justifyContent="space-between" 
-    alignItems="flex-start"> {/*textAlign: "center"*/}
-
-    <Box>
-        {/*color: "#047857",*/}
-        <Typography sx={{ color: "grey", fontWeight: 600}}> 
-            {title}
-        </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-            {description}
-        </Typography>  
-    </Box>
-    
-    <Typography
-      variant="h5"
-      sx={{
-        color: "primary.main",
-        //color: "#047857",
-        fontWeight: 700,
-      }}
-    >
-      {value}
-    </Typography>
-
-        {/*
-    <Typography variant="caption" color="text.secondary" mt={2} display="block">
-      +2 este mes
-    </Typography>  */}
-
-
-  </Box>
-
-        <Box sx={{ pb: 2, px:2, display: "flex", justifyContent: "flex-end"}}>
+        <Box display="flex" alignItems="center" gap={2}  padding={3}>
+            {icon}
+            <Box>
+                <Typography variant="subtitle1"  mb={1} sx={{color: "#5A5A65", fontWeight: "bold"}}> 
+                    {title}
+                </Typography>
+                {description && (
+                    <Typography variant="body2" color="text.secondary">
+                        {description}
+                    </Typography>
+                )}
+            </Box>
+        </Box>
+        <Divider />
+        <Box display="flex" alignItems="center" justifyContent="space-between" padding={3}>
+            <Box  display="flex" alignItems="baseline" gap={2}> 
+                <Typography color="primary" variant="h6"
+                    sx={{ fontWeight: 700 }}>
+                    {value} 
+                </Typography>
+                {/* <Typography variant="caption" color="text.secondary" mt={2} display="block">
+                    + 2 este mes
+                </Typography> */}
+            </Box>
+            
             {onClick && (
-                <IconButton  //arreglar resposivee------------------------
+                <IconButton
                     onClick={onClick}
                     size="small"
                     sx={{
-                        '&:hover':{color: 'primary.main'}
+                        '&:hover':{
+                            color: 'primary.main',
+                        }
                     }}
                 >
-                    <ChevronRight />
+                    <ChevronRight  fontSize="small"/>
                 </IconButton>
             )}
-
-        </Box>   
-       
+        </Box>
     </Card>
   );
 };

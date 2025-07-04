@@ -1,7 +1,40 @@
+import { SectionHeader } from "../components/SectionHeader";
+//import {  CircularProgress } from "@mui/material";
+import { useDashboard } from "../hooks/useDashboard";
+import { useNavigate } from "react-router-dom";
+import { DashboardCard } from "../components/dashboard/cardDash";
+import { UserRoundCheck, Building2 } from "lucide-react";
+
+
 export default function Dashboard() {
+    //modificar
+    const { empresas, choferes, ultimosViajes, isLoading } = useDashboard();
+    const navigate = useNavigate();
+
     return (
-        <div className="flex flex-col items-center justify-center h-full">
-            Bienvenido al panel de administración de la aplicación.
-        </div>
+        <>
+            <SectionHeader
+                title="Logística Acme SRL"
+                description="Bienvenido al panel de administración de la aplicación."
+            />
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 pb-4 px-0.5 overflow-y-auto max-h-[calc(100vh-120px)] lg:h-max">
+                <DashboardCard 
+                    title="Empresas transportistas"
+                    description="Empresas registradas actualmente"
+                    value={12}
+                    icon={<Building2  color="#AFB3B9"/>}
+                    onClick={() => navigate("/companies")}
+                />
+                <DashboardCard 
+                    title="Choferes"
+                    description="Choferes registrados actualmente"
+                    value={12}
+                    icon={<Building2  color="#AFB3B9"/>}
+                    onClick={() => navigate("/drivers")}
+                />
+            </div>
+            
+ 
+        </>      
     );
 }

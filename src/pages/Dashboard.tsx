@@ -2,7 +2,7 @@ import { SectionHeader } from "../components/SectionHeader";
 //import {  CircularProgress } from "@mui/material";
 import { useDashboard } from "../hooks/useDashboard";
 import { useNavigate } from "react-router-dom";
-import { DashboardCard } from "../components/dashboard/cardDash";
+import { DashboardCard } from "../components/dashboard/CardDash";
 import { UserRoundCheck, Building2 } from "lucide-react";
 
 

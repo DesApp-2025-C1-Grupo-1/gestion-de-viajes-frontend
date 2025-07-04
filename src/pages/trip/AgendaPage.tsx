@@ -27,14 +27,6 @@ export default function AgendaPage() {
     const choferQuery = tipo === "drivers" && id ? useChoferControllerFindOne(id) : undefined;
 
     useEffect(() => {
-        if (tipo === "vehicles" && vehiculoQuery && vehiculoQuery.data) {
-            setEntity(vehiculoQuery.data.data);
-        } else if (tipo === "drivers" && choferQuery && choferQuery.data) {
-            setEntity(choferQuery.data.data);
-        }
-    }, [tipo, vehiculoQuery?.data, choferQuery?.data]);
-
-    useEffect(() => {
         const fetchAgenda = async () => {
             if (!tipo || !id) return;
             const filtro = tipo === "vehicles" ? { vehiculo: id } : { chofer: id };
@@ -54,7 +46,13 @@ export default function AgendaPage() {
         fetchAgenda();
     }, [tipo, id]);
 
-    
+    useEffect(() => {
+        if (tipo === "vehicles" && vehiculoQuery && vehiculoQuery.data) {
+            setEntity(vehiculoQuery.data.data);
+        } else if (tipo === "drivers" && choferQuery && choferQuery.data) {
+            setEntity(choferQuery.data.data);
+        }
+    }, [tipo, vehiculoQuery?.data, choferQuery?.data]);
 
     const handleEventClick = (event: any, e: React.SyntheticEvent) => {
         setSelectedEvent(event);
@@ -84,6 +82,27 @@ export default function AgendaPage() {
     const entityType = tipo === "vehicles" ? "vehículo" : "chofer";
 
     if (!tipo || !id) return <div>Error: Tipo o ID no proporcionados.</div>;
+
+    if (vehiculoQuery?.isLoading || choferQuery?.isLoading) {
+        return <div>Cargando agenda...</div>;
+    }
+
+    if (viajes.length === 0) {
+        return (
+            <SectionHeader
+                title={`Agenda del ${entityType} - ${
+                    entityType === "vehículo"
+                        ? entity && "patente" in entity
+                            ? entity.patente
+                            : ""
+                        : entity && "nombre" in entity && "apellido" in entity
+                            ? `${entity.nombre} ${entity.apellido}`
+                            : ""
+                }`}
+                description={`No hay viajes registrados para este ${entityType}.`}
+            />
+        );
+    }
 
     return (
         <>

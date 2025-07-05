@@ -3,7 +3,7 @@ import { Dayjs } from "dayjs"
 
 export interface TripResumen {
   id: string;
-  fecha_inicio: string; // ISO string desde backend
+  fecha_inicio: string; 
   tipo_viaje: "Nacional" | "Internacional";
 }
 

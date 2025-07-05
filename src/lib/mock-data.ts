@@ -13,24 +13,10 @@ export const mockUltimosViajes: TripResumen[] = [
   },
   {
     id: "VIAJE002",
-    fecha_inicio: "2025-07-02T14:30:00Z",
+    fecha_inicio: "2025-07-03T10:00:00Z",
     tipo_viaje: "Internacional",
   },
-  {
-    id: "VIAJE002",
-    fecha_inicio: "2025-07-02T14:30:00Z",
-    tipo_viaje: "Internacional",
-  },
-  {
-    id: "VIAJE002",
-    fecha_inicio: "2025-07-02T14:30:00Z",
-    tipo_viaje: "Internacional",
-  },
-  {
-    id: "VIAJE002",
-    fecha_inicio: "2025-07-02T14:30:00Z",
-    tipo_viaje: "Internacional",
-  },
+
 ];
 
 /*

@@ -2,10 +2,10 @@ import { SectionHeader } from "../components/SectionHeader";
 //import {  CircularProgress } from "@mui/material";
 import { useDashboard } from "../hooks/useDashboard";
 import { useNavigate } from "react-router-dom";
-import { DashboardCard } from "../components/dashboard/CardDash";
-import { UserRoundCheck, Building2 } from "lucide-react";
-import { TableContainer } from "@mui/material";
+import { UserRoundCheck, Building2, MapPinned, Car } from "lucide-react";
+import { InfoCard } from "../components/dashboard/InfoCard";
 
+import { mockUltimosViajes } from "../lib/mock-data";
 
 export default function Dashboard() {
     //modificar
@@ -19,29 +19,53 @@ export default function Dashboard() {
                 description="Bienvenido al panel de administración de la aplicación."
             />
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 pb-4 px-0.5 overflow-y-auto max-h-[calc(100vh-120px)] lg:h-max">
-                <DashboardCard 
+                <InfoCard 
                     title="Empresas transportistas"
                     description="Empresas registradas actualmente"
-                    value={12}
                     icon={<Building2 className={`size-7 block`} color="#E65F2B"/>} 
+                    value={12}
                     onClick={() => navigate("/companies")}
                 />
-                <DashboardCard 
-                    title="Choferes"
-                    description="Choferes registrados actualmente"
-                    value={7}
-                    icon={<UserRoundCheck className={`size-7 block`} color="#E65F2B"/>}
+                <InfoCard 
+                    title="Nuevos choferes"
+                    description="Ultimos choferes registrados"
+                    icon={<UserRoundCheck className={`size-7 block`} color="#E65F2B"/>} 
+                    value={12}
+                    onClick={() => navigate("/drivers")}
+                />
+                <InfoCard 
+                    title="Vehiculos"
+                    description="Vehiculos registradas actualmente"
+                    icon={<Car className={`size-7 block`} color="#E65F2B"/>} 
+                    value={12}
                     onClick={() => navigate("/drivers")}
                 />
             </div>
 
-            <div className="bg-white rounded-lg overflow-hidden" style={{
-                boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
-                border: "0.5px solid #C7C7C7",}}>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pb-4 px-0.5 overflow-y-auto max-h-[calc(100vh-120px)] lg:h-max">
 
+                <InfoCard 
+                    title="Viajes registrados"
+                    description="Vista previa de los viajes registrados"
+                    icon={<MapPinned className={`size-7 block`} color="#E65F2B"/>} 
+                    list={mockUltimosViajes}
+                    onClick={() => navigate("/trips")}
+                />
+
+                <InfoCard 
+                    title="Viajes registrados"
+                    description="Vista previa de los viajes registrados"
+                    icon={<MapPinned className={`size-7 block`} color="#E65F2B"/>} 
+                    
+                    onClick={() => navigate("/trips")}
+                />
 
             </div>
- 
+
         </>      
     );
+}
+
+function useUltimosViajes(): { data?: never[] | undefined; isLoading: any; } {
+    throw new Error("Function not implemented.");
 }

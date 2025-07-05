@@ -1,5 +1,13 @@
 import { Dayjs } from "dayjs"
 // TODO usar los tipos provistos por orval :)
+
+export interface TripResumen {
+  id: string;
+  fecha_inicio: string; // ISO string desde backend
+  tipo_viaje: "Nacional" | "Internacional";
+}
+
+
 export type VehicleType = {
   _id: string
   name: string

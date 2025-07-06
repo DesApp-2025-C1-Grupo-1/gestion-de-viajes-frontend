@@ -30,7 +30,7 @@ const cardStyles = {
 
 export const InfoCard = ({ title, description, icon, value, list, onClick }: InfoCardProps) => {
     return(
-        <Card sx={cardStyles}>
+        <Card>
             <Box display="flex" alignItems="center" justifyContent="space-between" padding={3}>
                 <Stack direction="row" alignItems="center" gap={1.5}>
                     {icon}

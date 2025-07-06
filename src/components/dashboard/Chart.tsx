@@ -1,22 +1,14 @@
 import { Box, Card, Typography, useTheme } from "@mui/material";
 import { Building2 } from "lucide-react";
-
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { notifySuccess } from '../../services/toast';
 
 
-//mock prueba
+//mock prueba (sacar)
 export const masViajesPorEmpresa = [
   { name: "Transporte Sur", viajes: 54 },
   { name: "Logística Norte", viajes: 78 },
-  { name: "Camiones Rápidos", viajes: 102 },
+  { name: "Camiones Rápidos", viajes: 103 },
 ];
 
 
@@ -44,24 +36,26 @@ export default function TopEmpresasChart () {
             </Typography>
         </Box>
 
-        <Box sx={{ height: 260, px: 2, pb: 2 }}>
+        <Box sx={{ height: 260, px: 3, pb: 2 }}>
             <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={masViajesPorEmpresa} layout="vertical" margin={{ left: 50 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} />
-                <XAxis type="number" stroke={theme.palette.text.secondary} />
-                <YAxis
-                    dataKey="name"
-                    type="category"
-                    stroke={theme.palette.text.secondary}
-                />
-                <Tooltip
-                    contentStyle={{
-                    backgroundColor: theme.palette.background.paper,
-                    border: `1px solid ${theme.palette.divider}`,
-                    color: theme.palette.text.primary,
-                    }}
-                />
-                <Bar dataKey="viajes" fill={theme.palette.primary.main} barSize={20} />
+                <BarChart data={masViajesPorEmpresa} layout="vertical" margin={{left:40, right:40}}>
+                    <CartesianGrid strokeDasharray="2 2" stroke={theme.palette.divider} />
+                    <XAxis type="number" stroke={theme.palette.text.secondary} tick={{ fontFamily: theme.typography.fontFamily, fontSize: 12 }}/>
+                    <YAxis
+                        dataKey="name"
+                        type="category"
+                        stroke={theme.palette.text.secondary}
+                        tick={{ fontFamily: theme.typography.fontFamily, fontSize: 14 }}
+                    />
+                    <Tooltip
+                        contentStyle={{
+                            border: `0.5px solid ${theme.palette.divider}`,
+                            color: theme.palette.text.secondary,
+                            borderRadius: 8,
+                            boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.1)",
+                        }}
+                    />
+                    <Bar dataKey="viajes" fill="#00A86B" barSize={20} radius={[0, 8, 8, 0]}/>
                 </BarChart>
             </ResponsiveContainer>
         </Box>   

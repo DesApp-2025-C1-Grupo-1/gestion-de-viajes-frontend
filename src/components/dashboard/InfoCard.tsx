@@ -1,20 +1,10 @@
-import {
-  Card, 
-  Typography,
-  List,
-  ListItem,
-  ListItemText,
-  Chip,
-  IconButton,
-  Divider,
-  Box
-} from "@mui/material";
-
-import { ChevronRight, MapPinned } from "lucide-react";
+import { Card, Typography, List, ListItem, ListItemText, IconButton, Divider, Box } from "@mui/material";
+import { ChevronRight } from "lucide-react";
 import { ReactNode } from 'react';
+import { TripType } from "../../components/TripType";
+
 
 //mock sacar
-import { TripType } from "../../components/TripType";
 import { TripResumen } from "../../types";
 
 interface InfoCardProps {
@@ -22,7 +12,7 @@ interface InfoCardProps {
   description?: string;
   icon: ReactNode;
   value?: number;
-  list?: TripResumen[];
+  list?: TripResumen[];//any[]
   onClick?: () => void;
 }
 
@@ -41,7 +31,6 @@ export const InfoCard = ({ title, description, icon, value, list, onClick }: Inf
                 transition: "box-shadow 0.3s ease",
             }}
             >
-
             <Box display="flex" alignItems="center" gap={2} padding={3}>
                 {icon}
                 <Box>
@@ -55,64 +44,57 @@ export const InfoCard = ({ title, description, icon, value, list, onClick }: Inf
                 )}
                 </Box>
             </Box>
-
             {value !== undefined && (
                 <>
                 <Divider />
                 <Box display="flex" alignItems="center" justifyContent="space-between" padding={3}>
                     <Typography color="primary" variant="h6" sx={{ fontWeight: 700 }}>
-                    {value}
+                        {value}
                     </Typography>
                     {onClick && (
-                    <IconButton
-                        onClick={onClick}
-                        size="small"
-                        sx={{
-                        '&:hover': {
-                            color: 'primary.main',
-                        },
-                        }}
-                    >
-                        <ChevronRight fontSize="small" />
-                    </IconButton>
+                        <IconButton
+                            onClick={onClick}
+                            size="small"
+                            sx={{
+                            '&:hover': { color: 'primary.main', },
+                            }}
+                        >
+                            <ChevronRight fontSize="small" />
+                        </IconButton>
                     )}
                 </Box>
                 </>
             )}
-
-
             {list && (
                 <>
-                <List>
-                    {list.map((trip) => (
-                    <ListItem key={trip.id}>
-                        <ListItemText
-                        primary={`#${trip.id.slice(0, 8)}...`}
-                        secondary={`Inicio: ${new Date(trip.fecha_inicio).toLocaleDateString()}`}
-                        />
-                        <TripType tipo={trip.tipo_viaje} />
-                    </ListItem>
-                    ))}
-                </List>
-                {onClick && (
-                    <Box textAlign="right">
-                    <IconButton
-                        onClick={onClick}
-                        size="small"
-                        sx={{
-                        '&:hover': {
-                            color: 'primary.main',
-                        },
-                        }}
-                    >
-                        <ChevronRight fontSize="small" />
-                    </IconButton>
-                    </Box>
-                )}
+                <Box padding={3} paddingTop={0}>
+                    <List disablePadding>
+                        {list.map((trip) => (
+                        <ListItem disableGutters key={trip.id}   sx={{ alignItems: "flex-start", justifyContent: "space-between" }}>
+                            <Box>
+                                <Typography variant="subtitle1" sx={{ color: "#5A5A65", fontWeight: "450" }}>{trip.id.slice(0, 10)}...</Typography>
+                                <Typography variant="caption" color="text.secondary">Inicio: {new Date(trip.fecha_inicio).toLocaleDateString()}</Typography>
+                            </Box>
+                            <TripType tipo={trip.tipo_viaje} />
+                        </ListItem>
+                        ))}
+                    </List>
+                    {onClick && (
+                        <Box textAlign="right">
+                        <IconButton
+                            onClick={onClick}
+                            size="small"
+                            sx={{
+                                '&:hover': { color: 'primary.main', },
+                            }}
+                        >
+                            <ChevronRight fontSize="small" />
+                        </IconButton>
+                        </Box>
+                    )}
+                </Box>
                 </>
             )}
-
-
         </Card>
     );
 }

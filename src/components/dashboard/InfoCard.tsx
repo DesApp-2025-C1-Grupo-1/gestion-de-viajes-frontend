@@ -1,4 +1,4 @@
-import { Card, Typography, List, ListItem, IconButton, Divider, Box, Badge } from "@mui/material";
+import { Card, Typography, List, ListItem, IconButton, Divider, Box, Badge, Stack } from "@mui/material";
 import { ChevronRight, Palette } from "lucide-react";
 import { ReactNode } from 'react';
 import { TripType } from "../../components/TripType";
@@ -15,56 +15,41 @@ interface InfoCardProps {
   onClick?: () => void;
 }
 
+const cardStyles = {
+  width: "100%",
+  minHeight: 150,
+  boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.1)",
+  borderRadius: 2,
+  overflow: "hidden",
+  flexDirection: "column",
+  justifyContent: "space-between",
+  '&:hover': { boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.15)" },
+  transition: "box-shadow 0.3s ease",
+};
+
+
 export const InfoCard = ({ title, description, icon, value, list, onClick }: InfoCardProps) => {
     return(
-        <Card
-            sx={{
-                width: "100%",
-                minHeight: 150,
-                boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.1)",
-                borderRadius: 2,
-                overflow: "hidden",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                '&:hover': { boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.15)" },
-                transition: "box-shadow 0.3s ease",
-            }}
-        >
+        <Card sx={cardStyles}>
             <Box display="flex" alignItems="center" justifyContent="space-between" padding={3}>
-                <Box display="flex" alignItems="center" gap={1.5}>
+                <Stack direction="row" alignItems="center" gap={1.5}>
                     {icon}
                     <Typography variant="subtitle1" sx={{ color: "#5A5A65", fontWeight: "bold" }}>
                         {title}
                     </Typography>
-                </Box>
-                {onClick && (
-                    <IconButton
-                        onClick={onClick}
-                        size="small"
-                        sx={{
-                            '&:hover': { color: 'primary.main', },
-                        }}
-                    >
-                        <ChevronRight fontSize="small" />
-                    </IconButton>
+                </Stack>
+                {value !== undefined && onClick && (
+                <IconButton onClick={onClick} size="small" sx={{ '&:hover': { color: 'primary.main' } }} >
+                    <ChevronRight fontSize="small" />
+                </IconButton>
                 )}
             </Box>
+            {value !== undefined && <Divider />}
             {value !== undefined && (
-                <>
-                <Divider />
                 <Box display="flex" alignItems="center" justifyContent="space-between" padding={3}>
-                    <Box  gap={1} display="flex"
-                        flexDirection="column"
-                        alignItems="center"
-                        flexGrow={1} 
-                    >
-                        <Typography color="primary" variant="h6" 
-                            sx={{
-                                fontWeight: 700,
-                                lineHeight: 1.2, 
-                                transition: "transform 0.2s ease-in-out",
-                                "&:hover": { transform: "scale(1.05)" } 
-                            }}
+                    <Box display="flex" alignItems="center" justifyContent="center" gap={1} flexGrow={1}>
+                        <Typography color="primary" variant="h6"
+                            sx={{fontWeight: 700, lineHeight: 1.2, transition: "transform 0.2s ease-in-out", "&:hover": { transform: "scale(1.05)" }, }}
                         >
                             {value}
                         </Typography>
@@ -75,13 +60,12 @@ export const InfoCard = ({ title, description, icon, value, list, onClick }: Inf
                         )}
                     </Box>
                 </Box>
-                </>
             )}
             {list && (
                 <>
                 <Box padding={3} paddingTop={0}>
                     <List disablePadding>
-                        {/*index temporal*/}
+                        {/*index temporal nose ver*/}
                         {list.map((trip, index) => (
                         <ListItem disableGutters key={trip.id} sx={{ alignItems: "flex-start", justifyContent: "space-between" }}>
                             <Box>
@@ -94,15 +78,9 @@ export const InfoCard = ({ title, description, icon, value, list, onClick }: Inf
                     </List>
                     {onClick && (
                         <Box textAlign="right">
-                            {/*<IconButton
-                                onClick={onClick}
-                                size="small"
-                                sx={{
-                                    '&:hover': { color: 'primary.main', },
-                                }}
-                            >
-                            <ChevronRight fontSize="small" />
-                        </IconButton>*/}
+                            <Typography variant="body2" sx={{ color: 'primary.main', fontWeight: 500, cursor: 'pointer' }} onClick={onClick}>
+                                Ver más
+                            </Typography>
                         </Box>
                     )}
                 </Box>
@@ -111,16 +89,3 @@ export const InfoCard = ({ title, description, icon, value, list, onClick }: Inf
         </Card>
     );
 }
-
-
-
-{/*<Box>
-                <Typography variant="subtitle1" sx={{ color: "#5A5A65", fontWeight: "bold" }}>
-                    {title}
-                </Typography>
-                {/*{description && (
-                    <Typography variant="body2" color="text.secondary">
-                    {description}
-                    </Typography>
-                )}
-                </Box>*/}

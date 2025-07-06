@@ -23,22 +23,22 @@ export default function Dashboard() {
             <div className="flex-1 overflow-y-auto px-4 py-2">   
                 <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 pb-4 px-0.5">
                     <InfoCard 
-                        title="Empresas transportistas"
+                        title="Transportistas"
                         description="empresas registradas"
                         icon={<Building2 className={`size-7 block`} color="#E65F2B"/>} 
                         value={12}
                         onClick={() => navigate("/companies")}
                     />
                     <InfoCard 
-                        title="Nuevos choferes"
+                        title="Choferes"
                         description="nuevos registros"
                         icon={<UserRoundCheck className={`size-7 block`} color="#E65F2B"/>} 
                         value={7}
                         onClick={() => navigate("/drivers")}
                     />
                     <InfoCard 
-                        title="Vehiculos"
-                        description="Vehiculos registrados"
+                        title="Flota de Vehiculos"
+                        description="vehiculos registrados"
                         icon={<Car className={`size-7 block`} color="#E65F2B"/>} 
                         value={36}
                         onClick={() => navigate("/drivers")}

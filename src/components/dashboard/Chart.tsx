@@ -36,7 +36,7 @@ export default function TopEmpresasChart () {
             </Typography>
         </Box>
 
-        <Box sx={{ height: 260, px: 3, pb: 2 }}>
+        <Box sx={{ height: 260, px: 3, pb: 2, '& *:focus': {outline: 'none'} }}>
             <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={masViajesPorEmpresa} layout="vertical" margin={{left:40, right:40}}>
                     <CartesianGrid strokeDasharray="2 2" stroke={theme.palette.divider} />
@@ -59,7 +59,6 @@ export default function TopEmpresasChart () {
                 </BarChart>
             </ResponsiveContainer>
         </Box>   
-
     </Card>
   );
 }

@@ -12,6 +12,7 @@ import DriverPage from "./pages/driver/driverPage";
 import DriverFormPage from "./pages/driver/DriverForm";
 import TripPage from "./pages/trip/TripPage";
 import TripFormPage from "./pages/trip/TripForm";
+import AgendaPage from "./pages/trip/AgendaPage";
 
 export function AppRouter() {
   return (
@@ -34,6 +35,7 @@ export function AppRouter() {
         <Route path="/trips" element={<TripPage />} />
         <Route path="/trips/form" element={<TripFormPage />} />
         <Route path="/trips/edit/:id" element={<TripFormPage />} />
+        <Route path="/agenda/:tipo/:id" element={<AgendaPage />} />
       </Route>
     </Routes>
   );

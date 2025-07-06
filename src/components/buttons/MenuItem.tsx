@@ -8,9 +8,10 @@ interface MenuItemProps{
     id:string;
     children?: React.ReactNode;
     handleOpenDetails?: () => void;
+    titleItem?: string;
 }
 
-export default function MenuItem({handleOpenDialog, id, children, handleOpenDetails}: MenuItemProps){
+export default function MenuItem({handleOpenDialog, id, children, handleOpenDetails, titleItem = "Detalles"}: MenuItemProps){
     const navigate = useNavigate();
     const location = useLocation();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -96,7 +97,7 @@ export default function MenuItem({handleOpenDialog, id, children, handleOpenDeta
                             <ListItemIcon sx={{ minWidth: 20 }}>
                                 {children}
                             </ListItemIcon>
-                            <ListItemText primary="Detalles" primaryTypographyProps={{ fontSize: 13, color: "#4B5563" }} />
+                            <ListItemText primary={titleItem} primaryTypographyProps={{ fontSize: 13, color: "#4B5563" }} />
                         </ListItemButton>
                     )}
                 </List>

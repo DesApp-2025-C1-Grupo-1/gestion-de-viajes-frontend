@@ -11,7 +11,7 @@ import { choferControllerRemove, ChoferDto, useChoferControllerFindAll } from ".
 import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { DoubleCell } from "../../components/DoubleCell";
-import { Phone, Mail, Building2, Car } from "lucide-react";
+import { Phone, Mail, Building2, Car, CalendarDays } from "lucide-react";
 
 
 import { formatTelefono } from "../../lib/formatters";
@@ -136,9 +136,15 @@ export default function DriverPage(){
                                         </TableCell>
 
                                         <TableCell sx={{ verticalAlign: "middle"}}>
-                                            <MenuItem  handleOpenDialog={() => handleOpenDialog(driver)}
-                                            id={driver._id}
-                                            /></TableCell>
+                                            <MenuItem  
+                                                handleOpenDialog={() => handleOpenDialog(driver)}
+                                                handleOpenDetails={() => navigate(`/agenda/drivers/${driver._id}`)}
+                                                titleItem="Agenda"
+                                                id={driver._id}
+                                            >
+                                                <CalendarDays size={18} className="text-gray-500" />
+                                            </MenuItem>
+                                        </TableCell>
                                     </TableRow>
                                 ))
                             )}

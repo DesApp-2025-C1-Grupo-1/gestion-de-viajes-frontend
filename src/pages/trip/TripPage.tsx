@@ -93,8 +93,6 @@ export default function TripPage() {
             });
             const responseData = res.data
 
-            console.log("Response Data:", responseData);
-            console.log("Filters Applied:", appliedFilters);
             setTrips(responseData.data); // Ajustá si hay paginación en backend
             setTotal(responseData.total);
         } catch (err) {

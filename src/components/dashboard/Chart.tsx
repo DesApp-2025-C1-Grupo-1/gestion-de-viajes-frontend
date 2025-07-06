@@ -55,7 +55,7 @@ export default function TopEmpresasChart () {
                             boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.1)",
                         }}
                     />
-                    <Bar dataKey="viajes" fill="#00A86B" barSize={20} radius={[0, 8, 8, 0]}/>
+                    <Bar dataKey="viajes" fill="#00A86B" barSize={20} />
                 </BarChart>
             </ResponsiveContainer>
         </Box>   

@@ -31,12 +31,72 @@ import type {
   AxiosResponse
 } from 'axios';
 
+export type CreateTipoVehiculoDtoLicenciasPermitidasItem = typeof CreateTipoVehiculoDtoLicenciasPermitidasItem[keyof typeof CreateTipoVehiculoDtoLicenciasPermitidasItem];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const CreateTipoVehiculoDtoLicenciasPermitidasItem = {
+  A11: 'A1.1',
+  A12: 'A1.2',
+  A13: 'A1.3',
+  A14: 'A1.4',
+  A21: 'A2.1',
+  A22: 'A2.2',
+  A3: 'A3',
+  B1: 'B1',
+  B2: 'B2',
+  C1: 'C1',
+  C2: 'C2',
+  C3: 'C3',
+  D1: 'D1',
+  D2: 'D2',
+  D3: 'D3',
+  D4: 'D4',
+  E1: 'E1',
+  E2: 'E2',
+  F: 'F',
+  G1: 'G1',
+  G2: 'G2',
+  G3: 'G3',
+} as const;
+
 export interface CreateTipoVehiculoDto {
   /** Nombre del tipo de vehículo */
   nombre: string;
   /** Descripción del tipo de vehículo */
   descripcion: string;
+  /** Licencia  requerida para este tipo de vehículo según la clasificación nacional */
+  licencias_permitidas: CreateTipoVehiculoDtoLicenciasPermitidasItem[];
 }
+
+export type TipoVehiculoDtoLicenciasPermitidasItem = typeof TipoVehiculoDtoLicenciasPermitidasItem[keyof typeof TipoVehiculoDtoLicenciasPermitidasItem];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const TipoVehiculoDtoLicenciasPermitidasItem = {
+  A11: 'A1.1',
+  A12: 'A1.2',
+  A13: 'A1.3',
+  A14: 'A1.4',
+  A21: 'A2.1',
+  A22: 'A2.2',
+  A3: 'A3',
+  B1: 'B1',
+  B2: 'B2',
+  C1: 'C1',
+  C2: 'C2',
+  C3: 'C3',
+  D1: 'D1',
+  D2: 'D2',
+  D3: 'D3',
+  D4: 'D4',
+  E1: 'E1',
+  E2: 'E2',
+  F: 'F',
+  G1: 'G1',
+  G2: 'G2',
+  G3: 'G3',
+} as const;
 
 export interface TipoVehiculoDto {
   /** ID del tipo de vehículo */
@@ -45,6 +105,8 @@ export interface TipoVehiculoDto {
   nombre: string;
   /** Descripción del tipo de vehículo */
   descripcion: string;
+  /** licencias permitidas según la clasificación nacional */
+  licencias_permitidas: TipoVehiculoDtoLicenciasPermitidasItem[];
 }
 
 export interface UpdateTipoVehiculoDto { [key: string]: unknown }
@@ -304,9 +366,9 @@ export interface UpdateChoferDto { [key: string]: unknown }
 
 export interface CreateViajeDto {
   /** Fecha y hora de inicio del viaje */
-  fecha_inicio: Date;
+  fecha_inicio: string;
   /** Fecha y hora estimada de llegada */
-  fecha_llegada: Date;
+  fecha_llegada: string;
   /** Tipo de viaje */
   tipo_viaje: string;
   /** ID del depósito de origen */
@@ -346,9 +408,9 @@ export interface ViajeDto {
   /** ID del viaje */
   _id: string;
   /** Fecha y hora de inicio del viaje */
-  fecha_inicio: Date;
+  fecha_inicio: string;
   /** Fecha y hora de llegada */
-  fecha_llegada: Date;
+  fecha_llegada: string;
   /** Tipo de viaje */
   tipo_viaje: string;
   /** ID del depósito de origen */
@@ -372,9 +434,9 @@ export interface PaginacionDto {
 
 export interface UpdateViajeDto {
   /** Fecha y hora de inicio del viaje */
-  fecha_inicio?: Date;
+  fecha_inicio?: string;
   /** Fecha y hora estimada de llegada */
-  fecha_llegada?: Date;
+  fecha_llegada?: string;
   /** Tipo de viaje */
   tipo_viaje?: string;
   /** ID del depósito de origen */

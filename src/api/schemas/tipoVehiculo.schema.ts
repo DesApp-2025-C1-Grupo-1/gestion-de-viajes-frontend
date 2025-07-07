@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { CreateTipoVehiculoDto, TipoVehiculoDto, UpdateTipoVehiculoDto } from "../generated";
 import { ObjectIdSchema } from "./commons";
-
+import { tipoLicenciaSchema } from "./enums/tipoLicencia.schema";
 
 export const createTipoVehiculoSchema = z.object({
   nombre: z.string()
@@ -9,8 +9,10 @@ export const createTipoVehiculoSchema = z.object({
     .max(50, "Máximo 50 caracteres")
     .refine(val => val.trim().length > 0, "No puede contener solo espacios"),
   descripcion: z.string()
-    .max(200, "Máximo 200 caracteres")
-}) satisfies z.ZodType<CreateTipoVehiculoDto>;
+    .max(200, "Máximo 200 caracteres"),
+  licencias_permitidas: tipoLicenciaSchema,
+}) satisfies z.ZodType<Pick<CreateTipoVehiculoDto, 'nombre' | 'descripcion'> & { licencias_permitidas: string }>;
+//satisfies z.ZodType<CreateTipoVehiculoDto>;
 
 export const updateTipoVehiculoSchema = z.object({
   nombre: z.string()
@@ -28,7 +30,8 @@ export const updateTipoVehiculoSchema = z.object({
 export const tipoVehiculoSchema = z.object({
   _id: ObjectIdSchema,
   nombre: z.string(),
-  descripcion: z.string()
+  descripcion: z.string(),
+  licencias_permitidas: z.array(tipoLicenciaSchema),
 }) satisfies z.ZodType<TipoVehiculoDto>;
 
 // Tipos inferidos

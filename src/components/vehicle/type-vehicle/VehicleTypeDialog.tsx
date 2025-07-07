@@ -1,9 +1,10 @@
-import { Dialog, DialogContent, DialogTitle, TextField, DialogActions, Button, FormHelperText } from "@mui/material";
+import { Dialog, DialogContent, DialogTitle, TextField, DialogActions, Button, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { TipoVehiculoDto } from "../../../api/generated";
 import { useForm } from "react-hook-form";
 import { CreateTipoVehiculoForm, createTipoVehiculoSchema, tipoVehiculoSchema } from "../../../api/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
+
 
 interface VehicleTypeDialogProps {
   open: boolean;
@@ -11,6 +12,8 @@ interface VehicleTypeDialogProps {
   onSubmit: (formData: Partial<TipoVehiculoDto>) => void;
   editingType?: TipoVehiculoDto | null;
 }
+
+const licencia_base = tipoVehiculoSchema.shape.licencias_permitidas.element.options;
 
 export const VehicleTypeDialog = ({ open, onClose, onSubmit, editingType }: VehicleTypeDialogProps) => {
   const {
@@ -24,6 +27,7 @@ export const VehicleTypeDialog = ({ open, onClose, onSubmit, editingType }: Vehi
     defaultValues: {
       nombre: "",
       descripcion: "",
+      licencias_permitidas: "C1",
     },
   })
 
@@ -32,17 +36,23 @@ export const VehicleTypeDialog = ({ open, onClose, onSubmit, editingType }: Vehi
       reset({
         nombre: editingType.nombre,
         descripcion: editingType.descripcion || "",
+        licencias_permitidas: editingType.licencias_permitidas?.[0] ?? "",
       });
     } else {
       reset({
         nombre: "",
         descripcion: "",
+        licencias_permitidas: "C1",
       });
     }
   }, [open, reset]);
 
   const handleFormSubmit = (data: CreateTipoVehiculoForm) => {
-    onSubmit(data);
+    //onSubmit(data);
+    onSubmit({
+      ...data,
+      licencias_permitidas: [data.licencias_permitidas]
+    });
   };
 
   return (
@@ -82,6 +92,24 @@ export const VehicleTypeDialog = ({ open, onClose, onSubmit, editingType }: Vehi
               style: { height: "100px"},
             }}
           />
+
+          <TextField
+            id="licencias_permitidas"
+            label="Licencia base"
+            select
+            {...register("licencias_permitidas")}
+            error={!!errors.licencias_permitidas}
+            helperText={errors.licencias_permitidas?.message}
+            fullWidth
+            margin="normal"
+            variant="outlined"
+          >
+            {licencia_base.map((lic) => (
+              <MenuItem key={lic} value={lic}>
+                {lic}
+              </MenuItem>
+            ))}
+          </TextField>
         
         </DialogContent>
         <DialogActions>

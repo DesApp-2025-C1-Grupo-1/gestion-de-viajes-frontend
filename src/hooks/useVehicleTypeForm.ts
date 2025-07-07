@@ -32,7 +32,8 @@ export const useTipoVehiculo = () => {
       // Asegurar que descripcion no sea undefined
       const dataToSend = {
         nombre: formData.nombre,
-        descripcion: formData.descripcion || "" // Fallback a string vacío
+        descripcion: formData.descripcion || "", // Fallback a string vacío
+        licencias_permitidas: [formData.licencias_permitidas], //licencias------------
       };
       await tipoVehiculoControllerCreate(dataToSend);
       notify("create");

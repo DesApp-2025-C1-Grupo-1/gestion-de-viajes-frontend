@@ -5,10 +5,12 @@ import { TripType } from "../../components/TripType";
 
 //mock sacar
 import { TripResumen } from "../../types";
+import { DoubleCell } from "../DoubleCell";
 
 interface InfoCardProps {
   title: string;
   description?: string;
+  subDescription?: string;
   icon: ReactNode;
   value?: number;
   list?: TripResumen[];//any[]
@@ -28,7 +30,7 @@ const cardStyles = {
 };
 
 
-export const InfoCard = ({ title, description, icon, value, list, onClick }: InfoCardProps) => {
+export const InfoCard = ({ title, description, icon, value, list, onClick, subDescription }: InfoCardProps) => {
     return(
         <Card>
             <Box display="flex" alignItems="center" justifyContent="space-between" padding={3}>
@@ -46,20 +48,26 @@ export const InfoCard = ({ title, description, icon, value, list, onClick }: Inf
             </Box>
             {value !== undefined && <Divider />}
             {value !== undefined && (
-                <Box display="flex" alignItems="center" justifyContent="space-between" padding={3}>
+                <Box display="flex" flexDirection="column" alignItems="center" padding={3}>
                     <Box display="flex" alignItems="center" justifyContent="center" gap={1} flexGrow={1}>
                         <Typography color="primary" variant="h6"
                             sx={{fontWeight: 700, lineHeight: 1.2, transition: "transform 0.2s ease-in-out", "&:hover": { transform: "scale(1.05)" }, }}
                         >
                             {value}
                         </Typography>
-                        {description && (
-                            <Typography variant="body2" color="text.secondary">
-                                {description}
-                            </Typography>
+                        <Typography  color="text.primary" sx={{ color: "#5A5A65",  fontWeight: "450"}}> 
+                            {description}
+                        </Typography>    
+                    </Box>
+                    <Box pt={1}>
+                         {subDescription && (          
+                            <Typography variant="body2" color="text.secondary"> 
+                                {subDescription} 
+                            </Typography> 
                         )}
                     </Box>
                 </Box>
+                
             )}
             {list && (
                 <>
@@ -89,3 +97,15 @@ export const InfoCard = ({ title, description, icon, value, list, onClick }: Inf
         </Card>
     );
 }
+
+
+ {/*<Typography variant="body2" color="text.secondary"> 
+                                {description} 
+                                {subDescription} 
+                            </Typography> */}
+
+
+                            {/*<DoubleCell 
+                                primarySection={description}
+                                secondarySection={subDescription}
+                            />*/}

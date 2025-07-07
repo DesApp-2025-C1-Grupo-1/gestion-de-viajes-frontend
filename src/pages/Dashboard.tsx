@@ -25,13 +25,15 @@ export default function Dashboard() {
                     <InfoCard 
                         title="Transportistas"
                         description="empresas registradas"
+                        subDescription="(+6 esta semana)"
                         icon={<Building2 className={`size-7 block`} color="#E65F2B"/>} 
                         value={12}
                         onClick={() => navigate("/companies")}
                     />
                     <InfoCard 
                         title="Choferes"
-                        description="nuevos registros"
+                        description="choferes registrados"
+                        subDescription="(+3 esta semana)"
                         icon={<UserRoundCheck className={`size-7 block`} color="#E65F2B"/>} 
                         value={7}
                         onClick={() => navigate("/drivers")}
@@ -39,6 +41,7 @@ export default function Dashboard() {
                     <InfoCard 
                         title="Flota de Vehiculos"
                         description="vehiculos registrados"
+                        subDescription="(+10 esta semana)"
                         icon={<Car className={`size-7 block`} color="#E65F2B"/>} 
                         value={36}
                         onClick={() => navigate("/drivers")}

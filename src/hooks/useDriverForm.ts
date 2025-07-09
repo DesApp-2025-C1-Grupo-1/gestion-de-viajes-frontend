@@ -32,9 +32,7 @@ export const useDriverForm = (id?: string) => {
       nombre: "",
       apellido: "",
       dni: undefined,
-
       fecha_nacimiento: undefined,
-
       licencia: "",
       tipo_licencia: licenciasValidas[0],
       telefono: {
@@ -99,7 +97,7 @@ export const useDriverForm = (id?: string) => {
   };
 
   const onSubmit = async(FormData: CreateChoferSchema | UpdateChoferSchema) => {
-    console.log("Datos del formulario:", data);
+    //console.log("Datos del formulario:", data);
     const selectedVehicle = vehiculos?.data?.find(v => v._id === FormData.vehiculo);
     
     if (!selectedVehicle) {
@@ -110,7 +108,7 @@ export const useDriverForm = (id?: string) => {
       });
       return;
     }
-    const licenciasCompatibles = selectedVehicle.tipo.licencias_permitidas; 
+    const licenciasCompatibles = selectedVehicle.tipo.licencias_permitidas || []; 
     
     if (!licenciasCompatibles.includes(FormData.licencia as TipoVehiculoDtoLicenciasPermitidasItem)) {
       setError("vehiculo", {

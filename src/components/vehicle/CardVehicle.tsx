@@ -3,12 +3,13 @@ import { Edit, Package, Trash2, Truck } from "lucide-react";
 interface CardVehicleProps {
     name: string;
     description: string;
+    licenciasValidas?: string[];
     handleEdit?: () => void;
     handleDelete?: () => void;
 }
 
 
-export default function CardVehicle({ name, description, handleEdit, handleDelete}: CardVehicleProps) { 
+export default function CardVehicle({ name, description, handleEdit, handleDelete, licenciasValidas}: CardVehicleProps) { 
     
     return(
         <div className="flex justify-between flex-col gap-4  w-full  shadow-sm bg-white  rounded-lg hover:shadow-lg transition-shadow duration-200">
@@ -20,6 +21,10 @@ export default function CardVehicle({ name, description, handleEdit, handleDelet
             <article className="flex flex-col gap-2.5 w-full px-4 pt-2 pb-3">
                 <h2 className="text-lg text-title-type font-semibold">{name}</h2>
                 <p className="text-sm">{description}</p>
+                <div className="flex flex-col space-y-0.5">
+                    <p className="text-sm font-semibold mb-1">Licencias Válidas:</p>
+                    <p className="text-sm">{licenciasValidas?.join(', ')}</p>
+                </div>
             </article>
             <footer className="flex h-max  items-center justify-end gap-4 px-4 py-3 border-t border-gray-200">
                 <button className="flex gap-1 items-center text-xs font-medium px-2.5 py-2 rounded-md border border-line hover:text-white hover:bg-line transition-colors duration-200"

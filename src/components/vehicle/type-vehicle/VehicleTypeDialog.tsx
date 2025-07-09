@@ -6,12 +6,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { tipoLicenciaSchema } from "../../../api/schemas/enums/tipoLicencia.schema";
 
-
 interface VehicleTypeDialogProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (formData: CreateTipoVehiculoForm) => void;
-
+  //onSubmit: (formData: CreateTipoVehiculoForm) => void;
+  onSubmit: (formData: { licencias_permitidas: string } & Omit<CreateTipoVehiculoForm, 'licencias_permitidas'>) => void;
   editingType?: TipoVehiculoDto | null;
 }
 
@@ -21,6 +20,7 @@ export const VehicleTypeDialog = ({ open, onClose, onSubmit, editingType }: Vehi
     handleSubmit,
     formState: { errors , isValid, isSubmitting},
     reset,
+    watch, //ver
   } = useForm<CreateTipoVehiculoForm>({
     resolver: zodResolver(createTipoVehiculoSchema),
     mode: "onBlur",
@@ -36,7 +36,7 @@ export const VehicleTypeDialog = ({ open, onClose, onSubmit, editingType }: Vehi
       reset({
         nombre: editingType.nombre,
         descripcion: editingType.descripcion || "",
-        licencias_permitidas: editingType.licencias_permitidas?.[0] ?? "C1"
+        licencias_permitidas: editingType.licencias_permitidas?.[0] || "C1"
       });
     } else {
       reset({
@@ -92,6 +92,7 @@ export const VehicleTypeDialog = ({ open, onClose, onSubmit, editingType }: Vehi
             select
             label="Licencia base"
             {...register("licencias_permitidas")}
+            value={watch("licencias_permitidas")}  //ver
             error={!!errors.licencias_permitidas}
             helperText={errors.licencias_permitidas?.message}
           >

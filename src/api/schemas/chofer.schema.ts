@@ -1,7 +1,7 @@
 import { z } from "zod"
 import { CreateTelefonoSchema} from "./base/telefono.schema"
 import { tipoLicenciaSchema } from "./enums/tipoLicencia.schema"
-import { DateSchema, RequireSelectSchema, LicenciaVehiculoSchema } from "./commons"
+import { DateSchema, RequireSelectSchema } from "./commons"
 
 export const createChoferSchema = z.object({
   nombre: z.string().min(1, "El nombre es obligatorio"),
@@ -35,8 +35,6 @@ export const createChoferSchema = z.object({
   telefono: CreateTelefonoSchema,
 })
 
-
-
 export const choferSchema = createChoferSchema.extend({
   _id: z.string().regex(/^[a-f\d]{24}$/i, "ID de chofer inválido"),
 })
@@ -44,7 +42,3 @@ export const choferSchema = createChoferSchema.extend({
 export type CreateChoferSchema = z.infer<typeof createChoferSchema>
 export type UpdateChoferSchema = z.infer<typeof choferSchema>
 export type ChoferSchema = z.infer<typeof choferSchema>
-
-function superRefine(arg0: (data: any, ctx: any) => void) {
-  throw new Error("Function not implemented.")
-}

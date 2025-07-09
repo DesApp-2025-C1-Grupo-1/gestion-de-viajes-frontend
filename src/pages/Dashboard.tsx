@@ -43,7 +43,7 @@ export default function Dashboard() {
                         subDescription={estadisticasRecientes?.vehiculos}
                         icon={<Car className={`size-7 block`} color="#E65F2B"/>} 
                         value={totalVehiculos}
-                        onClick={() => navigate("/drivers")}
+                        onClick={() => navigate("/vehicles")}
                     />
                 </div>
 

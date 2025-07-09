@@ -13,7 +13,7 @@ export default function TopEmpresasChart () {
   const theme = useTheme();
 
   return (
-    <Card>
+    <Card className="h-full">
         <Box display="flex" alignItems="center" gap={2} padding={3}> 
             <Building2 className={`size-7 block`} color="#E65F2B"/> 
             <Typography variant="subtitle1" sx={{ color: "#5A5A65", fontWeight: "bold" }}>

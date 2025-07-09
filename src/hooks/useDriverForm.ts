@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useNotify } from "./useNotify";
-import { CreateChoferDto, choferControllerCreate, UpdateChoferDto, useChoferControllerFindOne, choferControllerUpdate, useEmpresaControllerFindAll, useVehiculoControllerFindAll, VehiculoDto } from '../api/generated';
+import { CreateChoferDto, choferControllerCreate, UpdateChoferDto, useChoferControllerFindOne, choferControllerUpdate, useEmpresaControllerFindAll, useVehiculoControllerFindAll, VehiculoDto, TipoVehiculoDtoLicenciasPermitidasItem } from '../api/generated';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";;
 import { CreateChoferSchema, UpdateChoferSchema, createChoferSchema} from '../api/schemas/chofer.schema';
@@ -21,6 +21,8 @@ export const useDriverForm = (id?: string) => {
     watch,
     resetField,
     trigger,
+    setError,
+    clearErrors,
     formState: { errors: formErrors , isValid,isSubmitting},
   } = useForm<CreateChoferSchema>({
     resolver: zodResolver(createChoferSchema),
@@ -67,7 +69,6 @@ export const useDriverForm = (id?: string) => {
     }
   }, [isEditing, data]);
 
-  // ⏱️ Forzar validación cruzada entre depósitos
     const fecha_nacimiento = watch("fecha_nacimiento");
 
     useEffect(() => {
@@ -99,6 +100,27 @@ export const useDriverForm = (id?: string) => {
 
   const onSubmit = async(FormData: CreateChoferSchema | UpdateChoferSchema) => {
     console.log("Datos del formulario:", data);
+    const selectedVehicle = vehiculos?.data?.find(v => v._id === FormData.vehiculo);
+    
+    if (!selectedVehicle) {
+      // lo puse para que no sea undefined pero nose
+      setError("vehiculo", {
+        type: "manual",
+        message: "Vehículo inválido",
+      });
+      return;
+    }
+    const licenciasCompatibles = selectedVehicle.tipo.licencias_permitidas; 
+    
+    if (!licenciasCompatibles.includes(FormData.licencia as TipoVehiculoDtoLicenciasPermitidasItem)) {
+      setError("vehiculo", {
+        type: "manual",
+        message: `El vehículo seleccionado no es compatible con la licencia ${FormData.tipo_licencia}`,
+      });
+    }
+    clearErrors("licencia");
+    clearErrors("vehiculo");
+
     if(isEditing){
       await handleUpdate(FormData as UpdateChoferSchema);
     }

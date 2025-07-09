@@ -31,11 +31,14 @@ import type {
   AxiosResponse
 } from 'axios';
 
-export type CreateTipoVehiculoDtoLicenciasPermitidasItem = typeof CreateTipoVehiculoDtoLicenciasPermitidasItem[keyof typeof CreateTipoVehiculoDtoLicenciasPermitidasItem];
+/**
+ * Licencia  requerida para este tipo de vehículo según la clasificación nacional
+ */
+export type CreateTipoVehiculoDtoLicenciasPermitidas = typeof CreateTipoVehiculoDtoLicenciasPermitidas[keyof typeof CreateTipoVehiculoDtoLicenciasPermitidas];
 
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export const CreateTipoVehiculoDtoLicenciasPermitidasItem = {
+export const CreateTipoVehiculoDtoLicenciasPermitidas = {
   A11: 'A1.1',
   A12: 'A1.2',
   A13: 'A1.3',
@@ -66,7 +69,7 @@ export interface CreateTipoVehiculoDto {
   /** Descripción del tipo de vehículo */
   descripcion: string;
   /** Licencia  requerida para este tipo de vehículo según la clasificación nacional */
-  licencias_permitidas: CreateTipoVehiculoDtoLicenciasPermitidasItem[];
+  licencias_permitidas: CreateTipoVehiculoDtoLicenciasPermitidas;
 }
 
 export type TipoVehiculoDtoLicenciasPermitidasItem = typeof TipoVehiculoDtoLicenciasPermitidasItem[keyof typeof TipoVehiculoDtoLicenciasPermitidasItem];

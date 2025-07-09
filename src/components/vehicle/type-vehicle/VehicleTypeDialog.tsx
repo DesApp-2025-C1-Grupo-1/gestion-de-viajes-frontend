@@ -4,16 +4,16 @@ import { useForm } from "react-hook-form";
 import { CreateTipoVehiculoForm, createTipoVehiculoSchema, tipoVehiculoSchema } from "../../../api/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
+import { tipoLicenciaSchema } from "../../../api/schemas/enums/tipoLicencia.schema";
 
 
 interface VehicleTypeDialogProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (formData: Partial<TipoVehiculoDto>) => void;
+  onSubmit: (formData: CreateTipoVehiculoForm) => void;
+
   editingType?: TipoVehiculoDto | null;
 }
-
-const licencia_base = tipoVehiculoSchema.shape.licencias_permitidas.element.options;
 
 export const VehicleTypeDialog = ({ open, onClose, onSubmit, editingType }: VehicleTypeDialogProps) => {
   const {
@@ -36,7 +36,7 @@ export const VehicleTypeDialog = ({ open, onClose, onSubmit, editingType }: Vehi
       reset({
         nombre: editingType.nombre,
         descripcion: editingType.descripcion || "",
-        licencias_permitidas: editingType.licencias_permitidas?.[0] ?? "",
+        licencias_permitidas: editingType.licencias_permitidas?.[0] ?? "C1"
       });
     } else {
       reset({
@@ -48,11 +48,7 @@ export const VehicleTypeDialog = ({ open, onClose, onSubmit, editingType }: Vehi
   }, [open, reset]);
 
   const handleFormSubmit = (data: CreateTipoVehiculoForm) => {
-    //onSubmit(data);
-    onSubmit({
-      ...data,
-      licencias_permitidas: [data.licencias_permitidas]
-    });
+    onSubmit(data);
   };
 
   return (
@@ -92,19 +88,14 @@ export const VehicleTypeDialog = ({ open, onClose, onSubmit, editingType }: Vehi
               style: { height: "100px"},
             }}
           />
-
           <TextField
-            id="licencias_permitidas"
-            label="Licencia base"
             select
+            label="Licencia base"
             {...register("licencias_permitidas")}
             error={!!errors.licencias_permitidas}
             helperText={errors.licencias_permitidas?.message}
-            fullWidth
-            margin="normal"
-            variant="outlined"
           >
-            {licencia_base.map((lic) => (
+            {tipoLicenciaSchema.options.map((lic) => (
               <MenuItem key={lic} value={lic}>
                 {lic}
               </MenuItem>

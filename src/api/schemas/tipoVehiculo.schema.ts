@@ -12,7 +12,6 @@ export const createTipoVehiculoSchema = z.object({
     .max(200, "Máximo 200 caracteres"),
   licencias_permitidas: tipoLicenciaSchema,
 }) satisfies z.ZodType<Pick<CreateTipoVehiculoDto, 'nombre' | 'descripcion'> & { licencias_permitidas: string }>;
-//satisfies z.ZodType<CreateTipoVehiculoDto>;
 
 export const updateTipoVehiculoSchema = z.object({
   nombre: z.string()
@@ -22,7 +21,8 @@ export const updateTipoVehiculoSchema = z.object({
     .optional(),
   descripcion: z.string()
     .max(200, "Máximo 200 caracteres")
-    .optional()
+    .optional(),
+  licencias_permitidas: tipoLicenciaSchema.optional(),
 }).refine(data => Object.keys(data).length > 0, {
   message: "Debe enviar al menos un campo para actualizar"
 }) satisfies z.ZodType<UpdateTipoVehiculoDto>;

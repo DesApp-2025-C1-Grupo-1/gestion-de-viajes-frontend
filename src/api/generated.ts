@@ -31,12 +31,72 @@ import type {
   AxiosResponse
 } from 'axios';
 
+export type CreateTipoVehiculoDtoLicenciasPermitidasItem = typeof CreateTipoVehiculoDtoLicenciasPermitidasItem[keyof typeof CreateTipoVehiculoDtoLicenciasPermitidasItem];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const CreateTipoVehiculoDtoLicenciasPermitidasItem = {
+  A11: 'A1.1',
+  A12: 'A1.2',
+  A13: 'A1.3',
+  A14: 'A1.4',
+  A21: 'A2.1',
+  A22: 'A2.2',
+  A3: 'A3',
+  B1: 'B1',
+  B2: 'B2',
+  C1: 'C1',
+  C2: 'C2',
+  C3: 'C3',
+  D1: 'D1',
+  D2: 'D2',
+  D3: 'D3',
+  D4: 'D4',
+  E1: 'E1',
+  E2: 'E2',
+  F: 'F',
+  G1: 'G1',
+  G2: 'G2',
+  G3: 'G3',
+} as const;
+
 export interface CreateTipoVehiculoDto {
   /** Nombre del tipo de vehículo */
   nombre: string;
   /** Descripción del tipo de vehículo */
   descripcion: string;
+  /** Licencia  requerida para este tipo de vehículo según la clasificación nacional */
+  licencias_permitidas: CreateTipoVehiculoDtoLicenciasPermitidasItem[];
 }
+
+export type TipoVehiculoDtoLicenciasPermitidasItem = typeof TipoVehiculoDtoLicenciasPermitidasItem[keyof typeof TipoVehiculoDtoLicenciasPermitidasItem];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const TipoVehiculoDtoLicenciasPermitidasItem = {
+  A11: 'A1.1',
+  A12: 'A1.2',
+  A13: 'A1.3',
+  A14: 'A1.4',
+  A21: 'A2.1',
+  A22: 'A2.2',
+  A3: 'A3',
+  B1: 'B1',
+  B2: 'B2',
+  C1: 'C1',
+  C2: 'C2',
+  C3: 'C3',
+  D1: 'D1',
+  D2: 'D2',
+  D3: 'D3',
+  D4: 'D4',
+  E1: 'E1',
+  E2: 'E2',
+  F: 'F',
+  G1: 'G1',
+  G2: 'G2',
+  G3: 'G3',
+} as const;
 
 export interface TipoVehiculoDto {
   /** ID del tipo de vehículo */
@@ -45,6 +105,8 @@ export interface TipoVehiculoDto {
   nombre: string;
   /** Descripción del tipo de vehículo */
   descripcion: string;
+  /** licencias permitidas según la clasificación nacional */
+  licencias_permitidas: TipoVehiculoDtoLicenciasPermitidasItem[];
 }
 
 export interface UpdateTipoVehiculoDto { [key: string]: unknown }
@@ -368,6 +430,41 @@ export interface PaginacionDto {
   total: number;
   page: number;
   limit: number;
+}
+
+export interface EmpresaViajesDto {
+  /** ID de la empresa */
+  empresaId: string;
+  /** Nombre de la empresa */
+  nombre: string;
+  /** Cantidad de viajes */
+  cantidadViajes: number;
+}
+
+export interface EstadisticasRecientesDto {
+  /** Cantidad de vehículos recientes */
+  vehiculos: number;
+  /** Cantidad de choferes recientes */
+  choferes: number;
+  /** Cantidad de empresas recientes */
+  empresas: number;
+  /** Fecha desde la que se cuentan las estadísticas */
+  desde: string;
+}
+
+export interface DashboardResponseDto {
+  /** Próximos 5 viajes programados */
+  proximosViajes: ViajeDto[];
+  /** Cantidad total de vehículos en el sistema */
+  totalVehiculos: number;
+  /** Cantidad total de choferes en el sistema */
+  totalChoferes: number;
+  /** Cantidad total de empresas en el sistema */
+  totalEmpresas: number;
+  /** Top empresas con más viajes */
+  topEmpresas: EmpresaViajesDto[];
+  /** Estadísticas recientes del sistema */
+  estadisticasRecientes: EstadisticasRecientesDto;
 }
 
 export interface UpdateViajeDto {
@@ -2133,6 +2230,92 @@ export function useViajeControllerFindAll<TData = Awaited<ReturnType<typeof viaj
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getViajeControllerFindAllQueryOptions(params,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * @summary Obtener datos del dashboard
+ */
+export const viajeControllerGetDashboard = (
+     options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<DashboardResponseDto>> => {
+    
+    
+    return axios.get(
+      `/viaje/dashboard`,options
+    );
+  }
+
+
+export const getViajeControllerGetDashboardQueryKey = () => {
+    return [`/viaje/dashboard`] as const;
+    }
+
+    
+export const getViajeControllerGetDashboardQueryOptions = <TData = Awaited<ReturnType<typeof viajeControllerGetDashboard>>, TError = AxiosError<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof viajeControllerGetDashboard>>, TError, TData>>, axios?: AxiosRequestConfig}
+) => {
+
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getViajeControllerGetDashboardQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof viajeControllerGetDashboard>>> = ({ signal }) => viajeControllerGetDashboard({ signal, ...axiosOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof viajeControllerGetDashboard>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ViajeControllerGetDashboardQueryResult = NonNullable<Awaited<ReturnType<typeof viajeControllerGetDashboard>>>
+export type ViajeControllerGetDashboardQueryError = AxiosError<unknown>
+
+
+export function useViajeControllerGetDashboard<TData = Awaited<ReturnType<typeof viajeControllerGetDashboard>>, TError = AxiosError<unknown>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof viajeControllerGetDashboard>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof viajeControllerGetDashboard>>,
+          TError,
+          Awaited<ReturnType<typeof viajeControllerGetDashboard>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useViajeControllerGetDashboard<TData = Awaited<ReturnType<typeof viajeControllerGetDashboard>>, TError = AxiosError<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof viajeControllerGetDashboard>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof viajeControllerGetDashboard>>,
+          TError,
+          Awaited<ReturnType<typeof viajeControllerGetDashboard>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useViajeControllerGetDashboard<TData = Awaited<ReturnType<typeof viajeControllerGetDashboard>>, TError = AxiosError<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof viajeControllerGetDashboard>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Obtener datos del dashboard
+ */
+
+export function useViajeControllerGetDashboard<TData = Awaited<ReturnType<typeof viajeControllerGetDashboard>>, TError = AxiosError<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof viajeControllerGetDashboard>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getViajeControllerGetDashboardQueryOptions(options)
 
   const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

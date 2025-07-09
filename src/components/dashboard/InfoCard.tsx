@@ -1,34 +1,18 @@
 import { Card, Typography, List, ListItem, IconButton, Divider, Box, Badge, Stack } from "@mui/material";
-import { ChevronRight, Palette } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { ReactNode } from 'react';
 import { TripType } from "../../components/TripType";
-
-//mock sacar
-import { TripResumen } from "../../types";
-import { DoubleCell } from "../DoubleCell";
+import { ViajeDto } from "../../api/generated";
 
 interface InfoCardProps {
   title: string;
   description?: string;
-  subDescription?: string;
+  subDescription?: number;
   icon: ReactNode;
   value?: number;
-  list?: TripResumen[];//any[]
+  list?: ViajeDto[];//any[]
   onClick?: () => void;
 }
-
-const cardStyles = {
-  width: "100%",
-  minHeight: 150,
-  boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.1)",
-  borderRadius: 2,
-  overflow: "hidden",
-  flexDirection: "column",
-  justifyContent: "space-between",
-  '&:hover': { boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.15)" },
-  transition: "box-shadow 0.3s ease",
-};
-
 
 export const InfoCard = ({ title, description, icon, value, list, onClick, subDescription }: InfoCardProps) => {
     return(
@@ -60,10 +44,14 @@ export const InfoCard = ({ title, description, icon, value, list, onClick, subDe
                         </Typography>    
                     </Box>
                     <Box pt={1}>
-                         {subDescription && (          
+                         {subDescription && subDescription > 0  ? (          
                             <Typography variant="body2" color="text.secondary"> 
-                                {subDescription} 
+                                ( + {subDescription} esta semana )
                             </Typography> 
+                        ) : (
+                            <Typography variant="body2" color="text.secondary">
+                                ( Sin datos recientes )
+                            </Typography>
                         )}
                     </Box>
                 </Box>
@@ -73,11 +61,10 @@ export const InfoCard = ({ title, description, icon, value, list, onClick, subDe
                 <>
                 <Box display="flex" flexDirection="column" gap={2} padding={3} paddingTop={0} className="items-center">
                     <List disablePadding sx={{ width: "100%"}}>
-                        {/*index temporal nose ver*/}
-                        {list.map((trip, index) => (
-                        <ListItem disableGutters key={trip.id} sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
+                        {list.map((trip) => (
+                        <ListItem disableGutters key={trip._id} sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
                             <Box>
-                                <Typography variant="subtitle1" sx={{ color: "#5A5A65", fontWeight: "450" }}> {`TRP ${String(index + 1).padStart(3, "0")}`} </Typography>
+                                <Typography variant="subtitle1" sx={{ color: "#5A5A65", fontWeight: "450" }}> {trip._id} </Typography>
                                 <Typography variant="caption" color="text.secondary">Inicio: {new Date(trip.fecha_inicio).toLocaleDateString()}</Typography>
                             </Box>
                             <TripType tipo={trip.tipo_viaje} />
@@ -97,15 +84,3 @@ export const InfoCard = ({ title, description, icon, value, list, onClick, subDe
         </Card>
     );
 }
-
-
- {/*<Typography variant="body2" color="text.secondary"> 
-                                {description} 
-                                {subDescription} 
-                            </Typography> */}
-
-
-                            {/*<DoubleCell 
-                                primarySection={description}
-                                secondarySection={subDescription}
-                            />*/}

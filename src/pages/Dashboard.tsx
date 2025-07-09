@@ -1,17 +1,16 @@
 import { SectionHeader } from "../components/SectionHeader";
-//import { CircularProgress, SxProps } from '@mui/material';
-import { useDashboard } from "../hooks/useDashboard";
 import { useNavigate } from "react-router-dom";
 import { UserRoundCheck, Building2, MapPinned, Car } from "lucide-react";
 import { InfoCard } from "../components/dashboard/InfoCard";
 
-import { mockUltimosViajes } from "../lib/mock-data";
 
 import TopEmpresasChart from "../components/dashboard/Chart";
+import { useViajeControllerGetDashboard } from "../api/generated";
 
 export default function Dashboard() {
-    //modificar
-    const { empresas, choferes, ultimosViajes, isLoading } = useDashboard();
+    const { data } =  useViajeControllerGetDashboard();
+
+    const { totalEmpresas, totalChoferes, totalVehiculos, topEmpresas, proximosViajes, estadisticasRecientes } = data?.data || {};
     const navigate = useNavigate();
 
     return (
@@ -25,25 +24,25 @@ export default function Dashboard() {
                     <InfoCard 
                         title="Transportistas"
                         description="empresas registradas"
-                        subDescription="(+6 esta semana)"
+                        subDescription={estadisticasRecientes?.empresas}
                         icon={<Building2 className={`size-7 block`} color="#E65F2B"/>} 
-                        value={12}
+                        value={totalEmpresas}
                         onClick={() => navigate("/companies")}
                     />
                     <InfoCard 
                         title="Choferes"
                         description="choferes registrados"
-                        subDescription="(+3 esta semana)"
+                        subDescription={estadisticasRecientes?.choferes}
                         icon={<UserRoundCheck className={`size-7 block`} color="#E65F2B"/>} 
-                        value={7}
+                        value={totalChoferes}
                         onClick={() => navigate("/drivers")}
                     />
                     <InfoCard 
                         title="Flota de Vehiculos"
                         description="vehiculos registrados"
-                        subDescription="(+10 esta semana)"
+                        subDescription={estadisticasRecientes?.vehiculos}
                         icon={<Car className={`size-7 block`} color="#E65F2B"/>} 
-                        value={36}
+                        value={totalVehiculos}
                         onClick={() => navigate("/drivers")}
                     />
                 </div>
@@ -55,12 +54,21 @@ export default function Dashboard() {
                                 title="Próximos viajes"
                                 description="Vista previa de los próximos viajes"
                                 icon={<MapPinned className={`size-7 block`} color="#E65F2B"/>} 
-                                list={mockUltimosViajes}
+                                list={proximosViajes}
                                 onClick={() => navigate("/trips")}
                             />
                         </div>
                         <div className="col-span-12 lg:col-span-7">
-                            <TopEmpresasChart />
+                            {topEmpresas && topEmpresas.length === 0 ? (
+                                <div className="flex items-center justify-center h-full">
+                                    <p className="text-gray-500">No hay datos disponibles para mostrar.</p>
+                                </div>
+                            ):(
+                                <TopEmpresasChart topEmpresas={topEmpresas ?? []} />
+                            )}
+
+
+                            
                         </div>
                     </div>
                 </div>

@@ -1,15 +1,13 @@
 import { Box, Card, Typography, useTheme } from "@mui/material";
 import { Building2 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { EmpresaViajesDto } from "../../api/generated";
 
-//mock prueba (sacar)
-export const masViajesPorEmpresa = [
-  { name: "Transporte Sur", viajes: 54 },
-  { name: "Logística Norte", viajes: 78 },
-  { name: "Camiones Rápidos", viajes: 123 },
-];
+interface TopEmpresasChartProps {
+  topEmpresas: EmpresaViajesDto[];
+}
 
-export default function TopEmpresasChart () {
+export default function TopEmpresasChart ({ topEmpresas }: TopEmpresasChartProps) {
   const theme = useTheme();
 
   return (
@@ -22,11 +20,12 @@ export default function TopEmpresasChart () {
         </Box>
         <Box sx={{ height: 260, px: 3, pb: 2, '& *:focus': {outline: 'none'} }}>
             <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={masViajesPorEmpresa} layout="vertical"  margin={{ left: 36, right: 24 }}  >
+                <BarChart data={topEmpresas} layout="vertical"  margin={{ left: 60, right: 24 }}  barSize={20}>
                     <CartesianGrid strokeDasharray="2 2" stroke={theme.palette.divider} />
-                    <XAxis type="number" stroke={theme.palette.text.secondary}  tick={{ fontFamily: theme.typography.fontFamily, fontSize: 12 }}/>
+                    <XAxis type="number" stroke={theme.palette.text.secondary}  tick={{ fontFamily: theme.typography.fontFamily, fontSize: 12 }} 
+                        padding={{ right: 30 }} />
                     <YAxis
-                        dataKey="name"
+                        dataKey="nombre"
                         type="category"
                         stroke={theme.palette.text.secondary}
                         tick={{ fontFamily: theme.typography.fontFamily, fontSize: 14 }}
@@ -39,7 +38,7 @@ export default function TopEmpresasChart () {
                             boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.1)",
                         }}
                     />
-                    <Bar dataKey="viajes" fill="#00A86B" barSize={20} />
+                    <Bar dataKey="cantidadViajes" fill="#00A86B" />
                 </BarChart>
             </ResponsiveContainer>
         </Box>

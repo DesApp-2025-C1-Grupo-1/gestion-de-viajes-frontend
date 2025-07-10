@@ -171,7 +171,7 @@ export default function TripPage() {
             <div className="bg-white rounded-lg overflow-hidden" style={{
                 boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
                 border: "0.5px solid #C7C7C7",}}>
-                    <TableContainer className="text-sm rounded-lg" ref={widthTableRef}> {/*className="h-full text-sm"*/}
+                    <TableContainer className="text-sm rounded-lg" ref={widthTableRef}>
                         <Table aria-label="simple table" >
                             <TableHead >
                                     <TableRow >

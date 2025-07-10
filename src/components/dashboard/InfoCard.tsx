@@ -10,7 +10,7 @@ interface InfoCardProps {
   subDescription?: number;
   icon: ReactNode;
   value?: number;
-  list?: ViajeDto[];//any[]
+  list?: ViajeDto[];
   onClick?: () => void;
 }
 

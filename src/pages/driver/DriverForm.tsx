@@ -46,7 +46,6 @@ export default function DriverFormPage(){
     );
 
     const handleFormSubmit = (data: CreateChoferSchema) => {
-        console.log(data)
         onSubmit(data);
     };
 
@@ -344,14 +343,12 @@ export default function DriverFormPage(){
                         </Grid>
                     </Grid>
 
-
                     <FormActions 
                         loading={isLoading}
                         isEditing={isEditing}
                         isSubmitting={isSubmitting}
                     />
                 </form>
-
                 <Backdrop open={isLoading} sx={{ zIndex: 9999, color: "#fff" }}>
                     <CircularProgress color="inherit" />
                 </Backdrop>

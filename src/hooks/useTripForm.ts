@@ -7,7 +7,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useTripData } from "./trip/useTripData";
 import useTripAuxData from "./trip/useTripAuxData";
 import useCrossFieldValidation  from "./trip/useCrossFieldValidation";
-import { useEffect } from "react";
 
 export const useTripForm = (id?: string) => {
     const navigate = useNavigate();

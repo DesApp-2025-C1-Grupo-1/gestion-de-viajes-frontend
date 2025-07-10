@@ -328,7 +328,7 @@ export interface CreateChoferDto {
   /** DNI del chofer */
   dni: number;
   /** Fecha de nacimiento */
-  fecha_nacimiento: string;
+  fecha_nacimiento: Date;
   /** Número de licencia del conductor */
   licencia: string;
   /** Tipo de licencia según clasificación nacional */
@@ -369,9 +369,9 @@ export interface UpdateChoferDto { [key: string]: unknown }
 
 export interface CreateViajeDto {
   /** Fecha y hora de inicio del viaje */
-  fecha_inicio: string;
+  fecha_inicio: Date;
   /** Fecha y hora estimada de llegada */
-  fecha_llegada: string;
+  fecha_llegada: Date;
   /** Tipo de viaje */
   tipo_viaje: string;
   /** ID del depósito de origen */
@@ -411,9 +411,9 @@ export interface ViajeDto {
   /** ID del viaje */
   _id: string;
   /** Fecha y hora de inicio del viaje */
-  fecha_inicio: string;
+  fecha_inicio: Date;
   /** Fecha y hora de llegada */
-  fecha_llegada: string;
+  fecha_llegada: Date;
   /** Tipo de viaje */
   tipo_viaje: string;
   /** ID del depósito de origen */
@@ -472,9 +472,9 @@ export interface DashboardResponseDto {
 
 export interface UpdateViajeDto {
   /** Fecha y hora de inicio del viaje */
-  fecha_inicio?: string;
+  fecha_inicio?: Date;
   /** Fecha y hora estimada de llegada */
-  fecha_llegada?: string;
+  fecha_llegada?: Date;
   /** Tipo de viaje */
   tipo_viaje?: string;
   /** ID del depósito de origen */
@@ -503,9 +503,9 @@ export const BuscarViajeDtoTipo = {
 
 export interface BuscarViajeDto {
   /** Fecha de inicio del viaje en formato ISO 8601 */
-  fecha_inicio?: string;
+  fecha_inicio?: Date;
   /** Fecha de llegada del viaje en formato ISO 8601 */
-  fecha_llegada?: string;
+  fecha_llegada?: Date;
   /** ID del viaje | ID parcial del viaje */
   _id?: string;
   /** Id de la empresa | Razon social de la empresa | nombre comercial de la empresa */

@@ -123,7 +123,6 @@ export const useDriverForm = (id?: string) => {
       await handleUpdate(FormData as UpdateChoferSchema);
     }
     else{
-      console.log(FormData)
       await handleCreate(FormData as CreateChoferSchema);
     }
   };
@@ -147,7 +146,7 @@ export const useDriverForm = (id?: string) => {
     try{
       const payload: CreateChoferDto = {
         ...FormData,
-        fecha_nacimiento: FormData.fecha_nacimiento.toISOString(),
+        fecha_nacimiento: FormData.fecha_nacimiento,
 
         telefono: {
           codigo_pais: FormData.telefono.codigo_pais ?? "",
@@ -155,9 +154,7 @@ export const useDriverForm = (id?: string) => {
           numero: FormData.telefono.numero ?? "",
         },
       };
-
-      console.log("payload final", JSON.stringify(payload, null, 2));
-      
+      //console.log("payload final", JSON.stringify(payload, null, 2));
       await choferControllerCreate(payload);
       notify("create");
       navigate("/drivers");

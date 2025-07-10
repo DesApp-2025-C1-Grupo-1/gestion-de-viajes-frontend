@@ -19,7 +19,7 @@ export const VehicleTypeDialog = ({ open, onClose, onSubmit, editingType }: Vehi
     handleSubmit,
     formState: { errors , isValid, isSubmitting},
     reset,
-    watch, //ver
+    watch, 
   } = useForm<CreateTipoVehiculoForm>({
     resolver: zodResolver(createTipoVehiculoSchema),
     mode: "onBlur",

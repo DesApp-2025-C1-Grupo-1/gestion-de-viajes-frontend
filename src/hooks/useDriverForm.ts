@@ -97,11 +97,10 @@ export const useDriverForm = (id?: string) => {
   };
 
   const onSubmit = async(FormData: CreateChoferSchema | UpdateChoferSchema) => {
-    //console.log("Datos del formulario:", data);
     const selectedVehicle = vehiculos?.data?.find(v => v._id === FormData.vehiculo);
     
     if (!selectedVehicle) {
-      // lo puse para que no sea undefined pero nose
+      // lo puse para que no sea undefined 
       setError("vehiculo", {
         type: "manual",
         message: "Vehículo inválido",
@@ -110,11 +109,12 @@ export const useDriverForm = (id?: string) => {
     }
     const licenciasCompatibles = selectedVehicle.tipo.licencias_permitidas || []; 
     
-    if (!licenciasCompatibles.includes(FormData.licencia as TipoVehiculoDtoLicenciasPermitidasItem)) {
+    if (!licenciasCompatibles.includes(FormData.tipo_licencia as TipoVehiculoDtoLicenciasPermitidasItem)) {
       setError("vehiculo", {
         type: "manual",
-        message: `El vehículo seleccionado no es compatible con la licencia ${FormData.tipo_licencia}`,
+        message: `La licencia ${FormData.tipo_licencia} no es válida para este tipo de vehículo`,
       });
+      return;
     }
     clearErrors("licencia");
     clearErrors("vehiculo");

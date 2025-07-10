@@ -9,7 +9,6 @@ import { tipoLicenciaSchema } from "../../../api/schemas/enums/tipoLicencia.sche
 interface VehicleTypeDialogProps {
   open: boolean;
   onClose: () => void;
-  //onSubmit: (formData: CreateTipoVehiculoForm) => void;
   onSubmit: (formData: { licencias_permitidas: string } & Omit<CreateTipoVehiculoForm, 'licencias_permitidas'>) => void;
   editingType?: TipoVehiculoDto | null;
 }
@@ -92,7 +91,7 @@ export const VehicleTypeDialog = ({ open, onClose, onSubmit, editingType }: Vehi
             select
             label="Licencia base"
             {...register("licencias_permitidas")}
-            value={watch("licencias_permitidas")}  //ver
+            value={watch("licencias_permitidas")} 
             error={!!errors.licencias_permitidas}
             helperText={errors.licencias_permitidas?.message}
           >

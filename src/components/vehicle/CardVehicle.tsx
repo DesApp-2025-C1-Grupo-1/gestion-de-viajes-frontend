@@ -1,3 +1,4 @@
+import { Chip } from "@mui/material";
 import { Edit, Package, Trash2, Truck } from "lucide-react";
 
 interface CardVehicleProps {
@@ -22,8 +23,18 @@ export default function CardVehicle({ name, description, handleEdit, handleDelet
                 <h2 className="text-lg text-title-type font-semibold">{name}</h2>
                 <p className="text-sm">{description}</p>
                 <div className="flex flex-col space-y-0.5">
-                    <p className="text-sm font-semibold mb-1">Licencias Válidas:</p>
-                    <p className="text-sm">{licenciasValidas?.join(', ')}</p>
+                    
+                    <div className="flex flex-wrap gap-2 mt-1">
+                        {licenciasValidas?.map((licencia, idx) => (
+                        <Chip 
+                            key={idx} 
+                            label={licencia} 
+                            size="small" 
+                            variant="outlined" 
+                            sx={{ fontSize: '0.75rem', px: 1, backgroundColor: '#F3F4F6' }} 
+                        />
+                        ))}
+                    </div>
                 </div>
             </article>
             <footer className="flex h-max  items-center justify-end gap-4 px-4 py-3 border-t border-gray-200">

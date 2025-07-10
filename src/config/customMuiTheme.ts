@@ -151,5 +151,21 @@ export const customMuiTheme = createTheme({
         },
       },
     },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          borderRadius: 8,
+          display: "flex",
+          flexDirection: "column",
+          width: "100%",
+          minHeight: 150,
+          boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.1)",
+          overflow: "hidden",
+          justifyContent: "space-between",
+          '&:hover': { boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.15)" },
+          transition: "box-shadow 0.3s ease",
+        },
+      },
+    }
   }
 });

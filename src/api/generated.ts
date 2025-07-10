@@ -435,6 +435,41 @@ export interface PaginacionDto {
   limit: number;
 }
 
+export interface EmpresaViajesDto {
+  /** ID de la empresa */
+  empresaId: string;
+  /** Nombre de la empresa */
+  nombre: string;
+  /** Cantidad de viajes */
+  cantidadViajes: number;
+}
+
+export interface EstadisticasRecientesDto {
+  /** Cantidad de vehículos recientes */
+  vehiculos: number;
+  /** Cantidad de choferes recientes */
+  choferes: number;
+  /** Cantidad de empresas recientes */
+  empresas: number;
+  /** Fecha desde la que se cuentan las estadísticas */
+  desde: string;
+}
+
+export interface DashboardResponseDto {
+  /** Próximos 5 viajes programados */
+  proximosViajes: ViajeDto[];
+  /** Cantidad total de vehículos en el sistema */
+  totalVehiculos: number;
+  /** Cantidad total de choferes en el sistema */
+  totalChoferes: number;
+  /** Cantidad total de empresas en el sistema */
+  totalEmpresas: number;
+  /** Top empresas con más viajes */
+  topEmpresas: EmpresaViajesDto[];
+  /** Estadísticas recientes del sistema */
+  estadisticasRecientes: EstadisticasRecientesDto;
+}
+
 export interface UpdateViajeDto {
   /** Fecha y hora de inicio del viaje */
   fecha_inicio?: string;
@@ -2198,6 +2233,92 @@ export function useViajeControllerFindAll<TData = Awaited<ReturnType<typeof viaj
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getViajeControllerFindAllQueryOptions(params,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * @summary Obtener datos del dashboard
+ */
+export const viajeControllerGetDashboard = (
+     options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<DashboardResponseDto>> => {
+    
+    
+    return axios.get(
+      `/viaje/dashboard`,options
+    );
+  }
+
+
+export const getViajeControllerGetDashboardQueryKey = () => {
+    return [`/viaje/dashboard`] as const;
+    }
+
+    
+export const getViajeControllerGetDashboardQueryOptions = <TData = Awaited<ReturnType<typeof viajeControllerGetDashboard>>, TError = AxiosError<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof viajeControllerGetDashboard>>, TError, TData>>, axios?: AxiosRequestConfig}
+) => {
+
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getViajeControllerGetDashboardQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof viajeControllerGetDashboard>>> = ({ signal }) => viajeControllerGetDashboard({ signal, ...axiosOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof viajeControllerGetDashboard>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ViajeControllerGetDashboardQueryResult = NonNullable<Awaited<ReturnType<typeof viajeControllerGetDashboard>>>
+export type ViajeControllerGetDashboardQueryError = AxiosError<unknown>
+
+
+export function useViajeControllerGetDashboard<TData = Awaited<ReturnType<typeof viajeControllerGetDashboard>>, TError = AxiosError<unknown>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof viajeControllerGetDashboard>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof viajeControllerGetDashboard>>,
+          TError,
+          Awaited<ReturnType<typeof viajeControllerGetDashboard>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useViajeControllerGetDashboard<TData = Awaited<ReturnType<typeof viajeControllerGetDashboard>>, TError = AxiosError<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof viajeControllerGetDashboard>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof viajeControllerGetDashboard>>,
+          TError,
+          Awaited<ReturnType<typeof viajeControllerGetDashboard>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useViajeControllerGetDashboard<TData = Awaited<ReturnType<typeof viajeControllerGetDashboard>>, TError = AxiosError<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof viajeControllerGetDashboard>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Obtener datos del dashboard
+ */
+
+export function useViajeControllerGetDashboard<TData = Awaited<ReturnType<typeof viajeControllerGetDashboard>>, TError = AxiosError<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof viajeControllerGetDashboard>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getViajeControllerGetDashboardQueryOptions(options)
 
   const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

@@ -1,6 +1,30 @@
 import dayjs from "dayjs";
 import { Vehicle, VehicleType, Driver, Company, Deposit} from "../types";
 
+
+import { TripResumen } from "../types";
+
+
+export const mockUltimosViajes: TripResumen[] = [
+  {
+    id: "685b54f6c9cad3dc2577f845",
+    fecha_inicio: "2025-07-03T10:00:00Z",
+    tipo_viaje: "Nacional",
+  },
+  {
+    id: "685b54f6c9cad3d",
+    fecha_inicio: "2025-07-03T10:00:00Z",
+    tipo_viaje: "Internacional",
+  },
+  {
+    id: "685b54f6c9cad3777777777",
+    fecha_inicio: "2025-07-03T10:00:00Z",
+    tipo_viaje: "Internacional",
+  },
+
+];
+
+/*
 export const driverTypes: Driver[] = [
   {
     "_id": "dri1",
@@ -333,4 +357,4 @@ export const deposits : Deposit[] = [
       email: "fgomez@patagonialog.com",
     },
   },
-]
+]*/

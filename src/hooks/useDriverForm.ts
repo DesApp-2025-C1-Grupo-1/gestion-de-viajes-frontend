@@ -64,6 +64,9 @@ export const useDriverForm = (id?: string) => {
         vehiculo: idVehiculo,
         empresa: idEmpresa,
       } as CreateChoferSchema);
+    
+      const currentVehicles : VehiculoDto[] = vehiculos?.data?.filter(v => v.empresa._id === idEmpresa) || [];
+      setFilteredVehicles(currentVehicles); // Inicializar vehículos filtrados con todos los vehículos disponibles
     }
   }, [isEditing, data]);
 

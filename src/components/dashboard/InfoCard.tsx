@@ -1,8 +1,9 @@
-import { Card, Typography, List, ListItem, IconButton, Divider, Box, Badge, Stack } from "@mui/material";
+import { Card, Typography, List, ListItem, IconButton, Divider, Box, Badge, Stack, Button } from "@mui/material";
 import { ChevronRight } from "lucide-react";
 import { ReactNode } from 'react';
 import { TripType } from "../../components/TripType";
 import { ViajeDto } from "../../api/generated";
+import ButtonAdd from "../buttons/ButtonAdd";
 
 interface InfoCardProps {
   title: string;
@@ -59,23 +60,38 @@ export const InfoCard = ({ title, description, icon, value, list, onClick, subDe
             )}
             {list && (
                 <>
-                <Box display="flex" flexDirection="column" gap={2} padding={3} paddingTop={0} className="items-center">
-                    <List disablePadding sx={{ width: "100%"}}>
-                        {list.map((trip) => (
-                        <ListItem disableGutters key={trip._id} sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
-                            <Box>
-                                <Typography variant="subtitle1" sx={{ color: "#5A5A65", fontWeight: "450" }}> {trip._id} </Typography>
-                                <Typography variant="caption" color="text.secondary">Inicio: {new Date(trip.fecha_inicio).toLocaleDateString()}</Typography>
-                            </Box>
-                            <TripType tipo={trip.tipo_viaje} />
-                        </ListItem>
-                        ))}
-                    </List>
-                    {onClick && (
+                <Box display="flex" flexDirection="column" gap={2} padding={3} paddingTop={0} className="items-center" height={"100%"} justifyContent={"space-between"}>
+
+                    {list.length === 0 ? ( 
+                        <Box py={4} gap={3} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", width: "100%" , height: "100%" }}>
+                            <Typography variant="body2" color="#666">No hay viajes programados.</Typography>
+                            <ButtonAdd
+                                onClick={onClick}
+                                sx={{ width: "100%", maxWidth: 150, height: 40, fontSize: "0.875rem", fontWeight: 500 }}
+                                title="Nuevo viaje"
+                            />
+                        </Box>
+                    ) : (
+                        <List disablePadding sx={{ width: "100%", height: "100%"}}>
+                            {list.map((trip) => (
+                                <ListItem disableGutters key={trip._id} sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
+                                    <Box>
+                                        <Typography variant="subtitle1" sx={{ color: "#5A5A65", fontWeight: "450" }}> {trip._id} </Typography>
+                                        <Typography variant="caption" color="text.secondary">Inicio: {new Date(trip.fecha_inicio).toLocaleDateString()}</Typography>
+                                    </Box>
+                                    <TripType tipo={trip.tipo_viaje} />
+                                </ListItem>
+                            ))}
+                        </List>
+                            
+                    )}
+                    
+
+                    {list.length !== 0 && onClick && (
                         <Box textAlign="right" marginRight={2} width="100%">
-                            <Typography variant="body2" sx={{ color: 'primary.main', fontWeight: 500, cursor: 'pointer' }} onClick={onClick}>
-                                Ver más
-                            </Typography>
+                        <Button variant="outlined" sx={{ color: 'primary.main', fontWeight: 500, borderRadius: 1, ":hover": { backgroundColor: "#fff7ee"}}} onClick={onClick}>
+                                Ver mas
+                            </Button>
                         </Box>
                     )}
                 </Box>

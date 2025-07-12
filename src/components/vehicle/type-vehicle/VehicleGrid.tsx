@@ -15,7 +15,7 @@ export const VehicleGrid = ({ vehicleTypes, onEdit, onDelete }: VehicleGridProps
         key={vehicleType._id}
         name={vehicleType.nombre}
         description={vehicleType.descripcion || ""}
-        licenciasValidas={vehicleType.licencias_permitidas}
+        licenciaValida={vehicleType.licencia_permitida}
         handleEdit={() => onEdit(vehicleType)}
         handleDelete={() => onDelete(vehicleType)}
       />

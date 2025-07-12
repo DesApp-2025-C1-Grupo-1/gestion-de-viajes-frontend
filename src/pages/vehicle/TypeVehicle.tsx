@@ -36,6 +36,7 @@ export default function TypeVehicle() {
         setItemToDelete(vehicleType);
     }, []);
 
+  console.log("Tipos de Vehículo:", tiposVehiculo);
 
   return (
     <>

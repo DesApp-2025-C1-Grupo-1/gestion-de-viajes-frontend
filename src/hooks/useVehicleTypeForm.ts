@@ -33,7 +33,7 @@ export const useTipoVehiculo = () => {
       const dataToSend = {
         nombre: formData.nombre,
         descripcion: formData.descripcion || "",
-        licencias_permitidas: formData.licencias_permitidas,
+        licencia_permitida: formData.licencia_permitida,
       };
       await tipoVehiculoControllerCreate(dataToSend);
       notify("create");

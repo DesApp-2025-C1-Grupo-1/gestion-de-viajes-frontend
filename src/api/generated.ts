@@ -32,13 +32,13 @@ import type {
 } from 'axios';
 
 /**
- * Licencia  requerida para este tipo de vehículo según la clasificación nacional
+ * Licencia requerida para este tipo de vehículo según la clasificación nacional
  */
-export type CreateTipoVehiculoDtoLicenciasPermitidas = typeof CreateTipoVehiculoDtoLicenciasPermitidas[keyof typeof CreateTipoVehiculoDtoLicenciasPermitidas];
+export type CreateTipoVehiculoDtoLicenciaPermitida = typeof CreateTipoVehiculoDtoLicenciaPermitida[keyof typeof CreateTipoVehiculoDtoLicenciaPermitida];
 
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export const CreateTipoVehiculoDtoLicenciasPermitidas = {
+export const CreateTipoVehiculoDtoLicenciaPermitida = {
   A11: 'A1.1',
   A12: 'A1.2',
   A13: 'A1.3',
@@ -68,15 +68,18 @@ export interface CreateTipoVehiculoDto {
   nombre: string;
   /** Descripción del tipo de vehículo */
   descripcion: string;
-  /** Licencia  requerida para este tipo de vehículo según la clasificación nacional */
-  licencias_permitidas: CreateTipoVehiculoDtoLicenciasPermitidas;
+  /** Licencia requerida para este tipo de vehículo según la clasificación nacional */
+  licencia_permitida: CreateTipoVehiculoDtoLicenciaPermitida;
 }
 
-export type TipoVehiculoDtoLicenciasPermitidasItem = typeof TipoVehiculoDtoLicenciasPermitidasItem[keyof typeof TipoVehiculoDtoLicenciasPermitidasItem];
+/**
+ * licencias permitidas según la clasificación nacional
+ */
+export type TipoVehiculoDtoLicenciaPermitida = typeof TipoVehiculoDtoLicenciaPermitida[keyof typeof TipoVehiculoDtoLicenciaPermitida];
 
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export const TipoVehiculoDtoLicenciasPermitidasItem = {
+export const TipoVehiculoDtoLicenciaPermitida = {
   A11: 'A1.1',
   A12: 'A1.2',
   A13: 'A1.3',
@@ -109,7 +112,7 @@ export interface TipoVehiculoDto {
   /** Descripción del tipo de vehículo */
   descripcion: string;
   /** licencias permitidas según la clasificación nacional */
-  licencias_permitidas: TipoVehiculoDtoLicenciasPermitidasItem[];
+  licencia_permitida: TipoVehiculoDtoLicenciaPermitida;
 }
 
 export interface UpdateTipoVehiculoDto { [key: string]: unknown }
@@ -503,9 +506,9 @@ export const BuscarViajeDtoTipo = {
 
 export interface BuscarViajeDto {
   /** Fecha de inicio del viaje en formato ISO 8601 */
-  fecha_inicio?: Date;
+  fecha_inicio?: string;
   /** Fecha de llegada del viaje en formato ISO 8601 */
-  fecha_llegada?: Date;
+  fecha_llegada?: string;
   /** ID del viaje | ID parcial del viaje */
   _id?: string;
   /** Id de la empresa | Razon social de la empresa | nombre comercial de la empresa */

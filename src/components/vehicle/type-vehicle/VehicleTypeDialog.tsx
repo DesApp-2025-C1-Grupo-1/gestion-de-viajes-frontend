@@ -26,7 +26,7 @@ export const VehicleTypeDialog = ({ open, onClose, onSubmit, editingType }: Vehi
     defaultValues: {
       nombre: "",
       descripcion: "",
-      licencias_permitidas: "C1",
+      licencia_permitida: "C1",
     },
   })
 
@@ -35,13 +35,13 @@ export const VehicleTypeDialog = ({ open, onClose, onSubmit, editingType }: Vehi
       reset({
         nombre: editingType.nombre,
         descripcion: editingType.descripcion || "",
-        licencias_permitidas: editingType.licencias_permitidas?.[0] || "C1"
+        licencia_permitida: editingType.licencia_permitida || "C1"
       });
     } else {
       reset({
         nombre: "",
         descripcion: "",
-        licencias_permitidas: "C1",
+        licencia_permitida: "C1",
       });
     }
   }, [open, reset]);
@@ -91,10 +91,10 @@ export const VehicleTypeDialog = ({ open, onClose, onSubmit, editingType }: Vehi
           <TextField
             select
             label="Licencia base"
-            {...register("licencias_permitidas")}
-            value={watch("licencias_permitidas")} 
-            error={!!errors.licencias_permitidas}
-            helperText={errors.licencias_permitidas?.message}
+            {...register("licencia_permitida")}
+            value={watch("licencia_permitida")} 
+            error={!!errors.licencia_permitida}
+            helperText={errors.licencia_permitida?.message}
           >
             {tipoLicenciaSchema.options.map((lic) => (
               <MenuItem key={lic} value={lic}>

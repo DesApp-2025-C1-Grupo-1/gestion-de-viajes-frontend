@@ -1,12 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { useNotify } from "./useNotify";
-import { viajeControllerCreate, viajeControllerUpdate} from "../api/generated";
+import { TipoVehiculoDtoLicenciaPermitida, viajeControllerCreate, viajeControllerUpdate} from "../api/generated";
 import { useForm } from "react-hook-form";
 import { CreateViajeSchema, UpdateViajeSchema } from "../api/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTripData } from "./trip/useTripData";
 import useTripAuxData from "./trip/useTripAuxData";
 import useCrossFieldValidation  from "./trip/useCrossFieldValidation";
+import { isValidateLicense } from "../services/validateLicense";
 
 export const useTripForm = (id?: string) => {
     const navigate = useNavigate();
@@ -21,6 +22,8 @@ export const useTripForm = (id?: string) => {
         watch,
         trigger,
         resetField,
+        clearErrors,
+        setError,
         setValue,
         getValues,
         formState: { errors: formErrors , isValid,isSubmitting},
@@ -107,7 +110,40 @@ export const useTripForm = (id?: string) => {
     };
 
     const onSubmit = async (formData: CreateViajeSchema | UpdateViajeSchema) => {
-        console.log("Form Data:", formData);
+        const selectedVehicle = filteredVehiculos.find(v => v._id === formData.vehiculo);
+        const selectedChofer = filteredChoferes.find(v => v._id === formData.chofer);
+            
+        if (!selectedVehicle) {
+            // lo puse para que no sea undefined 
+            setError("vehiculo", {
+            type: "manual",
+            message: "Vehículo inválido",
+            });
+            return;
+        }
+
+        if (!selectedChofer) {
+            setError("chofer", {
+            type: "manual",
+            message: "Chofer inválido",
+            });
+            return;
+        }
+        const licenciasCompatibles = selectedVehicle.tipo.licencia_permitida as TipoVehiculoDtoLicenciaPermitida; 
+        // Actualizar que ya no recibira un array, sino un string.
+        //const licenciasCompatibles = selectedVehicle.tipo.licencias_permitidas as TipoVehiculoDtoLicenciasPermitidasItem; 
+        
+        if (!isValidateLicense(selectedChofer.tipo_licencia, licenciasCompatibles)) {
+            setError("vehiculo", {
+            type: "manual",
+            message: `La licencia ${selectedChofer.tipo_licencia} no es válida para este tipo de vehículo`,
+            });
+            return;
+        }
+        clearErrors("chofer");
+        clearErrors("vehiculo");
+
+
         if (isEditing) {
         await handleUpdate(formData as UpdateViajeSchema);
         } else {

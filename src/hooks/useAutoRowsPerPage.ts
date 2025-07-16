@@ -21,8 +21,9 @@ export function useAutoRowsPerPage(rowHeight: number = 72) {
       const availableHeight = window.innerHeight - headerHeight - footerHeight - filterHeight - tableHeaderHeight - EXTRA_SPACE;
 
       const calculatedRows = Math.floor(availableHeight / rowHeight);
-      setRowsPerPage(Math.max(2, calculatedRows)); // Mínimo 2 filas
+      setRowsPerPage(Math.max(1, calculatedRows)); // Mínimo 1 filas
     }
+    
 
     // Llamada inicial
     calculate();

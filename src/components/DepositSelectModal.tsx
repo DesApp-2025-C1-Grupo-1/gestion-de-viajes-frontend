@@ -35,8 +35,14 @@ export const DepositoSelectModal = ({
     setSearchQuery(lowerCaseTerm);
   };
 
+  const resetForm = () => {
+    
+    setSearchQuery("");
+    onClose();
+  };
+
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth 
+    <Dialog open={open} onClose={resetForm} maxWidth="md" fullWidth 
       sx={{ '& .MuiDialog-paper': { width: '80%', minHeight:600 ,maxHeight: 600} }}
     >
       <Box sx={{ display: "flex", gap: 2, alignItems: "center", width: "100%"}}>
@@ -102,7 +108,7 @@ export const DepositoSelectModal = ({
               <Card
                 onClick={() => {
                   onSelect(dep._id);
-                  onClose();
+                  resetForm();
                 }}
                 sx={{
                   cursor: "pointer",

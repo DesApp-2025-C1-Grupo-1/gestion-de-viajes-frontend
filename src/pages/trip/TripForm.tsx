@@ -162,10 +162,10 @@ export default function TripFormPage() {
                     </Grid>
 
                     {/* DEPO ORIGEN Y DESTINO */}
-                    <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Asignar Depositos</Typography>
+                    <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Asignar Depósitos</Typography>
                     <Grid container spacing={3} mb={4}>
                         <Grid item xs={12} md={6}>
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Deposito de Origen</Typography>
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Depósito de Origen</Typography>
                             <Button
                                 disabled={isLoading}
                                 fullWidth
@@ -177,7 +177,7 @@ export default function TripFormPage() {
                                 variant="outlined"
                             >
                                 {selectedOrigen ?
-                                    depots?.data?.find(dep => dep._id === selectedOrigen)?.nombre : "Seleccionar Deposito"
+                                    depots?.data?.find(dep => dep._id === selectedOrigen)?.nombre : "Seleccionar Depósito"
                                 }
                             </Button>
                                                                 
@@ -187,7 +187,7 @@ export default function TripFormPage() {
                         </Grid>
 
                         <Grid item xs={12} md={6}>
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Deposito de Destino</Typography>
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Depósito de Destino</Typography>
                             <Button
                                 disabled={isLoading}
                                 fullWidth
@@ -287,7 +287,7 @@ export default function TripFormPage() {
                         </Grid>
 
                         <Grid item xs={12} md={6}>
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Vehiculo a utilizar</Typography>
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Vehículo a utilizar</Typography>
                                 <Controller
                                 control={control}
                                 name="vehiculo"
@@ -302,7 +302,7 @@ export default function TripFormPage() {
                                     error={!!formErrors.vehiculo}
                                     >
                                         <MenuItem value="" disabled>
-                                            {control._formValues.empresa ? "Seleccione un vehiculo" : "Seleccione una empresa primero"}
+                                            {control._formValues.empresa ? "Seleccione un vehículo" : "Seleccione una empresa primero"}
                                         </MenuItem>
                                         {filteredVehiculos.length === 0 ? (
                                             <MenuItem disabled>No hay vehículos disponibles</MenuItem>
@@ -340,7 +340,13 @@ export default function TripFormPage() {
             <DepositoSelectModal
                 open={modalOpen}
                 onClose={() => setModalOpen(false)}
-                depots={depots?.data || []}
+                depots={
+                    activeField === "deposito_origen"
+                        ? (depots?.data || []).filter(depot => depot._id !== selectedDestino)
+                        : activeField === "deposito_destino"
+                        ? (depots?.data || []).filter(depot => depot._id !== selectedOrigen)
+                        : depots?.data || []
+                }
                 selectedId={
                     activeField === "deposito_origen"
                     ? selectedOrigen

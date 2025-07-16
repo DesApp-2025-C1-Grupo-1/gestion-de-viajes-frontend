@@ -59,7 +59,7 @@ const getLicenseSx = (licenseType: string) => {
 
 export default function CardVehicle({ name, description, handleEdit, handleDelete, licenciaValida}: CardVehicleProps) { 
     
-    const icono = iconMap[name] || <Truck size={24} />; // fallback genérico
+    const icono = <Truck size={24} /> // iconMap[name] || <Truck size={24} />; // fallback genérico
 
     return(
         <div className="flex justify-between flex-col gap-4  w-full  shadow-sm bg-white  rounded-lg hover:shadow-lg transition-shadow duration-200">
@@ -82,13 +82,13 @@ export default function CardVehicle({ name, description, handleEdit, handleDelet
                 <p className="text-sm">{description}</p>
             </article>
             <footer className="flex h-max  items-center justify-end gap-4 px-4 py-3 border-t border-gray-200">
-                <button className="flex gap-1 items-center text-xs font-medium px-2.5 py-2 rounded-md border border-line hover:text-white hover:bg-line transition-colors duration-200"
-                onClick={handleEdit}>
+                <button className="flex gap-1 items-center text-xs font-medium px-2.5 py-2 rounded-md border border-line hover:text-white hover:bg-line transition-colors duration-200 cursor-pointer"
+                    onClick={handleEdit}>
                     <Edit className="size-4"/> 
                     Editar
                 </button>
-                <button className="flex gap-1 items-center text-xs font-medium px-2.5 py-2 rounded-md text-white bg-delete hover:bg-delete-hover transition-colors duration-200"
-                onClick={handleDelete}>
+                <button className="flex gap-1 items-center text-xs font-medium px-2.5 py-2 rounded-md text-white bg-delete hover:bg-delete-hover transition-colors duration-200 cursor-pointer"
+                    onClick={handleDelete}>
                     <Trash2 className="size-4"/>  
                     Eliminar
                 </button>

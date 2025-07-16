@@ -42,7 +42,7 @@ export default function TypeVehicle() {
     <>
       <SectionHeader
         title="Tipos de vehículo"
-        description="Defina las categorías de vehículos disponibles en el sistema."
+        description="Define las categorías de vehículos disponibles en el sistema."
         buttonText="Nuevo tipo"
         onAdd={() => openDialog()}
       />

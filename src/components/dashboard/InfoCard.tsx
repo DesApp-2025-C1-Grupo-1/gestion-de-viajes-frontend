@@ -90,7 +90,7 @@ export const InfoCard = ({ title, description, icon, value, list, onClick, subDe
                     {list.length !== 0 && onClick && (
                         <Box textAlign="right" marginRight={2} width="100%">
                         <Button variant="outlined" sx={{ color: 'primary.main', fontWeight: 500, borderRadius: 1, ":hover": { backgroundColor: "#fff7ee"}}} onClick={onClick}>
-                                Ver mas
+                                Ver más
                             </Button>
                         </Box>
                     )}

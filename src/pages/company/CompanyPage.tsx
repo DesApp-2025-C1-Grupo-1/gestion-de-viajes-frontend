@@ -80,7 +80,7 @@ export default function CompanyPage(){
                         <TableHead >
                             
                             <TableRow>
-                                <TableCell>Razon social</TableCell>
+                                <TableCell>Razón social</TableCell>
                                 <TableCell>Nombre comercial</TableCell>
                                 <TableCell>CUIT/RUT</TableCell>
                                 <TableCell sx={{minWidth: 200}}>Domicilio fiscal</TableCell>

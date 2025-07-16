@@ -49,7 +49,7 @@ export default function CompanyFormPage() {
                     <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Datos de la Empresa</Typography>
                     <Grid container spacing={3} mb={4}>
                         <Grid item xs={12} sm={6}>
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem' }}>Razon social</Typography>
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem' }}>Razón social</Typography>
                             <TextField
                                 id="razon_social" 
                                 placeholder="Ej: Transportes del sur SA"
@@ -108,7 +108,7 @@ export default function CompanyFormPage() {
                             />
                         </Grid>
                         <Grid item xs={12} md={4}>
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem' }}>Numero</Typography>
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem' }}>Número</Typography>
                             <TextField
                                 id="direccion.numero" 
                                 placeholder="Ej: 151"
@@ -149,7 +149,7 @@ export default function CompanyFormPage() {
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem' }}>Pais</Typography>
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem' }}>País</Typography>
                             <TextField
                                 id="direccion.pais" 
                                 placeholder="Ej: Argentina"

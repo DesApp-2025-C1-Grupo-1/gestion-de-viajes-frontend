@@ -38,8 +38,8 @@ export default function Dashboard() {
                         onClick={() => navigate("/drivers")}
                     />
                     <InfoCard 
-                        title="Flota de Vehiculos"
-                        description="vehiculos registrados"
+                        title="Flota de Vehículos"
+                        description="vehículos registrados"
                         subDescription={estadisticasRecientes?.vehiculos}
                         icon={<Car className={`size-7 block`} color="#E65F2B"/>} 
                         value={totalVehiculos}

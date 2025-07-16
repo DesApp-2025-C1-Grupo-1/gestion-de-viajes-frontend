@@ -16,7 +16,7 @@ import { DetailsDeposit } from "../../components/deposit/DetailsDeposit";
 
 
 export default function DepositPage() {
-    const {notify} = useNotify("Depositos");
+    const {notify} = useNotify("Depósitos");
     const {data: deposits, isLoading, refetch} = useDepositoControllerFindAll();
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);

@@ -3,12 +3,13 @@ import React, { useEffect, useRef, useState } from "react";
 
 interface OptionMenuProps {
   isCollapsed: boolean;
+  onClick: () => void;
   title: string;
   link?: string;
   IconComponent: React.FC<{color?: string}>;
 }
 
-export default function OptionMenu({ isCollapsed, IconComponent, title, link = "" }: OptionMenuProps) {
+export default function OptionMenu({ isCollapsed,onClick, IconComponent, title, link = "" }: OptionMenuProps) {
   const location = useLocation();
   const textRef = useRef<HTMLParagraphElement>(null);
   const [isActive, setIsActive] = useState(false);
@@ -31,6 +32,7 @@ export default function OptionMenu({ isCollapsed, IconComponent, title, link = "
   return (
       <Link 
         to={`/${link}`}
+        onClick={onClick}
         className={`
           flex items-center h-14 rounded-lg overflow-hidden
           transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]

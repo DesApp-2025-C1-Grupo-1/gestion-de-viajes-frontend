@@ -8,8 +8,13 @@ import CompanyIcon from "./icons/CompanyIcon";
 import { useEffect, useState } from "react";
 import OptionMenu from "./OptionMenu";
 
-export default function Sidebar({isVisible}: {isVisible: boolean}) {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+interface SidebarProps {
+  isVisible: boolean;
+  setIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export default function Sidebar({isVisible, setIsVisible}: SidebarProps) {
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   const toggleSidebar = () => {
@@ -28,7 +33,7 @@ export default function Sidebar({isVisible}: {isVisible: boolean}) {
   ];
 
   
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   
   useEffect(() => {
     const handleResize = () => {
@@ -44,6 +49,10 @@ export default function Sidebar({isVisible}: {isVisible: boolean}) {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const selectOption =() => {
+    setIsVisible(false);
+  }
 
   return (
     <aside 
@@ -76,6 +85,7 @@ export default function Sidebar({isVisible}: {isVisible: boolean}) {
                 <OptionMenu
                     key={item.link || 'home'}
                     isCollapsed={isCollapsed}
+                    onClick={selectOption}
                     IconComponent={item.src}
                     title={item.title}
                     link={item.link}

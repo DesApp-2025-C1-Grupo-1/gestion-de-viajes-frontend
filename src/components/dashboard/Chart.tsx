@@ -18,7 +18,7 @@ export default function TopEmpresasChart ({ topEmpresas }: TopEmpresasChartProps
                 Top 3 empresas con más viajes
             </Typography>
         </Box>
-        <Box sx={{ height: '100%', px: 3, pb: 2, '& *:focus': {outline: 'none'} }}>
+        <Box sx={{ height: '100%',minHeight:'256px', px: 3, pb: 2, '& *:focus': {outline: 'none'} }}>
             <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={topEmpresas} layout="vertical"  margin={{ left: 60, right: 24 }}  barSize={20}>
                     <CartesianGrid strokeDasharray="2 2" stroke={theme.palette.divider} />

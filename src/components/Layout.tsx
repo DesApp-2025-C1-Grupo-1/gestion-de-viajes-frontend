@@ -1,19 +1,17 @@
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import { useState } from "react";
-import { Menu } from "lucide-react";
 
 interface LayoutProps {
     className?: string;
 }
-
 
 export default function Layout({className }: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <div className="flex h-screen bg-gray-50">
-        <Sidebar isVisible={sidebarOpen} />
+        <Sidebar isVisible={sidebarOpen} setIsVisible={setSidebarOpen} />
 
         {sidebarOpen && (
           <div
@@ -22,7 +20,7 @@ export default function Layout({className }: LayoutProps) {
           />
         )}
 
-        <main className={`flex flex-col flex-1 p-4   overflow-hidden ${className}`}>
+        <main className={`flex flex-col flex-1 p-4   overflow-y-auto ${className}`}>
           <Outlet context={{ toggleSidebar: () => setSidebarOpen(true) }}/>
         </main>
     </div>

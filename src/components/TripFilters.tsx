@@ -436,7 +436,7 @@ export default function TripFilters({
                                 </Grid>
                             </Grid>
 
-                            <Box display="flex" justifyContent="flex-end" gap={2} mt={2}>
+                            <Box display="flex" justifyContent="flex-end" gap={2} mt={2} sx={{ flexDirection: { xs: "column", sm: "row" }, mt: { xs: 5, sm: 2 } }}>
                                 <Button variant="outlined" color="primary" sx={{ borderRadius: "6px", padding: "10px 20px", }}
                                     onClick={handleClear}
                                     disabled={

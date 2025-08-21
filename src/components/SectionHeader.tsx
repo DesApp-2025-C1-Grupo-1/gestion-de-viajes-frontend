@@ -27,14 +27,18 @@ export const SectionHeader = ({
        
       <div className="flex items-center gap-2 w-full">
         {/* Botón hamburguesa solo en mobile */}
-        <button
-          onClick={toggleSidebar}
-          className="text-gray-600 border border-gray-400 bg-[#F6F7FB] rounded-md p-1  md:hidden"
-        >
-          <Menu className="size-6" />
-        </button>
-        <div className="flex flex-col items-start gap-1 md:gap-2 w-full md:ml-2"> 
-          <h1 className="text-2xl font-semibold">{title}</h1>
+        
+        <div className="flex flex-col items-start gap-2 w-full md:ml-2"> 
+          <div className="flex gap-3 items-center">
+            <button
+              onClick={toggleSidebar}
+              className="text-gray-600 border border-gray-400 bg-[#F6F7FB] rounded-md p-1  md:hidden"
+            >
+              <Menu className="size-6" />
+            </button>
+            <h1 className="text-2xl font-semibold">{title}</h1>
+          </div>
+          
           <p className="font-medium text-sm">{description}</p>
         </div>
       </div>

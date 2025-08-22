@@ -21,6 +21,9 @@ export const customMuiTheme = createTheme({
     success: {
       main: '#2F691D', // --color-title-type
     },
+    text: {
+      primary: '#5A5A65', // --color-text
+    }
   },
   typography: {
     fontFamily: 'poppins',

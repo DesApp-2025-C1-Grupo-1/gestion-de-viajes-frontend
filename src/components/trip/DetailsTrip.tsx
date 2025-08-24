@@ -25,7 +25,7 @@ export const DetailsTrip = ({triptSelected, setOpenDetailsDialog, openDetailsDia
         <Dialog 
             open={openDetailsDialog}
             onClose={() => setOpenDetailsDialog(false)}
-            aria-labelledby="deposit-details-title"
+            aria-labelledby="trip-details-title"
             fullWidth
             maxWidth="md"
             sx={{

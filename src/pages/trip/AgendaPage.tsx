@@ -119,7 +119,7 @@ export default function AgendaPage() {
                 description="Aquí puedes ver la agenda de los viajes."
             />
 
-            <div className="h-full overflow-y-auto">
+            <div className="h-full mb-2">
                 <Calendar
                     localizer={localizer}
                     events={parseEvents()}

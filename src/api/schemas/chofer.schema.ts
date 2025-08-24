@@ -27,9 +27,9 @@ export const createChoferSchema = z.object({
   licencia: z.string().min(1, "La licencia es obligatoria"),
   tipo_licencia: tipoLicenciaSchema,
   email: z.string({
-      required_error: "El email es obligatorio",
-      invalid_type_error: "El email debe ser una cadena de texto",
-    }).email("El email debe ser válido"),
+      required_error: "El mail es obligatorio",
+      invalid_type_error: "El mail debe ser una cadena de texto",
+    }).email("El mail debe ser válido"),
   empresa: RequireSelectSchema,
   vehiculo: RequireSelectSchema,
   telefono: CreateTelefonoSchema,

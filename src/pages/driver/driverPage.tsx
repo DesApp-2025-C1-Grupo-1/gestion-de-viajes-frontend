@@ -1,20 +1,19 @@
 import { useEffect, useState } from "react";
-import { Pagination, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { MenuItem, Pagination, Select, SelectChangeEvent, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery, useTheme } from "@mui/material";
 import { SectionHeader } from "../../components/SectionHeader";
 import { useNavigate } from "react-router-dom";
 import LoadingState from "../../components/LoadingState";
-import { useAutoRowsPerPage } from '../../hooks/useAutoRowsPerPage';
 import SearchBar from "../../components/SearchBar";
-import MenuItem from "../../components/buttons/MenuItem";
+import MenuItemDialog from "../../components/buttons/MenuItem";
 import { useNotify } from "../../hooks/useNotify";
 import { choferControllerRemove, ChoferDto, useChoferControllerFindAll } from "../../api/generated";
 import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { DoubleCell } from "../../components/DoubleCell";
-import { Phone, Mail, Building2, Car, CalendarDays } from "lucide-react";
-
-
+import { Phone, Mail, Building2, Car, CalendarDays, PersonStanding, UserRound } from "lucide-react";
 import { formatTelefono } from "../../lib/formatters";
+import EntityCard from "../../components/EntityCard";
+import { DriverDetailsDialog } from "../../components/driver/DriverDetailsDialog";
 
 
 export default function DriverPage(){
@@ -23,10 +22,13 @@ export default function DriverPage(){
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);
     const [openDialog, setOpenDialog] = useState(false);
-    const {rowsPerPage, headerRef, footerRef} = useAutoRowsPerPage(105);
+    const [rowsPerPage, setRowsPerPage] = useState<number>(5);
     const [choferSelect, setChoferSelect] = useState<ChoferDto>();
+    const [openDetailsDialog, setOpenDetailsDialog] = useState<boolean>(false);
     const choferes = data?.data || [];
     const debouncedQuery = useDebouncedValue(searchQuery, 500);
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("lg")); // <1280px
 
     const handleOpenDialog = (company: ChoferDto) => {
         setOpenDialog(true);
@@ -49,8 +51,22 @@ export default function DriverPage(){
     };
 
     const filtered = choferes.filter((dri) => 
-        dri.apellido.toLocaleLowerCase().includes(debouncedQuery.toLocaleLowerCase())
+        dri.apellido.toLocaleLowerCase().includes(debouncedQuery.toLocaleLowerCase()) ||
+        dri.nombre.toLocaleLowerCase().includes(debouncedQuery.toLocaleLowerCase())
     );
+
+    const handleChangeRowsPerPage = (event: SelectChangeEvent<number>) => {
+        setTimeout(() => {
+            setRowsPerPage(parseInt(event.target.value as string, 10));
+            setPage(1);
+        }, 300);
+    };
+
+    const handleOpenDetails = (driver: ChoferDto) => {
+            setOpenDetailsDialog(true);
+            setChoferSelect(driver);
+    };
+    
 
     const totalPages = Math.ceil(filtered.length / rowsPerPage);
     const paginated = filtered.slice((page-1) * rowsPerPage, page*rowsPerPage);
@@ -66,113 +82,171 @@ export default function DriverPage(){
 
     return(
         <>
-            <div ref={headerRef}> 
+            <div> 
                 <SectionHeader
                     title="Choferes"
                     description="Gestione el personal habilitado para conducir vehículos de transporte."
                     buttonText="Nuevo chofer"
                     onAdd={() => navigate("/driver/create")}
                 /> 
-                <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} placeholder="Buscar por apellido"></SearchBar>
+                <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} placeholder="Buscar por nombre o apellido"></SearchBar>
             </div>
 
             {/*tabla*/}
-            <div className="bg-white rounded-lg overflow-hidden" style={{
-                boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
-                border: "0.5px solid #C7C7C7",
-            }}>
+            {isMobile ? (
+                <div className="grid gap-4  lg:grid-cols-2">
+                    {paginated.map(driver => (
+                        <EntityCard
+                            key={driver._id}
+                            title={`${driver.nombre} ${driver.apellido}`}
+                            subtitle={`${driver.dni}`}
+                            icon={<UserRound size={24}/>}
+                            fields={[
+                                { label: "Fecha de nacimiento", value: new Date(driver.fecha_nacimiento).toLocaleDateString() },
+                                { label: "Teléfono", value: formatTelefono(driver.telefono) },
+                                { label: "Empresa", value: driver.empresa.nombre_comercial },
+                                { label: "Vehículo", value: driver.vehiculo?.modelo },
+                            ]}
+                            onDelete={() => handleOpenDialog(driver)}
+                            onEdit={() => navigate(`/drivers/edit/${driver._id}`)}
+                            onView={() => handleOpenDetails(driver)}
+                            headerAction={
+                                {
+                                    label: "Agenda",
+                                    icon: <CalendarDays size={16} />,
+                                    onClick: () => navigate(`/agenda/drivers/${driver._id}`),
+                                }
+                            }
+                        />
+                    ))}
+                </div>
+            ) : (
+                <div className="bg-white rounded-lg " style={{
+                    boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
+                    border: "0.5px solid #C7C7C7",
+                }}>
 
-                <TableContainer className="text-sm rounded-lg">
-                    <Table aria-label="simple table">
-                        <TableHead >
-                            <TableRow>
-                                <TableCell>Nombre completo</TableCell>
-                                <TableCell>DNI</TableCell>
-                                <TableCell>Fecha de nacimiento</TableCell>
-                                <TableCell>Licencia</TableCell>
-                                <TableCell>Datos de contacto</TableCell>
-                                <TableCell sx={{minWidth: 200}}>Transporte</TableCell>
-                                <TableCell align="center" sx={{width: 72}}>Acciones</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {isLoading ? (
-                                <TableRow key="loading">
-                                    <TableCell colSpan={7} >
-                                        <LoadingState title="choferes"/>
-                                    </TableCell>
+                    <TableContainer className="text-sm rounded-lg">
+                        <Table aria-label="simple table">
+                            <TableHead >
+                                <TableRow>
+                                    <TableCell>Nombre completo</TableCell>
+                                    <TableCell>DNI</TableCell>
+                                    <TableCell>Fecha de nacimiento</TableCell>
+                                    <TableCell>Licencia</TableCell>
+                                    <TableCell>Datos de contacto</TableCell>
+                                    <TableCell sx={{minWidth: 200}}>Transporte</TableCell>
+                                    <TableCell align="center" sx={{width: 72}}>Acciones</TableCell>
                                 </TableRow>
-                            ) : paginated.length === 0 ? (
-                                <TableRow key="no-drivers">
-                                    <TableCell 
-                                        colSpan={8} 
-                                        sx={{textAlign: "center", paddingY: "26px",}}
-                                    >
-                                        No se encontraron choferes
-                                    </TableCell>
-                                </TableRow>
-                            ):(
-                                paginated.map((driver) => (
-                                    <TableRow key={driver._id} className="hover:bg-gray-50 overflow-hidden">
-                                        <TableCell sx={{fontWeight: "bold"}}>{`${driver.nombre} ${driver.apellido}`}</TableCell>
-                                        <TableCell>{driver.dni}</TableCell>
-                                        <TableCell>{driver.fecha_nacimiento.split('T')[0]}</TableCell>
-                                        <TableCell>{`${driver.licencia} - ${driver.tipo_licencia}`}</TableCell>
-                                        <TableCell >
-                                            <DoubleCell 
-                                                primarySection={driver.email}
-                                                secondarySection={formatTelefono(driver.telefono)}
-                                                primaryIcon={<Mail size={18} color="#AFB3B9"/>}
-                                                secondaryIcon={<Phone size={18} color="#AFB3B9"/>}
-                                            />
-                                        </TableCell>
-                                        <TableCell sx={{ minWidth: 150, maxWidth: 200 }}>
-                                            <DoubleCell 
-                                                primarySection={driver.empresa?.nombre_comercial}
-                                                secondarySection={driver.vehiculo?.modelo}
-                                                primaryIcon={<Building2 size={18} color="#AFB3B9"/>}
-                                                secondaryIcon={<Car size={20} color="#AFB3B9"/>}
-                                            />
-                                        </TableCell>
-
-                                        <TableCell sx={{ verticalAlign: "middle"}}>
-                                            <MenuItem  
-                                                handleOpenDialog={() => handleOpenDialog(driver)}
-                                                handleOpenDetails={() => navigate(`/agenda/drivers/${driver._id}`)}
-                                                titleItem="Agenda"
-                                                id={driver._id}
-                                            >
-                                                <CalendarDays size={18} className="text-gray-500" />
-                                            </MenuItem>
+                            </TableHead>
+                            <TableBody>
+                                {isLoading ? (
+                                    <TableRow key="loading">
+                                        <TableCell colSpan={7} >
+                                            <LoadingState title="choferes"/>
                                         </TableCell>
                                     </TableRow>
-                                ))
-                            )}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </div>
-            <div className="flex justify-between items-center  container mx-auto py-4 " ref={footerRef}>
+                                ) : paginated.length === 0 ? (
+                                    <TableRow key="no-drivers">
+                                        <TableCell 
+                                            colSpan={8} 
+                                            sx={{textAlign: "center", paddingY: "26px",}}
+                                        >
+                                            No se encontraron choferes
+                                        </TableCell>
+                                    </TableRow>
+                                ):(
+                                    paginated.map((driver) => (
+                                        <TableRow key={driver._id} className="hover:bg-gray-50 overflow-hidden">
+                                            <TableCell sx={{fontWeight: "bold"}}>{`${driver.nombre} ${driver.apellido}`}</TableCell>
+                                            <TableCell>{driver.dni}</TableCell>
+                                            <TableCell>{driver.fecha_nacimiento.split('T')[0]}</TableCell>
+                                            <TableCell>{`${driver.licencia} - ${driver.tipo_licencia}`}</TableCell>
+                                            <TableCell >
+                                                <DoubleCell 
+                                                    primarySection={driver.email}
+                                                    secondarySection={formatTelefono(driver.telefono)}
+                                                    primaryIcon={<Mail size={18} color="#AFB3B9"/>}
+                                                    secondaryIcon={<Phone size={18} color="#AFB3B9"/>}
+                                                />
+                                            </TableCell>
+                                            <TableCell sx={{ minWidth: 150, maxWidth: 200 }}>
+                                                <DoubleCell 
+                                                    primarySection={driver.empresa?.nombre_comercial}
+                                                    secondarySection={driver.vehiculo?.modelo}
+                                                    primaryIcon={<Building2 size={18} color="#AFB3B9"/>}
+                                                    secondaryIcon={<Car size={20} color="#AFB3B9"/>}
+                                                />
+                                            </TableCell>
+
+                                            <TableCell sx={{ verticalAlign: "middle"}}>
+                                                <MenuItemDialog  
+                                                    handleOpenDialog={() => handleOpenDialog(driver)}
+                                                    handleOpenDetails={() => navigate(`/agenda/drivers/${driver._id}`)}
+                                                    titleItem="Agenda"
+                                                    id={driver._id}
+                                                >
+                                                    <CalendarDays size={18} className="text-gray-500" />
+                                                </MenuItemDialog>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                )}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </div>
+            )}
+            
+
+            {/* Paginación */}
+            <div className="flex flex-col gap-4 justify-between items-center  container mx-auto py-4 ">
                 <p className="text-sm w-full">
-                    Mostrando {Math.min((page - 1) * rowsPerPage + 1, filtered.length)} – {Math.min(page * rowsPerPage, filtered.length)} de {filtered.length} choferes
+                    Mostrando {Math.min((page - 1) * rowsPerPage + 1, filtered.length)}–{Math.min(page * rowsPerPage, filtered.length)} de {filtered.length} choferes
                 </p>
-                <Pagination 
-                    count={totalPages}
-                    page={page}
-                    onChange={handleChangePage}
-                    shape="rounded"
-                     color="primary"
-                    sx={{width: "100%", display: "flex", justifyContent: "flex-end"}}
-                />
+
+                <div className="flex items-center w-full justify-between">
+                    <div className="flex items-center w-full gap-2">
+                        <span className="text-sm w-max">Filas por página: </span>
+                        <Select
+                            value={rowsPerPage}
+                            onChange={(e) => handleChangeRowsPerPage(e)}
+                            sx={{fontSize: "0.875rem", py: 0, px: 1, borderRadius: "4px", backgroundColor: "#F5F5F5"}}
+                        >
+                            <MenuItem value={5}>5</MenuItem>
+                            <MenuItem value={10}>10</MenuItem>
+                            <MenuItem value={25}>25</MenuItem>
+                        </Select>
+
+                    </div>
+                
+
+                    <Pagination 
+                        count={totalPages}
+                        page={page}
+                        onChange={handleChangePage}
+                        shape="rounded"
+                        color="primary"
+                        sx={{width: "100%", display: "flex", justifyContent: "flex-end"}}
+                    />
+                </div>
             </div>
 
             {choferSelect && (
                 <ConfirmDialog 
                     open= {openDialog}
                     onClose={() => setOpenDialog(false)}
-                    title="empresa"
-                    entityName={choferSelect.apellido}
+                    title="chofer"
+                    entityName={`${choferSelect?.nombre} ${choferSelect?.apellido}`}
                     onConfirm={() => handleDelete(choferSelect?._id)}
+                />
+            )}
+
+            {choferSelect && (
+                <DriverDetailsDialog
+                    choferSelected={choferSelect}
+                    setOpenDetailsDialog={setOpenDetailsDialog}
+                    openDetailsDialog={openDetailsDialog}
                 />
             )}
         </>

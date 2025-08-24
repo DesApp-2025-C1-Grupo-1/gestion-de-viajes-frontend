@@ -56,8 +56,8 @@ export default function DriverFormPage(){
                 description={isEditing ? "Actualizá los datos del chofer registrado." : "Completá el formulario para dar de alta un chofer."}
             />
             
-            <Paper sx={{maxHeight:"85%", padding: 4, overflow: "auto", mx: 'auto', width: "100%", borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "0.5px solid #C7C7C7", pb: 5 }} >
-                <form onSubmit={handleSubmit(handleFormSubmit)} className="w-full max-w-[800px] mx-auto">
+            <Paper sx={{maxHeight:"100%", padding: 4, overflow: "auto", mx: 'auto', width: "100%", borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "0.5px solid #C7C7C7", pb: 5 }} >
+                <form onSubmit={handleSubmit(handleFormSubmit)} className="w-full max-w-[800px] mx-auto overflow-y-auto">
 
                     <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Datos personales</Typography>
                     <Grid container spacing={3} mb={4}>
@@ -107,19 +107,6 @@ export default function DriverFormPage(){
                                 disabled={isLoading}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Mail</Typography>
-                            <TextField
-                                id="email"
-                                placeholder="contacto@deposito.com"
-                                fullWidth
-                                className="inside-paper"
-                                type="email"
-                                {...register("email")}
-                                error={!!formErrors.email}
-                                helperText={formErrors.email?.message}
-                            />
-                        </Grid>
 
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <Grid item xs={12} sm={6}>
@@ -134,6 +121,7 @@ export default function DriverFormPage(){
                                                 field.onChange(date ? new Date(date) : null)
                                                 console.log(date)
                                             }}
+                                            className="inside-paper"
                                             slotProps={{
                                                 textField: {
                                                 fullWidth: true,
@@ -147,51 +135,6 @@ export default function DriverFormPage(){
                             </Grid>
                         </LocalizationProvider>
                         
-                    </Grid>
-
-                    <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Datos de la licencia</Typography>
-                    <Grid container spacing={3} mb={4}>
-                        <Grid item xs={12} sm={6}>
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Licencia</Typography>                                  
-                            <TextField
-                                id="licencia"
-                                {...register("licencia")}
-                                fullWidth
-                                placeholder="Ej: 123ABC456"
-                                inputProps={{ "aria-label": "licencia" }}
-                                error={!!formErrors.licencia}
-                                helperText={formErrors.licencia?.message}
-                                className="inside-paper"
-                                disabled={isLoading}
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Tipo de licencia</Typography>
-                            <Controller
-                                control={control}
-                                name="tipo_licencia"
-                                render={({ field }) => (
-                                    <Select
-                                        {...field}
-                                        inputProps={{ "aria-label": "tipo_licencia" }}
-                                        value={field.value || ""}
-                                        fullWidth
-                                        displayEmpty
-                                        onChange={(event) => field.onChange(event.target.value)}
-                                        error={!!formErrors.tipo_licencia}
-                                        >
-                                        {licenciasValidas.map((licencias) => (
-                                            <MenuItem key={licencias} value={licencias}>
-                                                {licencias}
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
-                                )}
-                            />
-                            <FormHelperText error={!!formErrors.tipo_licencia}>
-                                {formErrors.tipo_licencia?.message}
-                            </FormHelperText>
-                        </Grid>
                     </Grid>
 
                     <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Información de Contacto</Typography>
@@ -269,8 +212,66 @@ export default function DriverFormPage(){
                                 </Box>
                             )}
                         </Grid>
+                        
+                        <Grid item xs={12} sm={6}>
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Mail</Typography>
+                            <TextField
+                                id="email"
+                                placeholder="contacto@deposito.com"
+                                fullWidth
+                                className="inside-paper"
+                                type="email"
+                                {...register("email")}
+                                error={!!formErrors.email}
+                                helperText={formErrors.email?.message}
+                            />
+                        </Grid>
                     </Grid>
-                    
+
+                    <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Datos de la licencia</Typography>
+                    <Grid container spacing={3} mb={4}>
+                        <Grid item xs={12} sm={6}>
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Licencia</Typography>                                  
+                            <TextField
+                                id="licencia"
+                                {...register("licencia")}
+                                fullWidth
+                                placeholder="Ej: 123ABC456"
+                                inputProps={{ "aria-label": "licencia" }}
+                                error={!!formErrors.licencia}
+                                helperText={formErrors.licencia?.message}
+                                className="inside-paper"
+                                disabled={isLoading}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Tipo de licencia</Typography>
+                            <Controller
+                                control={control}
+                                name="tipo_licencia"
+                                render={({ field }) => (
+                                    <Select
+                                        {...field}
+                                        inputProps={{ "aria-label": "tipo_licencia" }}
+                                        value={field.value || ""}
+                                        fullWidth
+                                        displayEmpty
+                                        onChange={(event) => field.onChange(event.target.value)}
+                                        error={!!formErrors.tipo_licencia}
+                                        >
+                                        {licenciasValidas.map((licencias) => (
+                                            <MenuItem key={licencias} value={licencias}>
+                                                {licencias}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                )}
+                            />
+                            <FormHelperText error={!!formErrors.tipo_licencia}>
+                                {formErrors.tipo_licencia?.message}
+                            </FormHelperText>
+                        </Grid>
+                    </Grid>
 
                     <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Asignar recursos</Typography>
                     <Grid container spacing={3} mb={4}>

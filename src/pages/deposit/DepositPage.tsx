@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import SearchBar from "../../components/SearchBar";
 import { SectionHeader } from "../../components/SectionHeader";
-import { Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
+import { Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery} from "@mui/material";
 import LoadingState from "../../components/LoadingState";
 import MenuItem from "../../components/buttons/MenuItem";
 import { useNavigate } from "react-router-dom";
@@ -11,8 +11,10 @@ import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 import { formatTelefono } from "../../lib/formatters";
 import { useNotify } from "../../hooks/useNotify";
 import { depositoControllerRemove, DepositoDto, useDepositoControllerFindAll } from "../../api/generated";
-import {  Eye } from "lucide-react";
+import { Eye, Warehouse } from "lucide-react";
 import { DetailsDeposit } from "../../components/deposit/DetailsDeposit";
+import { useTheme } from "@mui/material/styles";
+import EntityCard from "../../components/EntityCard";
 
 
 export default function DepositPage() {
@@ -25,6 +27,8 @@ export default function DepositPage() {
     const [openDetailsDialog, setOpenDetailsDialog] = useState<boolean>(false);
     const [depositSelected, setDepositSelected] = useState<DepositoDto>();
     const debouncedQuery = useDebouncedValue(searchQuery, 500);
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("lg")); // <1280px
 
     const handleOpenDialog = (deposit : DepositoDto) => {
         setOpenDialog(true);
@@ -88,77 +92,101 @@ export default function DepositPage() {
                 />
             </div>
 
-            <div className="bg-white rounded-lg overflow-hidden" style={{
-                boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
-                border: "0.5px solid #C7C7C7",
-            }}
-            >
-                <TableContainer className="h-full text-sm">
-                    <Table aria-label="simple table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Nombre</TableCell>
-                                <TableCell>Ciudad</TableCell>
-                                <TableCell>Tipo</TableCell>
-                                <TableCell>Horario</TableCell>
-                                <TableCell>Contacto</TableCell>
-                                <TableCell>Teléfono</TableCell>
-                                <TableCell align="center" sx={{width:72}}>Acciones</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {isLoading ? (
-                                <TableRow
-                                    key="loading"
-                                >
-                                    <TableCell colSpan={7} >
-                                        <LoadingState title="depósitos"/>
-                                    </TableCell>
+            {/*tabla*/}
+            {isMobile ? (
+                <div className="grid gap-4  lg:grid-cols-2">
+                    {paginated.map(deposit => (
+                        <EntityCard
+                            key={deposit._id}
+                            title={`${deposit.nombre}`}
+                            subtitle={`${deposit.direccion?.calle} ${deposit.direccion?.numero}, ${deposit.direccion?.ciudad}`}
+                            icon={<Warehouse size={24}/>}
+                            fields={[
+                                { label: "Ciudad", value:   deposit.direccion?.ciudad },
+                                { label: "Tipo", value:     deposit.tipo.charAt(0).toUpperCase() + deposit.tipo.slice(1) },
+                                { label: "Horario", value:  deposit.horario_entrada + " - " + deposit.horario_salida },
+                                { label: "Contacto", value: deposit.contacto.email, isLong: true },
+                                { label: "Teléfono", value: formatTelefono(deposit.contacto.telefono) },
+                            ]}
+                            onDelete={() => handleOpenDialog(deposit)}
+                            onEdit={() => navigate(`/depots/edit/${deposit._id}`)}
+                            onView={() => handleOpenDetails(deposit)}
+                        />
+                    ))}
+                </div>
+            ) : (
+                <div className="bg-white rounded-lg overflow-hidden" style={{
+                    boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
+                    border: "0.5px solid #C7C7C7",
+                }}
+                >
+                    <TableContainer className="h-full text-sm">
+                        <Table aria-label="simple table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Nombre</TableCell>
+                                    <TableCell>Ciudad</TableCell>
+                                    <TableCell>Tipo</TableCell>
+                                    <TableCell>Horario</TableCell>
+                                    <TableCell>Contacto</TableCell>
+                                    <TableCell>Teléfono</TableCell>
+                                    <TableCell align="center" sx={{width:72}}>Acciones</TableCell>
                                 </TableRow>
-                            ) : paginated.length === 0 ? (
-                                <TableRow
-                                    key="no-deposits" 
-                                >
-                                    <TableCell 
-                                        colSpan={7} 
-                                        sx={{
-                                            textAlign: "center",
-                                            paddingY: "26px",
-                                        }}
+                            </TableHead>
+                            <TableBody>
+                                {isLoading ? (
+                                    <TableRow
+                                        key="loading"
                                     >
-                                        No se encontraron depósitos
-                                    </TableCell>
-                                </TableRow>
-                            ) : (
-                                paginated.map((deposit) => (
-                                    <TableRow 
-                                        key={deposit._id} 
-                                        className="hover:bg-gray-50 overflow-hidden"
-                                    >
-                                        <TableCell sx={{fontWeight: "bold"}}>{deposit.nombre}</TableCell>
-                                        <TableCell>{deposit.direccion?.ciudad}</TableCell>
-                                        <TableCell>{deposit.tipo.charAt(0).toUpperCase() + deposit.tipo.slice(1)}</TableCell>
-                                        <TableCell>{deposit.horario_entrada} - {deposit.horario_salida}</TableCell>
-                                        <TableCell>{deposit.contacto?.nombre}</TableCell>
-                                        <TableCell>{formatTelefono(deposit.contacto?.telefono)}</TableCell>
-                                        <TableCell sx={{ verticalAlign: "middle"}}>
-                                            <MenuItem  handleOpenDialog={() => handleOpenDialog(deposit)}
-                                            handleOpenDetails={() => handleOpenDetails(deposit)}
-                                            id={deposit._id}
-                                            >
-                                                <Eye className="text-gray-500 hover:text-gray-700 size-4" />
-                                            </MenuItem>
-                                            
+                                        <TableCell colSpan={7} >
+                                            <LoadingState title="depósitos"/>
                                         </TableCell>
-                                            
                                     </TableRow>
-                                    
-                                ))
-                            )}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </div>
+                                ) : paginated.length === 0 ? (
+                                    <TableRow
+                                        key="no-deposits" 
+                                    >
+                                        <TableCell 
+                                            colSpan={7} 
+                                            sx={{
+                                                textAlign: "center",
+                                                paddingY: "26px",
+                                            }}
+                                        >
+                                            No se encontraron depósitos
+                                        </TableCell>
+                                    </TableRow>
+                                ) : (
+                                    paginated.map((deposit) => (
+                                        <TableRow 
+                                            key={deposit._id} 
+                                            className="hover:bg-gray-50 overflow-hidden"
+                                        >
+                                            <TableCell sx={{fontWeight: "bold"}}>{deposit.nombre}</TableCell>
+                                            <TableCell>{deposit.direccion?.ciudad}</TableCell>
+                                            <TableCell>{deposit.tipo.charAt(0).toUpperCase() + deposit.tipo.slice(1)}</TableCell>
+                                            <TableCell>{deposit.horario_entrada} - {deposit.horario_salida}</TableCell>
+                                            <TableCell>{deposit.contacto?.nombre}</TableCell>
+                                            <TableCell>{formatTelefono(deposit.contacto?.telefono)}</TableCell>
+                                            <TableCell sx={{ verticalAlign: "middle"}}>
+                                                <MenuItem  handleOpenDialog={() => handleOpenDialog(deposit)}
+                                                handleOpenDetails={() => handleOpenDetails(deposit)}
+                                                id={deposit._id}
+                                                >
+                                                    <Eye className="text-gray-500 hover:text-gray-700 size-4" />
+                                                </MenuItem>
+                                                
+                                            </TableCell>
+                                                
+                                        </TableRow>
+                                        
+                                    ))
+                                )}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </div>
+            )}
 
             {/* Paginación */}
             <div className="flex justify-between items-center container mx-auto py-4" ref={footerRef}>

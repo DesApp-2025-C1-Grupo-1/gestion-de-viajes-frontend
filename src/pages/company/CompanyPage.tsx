@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
-//import { Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import { MenuItem, Pagination, Select, SelectChangeEvent, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery, useTheme } from "@mui/material";
 import MenuItemDialog from "../../components/buttons/MenuItem";
 import { SectionHeader } from "../../components/SectionHeader";
 import { useNavigate } from "react-router-dom";
 import LoadingState from "../../components/LoadingState";
-//import { useAutoRowsPerPage } from '../../hooks/useAutoRowsPerPage';
 import SearchBar from "../../components/SearchBar";
-//import MenuItem from "../../components/buttons/MenuItem";
 import { useNotify } from "../../hooks/useNotify";
 import { empresaControllerDelete, EmpresaDto, useEmpresaControllerFindAll} from "../../api/generated";
 import { useDebouncedValue } from "../../hooks/useDebouncedValue";
@@ -22,7 +19,6 @@ export default function CompanyPage(){
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);
     const [openDialog, setOpenDialog] = useState(false);
-    //const {rowsPerPage, headerRef, footerRef, tableHeaderRef} = useAutoRowsPerPage(93);
     const [empresaSelected, setEmpresaSelected] = useState<EmpresaDto>();
     const empresas = data?.data || [];
     const debouncedQuery = useDebouncedValue(searchQuery, 500);
@@ -102,7 +98,7 @@ export default function CompanyPage(){
                                 { label: 'Domicilio fiscal', value: [company.direccion?.ciudad, ' - ', company.direccion?.calle, ' ', company.direccion?.numero] },
                             ]}
                             onDelete={() => handleOpenDialog(company)}
-                            onEdit={() => navigate(`/company/edit/${company._id}`)}            
+                            onEdit={() => navigate(`/companies/edit/${company._id}`)}            
                         />
                     ))}
                 </div>

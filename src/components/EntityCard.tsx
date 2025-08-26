@@ -69,14 +69,19 @@ export default function EntityCard({ title, subtitle, icon, fields, onView, onEd
                 ))}
             </article>
             <footer className="p-5 flex justify-between items-center">
-                <Button
-                    variant="outlined"
-                    onClick={onView}
-                    sx={{ textTransform: 'none', color: 'text.primary',backgroundColor:"grey.100" , borderColor: 'grey.200', fontWeight: 600, "&:hover": { borderColor: 'grey.700', backgroundColor:"grey.100"} }}
-                    startIcon={<Eye size={16} />}
-                >
-                    Detalles
-                </Button>
+
+                {onView ? (
+                   <Button
+                        variant="outlined"
+                        onClick={onView}
+                        sx={{ textTransform: 'none', color: 'text.primary',backgroundColor:"grey.100" , borderColor: 'grey.200', fontWeight: 600, "&:hover": { borderColor: 'grey.700', backgroundColor:"grey.100"} }}
+                        startIcon={<Eye size={16} />}
+                    >
+                        Detalles
+                    </Button> 
+                ) : (<div /> 
+                )}
+                
                 <div className="flex gap-2">
                     <Button
                         variant="outlined"

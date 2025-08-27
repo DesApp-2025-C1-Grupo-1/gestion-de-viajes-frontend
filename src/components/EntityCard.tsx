@@ -1,10 +1,11 @@
-import { Button, Card, Typography } from "@mui/material";
+import { Button, Card, Tooltip, Typography } from "@mui/material";
 import { Edit, Eye, Trash2 } from "lucide-react";
 import { ReactNode } from "react";
 
 type Field = {
   label: string;
   value: ReactNode;
+  isLong?: boolean;
 };
 
 type Action = {
@@ -62,9 +63,40 @@ export default function EntityCard({ title, subtitle, icon, fields, onView, onEd
                         <Typography variant="body2" color="text.secondary">
                             {field.label}
                         </Typography>
-                        <Typography variant="h6" fontWeight={600} sx={{ fontSize: '0.90rem'}}>
-                            {field.value}
-                        </Typography>
+                        {!field.isLong ? (
+                            <Typography
+                                variant="h6" 
+                                fontWeight={600} 
+                                sx={{ fontSize: '0.90rem'}}
+                                className="truncate"
+                            >
+                                {field.value}
+                            </Typography>
+                        ) : (
+                            <Tooltip 
+                                title={field.value} 
+                                placement="bottom-start"
+                                slotProps={{
+                                    popper: {
+                                    modifiers: [
+                                        {
+                                        name: 'offset',
+                                        options: {
+                                            offset: [0, -14],
+                                        },
+                                    },],},
+                                }}
+                            >
+                                <Typography
+                                    variant="h6" 
+                                    fontWeight={600} 
+                                    sx={{ fontSize: '0.90rem'}}
+                                    className="truncate"
+                                >
+                                    {field.value}
+                                </Typography>
+                            </Tooltip>
+                        )}
                     </div>
                 ))}
             </article>

@@ -94,8 +94,8 @@ export default function CompanyPage(){
                             icon={<Building2 size={24}/>}
                             fields={[
                                 { label: "CUIT/RUT", value: company.cuit },
-                                { label: "Contacto", value: company.contacto.email },
-                                { label: 'Domicilio fiscal', value: [company.direccion?.ciudad, ' - ', company.direccion?.calle, ' ', company.direccion?.numero] },
+                                { label: "Contacto", value: company.contacto.email, isLong: true},
+                                { label: 'Domicilio fiscal', value: [company.direccion?.ciudad, ' - ', company.direccion?.calle, ' ', company.direccion?.numero,], isLong: true },
                             ]}
                             onDelete={() => handleOpenDialog(company)}
                             onEdit={() => navigate(`/companies/edit/${company._id}`)}            

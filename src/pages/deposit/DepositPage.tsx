@@ -105,7 +105,7 @@ export default function DepositPage() {
                                 { label: "Ciudad", value:   deposit.direccion?.ciudad },
                                 { label: "Tipo", value:     deposit.tipo.charAt(0).toUpperCase() + deposit.tipo.slice(1) },
                                 { label: "Horario", value:  deposit.horario_entrada + " - " + deposit.horario_salida },
-                                { label: "Contacto", value: deposit.contacto.email, isLong: true },
+                                { label: "Email", value: deposit.contacto.email, isLong: true },
                                 { label: "Teléfono", value: formatTelefono(deposit.contacto.telefono) },
                             ]}
                             onDelete={() => handleOpenDialog(deposit)}

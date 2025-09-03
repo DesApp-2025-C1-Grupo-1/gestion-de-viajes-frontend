@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, Truck, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Truck } from "lucide-react";
 import HomeIcon from "./icons/HomeIcon";
 import DriverIcon from "./icons/DriverIcon";
 import VehicleIcon from "./icons/VehicleIcon";

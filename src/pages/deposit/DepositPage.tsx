@@ -15,6 +15,7 @@ import { Eye, Warehouse } from "lucide-react";
 import { DetailsDeposit } from "../../components/deposit/DetailsDeposit";
 import { useTheme } from "@mui/material/styles";
 import EntityCard from "../../components/EntityCard";
+import PaginationEntity from "../../components/PaginationEntity";
 
 
 export default function DepositPage() {
@@ -22,7 +23,7 @@ export default function DepositPage() {
     const {data: deposits, isLoading, refetch} = useDepositoControllerFindAll();
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);
-    const {rowsPerPage, headerRef, footerRef} = useAutoRowsPerPage(113);
+    const [rowsPerPage, setRowsPerPage] = useState<number>(5);
     const [openDialog, setOpenDialog] = useState<boolean>(false);
     const [openDetailsDialog, setOpenDetailsDialog] = useState<boolean>(false);
     const [depositSelected, setDepositSelected] = useState<DepositoDto>();
@@ -77,7 +78,7 @@ export default function DepositPage() {
 
     return (
         <>
-            <div ref={headerRef}>
+            <div>
                 <SectionHeader 
                     title="Red de depósitos"
                     description="Administre la red de depósitos del sistema logístico."
@@ -189,19 +190,16 @@ export default function DepositPage() {
             )}
 
             {/* Paginación */}
-            <div className="flex justify-between items-center container mx-auto py-4" ref={footerRef}>
-                <p className="text-sm w-full">
-                    Mostrando {Math.min((page - 1) * rowsPerPage + 1, filtered.length)}–{Math.min(page * rowsPerPage, filtered.length)} de {filtered.length} depósitos
-                </p>
-                <Pagination 
-                    count={totalPages}
-                    page={page}
-                    onChange={handleChangePage}
-                    shape="rounded"
-                    color="primary"
-                    sx={{width: "100%", display: "flex", justifyContent: "flex-end"}}
-                />
-            </div>
+            <PaginationEntity
+                entity="depósitos"
+                page={page}
+                totalPages={totalPages}
+                rowsPerPage={rowsPerPage}
+                filtered={filtered}
+                handleChangePage={handleChangePage}
+                setRowsPerPage={setRowsPerPage}
+                setPage={setPage}
+            />
 
             {/* Dialogo de eliminar */}
             {depositSelected && (

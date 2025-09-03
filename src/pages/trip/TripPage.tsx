@@ -1,30 +1,28 @@
 import { useNavigate } from "react-router-dom";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { SectionHeader } from "../../components/SectionHeader";
 import TripFilters from "../../components/TripFilters";
-import { Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
 import LoadingState from "../../components/LoadingState";
 import MenuItem from "../../components/buttons/MenuItem";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { useNotify } from "../../hooks/useNotify";
 import { viajeControllerRemove, ViajeDto, BuscarViajeDto, useViajeControllerBuscar, EmpresaDto, VehiculoDto, ChoferDto, empresaControllerFindAll, vehiculoControllerFindAll, choferControllerFindAll, DepositoDto, depositoControllerFindAll } from '../../api/generated';
-import { useAutoRowsPerPage } from "../../hooks/useAutoRowsPerPage";
 import {  Eye, User, Building2} from "lucide-react";
 import { DoubleCell } from "../../components/DoubleCell";
 import { TripType } from "../../components/TripType";
 import { DetailsTrip } from "../../components/trip/DetailsTrip";
+import PaginationEntity from "../../components/PaginationEntity";
 
 export default function TripPage() {
     const navigate = useNavigate();
     const {notify} = useNotify("Viajes");
     const [filterOpen, setFilterOpen] = useState(false);
     const [page, setPage] = useState<number>(1);
-    const widthTableRef = useRef<HTMLDivElement>(null);
-    const widthTable = widthTableRef.current?.offsetWidth || 0;
-    const {rowsPerPage, headerRef, footerRef, filterRef} = useAutoRowsPerPage(widthTable>= 1040 ? 100 : 150);
+    const [rowsPerPage, setRowsPerPage] = useState<number>(5);
 
     const [trips, setTrips] = useState<ViajeDto[]>([]);
-    const [total, setTotal] = useState<number>(0);
+    const [totalPages, setTotalPages] = useState<number>(0);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     
     
@@ -94,7 +92,7 @@ export default function TripPage() {
             const responseData = res.data
 
             setTrips(responseData.data); // Ajustá si hay paginación en backend
-            setTotal(responseData.total);
+            setTotalPages(responseData.total);
         } catch (err) {
             notify("error", "No se pudieron cargar los viajes.");
         } finally {
@@ -146,32 +144,29 @@ export default function TripPage() {
 
     return(
         <>
-            <div ref={headerRef}>
-                <SectionHeader
-                    title="Viajes"
-                    description="Consulte los viajes registrados junto con su logística asociada."
-                    buttonText="Nuevo viaje"
-                    onAdd={() => navigate('/trips/form')}
+            <SectionHeader
+                title="Viajes"
+                description="Consulte los viajes registrados junto con su logística asociada."
+                buttonText="Nuevo viaje"
+                onAdd={() => navigate('/trips/form')}
 
-                />
-            </div>
+            />
 
-            <div ref={filterRef}>
-                <TripFilters 
-                    filterOpen={filterOpen} 
-                    setFilterOpen={setFilterOpen} 
-                    onApply={handleApplyFilters}
-                    empresas={empresas}
-                    vehiculos={vehiculos}
-                    choferes={choferes}
-                    depositos={depositos}
-                    loadingOptions={loadingOptions}
-                />
-            </div>
+            <TripFilters 
+                filterOpen={filterOpen} 
+                setFilterOpen={setFilterOpen} 
+                onApply={handleApplyFilters}
+                empresas={empresas}
+                vehiculos={vehiculos}
+                choferes={choferes}
+                depositos={depositos}
+                loadingOptions={loadingOptions}
+            />
+
             <div className="bg-white rounded-lg" style={{
                 boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
                 border: "0.5px solid #C7C7C7",}}>
-                    <TableContainer className="text-sm rounded-lg" ref={widthTableRef}>
+                    <TableContainer className="text-sm rounded-lg">
                         <Table aria-label="simple table" >
                             <TableHead >
                                     <TableRow >
@@ -236,20 +231,17 @@ export default function TripPage() {
             </div>
 
             {/* Paginación */}
-            <div className="flex justify-between items-center  container mx-auto py-4 " ref={footerRef}>
-                <p className="text-sm w-full">
-                    Mostrando {(page-1) * rowsPerPage+1} - {Math.min(page*rowsPerPage, total)} de {total} viajes
-                </p>
-                <Pagination 
-                    count={Math.ceil(total / rowsPerPage)}
-                    page={page}
-                    onChange={handleChangePage}
-                    shape="rounded"
-                    color="primary"
-                    sx={{width: "100%", display: "flex", justifyContent: "flex-end"}}
-                />
-            </div>
-
+            <PaginationEntity
+                entity="viajes"
+                page={page}
+                totalPages={totalPages}
+                rowsPerPage={rowsPerPage}
+                filtered={trips}
+                handleChangePage={handleChangePage}
+                setRowsPerPage={setRowsPerPage}
+                setPage={setPage}
+            />
+            
             {/* Dialogo de eliminar */}
             {tripSelected && (
                 <ConfirmDialog 

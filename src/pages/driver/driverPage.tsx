@@ -14,6 +14,7 @@ import { Phone, Mail, Building2, Car, CalendarDays, PersonStanding, UserRound } 
 import { formatTelefono } from "../../lib/formatters";
 import EntityCard from "../../components/EntityCard";
 import { DriverDetailsDialog } from "../../components/driver/DriverDetailsDialog";
+import PaginationEntity from "../../components/PaginationEntity";
 
 
 export default function DriverPage(){
@@ -54,13 +55,6 @@ export default function DriverPage(){
         dri.apellido.toLocaleLowerCase().includes(debouncedQuery.toLocaleLowerCase()) ||
         dri.nombre.toLocaleLowerCase().includes(debouncedQuery.toLocaleLowerCase())
     );
-
-    const handleChangeRowsPerPage = (event: SelectChangeEvent<number>) => {
-        setTimeout(() => {
-            setRowsPerPage(parseInt(event.target.value as string, 10));
-            setPage(1);
-        }, 300);
-    };
 
     const handleOpenDetails = (driver: ChoferDto) => {
             setOpenDetailsDialog(true);
@@ -200,37 +194,16 @@ export default function DriverPage(){
             
 
             {/* Paginación */}
-            <div className="flex flex-col gap-4 justify-between items-center  container mx-auto py-4 ">
-                <p className="text-sm w-full">
-                    Mostrando {Math.min((page - 1) * rowsPerPage + 1, filtered.length)}–{Math.min(page * rowsPerPage, filtered.length)} de {filtered.length} choferes
-                </p>
-
-                <div className="flex items-center w-full justify-between">
-                    <div className="flex items-center w-full gap-2">
-                        <span className="text-sm w-max">Filas por página: </span>
-                        <Select
-                            value={rowsPerPage}
-                            onChange={(e) => handleChangeRowsPerPage(e)}
-                            sx={{fontSize: "0.875rem", py: 0, px: 1, borderRadius: "4px", backgroundColor: "#F5F5F5"}}
-                        >
-                            <MenuItem value={5}>5</MenuItem>
-                            <MenuItem value={10}>10</MenuItem>
-                            <MenuItem value={25}>25</MenuItem>
-                        </Select>
-
-                    </div>
-                
-
-                    <Pagination 
-                        count={totalPages}
-                        page={page}
-                        onChange={handleChangePage}
-                        shape="rounded"
-                        color="primary"
-                        sx={{width: "100%", display: "flex", justifyContent: "flex-end"}}
-                    />
-                </div>
-            </div>
+            <PaginationEntity
+                entity="choferes"
+                page={page}
+                totalPages={totalPages}
+                rowsPerPage={rowsPerPage}
+                filtered={filtered}
+                handleChangePage={handleChangePage}
+                setRowsPerPage={setRowsPerPage}
+                setPage={setPage}
+            />
 
             {choferSelect && (
                 <ConfirmDialog 

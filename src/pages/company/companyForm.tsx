@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { SectionHeader } from "../../components/SectionHeader";
-import { Box, Button, Paper, TextField, Typography, Backdrop, CircularProgress, Grid, Alert, InputAdornment } from "@mui/material";
+import { Box, Paper, TextField, Typography, Backdrop, CircularProgress, Grid, Alert, InputAdornment } from "@mui/material";
 import { CreateEmpresaSchema } from "../../api/schemas";
 import { useCompanyForm } from "../../hooks/useCompanyForm";
 import FormActions from "../../components/deposit/FormActions";
@@ -46,10 +46,10 @@ export default function CompanyFormPage() {
             <Paper sx={{maxHeight:"100%", padding: 4, overflow: "auto", mx: 'auto', width: "100%", borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "0.5px solid #C7C7C7", pb: 5 }} >
                 <form onSubmit={handleSubmit(handleFormSubmit)} className="w-full max-w-[800px] mx-auto overflow-y-auto">
 
-                    <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Datos de la Empresa</Typography>
+                    <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 1 }}>Datos básicos</Typography>
                     <Grid container spacing={3} mb={4}>
                         <Grid item xs={12} sm={6}>
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem' }}>Razón social</Typography>
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:0.5  }}>Razón social</Typography>
                             <TextField
                                 id="razon_social" 
                                 placeholder="Ej: Transportes del sur SA"
@@ -62,7 +62,7 @@ export default function CompanyFormPage() {
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem' }}>Nombre comercial</Typography>
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:0.5  }}>Nombre comercial</Typography>
                             <TextField
                                 id="nombre_comercial" 
                                 placeholder="Ej: Transportes del sur"
@@ -78,7 +78,7 @@ export default function CompanyFormPage() {
 
                     <Grid container spacing={3} mb={4}>
                         <Grid item xs={12} sm={6}>
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem' }}>CUIT/RUT</Typography>
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:0.5 }}>CUIT/RUT</Typography>
                             <TextField
                                 id="cuit" 
                                 placeholder="Ej: 27-44258393-0"
@@ -92,10 +92,10 @@ export default function CompanyFormPage() {
                         </Grid>
                     </Grid>
 
-                    <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Domicilio Fiscal</Typography>
+                    <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 1 }}>Domicilio Fiscal</Typography>
                     <Grid container spacing={3} mb={4}>
                         <Grid item xs={12} md={8}>
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem' }}>Calle</Typography>
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:0.5 }}>Calle</Typography>
                             <TextField
                                 id="direccion.calle" 
                                 placeholder="Ej: Vergara"
@@ -108,7 +108,7 @@ export default function CompanyFormPage() {
                             />
                         </Grid>
                         <Grid item xs={12} md={4}>
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem' }}>Número</Typography>
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:0.5  }}>Número</Typography>
                             <TextField
                                 id="direccion.numero" 
                                 placeholder="Ej: 151"
@@ -120,54 +120,55 @@ export default function CompanyFormPage() {
                                 disabled={isLoading}
                             />
                         </Grid>
-                    </Grid>
-                    <Grid container spacing={3} mb={4}>
-                        <Grid item xs={12} sm={6}>
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem' }}>Ciudad</Typography>
-                            <TextField
-                                id="direccion.ciudad" 
-                                placeholder="Ej: Villa Tesei"
-                                {...register("direccion.ciudad")}
-                                fullWidth 
-                                error={!!formErrors.direccion?.ciudad}
-                                helperText={formErrors.direccion?.ciudad?.message}
-                                className="inside-paper"
-                                disabled={isLoading}
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem' }}>Estado/provincia</Typography>
-                            <TextField
-                                id="direccion.estado_provincia" 
-                                placeholder="Ej: Buenos Aires"
-                                {...register("direccion.estado_provincia")}
-                                fullWidth 
-                                error={!!formErrors.direccion?.estado_provincia}
-                                helperText={formErrors.direccion?.estado_provincia?.message}
-                                className="inside-paper"
-                                disabled={isLoading}
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem' }}>País</Typography>
-                            <TextField
-                                id="direccion.pais" 
-                                placeholder="Ej: Argentina"
-                                {...register("direccion.pais")}
-                                fullWidth 
-                                error={!!formErrors.direccion?.pais}
-                                helperText={formErrors.direccion?.pais?.message}
-                                className="inside-paper"
-                                disabled={isLoading}
-                            />
+                    
+                        <Grid container item xs={12} spacing={3}>
+                            <Grid item xs={12} md={4}>
+                                <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:0.5  }}>Ciudad</Typography>
+                                <TextField
+                                    id="direccion.ciudad" 
+                                    placeholder="Ej: Villa Tesei"
+                                    {...register("direccion.ciudad")}
+                                    fullWidth 
+                                    error={!!formErrors.direccion?.ciudad}
+                                    helperText={formErrors.direccion?.ciudad?.message}
+                                    className="inside-paper"
+                                    disabled={isLoading}
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={4}>
+                                <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:0.5  }}>Estado/provincia</Typography>
+                                <TextField
+                                    id="direccion.estado_provincia" 
+                                    placeholder="Ej: Buenos Aires"
+                                    {...register("direccion.estado_provincia")}
+                                    fullWidth 
+                                    error={!!formErrors.direccion?.estado_provincia}
+                                    helperText={formErrors.direccion?.estado_provincia?.message}
+                                    className="inside-paper"
+                                    disabled={isLoading}
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={4}>
+                                <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:0.5 }}>País</Typography>
+                                <TextField
+                                    id="direccion.pais" 
+                                    placeholder="Ej: Argentina"
+                                    {...register("direccion.pais")}
+                                    fullWidth 
+                                    error={!!formErrors.direccion?.pais}
+                                    helperText={formErrors.direccion?.pais?.message}
+                                    className="inside-paper"
+                                    disabled={isLoading}
+                                />
+                            </Grid>
                         </Grid>
                     </Grid>
 
-                    <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Información de Contacto</Typography>
+                    <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 1 }}>Información de Contacto</Typography>
                      
                     <Grid container spacing={3} mb={4}>
-                        <Grid item xs={12} sm={6}>
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem'}}>Nombre de contacto</Typography>
+                        <Grid item xs={12} md={7}>
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:0.5 }}>Nombre de contacto</Typography>
                             <TextField
                                 id="contacto.nombre" 
                                 placeholder="Ej: Administrador"
@@ -179,22 +180,9 @@ export default function CompanyFormPage() {
                                 disabled={isLoading}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem' }}>Correo electrónico</Typography>
-                            <TextField
-                                id="contacto.email" 
-                                placeholder="Ej: contacto@empresa.com"
-                                {...register("contacto.email")}
-                                fullWidth 
-                                error={!!formErrors.contacto?.email}
-                                helperText={formErrors.contacto?.email?.message}
-                                className="inside-paper"
-                                disabled={isLoading}
-                            />
-                        </Grid>
 
-                        <Grid item xs={12} md={5} >
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb: 1 }}>Teléfono</Typography>
+                        <Grid item xs={12} md={5}>
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:0.5}}>Teléfono</Typography>
                             <Grid container spacing={2}>
                                 <Grid item xs={mostrarCodigoArea ? 3 : 4}>
                                 <TextField
@@ -266,6 +254,20 @@ export default function CompanyFormPage() {
                                 </Box>   
                             )}
 
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:0.5 }}>Correo electrónico</Typography>
+                            <TextField
+                                id="contacto.email" 
+                                placeholder="Ej: contacto@empresa.com"
+                                {...register("contacto.email")}
+                                fullWidth 
+                                error={!!formErrors.contacto?.email}
+                                helperText={formErrors.contacto?.email?.message}
+                                className="inside-paper"
+                                disabled={isLoading}
+                            />
                         </Grid>
                     </Grid>
 

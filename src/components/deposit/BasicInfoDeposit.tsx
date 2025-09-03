@@ -18,7 +18,7 @@ const BasicInfoSection = ({
   return (
     <>
       <Typography variant="h6" sx={{color: "#5A5A65" , fontWeight: 550 , fontSize: "1.4rem", mb:2}}>
-        Información Básica
+        Datos básicos
       </Typography>
       
       <Grid container spacing={3} mb={4}>

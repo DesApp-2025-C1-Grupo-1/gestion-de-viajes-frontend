@@ -59,7 +59,7 @@ export default function DriverFormPage(){
             <Paper sx={{maxHeight:"100%", padding: 4, overflow: "auto", mx: 'auto', width: "100%", borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "0.5px solid #C7C7C7", pb: 5 }} >
                 <form onSubmit={handleSubmit(handleFormSubmit)} className="w-full max-w-[800px] mx-auto overflow-y-auto">
 
-                    <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Datos personales</Typography>
+                    <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Datos básicos</Typography>
                     <Grid container spacing={3} mb={4}>
                         <Grid item xs={12} sm={6}>
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Nombre</Typography>
@@ -140,7 +140,7 @@ export default function DriverFormPage(){
                     <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Información de Contacto</Typography>
                     <Grid container spacing={3} mb={4}>
                         <Grid item xs={12} sm={6}>
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Telefono</Typography>
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Teléfono</Typography>
                             <Grid container spacing={2}>
                                 <Grid item xs={mostrarCodigoArea ? 3 : 4}>
                                 <TextField
@@ -214,7 +214,7 @@ export default function DriverFormPage(){
                         </Grid>
                         
                         <Grid item xs={12} sm={6}>
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Mail</Typography>
+                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Correo electrónico</Typography>
                             <TextField
                                 id="email"
                                 placeholder="contacto@deposito.com"

@@ -1,7 +1,6 @@
 import { FormHelperText, Grid, InputAdornment, TextField, Typography } from "@mui/material";
-import { UseFormRegister, UseFormSetValue, UseFormWatch } from "react-hook-form";
+import { UseFormRegister, UseFormWatch } from "react-hook-form";
 import { CreateDepositoSchema } from "../../api/schemas";
-import { Plus } from "lucide-react";
 
 interface ContactSectionProps {
   errors: Record<string, any>;
@@ -116,7 +115,7 @@ const ContactSection = ({
         </Grid>
 
         <Grid item xs={12} >
-          <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Mail</Typography>
+          <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Correo electrónico</Typography>
           <TextField
             id="contacto.email"
             placeholder="contacto@deposito.com"

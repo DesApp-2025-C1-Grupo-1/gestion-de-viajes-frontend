@@ -13,6 +13,8 @@ import DriverFormPage from "./pages/driver/DriverForm";
 import TripPage from "./pages/trip/TripPage";
 import TripFormPage from "./pages/trip/TripForm";
 import AgendaPage from "./pages/trip/AgendaPage";
+import DistributionListPage from "./pages/tripDistribution/DistributionListPage";
+import DistributionFormPage from "./pages/tripDistribution/DistributionFormPage";
 
 export function AppRouter() {
   return (
@@ -36,6 +38,9 @@ export function AppRouter() {
         <Route path="/trips/form" element={<TripFormPage />} />
         <Route path="/trips/edit/:id" element={<TripFormPage />} />
         <Route path="/agenda/:tipo/:id" element={<AgendaPage />} />
+        <Route path="/distributions" element={<DistributionListPage />} />
+        <Route path="/distributions/form" element={<DistributionFormPage />} />
+        <Route path="/distributions/edit/:id" element={<DistributionFormPage />} />
       </Route>
     </Routes>
   );

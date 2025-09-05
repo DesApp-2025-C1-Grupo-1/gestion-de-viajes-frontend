@@ -26,7 +26,7 @@ export default function Sidebar({isVisible, setIsVisible}: SidebarProps) {
   const menuItems = [
     { src: HomeIcon, title: "Inicio", link: "" },
     { src: CompanyIcon, title: "Empresas", link: "companies" },
-    { src: TripIcon, title: "Viajes", link: "trips" },
+    { src: TripIcon, title: "Viajes", link: "trips/distribution" },
     { src: DriverIcon, title: "Choferes", link: "drivers" },
     { src: VehicleIcon, title: "Vehículos", link: "vehicles" },
     { src: DepotIcon, title: "Depósitos", link: "depots" }

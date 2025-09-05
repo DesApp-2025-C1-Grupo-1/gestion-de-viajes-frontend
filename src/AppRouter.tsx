@@ -34,13 +34,13 @@ export function AppRouter() {
         <Route path="/depots" element={<DepositPage />} />
         <Route path="/depots/form" element={<DepositFormPage />} />
         <Route path="/depots/edit/:id" element={<DepositFormPage />} />
-        <Route path="/trips" element={<TripPage />} />
-        <Route path="/trips/form" element={<TripFormPage />} />
-        <Route path="/trips/edit/:id" element={<TripFormPage />} />
+        <Route path="/trips/collection" element={<TripPage />} />
+        <Route path="/trips/collection/form" element={<TripFormPage />} />
+        <Route path="/trips/collection/edit/:id" element={<TripFormPage />} />
         <Route path="/agenda/:tipo/:id" element={<AgendaPage />} />
-        <Route path="/distributions" element={<DistributionListPage />} />
-        <Route path="/distributions/form" element={<DistributionFormPage />} />
-        <Route path="/distributions/edit/:id" element={<DistributionFormPage />} />
+        <Route path="/trips/distribution" element={<DistributionListPage />} />
+        <Route path="/trips/distribution/form" element={<DistributionFormPage />} />
+        <Route path="/trips/distribution/edit/:id" element={<DistributionFormPage />} />
       </Route>
     </Routes>
   );

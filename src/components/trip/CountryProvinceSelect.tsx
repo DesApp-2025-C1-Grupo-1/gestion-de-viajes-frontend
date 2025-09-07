@@ -36,6 +36,9 @@ export const CountryProvinceSelect = ({
       setValue("provincia_destino", "");
       setAvailableRemitos([]);
       setSelectedRemitos([]);
+
+      // Ajustar tipo de viaje según el país seleccionado
+      setValue("tipo_viaje", selectedCountry.nombre_comercial.toLowerCase() === "argentina" ? "nacional" : "internacional");
     }
   };
 

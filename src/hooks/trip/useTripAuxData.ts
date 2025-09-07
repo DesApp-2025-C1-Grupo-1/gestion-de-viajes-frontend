@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect,  useState } from "react";
 import {
     useEmpresaControllerFindAll,
     useVehiculoControllerFindAll,
@@ -7,11 +7,11 @@ import {
     VehiculoDto,
     ChoferDto
 } from "../../api/generated";
+import { useWatch } from "react-hook-form";
 
 interface UseTripAuxDataProps {
     control: any; // Assuming control is passed from a form library like react-hook-form
-    resetField: (fieldName: "vehiculo" | "chofer" | "fecha_inicio" | "fecha_llegada" | "tipo_viaje" | "deposito_origen" | "deposito_destino" | "empresa") => void; // Function to reset form fields; // Function to reset form fields
-
+    resetField: any; // Function to reset form fields
 }
 
 export default function useTripAuxData({control, resetField}: UseTripAuxDataProps) {
@@ -23,10 +23,9 @@ export default function useTripAuxData({control, resetField}: UseTripAuxDataProp
     const [filteredVehiculos, setFilteredVehiculos] = useState<VehiculoDto[]>([]);
     const [filteredChoferes, setFilteredChoferes] = useState<ChoferDto[]>([]);
 
-    const companyIdTrip = useMemo(() => {
-        // Obtener el ID de la empresa del viaje actual desde el formulario
-        return control._formValues.empresa;
-    }, [control._formValues.empresa]);
+    const companyIdTrip = useWatch({ control, name: "empresa" });
+    const currentDriverId = useWatch({ control, name: "chofer" });
+    const currentVehicleId = useWatch({ control, name: "vehiculo" });
 
     // Filtrar vehículos y choferes por la empresa del viaje actual
     useEffect(() => {
@@ -50,14 +49,10 @@ export default function useTripAuxData({control, resetField}: UseTripAuxDataProp
         setFilteredVehiculos(filteredVehicles);
         setFilteredChoferes(filteredDrivers);
 
-        // Si el vehículo actual no está en la lista filtrada, limpiar el campoAdd commentMore actions
-        const currentVehicleId = control._formValues.vehiculo;
-        if (currentVehicleId && !filteredVehicles.some(vehicle => vehicle._id === currentVehicleId)) {
+        if (currentVehicleId && !filteredVehicles.some(v => v._id === currentVehicleId)) {
             resetField("vehiculo");
         }
-        // Si el chofer actual no está en la lista filtrada, limpiar el campo
-        const currentDriverId = control._formValues.chofer;
-        if (currentDriverId && !filteredDrivers.some(driver => driver._id === currentDriverId)) {
+        if (currentDriverId && !filteredDrivers.some(d => d._id === currentDriverId)) {
             resetField("chofer");
         }
     };

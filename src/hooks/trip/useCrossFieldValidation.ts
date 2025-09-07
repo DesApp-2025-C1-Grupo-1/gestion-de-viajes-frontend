@@ -5,9 +5,9 @@ import { DepositoDto } from "../../api/generated";
 import { AxiosResponse } from "axios";
 
 interface UseCrossFieldValidationProps {
-  watch: UseFormWatch<CreateViajeSchema>;
-  trigger: UseFormTrigger<CreateViajeSchema>;
-  setValue: UseFormSetValue<CreateViajeSchema>;
+  watch: any;
+  trigger: any;
+  setValue: any;
   depots: AxiosResponse<DepositoDto[], any> | undefined;
 }
 

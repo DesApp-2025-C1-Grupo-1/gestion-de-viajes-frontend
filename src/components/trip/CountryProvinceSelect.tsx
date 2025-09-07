@@ -1,114 +1,98 @@
 import { FormHelperText, Grid, MenuItem, Select, Typography } from "@mui/material";
-import { Controller, UseFormSetValue } from "react-hook-form";
+import { useEffect, useState } from "react";
 import { countriesData } from "../../services/countriesData";
 
 interface CountryProvinceSelectProps {
-  control: any;
-  formErrors: any;
   selectedPais: string;
-  filteredProvincias: any[];
-  setFilteredProvincias: (provincias: any[]) => void;
-  setValue: UseFormSetValue<any>;
+  setSelectedPais: (pais: string) => void;
+  selectedProvincia: string;
+  setSelectedProvincia: (provincia: string) => void;
   setAvailableRemitos: (remitos: any[]) => void;
   setSelectedRemitos: (remitos: number[]) => void;
-  filterByProvince: (province: string) => void;
+  remitosData: any;
 }
 
 export const CountryProvinceSelect = ({
-  control,
-  formErrors,
   selectedPais,
-  filteredProvincias,
-  setFilteredProvincias,
-  setValue,
+  setSelectedPais,
+  selectedProvincia,
+  setSelectedProvincia,
   setAvailableRemitos,
   setSelectedRemitos,
-  filterByProvince
+  remitosData
 }: CountryProvinceSelectProps) => {
-  
-  const handlePaisChange = (value: string) => {
-    // Filtrar provincias según el país seleccionado
-    const selectedCountry = countriesData.find(country => country._id === value);
-    if (selectedCountry) {
-      setFilteredProvincias(selectedCountry.provincias);
-      
-      // Limpiar selecciones relacionadas
-      setValue("provincia_destino", "");
-      setAvailableRemitos([]);
-      setSelectedRemitos([]);
+  const [filteredProvincias, setFilteredProvincias] = useState<any[]>([]);
 
-      // Ajustar tipo de viaje según el país seleccionado
-      setValue("tipo_viaje", selectedCountry.nombre_comercial.toLowerCase() === "argentina" ? "nacional" : "internacional");
+  // Filtrar provincias según el país seleccionado
+  useEffect(() => {
+    if (selectedPais) {
+      const selectedCountry = countriesData.find(country => country._id === selectedPais);
+      if (selectedCountry) {
+        setFilteredProvincias(selectedCountry.provincias);
+        
+        // Limpiar la selección de provincia cuando se cambia de país
+        setSelectedProvincia("");
+        setAvailableRemitos([]);
+        setSelectedRemitos([]);
+      }
+    } else {
+      setFilteredProvincias([]);
     }
-  };
+  }, [selectedPais, setSelectedProvincia, setAvailableRemitos, setSelectedRemitos]);
+
+  // Cuando se selecciona una provincia, filtrar los remitos disponibles
+  useEffect(() => {
+    if (selectedProvincia) {
+      const filtered = remitosData?.data.filter((remito: any) => 
+        remito.destino.provincia.toLowerCase() === selectedProvincia.toLowerCase()
+      );
+      setAvailableRemitos(filtered || []);
+    }
+  }, [selectedProvincia, remitosData, setAvailableRemitos]);
 
   return (
     <>
       <Grid item xs={12} md={6}>
-        <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb: 1 }}>País</Typography>
-        <Controller
-          control={control}
-          name="pais_destino"
-          render={({ field }) => (
-            <Select
-              {...field}
-              value={field.value || ""}
-              fullWidth
-              displayEmpty
-              onChange={(event) => {
-                field.onChange(event.target.value);
-                handlePaisChange(event.target.value);
-              }}
-              error={!!formErrors.pais_destino}
-            >
-              <MenuItem value="" disabled>
-                Seleccione un país
-              </MenuItem>
-              {countriesData.map((country) => (
-                <MenuItem key={country._id} value={country._id}>
-                  {country.nombre_comercial}
-                </MenuItem>
-              ))}
-            </Select>
-          )}
-        />
-        <FormHelperText error={!!formErrors.pais_destino}>
-          {formErrors.pais_destino?.message}
-        </FormHelperText>
+        <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb: 1 }}>
+          País de destino
+        </Typography>
+        <Select
+          value={selectedPais}
+          fullWidth
+          displayEmpty
+          onChange={(event) => setSelectedPais(event.target.value)}
+        >
+          <MenuItem value="" disabled>
+            Seleccione un país
+          </MenuItem>
+          {countriesData.map((country) => (
+            <MenuItem key={country._id} value={country._id}>
+              {country.nombre_comercial}
+            </MenuItem>
+          ))}
+        </Select>
       </Grid>
 
       <Grid item xs={12} md={6}>
-        <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb: 1 }}>Estado/Provincia</Typography>
-        <Controller
-          control={control}
-          name="provincia_destino"
-          render={({ field }) => (
-            <Select
-              {...field}
-              value={field.value || ""}
-              fullWidth
-              displayEmpty
-              onChange={(event) => {
-                field.onChange(event.target.value);
-                filterByProvince(event.target.value);
-              }}
-              disabled={!selectedPais}
-              error={!!formErrors.provincia_destino}
-            >
-              <MenuItem value="" disabled>
-                {selectedPais ? "Seleccione una provincia/estado" : "Seleccione un país primero"}
-              </MenuItem>
-              {filteredProvincias.map((provincia) => (
-                <MenuItem key={provincia.id} value={provincia.nombre} sx={{ textTransform: 'capitalize' }}>
-                  {provincia.nombre}
-                </MenuItem>
-              ))}
-            </Select>
-          )}
-        />
-        <FormHelperText error={!!formErrors.provincia_destino}>
-          {formErrors.provincia_destino?.message}
-        </FormHelperText>
+        <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb: 1 }}>
+          Provincia/Estado
+        </Typography>
+        <Select
+          value={selectedProvincia}
+          fullWidth
+          displayEmpty
+          onChange={(event) => setSelectedProvincia(event.target.value)}
+          disabled={!selectedPais}
+        >
+          <MenuItem value="" disabled>
+            {selectedPais ? "Seleccione una provincia/estado" : "Seleccione un país primero"}
+          </MenuItem>
+          {filteredProvincias.map((provincia) => (
+            <MenuItem key={provincia.id} value={provincia.nombre} sx={{ textTransform: 'capitalize' }}>
+              {provincia.nombre}
+            </MenuItem>
+          ))}
+        </Select>
       </Grid>
     </>
   );

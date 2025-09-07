@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { SectionHeader } from "../../components/SectionHeader";
 import { Alert, Backdrop, Box, Button, CircularProgress, FormHelperText, Grid, MenuItem, Paper, Select, TextField, Typography } from "@mui/material";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -13,8 +13,9 @@ import { CreateViajeDistribucionSchema } from "../../api/schemas/viajeDistribuci
 import RemitosSelectModal from "../../components/trip/modals/RemitosSelectModal";
 import {Remito, remitosData} from "../../services/remitos"
 import { Package } from "lucide-react";
-import { countriesData } from "../../services/countriesData";
 import { CountryProvinceSelect } from "../../components/trip/CountryProvinceSelect";
+import { tarifas, zonas } from "../../services/zonaTarifas";
+import { ZonaTarifaSelect } from "../../components/trip/ZonaTarifaSelect";
 
 const depositoSelectButtonStyle = {
   height: "48px",
@@ -37,12 +38,14 @@ const depositoSelectButtonStyle = {
 
 export default function DistributionFormPage() {
     const {id} = useParams();
-    const navigate = useNavigate();
     const [modalOpen, setModalOpen] = useState(false);
     const [remitosModalOpen, setRemitosModalOpen] = useState(false);
     const [availableRemitos, setAvailableRemitos] = useState<Remito[]>([])
     const [selectedRemitos, setSelectedRemitos] = useState<number[]>([]);
-    const [filteredProvincias, setFilteredProvincias] = useState<any[]>([]);
+    const [selectedPais, setSelectedPais] = useState<string>("");
+    const [selectedProvincia, setSelectedProvincia] = useState<string>("");
+    const [selectedZona, setSelectedZona] = useState<number | null>(null);
+    const [tarifasDisponibles, setTarifasDisponibles] = useState<any[]>([]);
     const [activeField, setActiveField] = useState<"deposito_origen" | "remitos" | null>(null);
 
     const {
@@ -52,9 +55,10 @@ export default function DistributionFormPage() {
         formErrors,
         control,
         companies, 
+        clearErrors,
         depots,
         isSubmitting,
-        isValid,
+        setError,
         errorCompanies,
         errorVehicles,
         errorDrivers,
@@ -69,8 +73,34 @@ export default function DistributionFormPage() {
     } = useTripDistributionForm(id);
 
     const selectedOrigen = useWatch({ control, name: "deposito_origen" });
-    const selectedPais = useWatch({ control, name: "pais_destino" }); 
-    const selectedProvincia = useWatch({ control, name: "provincia_destino" });
+
+    const tipoViaje = useWatch({ control, name: "tipo_viaje" });
+    const empresaId = useWatch({ control, name: "empresa" });
+    const vehiculoId = useWatch({ control, name: "vehiculo" });
+
+    useEffect(() => {
+        // Cuando cambia el tipo de viaje, resetear la tarifa si ya no es nacional
+        if (tipoViaje !== 'nacional') {
+            setValue('tarifa', '');
+            clearErrors('tarifa');
+        }
+    }, [tipoViaje, setValue, clearErrors]);
+
+      // Efecto para limpiar tarifa cuando cambia la zona
+    useEffect(() => {
+        if (!selectedZona) {
+        setValue("tarifa", "");
+        setTarifasDisponibles([]);
+        }
+    }, [selectedZona, setValue]);
+
+    // Efecto para limpiar tarifa cuando cambia la zona
+    useEffect(() => {
+        if (!selectedZona) {
+        setValue("tarifa", "");
+        setTarifasDisponibles([]);
+        }
+    }, [selectedZona, setValue]);
 
     /* if (isLoading || loadingAuxData) return <CircularProgress />; */
     if (errorCompanies || errorVehicles || errorDrivers || errorDepots) return (
@@ -91,6 +121,15 @@ export default function DistributionFormPage() {
     );
 
     const handleFormSubmit = (data: CreateViajeDistribucionSchema) => {
+
+        // Validación manual de tarifa para viajes nacionales
+        if (data.tipo_viaje === 'nacional' && (!data.tarifa || data.tarifa.trim() === '')) {
+            setError('tarifa', {
+                type: 'manual',
+                message: 'La tarifa es obligatoria para viajes nacionales'
+            });
+            return; // Detener el envío
+        }
         onSubmit(data);
     };
 
@@ -105,11 +144,6 @@ export default function DistributionFormPage() {
         if (!input) return null;
         return zonedTimeToUtc(input, TIMEZONE);
     };
-
-    const filterByProvince = (province: string) => {
-        const filtered = remitosData?.data.filter(remito => remito.destino.provincia.toLowerCase() === province.toLowerCase());
-        setAvailableRemitos(filtered);
-    }
 
     const handleRemitoToggle = (remitoId: number) => {
         setSelectedRemitos((prev) => (prev.includes(remitoId) ? prev.filter((id) => id !== remitoId) : [...prev, remitoId]))
@@ -126,271 +160,284 @@ export default function DistributionFormPage() {
         title="Viajes de distribución" 
         description="Complete el formulario para registrar un nuevo viaje de distribución con sus remitos y recursos asociados."
         />
-
-        <Paper sx={{maxHeight:"85%", padding: 4, overflow: "auto", mx: 'auto', width: "100%", borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "0.5px solid #C7C7C7", pb: 5 }} >
-            <form onSubmit={handleSubmit(handleFormSubmit)} className="w-full max-w-[800px] mx-auto">
-                {/* FECHA INICIO FECHA LLEGADA TIPO DE VIAJE*/}
-                <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Datos del Viaje</Typography>
-                <Grid container spacing={3} mb={4}>
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                        <Grid item xs={12} md={6}>
-                            <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Fecha y hora de inicio</Typography>
-                            <Controller
-                                name="fecha_inicio"
-                                control={control}
-                                render={({ field }) => (
-                                    <DateTimePicker
-                                        {...field}
-                                        value={field.value ?  toLocalDate(field.value) : null}
-                                        onChange={(date: Date | null) => field.onChange(toUTCDate(date))}
-                                        slotProps={{
-                                            textField: {
-                                            fullWidth: true,
-                                            className: "inside-paper",
-                                            error: !!formErrors.fecha_inicio,
-                                            helperText: formErrors.fecha_inicio?.message,
-                                            },
-                                        }}      
-                                        format="dd/MM/yyyy HH:mm" 
+        <Box sx={{ maxHeight: "100vh", overflow: "auto"}}>
+            <Paper sx={{ padding: 4, mx: 'auto', width: "100%", borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "1px solid #C7C7C7", pb: 5 ,backgroundClip: "padding-box",}} >
+                    <form onSubmit={handleSubmit(handleFormSubmit)} className="w-full max-w-[800px] mx-auto">
+                        {/* FECHA INICIO FECHA LLEGADA TIPO DE VIAJE*/}
+                        <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Datos del Viaje</Typography>
+                        <Grid container spacing={3} mb={4}>
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <Grid item xs={12} md={6}>
+                                    <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Fecha y hora de inicio</Typography>
+                                    <Controller
+                                        name="fecha_inicio"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <DateTimePicker
+                                                {...field}
+                                                value={field.value ?  toLocalDate(field.value) : null}
+                                                onChange={(date: Date | null) => field.onChange(toUTCDate(date))}
+                                                slotProps={{
+                                                    textField: {
+                                                    fullWidth: true,
+                                                    className: "inside-paper",
+                                                    error: !!formErrors.fecha_inicio,
+                                                    helperText: formErrors.fecha_inicio?.message,
+                                                    },
+                                                }}      
+                                                format="dd/MM/yyyy HH:mm" 
+                                            />
+                                        )}
                                     />
-                                )}
-                            />
-                        </Grid>
-                    
-                    </LocalizationProvider>
-                    <Grid item xs={12} md={6}>
-                        <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Depósito de Origen</Typography>
-                        <Button
-                            fullWidth
-                            onClick={() => {
-                                setModalOpen(true);
-                                setActiveField("deposito_origen");
-                            }}
-                            sx={{ ...depositoSelectButtonStyle, color: selectedOrigen ? "#5A5A65" : "#c7c7c7" }}
-                            variant="outlined"
-                        >
-                            {selectedOrigen ?
-                                depots?.data?.find(dep => dep._id === selectedOrigen)?.nombre : "Seleccionar Depósito"
-                            }
-                        </Button>
-                                                            
-                        <FormHelperText error={!!formErrors.deposito_origen}>
-                            {formErrors.deposito_origen?.message}
-                        </FormHelperText>
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                        <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Kilómetros del camión</Typography>
-                        <TextField className="inside-paper" 
-                            id="kilometros_camion" 
-                            type="number" 
-                            placeholder="Ingresar km del camión" 
-                            {...register("kilometros_camion", {
-                                valueAsNumber: true,
-                                validate: (value) =>
-                                !isNaN(value) && value >= 0.01 || "Mínimo 0.01 kms",
-                            })} 
-                            fullWidth 
-                            inputProps={{
-                                "aria-label": "Kilómetros del camión",
-                                step: "0.01",
-                                min: "0.01"
-                            }} 
-                            error={!!formErrors.kilometros_camion}
-                            helperText={formErrors.kilometros_camion?.message}
-                    />
-                    </Grid>
-                </Grid>
-
-                {/*EMPRESA - CHOFER - VEHICULO*/}
-                <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Asignar Recursos</Typography>
-                <Grid container spacing={3} mb={4}>
-                    <Grid item xs={12} md={6}>
-                        <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Empresa Transportista</Typography>
-                            <Controller
-                            control={control}
-                            name="empresa"
-                            render={({ field }) => (
-                                <Select
-                                {...field}
-                                value={field.value || ""}
-                                fullWidth
-                                displayEmpty
-                                onChange={(event) => {
-                                    field.onChange(event.target.value)
-                                    filterByCompany(event.target.value);
-                                }}
-                                error={!!formErrors.empresa}
-                                >
-                                    <MenuItem value="" disabled>
-                                        Seleccione una empresa
-                                    </MenuItem>
-                                    {companies?.data?.map((company) => (
-                                        <MenuItem key={company._id} value={company._id}>
-                                        {company.nombre_comercial}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            )}
-                        />
-                        <FormHelperText error={!!formErrors.empresa}>
-                            {formErrors.empresa?.message}
-                        </FormHelperText>
-                    </Grid>
-
-                    <Grid item xs={12} md={6}>
-                        <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Chofer a asignar</Typography>
-                            <Controller
-                            control={control}
-                            name="chofer"
-                            render={({ field }) => (
-                                <Select
-                                {...field}
-                                value={field.value || ""}
-                                fullWidth
-                                displayEmpty
-                                onChange={(event) => {
-                                    field.onChange(event.target.value)
-                                    handleSelectChofer(event.target.value);
-                                }}
-                                disabled={!control._formValues.empresa}
-                                error={!!formErrors.chofer}
-                                >
-                                    <MenuItem value="" disabled>
-                                        {control._formValues.empresa ? "Seleccione un chofer" : "Seleccione una empresa primero"}
-                                    </MenuItem>
-                                    {filteredChoferes.length === 0 ? (
-                                        <MenuItem disabled>No hay choferes disponibles</MenuItem>
-                                    ) :
-
-                                    filteredChoferes.map((dri) => (
-                                        <MenuItem key={dri._id} value={dri._id}>
-                                        {dri.nombre}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            )}
-                        />
-                        <FormHelperText error={!!formErrors.chofer}>
-                            {formErrors.chofer?.message}
-                        </FormHelperText>
-                    </Grid>
-
-                    <Grid item xs={12} md={6}>
-                        <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Vehículo a utilizar</Typography>
-                            <Controller
-                            control={control}
-                            name="vehiculo"
-                            render={({ field }) => (
-                                <Select
-                                {...field}
-                                value={field.value || ""}
-                                fullWidth
-                                displayEmpty
-                                onChange={(event) => field.onChange(event.target.value)}
-                                disabled={!control._formValues.empresa}
-                                error={!!formErrors.vehiculo}
-                                >
-                                    <MenuItem value="" disabled>
-                                        {control._formValues.empresa ? "Seleccione un vehículo" : "Seleccione una empresa primero"}
-                                    </MenuItem>
-                                    {filteredVehiculos.length === 0 ? (
-                                        <MenuItem disabled>No hay vehículos disponibles</MenuItem>
-                                    ) :
-                                    filteredVehiculos.map((veh) => (
-                                        <MenuItem key={veh._id} value={veh._id}>
-                                        {veh.marca} - {veh.patente}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            )}
-                        />
-                        <FormHelperText error={!!formErrors.vehiculo}>
-                            {formErrors.vehiculo?.message}
-                        </FormHelperText>
-                    </Grid>
-
-                </Grid>
-
-                {/*Pais, Provincia y Remitos*/}
-                <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Asignar Remitos</Typography>
-                <Grid container spacing={3} mb={4}>
-                    <CountryProvinceSelect
-                        control={control}
-                        formErrors={formErrors}
-                        selectedPais={selectedPais}
-                        filteredProvincias={filteredProvincias}
-                        setFilteredProvincias={setFilteredProvincias}
-                        setValue={setValue}
-                        setAvailableRemitos={setAvailableRemitos}
-                        setSelectedRemitos={setSelectedRemitos}
-                        filterByProvince={filterByProvince}
-                    />
+                                </Grid>
                             
-                    <Grid item xs={12}>
-                        <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Remitos</Typography>
-                        <Button
-                            fullWidth
-                            onClick={() =>{ 
-                                availableRemitos.length > 0 && setRemitosModalOpen(true)
-                            }}
-                            sx={{ ...depositoSelectButtonStyle, color: selectedRemitos ? "#5A5A65" : "#c7c7c7" }}
-                            variant="outlined"
-                            disabled={!selectedProvincia}
-                        >
-                            <span className={selectedRemitos.length > 0 ? "text-gray-900" : "text-gray-500"}>
-                                {selectedRemitos.length > 0
-                                ? `${selectedRemitos.length} remito${selectedRemitos.length !== 1 ? "s" : ""} seleccionado${selectedRemitos.length !== 1 ? "s" : ""}`
-                                : availableRemitos.length > 0
-                                    ? "Seleccionar remitos"
-                                    : selectedProvincia
-                                    ? "No hay remitos disponibles"
-                                    : "Seleccione una provincia primero"}
-                            </span>
-                            <Package className="h-4 w-4 text-gray-400" />
-                        </Button>
-                        <FormHelperText error={!!formErrors.remitos}>
-                            {formErrors.remitos?.message}
-                        </FormHelperText>
-                    </Grid>
-                </Grid>
+                            </LocalizationProvider>
+                            <Grid item xs={12} md={6}>
+                                <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Depósito de Origen</Typography>
+                                <Button
+                                    fullWidth
+                                    onClick={() => {
+                                        setModalOpen(true);
+                                        setActiveField("deposito_origen");
+                                    }}
+                                    sx={{ ...depositoSelectButtonStyle, color: selectedOrigen ? "#5A5A65" : "#c7c7c7" }}
+                                    variant="outlined"
+                                >
+                                    {selectedOrigen ?
+                                        depots?.data?.find(dep => dep._id === selectedOrigen)?.nombre : "Seleccionar Depósito"
+                                    }
+                                </Button>
+                                                                    
+                                <FormHelperText error={!!formErrors.deposito_origen}>
+                                    {formErrors.deposito_origen?.message}
+                                </FormHelperText>
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Kilómetros del camión</Typography>
+                                <TextField className="inside-paper" 
+                                    id="kilometros_camion" 
+                                    type="number" 
+                                    placeholder="Ingresar km del camión" 
+                                    {...register("kilometros_camion", {
+                                        valueAsNumber: true,
+                                        validate: (value) =>
+                                        !isNaN(value) && value >= 0.01 || "Mínimo 0.01 kms",
+                                    })} 
+                                    fullWidth 
+                                    inputProps={{
+                                        "aria-label": "Kilómetros del camión",
+                                        step: "0.01",
+                                        min: "0.01"
+                                    }} 
+                                    error={!!formErrors.kilometros_camion}
+                                    helperText={formErrors.kilometros_camion?.message}
+                            />
+                            </Grid>
+                        </Grid>
 
-                <FormActions
-                    isEditing={isEditing}
-                    loading={isLoading}
-                    isSubmitting={isSubmitting}
-                />
+                        {/*EMPRESA - CHOFER - VEHICULO*/}
+                        <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Asignar Recursos</Typography>
+                        <Grid container spacing={3} mb={4}>
+                            <Grid item xs={12} md={6}>
+                                <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Empresa Transportista</Typography>
+                                    <Controller
+                                    control={control}
+                                    name="empresa"
+                                    render={({ field }) => (
+                                        <Select
+                                        {...field}
+                                        value={field.value || ""}
+                                        fullWidth
+                                        displayEmpty
+                                        onChange={(event) => {
+                                            field.onChange(event.target.value)
+                                            filterByCompany(event.target.value);
+                                        }}
+                                        error={!!formErrors.empresa}
+                                        >
+                                            <MenuItem value="" disabled>
+                                                Seleccione una empresa
+                                            </MenuItem>
+                                            {companies?.data?.map((company) => (
+                                                <MenuItem key={company._id} value={company._id}>
+                                                {company.nombre_comercial}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                    )}
+                                />
+                                <FormHelperText error={!!formErrors.empresa}>
+                                    {formErrors.empresa?.message}
+                                </FormHelperText>
+                            </Grid>
 
-            </form>
+                            <Grid item xs={12} md={6}>
+                                <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Chofer a asignar</Typography>
+                                    <Controller
+                                    control={control}
+                                    name="chofer"
+                                    render={({ field }) => (
+                                        <Select
+                                        {...field}
+                                        value={field.value || ""}
+                                        fullWidth
+                                        displayEmpty
+                                        onChange={(event) => {
+                                            field.onChange(event.target.value)
+                                            handleSelectChofer(event.target.value);
+                                        }}
+                                        disabled={!control._formValues.empresa}
+                                        error={!!formErrors.chofer}
+                                        >
+                                            <MenuItem value="" disabled>
+                                                {control._formValues.empresa ? "Seleccione un chofer" : "Seleccione una empresa primero"}
+                                            </MenuItem>
+                                            {filteredChoferes.length === 0 ? (
+                                                <MenuItem disabled>No hay choferes disponibles</MenuItem>
+                                            ) :
 
-            <Backdrop open={isLoading} sx={{ zIndex: 9999, color: "#fff" }}>
-                <CircularProgress color="inherit" />
-            </Backdrop>
+                                            filteredChoferes.map((dri) => (
+                                                <MenuItem key={dri._id} value={dri._id}>
+                                                {dri.nombre}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                    )}
+                                />
+                                <FormHelperText error={!!formErrors.chofer}>
+                                    {formErrors.chofer?.message}
+                                </FormHelperText>
+                            </Grid>
 
-            <DepositoSelectModal
-                open={modalOpen}
-                onClose={() => setModalOpen(false)}
-                depots={depots?.data || []}
-                selectedId={selectedOrigen}
-                onSelect={(id) => {
-                    if (activeField) {
-                        setValue(activeField, id);
-                    }
-                    setModalOpen(false);
-                }}
-                title="Seleccionar depósito de origen"
-            />
+                            <Grid item xs={12} md={6}>
+                                <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Vehículo a utilizar</Typography>
+                                    <Controller
+                                    control={control}
+                                    name="vehiculo"
+                                    render={({ field }) => (
+                                        <Select
+                                        {...field}
+                                        value={field.value || ""}
+                                        fullWidth
+                                        displayEmpty
+                                        onChange={(event) => field.onChange(event.target.value)}
+                                        disabled={!control._formValues.empresa}
+                                        error={!!formErrors.vehiculo}
+                                        >
+                                            <MenuItem value="" disabled>
+                                                {control._formValues.empresa ? "Seleccione un vehículo" : "Seleccione una empresa primero"}
+                                            </MenuItem>
+                                            {filteredVehiculos.length === 0 ? (
+                                                <MenuItem disabled>No hay vehículos disponibles</MenuItem>
+                                            ) :
+                                            filteredVehiculos.map((veh) => (
+                                                <MenuItem key={veh._id} value={veh._id}>
+                                                {veh.marca} - {veh.patente}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                    )}
+                                />
+                                <FormHelperText error={!!formErrors.vehiculo}>
+                                    {formErrors.vehiculo?.message}
+                                </FormHelperText>
+                            </Grid>
 
-            <RemitosSelectModal
-                open={remitosModalOpen}
-                onOpenChange={setRemitosModalOpen}
-                availableRemitos={availableRemitos}
-                selectedRemitos={selectedRemitos}
-                onRemitoToggle={handleRemitoToggle}
-                targetProvince={selectedProvincia}
-                onConfirm={handleConfirmRemitos}
-            />
+                        </Grid>
 
-        </Paper>
+                        {/*Pais, Provincia y Remitos*/}
+                        <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Asignar Remitos</Typography>
+                        <Grid container spacing={3} mb={4}>
+                            <CountryProvinceSelect
+                                selectedPais={selectedPais}
+                                setSelectedPais={setSelectedPais}
+                                selectedProvincia={selectedProvincia}
+                                setSelectedProvincia={setSelectedProvincia}
+                                setAvailableRemitos={setAvailableRemitos}
+                                setSelectedRemitos={setSelectedRemitos}
+                                remitosData={remitosData}
+                            />
+                                    
+                            <Grid item xs={12}>
+                                <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Remitos</Typography>
+                                <Button
+                                    fullWidth
+                                    onClick={() =>{ 
+                                        availableRemitos.length > 0 && setRemitosModalOpen(true)
+                                    }}
+                                    sx={{ ...depositoSelectButtonStyle, color: selectedRemitos ? "#5A5A65" : "#c7c7c7" }}
+                                    variant="outlined"
+                                    disabled={!selectedProvincia}
+                                >
+                                    <span className={selectedRemitos.length > 0 ? "text-gray-900" : "text-gray-500"}>
+                                        {selectedRemitos.length > 0
+                                        ? `${selectedRemitos.length} remito${selectedRemitos.length !== 1 ? "s" : ""} seleccionado${selectedRemitos.length !== 1 ? "s" : ""}`
+                                        : availableRemitos.length > 0
+                                            ? "Seleccionar remitos"
+                                            : selectedProvincia
+                                            ? "No hay remitos disponibles"
+                                            : "Seleccione una provincia primero"}
+                                    </span>
+                                    <Package className="h-4 w-4 text-gray-400" />
+                                </Button>
+                                <FormHelperText error={!!formErrors.remitos}>
+                                    {formErrors.remitos?.message}
+                                </FormHelperText>
+                            </Grid>
+                        </Grid>
 
+                        {selectedPais === "ARG" && (
+                            <ZonaTarifaSelect
+                                control={control}
+                                formErrors={formErrors}
+                                empresaId={empresaId}
+                                vehiculoId={vehiculoId}
+                                selectedPais={selectedPais}
+                                selectedZona={selectedZona}
+                                setSelectedZona={setSelectedZona}
+                                tarifasDisponibles={tarifasDisponibles}
+                                setTarifasDisponibles={setTarifasDisponibles}
+                            />
+                        )}  
+
+                        <FormActions
+                            isEditing={isEditing}
+                            loading={isLoading}
+                            isSubmitting={isSubmitting}
+                        />
+
+                    </form>
+
+
+                    <Backdrop open={isLoading} sx={{ zIndex: 9999, color: "#fff" }}>
+                        <CircularProgress color="inherit" />
+                    </Backdrop>
+
+                    <DepositoSelectModal
+                        open={modalOpen}
+                        onClose={() => setModalOpen(false)}
+                        depots={depots?.data || []}
+                        selectedId={selectedOrigen}
+                        onSelect={(id) => {
+                            if (activeField) {
+                                setValue(activeField, id);
+                            }
+                            setModalOpen(false);
+                        }}
+                        title="Seleccionar depósito de origen"
+                    />
+
+                    <RemitosSelectModal
+                        open={remitosModalOpen}
+                        onOpenChange={setRemitosModalOpen}
+                        availableRemitos={availableRemitos}
+                        selectedRemitos={selectedRemitos}
+                        onRemitoToggle={handleRemitoToggle}
+                        targetProvince={selectedProvincia}
+                        onConfirm={handleConfirmRemitos}
+                    />
+
+            </Paper>
+        </Box>
     </>;
 }

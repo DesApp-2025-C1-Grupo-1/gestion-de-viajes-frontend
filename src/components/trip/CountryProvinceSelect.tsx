@@ -1,15 +1,14 @@
-import { FormHelperText, Grid, MenuItem, Select, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { Grid, MenuItem, Select, Typography } from "@mui/material";
 import { countriesData } from "../../services/countriesData";
+import { Localidad, Provincia, useProvincias } from "../../hooks/useGeoref";
+import { useEffect } from "react";
 
 interface CountryProvinceSelectProps {
   selectedPais: string;
   setSelectedPais: (pais: string) => void;
-  selectedProvincia: string;
-  setSelectedProvincia: (provincia: string) => void;
-  setAvailableRemitos: (remitos: any[]) => void;
-  setSelectedRemitos: (remitos: number[]) => void;
-  remitosData: any;
+  selectedProvincia: Provincia | null;
+  setSelectedProvincia: (provincia: Provincia | null) => void;
+  setSelectedLocalidad: (localidad: string) => void;
 }
 
 export const CountryProvinceSelect = ({
@@ -17,38 +16,20 @@ export const CountryProvinceSelect = ({
   setSelectedPais,
   selectedProvincia,
   setSelectedProvincia,
-  setAvailableRemitos,
-  setSelectedRemitos,
-  remitosData
+  setSelectedLocalidad
 }: CountryProvinceSelectProps) => {
-  const [filteredProvincias, setFilteredProvincias] = useState<any[]>([]);
+  const {provincias, loading} = useProvincias(selectedPais);
 
-  // Filtrar provincias según el país seleccionado
+  // Cuando cambia el país, resetear provincia y localidad
   useEffect(() => {
-    if (selectedPais) {
-      const selectedCountry = countriesData.find(country => country._id === selectedPais);
-      if (selectedCountry) {
-        setFilteredProvincias(selectedCountry.provincias);
-        
-        // Limpiar la selección de provincia cuando se cambia de país
-        setSelectedProvincia("");
-        setAvailableRemitos([]);
-        setSelectedRemitos([]);
-      }
-    } else {
-      setFilteredProvincias([]);
-    }
-  }, [selectedPais, setSelectedProvincia, setAvailableRemitos, setSelectedRemitos]);
+    setSelectedProvincia(null);
+    setSelectedLocalidad("");
+  }, [selectedPais]);
 
-  // Cuando se selecciona una provincia, filtrar los remitos disponibles
+  // Cuando cambia la provincia, resetear localidad
   useEffect(() => {
-    if (selectedProvincia) {
-      const filtered = remitosData?.data.filter((remito: any) => 
-        remito.destino.provincia.toLowerCase() === selectedProvincia.toLowerCase()
-      );
-      setAvailableRemitos(filtered || []);
-    }
-  }, [selectedProvincia, remitosData, setAvailableRemitos]);
+    setSelectedLocalidad("");
+  }, [selectedProvincia]);
 
   return (
     <>
@@ -78,22 +59,29 @@ export const CountryProvinceSelect = ({
           Provincia/Estado
         </Typography>
         <Select
-          value={selectedProvincia}
+          value={selectedProvincia?.nombre || ""}
           fullWidth
           displayEmpty
-          onChange={(event) => setSelectedProvincia(event.target.value)}
+          onChange={(event) => {
+            const provinciaId = event.target.value;
+            const provincia = provincias.find(p => p.nombre === provinciaId);
+            if (provincia) {
+              setSelectedProvincia(provincia);
+            }
+          }}
           disabled={!selectedPais}
         >
           <MenuItem value="" disabled>
-            {selectedPais ? "Seleccione una provincia/estado" : "Seleccione un país primero"}
+            {selectedPais ? (loading ? 'Cargando...' : 'Seleccione una provincia/estado') : 'Seleccione un país primero'}
           </MenuItem>
-          {filteredProvincias.map((provincia) => (
+          {provincias.map((provincia) => (
             <MenuItem key={provincia.id} value={provincia.nombre} sx={{ textTransform: 'capitalize' }}>
               {provincia.nombre}
             </MenuItem>
           ))}
         </Select>
       </Grid>
+
     </>
   );
 };

@@ -16,6 +16,8 @@ import { Package } from "lucide-react";
 import { CountryProvinceSelect } from "../../components/trip/CountryProvinceSelect";
 import { tarifas, zonas } from "../../services/zonaTarifas";
 import { ZonaTarifaSelect } from "../../components/trip/ZonaTarifaSelect";
+import { Provincia, useLocalidades, useProvincias } from "../../hooks/useGeoref";
+import { LocalidadSelect } from "../../components/trip/LocalidadSelected";
 
 const depositoSelectButtonStyle = {
   height: "48px",
@@ -43,7 +45,8 @@ export default function DistributionFormPage() {
     const [availableRemitos, setAvailableRemitos] = useState<Remito[]>([])
     const [selectedRemitos, setSelectedRemitos] = useState<number[]>([]);
     const [selectedPais, setSelectedPais] = useState<string>("");
-    const [selectedProvincia, setSelectedProvincia] = useState<string>("");
+    const [selectedProvincia, setSelectedProvincia] = useState<Provincia | null>(null);
+    const [selectedLocalidad, setSelectedLocalidad] = useState<string>("");
     const [selectedZona, setSelectedZona] = useState<number | null>(null);
     const [tarifasDisponibles, setTarifasDisponibles] = useState<any[]>([]);
     const [activeField, setActiveField] = useState<"deposito_origen" | "remitos" | null>(null);
@@ -94,13 +97,26 @@ export default function DistributionFormPage() {
         }
     }, [selectedZona, setValue]);
 
-    // Efecto para limpiar tarifa cuando cambia la zona
+    // efecto para filtrar remitos
+
     useEffect(() => {
-        if (!selectedZona) {
-        setValue("tarifa", "");
-        setTarifasDisponibles([]);
+    if (selectedProvincia) {
+        let filtered = remitosData?.data.filter(
+        (r: any) =>
+            r.destino.provincia.toLowerCase() === selectedProvincia.nombre.toLowerCase()
+        );
+        if (selectedLocalidad) {
+        filtered = filtered.filter(
+            (r: any) =>
+            r.destino.localidad.toLowerCase() === selectedLocalidad.toLowerCase()
+        );
         }
-    }, [selectedZona, setValue]);
+        setAvailableRemitos(filtered || []);
+    } else {
+        setAvailableRemitos([]);
+    }
+    }, [selectedProvincia, selectedLocalidad, remitosData]);
+
 
     /* if (isLoading || loadingAuxData) return <CircularProgress />; */
     if (errorCompanies || errorVehicles || errorDrivers || errorDepots) return (
@@ -161,7 +177,7 @@ export default function DistributionFormPage() {
         description="Complete el formulario para registrar un nuevo viaje de distribución con sus remitos y recursos asociados."
         />
         <Box sx={{ maxHeight: "100vh", overflow: "auto"}}>
-            <Paper sx={{ padding: 4, mx: 'auto', width: "100%", borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "1px solid #C7C7C7", pb: 5 ,backgroundClip: "padding-box",}} >
+            <Paper sx={{ padding: 4, mx: 'auto', width: "100%", borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "1px solid #C7C7C7", backgroundClip: "padding-box"}} >
                     <form onSubmit={handleSubmit(handleFormSubmit)} className="w-full max-w-[800px] mx-auto">
                         {/* FECHA INICIO FECHA LLEGADA TIPO DE VIAJE*/}
                         <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Datos del Viaje</Typography>
@@ -353,11 +369,17 @@ export default function DistributionFormPage() {
                                 setSelectedPais={setSelectedPais}
                                 selectedProvincia={selectedProvincia}
                                 setSelectedProvincia={setSelectedProvincia}
-                                setAvailableRemitos={setAvailableRemitos}
-                                setSelectedRemitos={setSelectedRemitos}
-                                remitosData={remitosData}
+                                setSelectedLocalidad={setSelectedLocalidad}
                             />
-                                    
+
+                            {/* Seleccionar localidad */}
+                            <LocalidadSelect
+                                selectedProvincia={selectedProvincia}
+                                selectedPais={selectedPais}
+                                selectedLocalidad={selectedLocalidad}
+                                setSelectedLocalidad={setSelectedLocalidad}
+                            />
+
                             <Grid item xs={12}>
                                 <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Remitos</Typography>
                                 <Button
@@ -433,7 +455,7 @@ export default function DistributionFormPage() {
                         availableRemitos={availableRemitos}
                         selectedRemitos={selectedRemitos}
                         onRemitoToggle={handleRemitoToggle}
-                        targetProvince={selectedProvincia}
+                        targetProvince={selectedProvincia?.nombre || ""}
                         onConfirm={handleConfirmRemitos}
                     />
 

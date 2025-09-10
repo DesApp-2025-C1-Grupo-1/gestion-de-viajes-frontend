@@ -54,7 +54,7 @@ export default function RemitosSelectModal({ open, onOpenChange, availableRemito
 
   return (
     <Dialog open={open} onClose={() => onOpenChange(false)} maxWidth="md" fullWidth
-      sx={{ '& .MuiDialog-paper': { width: '80%'}, overflowY: "auto" }}
+      sx={{ overflowY: "auto"}}
     >
       <Box>
         <Box sx={{ display: "flex", gap: 2, alignItems: "center", width: "100%"}}>

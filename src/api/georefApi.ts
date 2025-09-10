@@ -8,7 +8,7 @@ export const getProvinciasAR = async () => {
   return data.provincias.map((p: any) => ({
     id: p.id,
     nombre: p.nombre,
-  }));
+  })).sort((a: any, b: any) => a.nombre.localeCompare(b.nombre));
 };
 
 export const getLocalidadesAR = async (provincia: string) => {
@@ -18,7 +18,7 @@ export const getLocalidadesAR = async (provincia: string) => {
   return data.localidades.map((l: any) => ({
     id: l.id,
     nombre: l.nombre,
-  }));
+  })).sort((a: any, b: any) => a.nombre.localeCompare(b.nombre));
 };
 
 // ---------- Brasil ----------
@@ -29,7 +29,7 @@ export const getProvinciasBR = async () => {
   return data.map((estado: any) => ({
     id: estado.id,
     nombre: estado.nome,
-  }));
+  })).sort((a: any, b: any) => a.nombre.localeCompare(b.nombre));
 };
 
 export const getMunicipiosBR = async (uf: string) => {
@@ -39,5 +39,5 @@ export const getMunicipiosBR = async (uf: string) => {
   return data.map((m: any) => ({
     id: m.id,
     nombre: m.nome,
-  }));
+  })).sort((a: any, b: any) => a.nombre.localeCompare(b.nombre));
 };

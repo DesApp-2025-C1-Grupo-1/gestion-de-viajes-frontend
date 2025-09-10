@@ -8,7 +8,7 @@ interface CountryProvinceSelectProps {
   setSelectedPais: (pais: string) => void;
   selectedProvincia: Provincia | null;
   setSelectedProvincia: (provincia: Provincia | null) => void;
-  setSelectedLocalidad: (localidad: string) => void;
+  setSelectedLocalidad: (localidad: Localidad | null) => void;
 }
 
 export const CountryProvinceSelect = ({
@@ -23,12 +23,12 @@ export const CountryProvinceSelect = ({
   // Cuando cambia el país, resetear provincia y localidad
   useEffect(() => {
     setSelectedProvincia(null);
-    setSelectedLocalidad("");
+    setSelectedLocalidad(null);
   }, [selectedPais]);
 
   // Cuando cambia la provincia, resetear localidad
   useEffect(() => {
-    setSelectedLocalidad("");
+    setSelectedLocalidad(null);
   }, [selectedProvincia]);
 
   return (
@@ -41,6 +41,7 @@ export const CountryProvinceSelect = ({
           value={selectedPais}
           fullWidth
           displayEmpty
+          className="inside-paper"
           onChange={(event) => setSelectedPais(event.target.value)}
         >
           <MenuItem value="" disabled>
@@ -62,6 +63,7 @@ export const CountryProvinceSelect = ({
           value={selectedProvincia?.nombre || ""}
           fullWidth
           displayEmpty
+          className="inside-paper"
           onChange={(event) => {
             const provinciaId = event.target.value;
             const provincia = provincias.find(p => p.nombre === provinciaId);

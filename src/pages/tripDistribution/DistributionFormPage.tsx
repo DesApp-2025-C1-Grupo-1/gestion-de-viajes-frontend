@@ -16,7 +16,7 @@ import { Package } from "lucide-react";
 import { CountryProvinceSelect } from "../../components/trip/CountryProvinceSelect";
 import { tarifas, zonas } from "../../services/zonaTarifas";
 import { ZonaTarifaSelect } from "../../components/trip/ZonaTarifaSelect";
-import { Provincia, useLocalidades, useProvincias } from "../../hooks/useGeoref";
+import { Localidad, Provincia, useLocalidades, useProvincias } from "../../hooks/useGeoref";
 import { LocalidadSelect } from "../../components/trip/LocalidadSelected";
 
 const depositoSelectButtonStyle = {
@@ -46,7 +46,7 @@ export default function DistributionFormPage() {
     const [selectedRemitos, setSelectedRemitos] = useState<number[]>([]);
     const [selectedPais, setSelectedPais] = useState<string>("");
     const [selectedProvincia, setSelectedProvincia] = useState<Provincia | null>(null);
-    const [selectedLocalidad, setSelectedLocalidad] = useState<string>("");
+    const [selectedLocalidad, setSelectedLocalidad] = useState<Localidad | null>(null);
     const [selectedZona, setSelectedZona] = useState<number | null>(null);
     const [tarifasDisponibles, setTarifasDisponibles] = useState<any[]>([]);
     const [activeField, setActiveField] = useState<"deposito_origen" | "remitos" | null>(null);
@@ -80,6 +80,8 @@ export default function DistributionFormPage() {
     const tipoViaje = useWatch({ control, name: "tipo_viaje" });
     const empresaId = useWatch({ control, name: "empresa" });
     const vehiculoId = useWatch({ control, name: "vehiculo" });
+    const tieneRemitosDisponibles = availableRemitos.length > 0;
+    const tieneLocalidadSeleccionada = !!selectedLocalidad;
 
     useEffect(() => {
         // Cuando cambia el tipo de viaje, resetear la tarifa si ya no es nacional
@@ -98,7 +100,6 @@ export default function DistributionFormPage() {
     }, [selectedZona, setValue]);
 
     // efecto para filtrar remitos
-
     useEffect(() => {
     if (selectedProvincia) {
         let filtered = remitosData?.data.filter(
@@ -108,7 +109,7 @@ export default function DistributionFormPage() {
         if (selectedLocalidad) {
         filtered = filtered.filter(
             (r: any) =>
-            r.destino.localidad.toLowerCase() === selectedLocalidad.toLowerCase()
+            r.destino.localidad.toLowerCase() === selectedLocalidad.nombre.toLowerCase()
         );
         }
         setAvailableRemitos(filtered || []);
@@ -394,14 +395,17 @@ export default function DistributionFormPage() {
                                     <span className={selectedRemitos.length > 0 ? "text-gray-900" : "text-gray-500"}>
                                         {selectedRemitos.length > 0
                                         ? `${selectedRemitos.length} remito${selectedRemitos.length !== 1 ? "s" : ""} seleccionado${selectedRemitos.length !== 1 ? "s" : ""}`
-                                        : availableRemitos.length > 0
-                                            ? "Seleccionar remitos"
-                                            : selectedProvincia
-                                            ? "No hay remitos disponibles"
-                                            : "Seleccione una provincia primero"}
+                                        : tieneLocalidadSeleccionada ? 
+                                        (tieneRemitosDisponibles ? "Seleccionar Remitos" : "Sin remitos disponibles") : 
+                                        "Seleccione localidad primero"}
                                     </span>
                                     <Package className="h-4 w-4 text-gray-400" />
                                 </Button>
+                                {tieneLocalidadSeleccionada && !tieneRemitosDisponibles && (
+                                    <Alert severity="info" sx={{ mt: 1 }}>
+                                    No hay remitos disponibles para {selectedLocalidad.nombre}
+                                    </Alert>
+                                )}
                                 <FormHelperText error={!!formErrors.remitos}>
                                     {formErrors.remitos?.message}
                                 </FormHelperText>

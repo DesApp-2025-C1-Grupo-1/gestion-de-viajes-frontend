@@ -64,9 +64,9 @@ export const tarifas: Tarifa[] = [
     "tipoVehiculoNombre": "Camion",
     "zonaNombre": "Ituzaingo",
     "tipoCargaNombre": "Madera",
-    "transportistaId": "1",
-    "tipoVehiculoId": "1",
-    "zonaId": 1,
+    "transportistaId": "683f7e044904b1a84fc05249",
+    "tipoVehiculoId": "683f7d734904b1a84fc0523b",
+    "zonaId": 2,
     "tipoCargaId": 1,
     "total": 34000,
     "adicionales": [

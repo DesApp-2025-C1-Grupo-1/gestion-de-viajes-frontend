@@ -73,13 +73,14 @@ export default function DistributionFormPage() {
         handleSelectChofer,
         register,
         setValue,
+        typeOfVehicleId,
+        setTypeOfVehicleId,
     } = useTripDistributionForm(id);
 
     const selectedOrigen = useWatch({ control, name: "deposito_origen" });
 
     const tipoViaje = useWatch({ control, name: "tipo_viaje" });
     const empresaId = useWatch({ control, name: "empresa" });
-    const vehiculoId = useWatch({ control, name: "vehiculo" });
     const tieneRemitosDisponibles = availableRemitos.length > 0;
     const tieneLocalidadSeleccionada = !!selectedLocalidad;
 
@@ -94,8 +95,8 @@ export default function DistributionFormPage() {
       // Efecto para limpiar tarifa cuando cambia la zona
     useEffect(() => {
         if (!selectedZona) {
-        setValue("tarifa", "");
-        setTarifasDisponibles([]);
+            setValue("tarifa", "");
+            setTarifasDisponibles([]);
         }
     }, [selectedZona, setValue]);
 
@@ -337,7 +338,10 @@ export default function DistributionFormPage() {
                                         value={field.value || ""}
                                         fullWidth
                                         displayEmpty
-                                        onChange={(event) => field.onChange(event.target.value)}
+                                        onChange={(event) => {
+                                            field.onChange(event.target.value)
+                                            setTypeOfVehicleId(filteredVehiculos.find(v => v._id === event.target.value)?.tipo._id || "");
+                                        }}
                                         disabled={!control._formValues.empresa}
                                         error={!!formErrors.vehiculo}
                                         >
@@ -395,9 +399,7 @@ export default function DistributionFormPage() {
                                     <span className={selectedRemitos.length > 0 ? "text-gray-900" : "text-gray-500"}>
                                         {selectedRemitos.length > 0
                                         ? `${selectedRemitos.length} remito${selectedRemitos.length !== 1 ? "s" : ""} seleccionado${selectedRemitos.length !== 1 ? "s" : ""}`
-                                        : tieneLocalidadSeleccionada ? 
-                                        (tieneRemitosDisponibles ? "Seleccionar Remitos" : "Sin remitos disponibles") : 
-                                        "Seleccione localidad primero"}
+                                        : tieneRemitosDisponibles ? "Seleccionar Remitos" : "Sin remitos disponibles"}
                                     </span>
                                     <Package className="h-4 w-4 text-gray-400" />
                                 </Button>
@@ -417,12 +419,13 @@ export default function DistributionFormPage() {
                                 control={control}
                                 formErrors={formErrors}
                                 empresaId={empresaId}
-                                vehiculoId={vehiculoId}
+                                vehiculoId={typeOfVehicleId}
                                 selectedPais={selectedPais}
                                 selectedZona={selectedZona}
                                 setSelectedZona={setSelectedZona}
                                 tarifasDisponibles={tarifasDisponibles}
                                 setTarifasDisponibles={setTarifasDisponibles}
+                                setValues={setValue}
                             />
                         )}  
 

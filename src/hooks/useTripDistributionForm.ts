@@ -6,12 +6,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import useTripAuxData from "./trip/useTripAuxData";
 import { isValidateLicense } from "../services/validateLicense";
 import { CreateViajeDistribucionSchema, UpdateViajeDistribucionSchema, ViajeDistribucionSchema } from "../api/schemas/viajeDistribucion.schema";
+import { useState } from "react";
 
 
 export const useTripDistributionForm = (id?: string) => {
     const navigate = useNavigate();
     const isEditing = !!id;
     const { notify } = useNotify("Viaje");
+    const [typeOfVehicleId, setTypeOfVehicleId] =  useState<string>("");
 
     const {
         register,
@@ -66,6 +68,7 @@ export const useTripDistributionForm = (id?: string) => {
         const vehiculoId = selectedChofer?.vehiculo?._id || "";
         
         setValue("vehiculo", vehiculoId, { shouldValidate: true });
+        setTypeOfVehicleId(filteredVehiculos?.find(veh => veh._id === vehiculoId)?.tipo._id || "");
         
         // Opcional: Forzar validación cruzada
         if (vehiculoId) {
@@ -164,5 +167,7 @@ export const useTripDistributionForm = (id?: string) => {
         handleSelectChofer,
         register,
         setValue,
+        typeOfVehicleId,
+        setTypeOfVehicleId
     }
 }

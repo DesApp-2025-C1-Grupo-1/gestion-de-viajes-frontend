@@ -1,6 +1,8 @@
-import { FormHelperText, Grid, MenuItem, Select, Typography } from "@mui/material";
-import { Controller } from "react-hook-form";
-import { getTarifasFiltradas, zonas } from "../../services/zonaTarifas";
+import { Alert, FormHelperText, Grid, MenuItem, Select, Typography } from "@mui/material";
+import { Controller, UseFormSetValue } from "react-hook-form";
+import { getTarifasFiltradas, Tarifa, zonas } from "../../services/zonaTarifas";
+import { CreateViajeDistribucionSchema } from "../../api/schemas/viajeDistribucion.schema";
+import { ta } from "date-fns/locale";
 
 interface ZonaTarifaSelectProps {
   control: any;
@@ -10,8 +12,9 @@ interface ZonaTarifaSelectProps {
   selectedPais: string;
   selectedZona: number | null;
   setSelectedZona: (zonaId: number | null) => void;
-  tarifasDisponibles: any[];
-  setTarifasDisponibles: (tarifas: any[]) => void;
+  tarifasDisponibles: Tarifa[];
+  setTarifasDisponibles: (tarifas: Tarifa[]) => void;
+  setValues: UseFormSetValue<CreateViajeDistribucionSchema>;
 }
 
 export const ZonaTarifaSelect = ({
@@ -23,7 +26,8 @@ export const ZonaTarifaSelect = ({
   selectedZona,
   setSelectedZona,
   tarifasDisponibles,
-  setTarifasDisponibles
+  setTarifasDisponibles,
+  setValues
 }: ZonaTarifaSelectProps) => {
   
   const handleZonaChange = (zonaId: number) => {
@@ -33,7 +37,9 @@ export const ZonaTarifaSelect = ({
     if (empresaId && vehiculoId) {
       const tarifasFiltradas = getTarifasFiltradas(empresaId, vehiculoId, zonaId);
       setTarifasDisponibles(tarifasFiltradas);
+      setValues("tarifa", tarifasFiltradas[0]?.id.toString() || ""); // Resetear selección de tarifa
     }
+
   };
 
   // Solo mostrar para Argentina
@@ -80,7 +86,7 @@ export const ZonaTarifaSelect = ({
                   value={field.value || ""}
                   fullWidth
                   displayEmpty
-                  onChange={(event) => field.onChange(event.target.value)}
+                  onChange={(event) => field.onChange(event.target.value.toString())}
                   disabled={!selectedZona || tarifasDisponibles.length === 0}
                   error={!!formErrors.tarifa}
                 >
@@ -93,14 +99,14 @@ export const ZonaTarifaSelect = ({
                   </MenuItem>
                   {tarifasDisponibles.map((tarifa) => (
                     <MenuItem key={tarifa.id} value={tarifa.id}>
-                      {tarifa.nombre} - ${tarifa.valor}
+                      {tarifa.nombre} - ${tarifa.valorBase.toString()}
                     </MenuItem>
                   ))}
                 </Select>
                 {tarifasDisponibles.length > 0 && field.value && (
-                  <FormHelperText sx={{ mt: 1 }}>
-                    Valor: ${tarifasDisponibles.find(t => t.id === field.value)?.valor}
-                  </FormHelperText>
+                  <Alert sx={{ mt: 1 }}>
+                    Valor: ${tarifasDisponibles.find(t => t.id === Number(field.value))?.valorBase || "N/A"}
+                  </Alert>
                 )}
               </>
             )}

@@ -11,13 +11,13 @@ import { DepositoSelectModal } from "../../components/DepositSelectModal";
 import FormActions from "../../components/deposit/FormActions";
 import { CreateViajeDistribucionSchema } from "../../api/schemas/viajeDistribucion.schema";
 import RemitosSelectModal from "../../components/trip/modals/RemitosSelectModal";
-import {Remito, remitosData} from "../../services/remitos"
+import {Remito} from "../../services/remitos"
 import { Package } from "lucide-react";
 import { CountryProvinceSelect } from "../../components/trip/CountryProvinceSelect";
-import { tarifas, zonas } from "../../services/zonaTarifas";
 import { ZonaTarifaSelect } from "../../components/trip/ZonaTarifaSelect";
-import { Localidad, Provincia, useLocalidades, useProvincias } from "../../hooks/useGeoref";
+import { Localidad, Provincia} from "../../hooks/useGeoref";
 import { LocalidadSelect } from "../../components/trip/LocalidadSelected";
+import { useRemitos } from "../../hooks/useRemitos";
 
 const depositoSelectButtonStyle = {
   height: "48px",
@@ -40,6 +40,7 @@ const depositoSelectButtonStyle = {
 
 export default function DistributionFormPage() {
     const {id} = useParams();
+
     const [modalOpen, setModalOpen] = useState(false);
     const [remitosModalOpen, setRemitosModalOpen] = useState(false);
     const [availableRemitos, setAvailableRemitos] = useState<Remito[]>([])
@@ -50,6 +51,7 @@ export default function DistributionFormPage() {
     const [selectedZona, setSelectedZona] = useState<number | null>(null);
     const [tarifasDisponibles, setTarifasDisponibles] = useState<any[]>([]);
     const [activeField, setActiveField] = useState<"deposito_origen" | "remitos" | null>(null);
+    const {remitos, loading} = useRemitos(selectedPais, selectedProvincia, selectedLocalidad);
 
     const {
         handleSubmit,
@@ -102,22 +104,8 @@ export default function DistributionFormPage() {
 
     // efecto para filtrar remitos
     useEffect(() => {
-    if (selectedProvincia) {
-        let filtered = remitosData?.data.filter(
-        (r: any) =>
-            r.destino.provincia.toLowerCase() === selectedProvincia.nombre.toLowerCase()
-        );
-        if (selectedLocalidad) {
-        filtered = filtered.filter(
-            (r: any) =>
-            r.destino.localidad.toLowerCase() === selectedLocalidad.nombre.toLowerCase()
-        );
-        }
-        setAvailableRemitos(filtered || []);
-    } else {
-        setAvailableRemitos([]);
-    }
-    }, [selectedProvincia, selectedLocalidad, remitosData]);
+        setAvailableRemitos(remitos || []);
+    }, [remitos]);
 
 
     /* if (isLoading || loadingAuxData) return <CircularProgress />; */
@@ -397,7 +385,7 @@ export default function DistributionFormPage() {
                                     disabled={!selectedProvincia}
                                 >
                                     <span className={selectedRemitos.length > 0 ? "text-gray-900" : "text-gray-500"}>
-                                        {selectedRemitos.length > 0
+                                        {loading ? "Cargando..." : selectedRemitos.length > 0
                                         ? `${selectedRemitos.length} remito${selectedRemitos.length !== 1 ? "s" : ""} seleccionado${selectedRemitos.length !== 1 ? "s" : ""}`
                                         : tieneRemitosDisponibles ? "Seleccionar Remitos" : "Sin remitos disponibles"}
                                     </span>

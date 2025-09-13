@@ -4,6 +4,7 @@ export type Zona = {
   descripcion: string;
   regionMapa: string;
   activo: boolean;
+  provincias?: { id: number; nombre: string }[];
 }
 
 export type Tarifa = {
@@ -43,6 +44,10 @@ export const zonas: Zona[] = [
     "nombre": "AMBA",
     "descripcion": "Área Metropolitana de Buenos Aires",
     "regionMapa": "CABA_GBA",
+    "provincias": [
+      { "id": 1, "nombre": "Buenos Aires" },
+      { "id": 2, "nombre": "CABA" }
+    ],
     "activo": true
   },
   {
@@ -50,6 +55,10 @@ export const zonas: Zona[] = [
     "nombre": "Ituzaingo - Hurlingham",
     "descripcion": "Partidos de la zona oeste del Gran Buenos Aires",
     "regionMapa": "GBA Oeste",
+    "provincias": [
+      { "id": 3, "nombre": "Buenos Aires" },
+      { "id": 4, "nombre": "CABA" }
+    ],
     "activo": true
   }
 ]

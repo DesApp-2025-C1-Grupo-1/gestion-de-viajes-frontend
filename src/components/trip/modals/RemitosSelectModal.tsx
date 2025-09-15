@@ -1,6 +1,6 @@
-import { Box, Button, Card, CardContent, Checkbox, Chip, Dialog, DialogContent, DialogTitle, Grid, TextField, Typography } from "@mui/material";
+import { Box, Button, Checkbox, Dialog, DialogContent, DialogTitle, Grid, Typography } from "@mui/material";
 import { Remito } from "../../../services/remitos";
-import {  MapPin, Package, Search, X } from "lucide-react";
+import {  Package, X } from "lucide-react";
 import { useState } from "react";
 import { useDebouncedValue } from "../../../hooks/useDebouncedValue";
 import RemitoCard from "./RemitoCard";
@@ -23,8 +23,7 @@ export default function RemitosSelectModal({ open, onOpenChange, availableRemito
   const filteredRemitos = availableRemitos.filter(
     (remito) =>
       remito.numeroAsignado?.toLowerCase().includes(debouncedQuery.toLowerCase()) ||
-      remito.cliente.razonSocial.toLowerCase().includes(debouncedQuery.toLowerCase()) ||
-      remito.destino.localidad.toLowerCase().includes(debouncedQuery.toLowerCase()),
+      remito.destino.direccion.toLowerCase().includes(debouncedQuery.toLowerCase()),
   )
 
   const handleSelectAll = () => {
@@ -47,6 +46,9 @@ export default function RemitosSelectModal({ open, onOpenChange, availableRemito
       })
     }
   }
+  const selectedCountInFiltered = filteredRemitos.filter((r) =>
+    selectedRemitos.includes(r.id)
+  ).length;
 
   const allFilteredSelected =
     filteredRemitos.length > 0 && filteredRemitos.every((remito) => selectedRemitos.includes(remito.id))
@@ -106,7 +108,9 @@ export default function RemitosSelectModal({ open, onOpenChange, availableRemito
                 key={rem.id}
                 rem={rem}
                 selectedRemitos={selectedRemitos}
-                onRemitoToggle={onRemitoToggle}
+                onRemitoToggle={() =>{
+                  onRemitoToggle(rem.id);
+                }}
               />
             );
           })}
@@ -125,11 +129,8 @@ export default function RemitosSelectModal({ open, onOpenChange, availableRemito
           }}
         >
           <Box sx={{ fontSize: "0.9rem", color: "#555", textAlign: { xs: "center", sm: "left" } }}>
-            <span className="font-medium">{selectedRemitos.length}</span> de{" "}
-            <span className="font-medium">{availableRemitos.length}</span> remitos seleccionados
-            {remitosSearch && filteredRemitos.length !== availableRemitos.length && (
-              <span className="ml-2 text-gray-500">({filteredRemitos.length} mostrados)</span>
-            )}
+            <span className="font-medium">{selectedCountInFiltered}</span> de{" "}
+            <span className="font-medium">{filteredRemitos.length}</span> remitos seleccionados
           </Box>
           <Box
             sx={{

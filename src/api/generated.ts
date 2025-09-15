@@ -576,7 +576,6 @@ export const CreateViajeDistribucionDtoEstado = {
 
 export interface CreateViajeDistribucionDto {
   fecha_inicio: string;
-  fecha_llegada?: string;
   origen: string;
   chofer: string;
   transportista: string;
@@ -593,7 +592,22 @@ export interface RemitoInfoDto {
   id: string;
 }
 
-export interface TarifaDto { [key: string]: unknown }
+export interface TarifaDto {
+  id: number;
+  nombre: string;
+  valorBase: number;
+  esVigente: boolean;
+  transportistaNombre: string;
+  tipoVehiculoNombre: string;
+  zonaNombre: string;
+  tipoCargaNombre: string;
+  transportistaId: number;
+  tipoVehiculoId: number;
+  zonaId: number;
+  tipoCargaId: number;
+  total: number;
+  adicionales: AdicionalDto[];
+}
 
 export type ViajeDistribucionDtoEstado = typeof ViajeDistribucionDtoEstado[keyof typeof ViajeDistribucionDtoEstado];
 
@@ -608,7 +622,6 @@ export const ViajeDistribucionDtoEstado = {
 
 export interface ViajeDistribucionDto {
   fecha_inicio: string;
-  fecha_llegada: string;
   origen: ObjectId;
   chofer: ObjectId;
   transportista: ObjectId;
@@ -634,7 +647,6 @@ export const UpdateViajeDistribucionDtoEstado = {
 
 export interface UpdateViajeDistribucionDto {
   fecha_inicio?: string;
-  fecha_llegada?: string;
   origen?: string;
   chofer?: string;
   transportista?: string;
@@ -645,6 +657,206 @@ export interface UpdateViajeDistribucionDto {
   observaciones?: string;
 }
 
+export interface DestinoDto {
+  /** ID del destino */
+  id: number;
+  /** Nombre del destino */
+  nombre: string;
+  /** País del destino */
+  pais: string;
+  /** Provincia del destino */
+  provincia: string;
+  /** Localidad del destino */
+  localidad: string;
+  /** Dirección completa del destino */
+  direccion: string;
+  /** Indica si el destino está activo */
+  activo: boolean;
+  /** Fecha de creación del registro */
+  createdAt: string;
+  /** Fecha de última actualización del registro */
+  updatedAt: string;
+}
+
+export interface ClienteDto {
+  /** ID del cliente */
+  id: number;
+  /** Razón social del cliente */
+  razonSocial: string;
+  /** CUIT/RUT del cliente */
+  cuit_rut: string;
+  /** Dirección del cliente */
+  direccion: string;
+  /** ID del tipo de empresa */
+  tipoEmpresaId: number;
+  /** Indica si el cliente está activo */
+  activo: boolean;
+  /** Fecha de creación del registro */
+  createdAt: string;
+  /** Fecha de última actualización del registro */
+  updatedAt: string;
+}
+
+export interface EstadoDto {
+  /** ID del estado */
+  id: number;
+  /** Nombre del estado */
+  nombre: string;
+  /** Fecha de creación del estado */
+  createdAt: string;
+  /** Fecha de última actualización del estado */
+  updatedAt: string;
+}
+
+/**
+ * Cantidad de bobinas
+ */
+export type MercaderiaDtoCantidadBobinas = { [key: string]: unknown };
+
+/**
+ * Cantidad de racks
+ */
+export type MercaderiaDtoCantidadRacks = { [key: string]: unknown };
+
+/**
+ * Cantidad de bultos
+ */
+export type MercaderiaDtoCantidadBultos = { [key: string]: unknown };
+
+/**
+ * Cantidad de pallets
+ */
+export type MercaderiaDtoCantidadPallets = { [key: string]: unknown };
+
+/**
+ * Requisitos especiales
+ */
+export type MercaderiaDtoRequisitosEspeciales = { [key: string]: unknown };
+
+/**
+ * ID del estado de la mercadería
+ */
+export type MercaderiaDtoEstadoId = { [key: string]: unknown };
+
+export interface MercaderiaDto {
+  /** ID de la mercadería */
+  id: number;
+  /** ID del tipo de mercadería */
+  tipoMercaderiaId: number;
+  /** Valor declarado de la mercadería */
+  valorDeclarado: string;
+  /** Volumen en metros cúbicos de la mercadería */
+  volumenMetrosCubico: string;
+  /** Peso de la mercadería */
+  pesoMercaderia: string;
+  /** Cantidad de bobinas */
+  cantidadBobinas?: MercaderiaDtoCantidadBobinas;
+  /** Cantidad de racks */
+  cantidadRacks?: MercaderiaDtoCantidadRacks;
+  /** Cantidad de bultos */
+  cantidadBultos?: MercaderiaDtoCantidadBultos;
+  /** Cantidad de pallets */
+  cantidadPallets?: MercaderiaDtoCantidadPallets;
+  /** Requisitos especiales */
+  requisitosEspeciales?: MercaderiaDtoRequisitosEspeciales;
+  /** Indica si la mercadería está activa */
+  activo: boolean;
+  /** ID del estado de la mercadería */
+  estadoId?: MercaderiaDtoEstadoId;
+  /** ID del remito al que pertenece la mercadería */
+  remitoId: number;
+  /** Fecha de creación del registro */
+  createdAt: string;
+  /** Fecha de última actualización del registro */
+  updatedAt: string;
+}
+
+/**
+ * Observaciones del remito
+ */
+export type RemitoDtoObservaciones = { [key: string]: unknown };
+
+/**
+ * Archivo adjunto del remito
+ */
+export type RemitoDtoArchivoAdjunto = { [key: string]: unknown };
+
+/**
+ * Razón de no entrega
+ */
+export type RemitoDtoRazonNoEntrega = { [key: string]: unknown };
+
+/**
+ * Prioridad del remito
+ */
+export type RemitoDtoPrioridad = typeof RemitoDtoPrioridad[keyof typeof RemitoDtoPrioridad];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const RemitoDtoPrioridad = {
+  alta: 'alta',
+  media: 'media',
+  baja: 'baja',
+} as const;
+
+/**
+ * Fecha agendada para el remito
+ */
+export type RemitoDtoFechaAgenda = { [key: string]: unknown };
+
+/**
+ * Archivo del remito firmado
+ */
+export type RemitoDtoRemitoFirmado = { [key: string]: unknown };
+
+/**
+ * ID del estado anterior del remito
+ */
+export type RemitoDtoEstadoAnteriorId = { [key: string]: unknown };
+
+export interface RemitoDto {
+  /** ID del remito */
+  id: number;
+  /** Número asignado al remito */
+  numeroAsignado: string;
+  /** Fecha de emisión del remito */
+  fechaEmision: string;
+  /** Observaciones del remito */
+  observaciones?: RemitoDtoObservaciones;
+  /** Archivo adjunto del remito */
+  archivoAdjunto?: RemitoDtoArchivoAdjunto;
+  /** Razón de no entrega */
+  razonNoEntrega?: RemitoDtoRazonNoEntrega;
+  /** Prioridad del remito */
+  prioridad: RemitoDtoPrioridad;
+  /** Indica si el remito está activo */
+  activo: boolean;
+  /** Fecha agendada para el remito */
+  fechaAgenda?: RemitoDtoFechaAgenda;
+  /** Archivo del remito firmado */
+  remitoFirmado?: RemitoDtoRemitoFirmado;
+  /** ID del cliente */
+  clienteId: number;
+  /** ID del destino */
+  destinoId: number;
+  /** ID del estado actual del remito */
+  estadoId: number;
+  /** ID del estado anterior del remito */
+  estadoAnteriorId?: RemitoDtoEstadoAnteriorId;
+  /** Fecha de creación del remito */
+  createdAt: string;
+  /** Fecha de última actualización del remito */
+  updatedAt: string;
+  /** Destino asociado al remito */
+  destino?: DestinoDto;
+  /** Cliente asociado al remito */
+  cliente?: ClienteDto;
+  /** Estado actual del remito */
+  estado?: EstadoDto;
+  /** Lista de mercaderías asociadas al remito */
+  mercaderias?: MercaderiaDto[];
+}
+
 export interface EmpresaPublicDto {
   /** ID de la empresa */
   _id: string;
@@ -653,6 +865,25 @@ export interface EmpresaPublicDto {
   /** Nombre comercial de la empresa */
   nombre_comercial: string;
   contacto: ContactoDto;
+}
+
+export interface ZonaDto {
+  /** ID de la zona */
+  id: number;
+  /** Nombre de la zona */
+  nombre: string;
+}
+
+export interface AdicionalDto {
+  id: number;
+  /** Nombre del adicional */
+  nombre: string;
+  /** Costo por defecto del adicional */
+  costoDefault: number;
+  descripcion: string;
+  activo: boolean;
+  esGlobal: boolean;
+  costoEspecifico: number;
 }
 
 export type ViajeControllerFindAllParams = {
@@ -695,9 +926,65 @@ export const ViajeDistribucionControllerFindAllEstado = {
   finalizado: 'finalizado',
 } as const;
 
+export type RemitosControllerGetRemitosParams = {
+/**
+ * Filtra por localidad del destino
+ */
+localidad?: string;
+/**
+ * Filtra por provincia del destino
+ */
+provincia?: string;
+/**
+ * Filtra por país del destino
+ */
+pais?: string;
+/**
+ * Filtra por fecha de emisión (YYYY-MM-DD)
+ */
+fechaEmision?: string;
+/**
+ * Filtra por prioridad
+ */
+prioridad?: string;
+/**
+ * Filtra por estado
+ */
+estadoId?: number;
+/**
+ * Filtra por destino
+ */
+destinoId?: number;
+/**
+ * Filtra por cliente
+ */
+clienteId?: number;
+/**
+ * Filtra por número asignado parcial
+ */
+numeroAsignado?: string;
+/**
+ * Cantidad de items por página (por defecto 20)
+ */
+limit?: number;
+/**
+ * Página actual (por defecto 1)
+ */
+page?: number;
+};
+
 export type TarifasControllerTarifasFiltradasParams = {
+/**
+ * ID del tipo de vehículo
+ */
 tipoVehiculo: string;
+/**
+ * ID de la zona
+ */
 zona: string;
+/**
+ * ID del transportista
+ */
 transportista: string;
 };
 
@@ -3504,6 +3791,242 @@ export const useViajeDistribucionControllerUpdateEstado = <TError = AxiosError<v
     }
     
 /**
+ * @summary Obtener remitos con filtros y paginación
+ */
+export const remitosControllerGetRemitos = (
+    params?: RemitosControllerGetRemitosParams, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<RemitoDto[]>> => {
+    
+    
+    return axios.get(
+      `/remito`,{
+    ...options,
+        params: {...params, ...options?.params},}
+    );
+  }
+
+
+export const getRemitosControllerGetRemitosQueryKey = (params?: RemitosControllerGetRemitosParams,) => {
+    return [`/remito`, ...(params ? [params]: [])] as const;
+    }
+
+    
+export const getRemitosControllerGetRemitosQueryOptions = <TData = Awaited<ReturnType<typeof remitosControllerGetRemitos>>, TError = AxiosError<void>>(params?: RemitosControllerGetRemitosParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof remitosControllerGetRemitos>>, TError, TData>>, axios?: AxiosRequestConfig}
+) => {
+
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getRemitosControllerGetRemitosQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof remitosControllerGetRemitos>>> = ({ signal }) => remitosControllerGetRemitos(params, { signal, ...axiosOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof remitosControllerGetRemitos>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type RemitosControllerGetRemitosQueryResult = NonNullable<Awaited<ReturnType<typeof remitosControllerGetRemitos>>>
+export type RemitosControllerGetRemitosQueryError = AxiosError<void>
+
+
+export function useRemitosControllerGetRemitos<TData = Awaited<ReturnType<typeof remitosControllerGetRemitos>>, TError = AxiosError<void>>(
+ params: undefined |  RemitosControllerGetRemitosParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof remitosControllerGetRemitos>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof remitosControllerGetRemitos>>,
+          TError,
+          Awaited<ReturnType<typeof remitosControllerGetRemitos>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useRemitosControllerGetRemitos<TData = Awaited<ReturnType<typeof remitosControllerGetRemitos>>, TError = AxiosError<void>>(
+ params?: RemitosControllerGetRemitosParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof remitosControllerGetRemitos>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof remitosControllerGetRemitos>>,
+          TError,
+          Awaited<ReturnType<typeof remitosControllerGetRemitos>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useRemitosControllerGetRemitos<TData = Awaited<ReturnType<typeof remitosControllerGetRemitos>>, TError = AxiosError<void>>(
+ params?: RemitosControllerGetRemitosParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof remitosControllerGetRemitos>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Obtener remitos con filtros y paginación
+ */
+
+export function useRemitosControllerGetRemitos<TData = Awaited<ReturnType<typeof remitosControllerGetRemitos>>, TError = AxiosError<void>>(
+ params?: RemitosControllerGetRemitosParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof remitosControllerGetRemitos>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getRemitosControllerGetRemitosQueryOptions(params,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * @summary Obtener remito por ID
+ */
+export const remitosControllerGetRemito = (
+    id: number, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<RemitoDto>> => {
+    
+    
+    return axios.get(
+      `/remito/${id}`,options
+    );
+  }
+
+
+export const getRemitosControllerGetRemitoQueryKey = (id: number,) => {
+    return [`/remito/${id}`] as const;
+    }
+
+    
+export const getRemitosControllerGetRemitoQueryOptions = <TData = Awaited<ReturnType<typeof remitosControllerGetRemito>>, TError = AxiosError<void>>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof remitosControllerGetRemito>>, TError, TData>>, axios?: AxiosRequestConfig}
+) => {
+
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getRemitosControllerGetRemitoQueryKey(id);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof remitosControllerGetRemito>>> = ({ signal }) => remitosControllerGetRemito(id, { signal, ...axiosOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof remitosControllerGetRemito>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type RemitosControllerGetRemitoQueryResult = NonNullable<Awaited<ReturnType<typeof remitosControllerGetRemito>>>
+export type RemitosControllerGetRemitoQueryError = AxiosError<void>
+
+
+export function useRemitosControllerGetRemito<TData = Awaited<ReturnType<typeof remitosControllerGetRemito>>, TError = AxiosError<void>>(
+ id: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof remitosControllerGetRemito>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof remitosControllerGetRemito>>,
+          TError,
+          Awaited<ReturnType<typeof remitosControllerGetRemito>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useRemitosControllerGetRemito<TData = Awaited<ReturnType<typeof remitosControllerGetRemito>>, TError = AxiosError<void>>(
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof remitosControllerGetRemito>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof remitosControllerGetRemito>>,
+          TError,
+          Awaited<ReturnType<typeof remitosControllerGetRemito>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useRemitosControllerGetRemito<TData = Awaited<ReturnType<typeof remitosControllerGetRemito>>, TError = AxiosError<void>>(
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof remitosControllerGetRemito>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Obtener remito por ID
+ */
+
+export function useRemitosControllerGetRemito<TData = Awaited<ReturnType<typeof remitosControllerGetRemito>>, TError = AxiosError<void>>(
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof remitosControllerGetRemito>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getRemitosControllerGetRemitoQueryOptions(id,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * @summary Cambiar estado de remito
+ */
+export const remitosControllerCambiarEstado = (
+    id: number,
+    eid: number, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<RemitoDto>> => {
+    
+    
+    return axios.put(
+      `/remito/${id}/estado/${eid}`,undefined,options
+    );
+  }
+
+
+
+export const getRemitosControllerCambiarEstadoMutationOptions = <TError = AxiosError<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof remitosControllerCambiarEstado>>, TError,{id: number;eid: number}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof remitosControllerCambiarEstado>>, TError,{id: number;eid: number}, TContext> => {
+
+const mutationKey = ['remitosControllerCambiarEstado'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, axios: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof remitosControllerCambiarEstado>>, {id: number;eid: number}> = (props) => {
+          const {id,eid} = props ?? {};
+
+          return  remitosControllerCambiarEstado(id,eid,axiosOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RemitosControllerCambiarEstadoMutationResult = NonNullable<Awaited<ReturnType<typeof remitosControllerCambiarEstado>>>
+    
+    export type RemitosControllerCambiarEstadoMutationError = AxiosError<void>
+
+    /**
+ * @summary Cambiar estado de remito
+ */
+export const useRemitosControllerCambiarEstado = <TError = AxiosError<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof remitosControllerCambiarEstado>>, TError,{id: number;eid: number}, TContext>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof remitosControllerCambiarEstado>>,
+        TError,
+        {id: number;eid: number},
+        TContext
+      > => {
+
+      const mutationOptions = getRemitosControllerCambiarEstadoMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
  * @summary Obtener todas las empresas
  */
 export const publicControllerFindAllEmpresasV1 = (
@@ -3761,9 +4284,12 @@ export function usePublicControllerFindAllVehiculosV1<TData = Awaited<ReturnType
 
 
 
+/**
+ * @summary Listar todas las zonas
+ */
 export const tarifasControllerListarZonas = (
      options?: AxiosRequestConfig
- ): Promise<AxiosResponse<void>> => {
+ ): Promise<AxiosResponse<ZonaDto[]>> => {
     
     
     return axios.get(
@@ -3777,7 +4303,7 @@ export const getTarifasControllerListarZonasQueryKey = () => {
     }
 
     
-export const getTarifasControllerListarZonasQueryOptions = <TData = Awaited<ReturnType<typeof tarifasControllerListarZonas>>, TError = AxiosError<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof tarifasControllerListarZonas>>, TError, TData>>, axios?: AxiosRequestConfig}
+export const getTarifasControllerListarZonasQueryOptions = <TData = Awaited<ReturnType<typeof tarifasControllerListarZonas>>, TError = AxiosError<void>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof tarifasControllerListarZonas>>, TError, TData>>, axios?: AxiosRequestConfig}
 ) => {
 
 const {query: queryOptions, axios: axiosOptions} = options ?? {};
@@ -3796,10 +4322,10 @@ const {query: queryOptions, axios: axiosOptions} = options ?? {};
 }
 
 export type TarifasControllerListarZonasQueryResult = NonNullable<Awaited<ReturnType<typeof tarifasControllerListarZonas>>>
-export type TarifasControllerListarZonasQueryError = AxiosError<unknown>
+export type TarifasControllerListarZonasQueryError = AxiosError<void>
 
 
-export function useTarifasControllerListarZonas<TData = Awaited<ReturnType<typeof tarifasControllerListarZonas>>, TError = AxiosError<unknown>>(
+export function useTarifasControllerListarZonas<TData = Awaited<ReturnType<typeof tarifasControllerListarZonas>>, TError = AxiosError<void>>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof tarifasControllerListarZonas>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof tarifasControllerListarZonas>>,
@@ -3809,7 +4335,7 @@ export function useTarifasControllerListarZonas<TData = Awaited<ReturnType<typeo
       >, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useTarifasControllerListarZonas<TData = Awaited<ReturnType<typeof tarifasControllerListarZonas>>, TError = AxiosError<unknown>>(
+export function useTarifasControllerListarZonas<TData = Awaited<ReturnType<typeof tarifasControllerListarZonas>>, TError = AxiosError<void>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof tarifasControllerListarZonas>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof tarifasControllerListarZonas>>,
@@ -3819,12 +4345,15 @@ export function useTarifasControllerListarZonas<TData = Awaited<ReturnType<typeo
       >, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useTarifasControllerListarZonas<TData = Awaited<ReturnType<typeof tarifasControllerListarZonas>>, TError = AxiosError<unknown>>(
+export function useTarifasControllerListarZonas<TData = Awaited<ReturnType<typeof tarifasControllerListarZonas>>, TError = AxiosError<void>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof tarifasControllerListarZonas>>, TError, TData>>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Listar todas las zonas
+ */
 
-export function useTarifasControllerListarZonas<TData = Awaited<ReturnType<typeof tarifasControllerListarZonas>>, TError = AxiosError<unknown>>(
+export function useTarifasControllerListarZonas<TData = Awaited<ReturnType<typeof tarifasControllerListarZonas>>, TError = AxiosError<void>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof tarifasControllerListarZonas>>, TError, TData>>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -3841,9 +4370,12 @@ export function useTarifasControllerListarZonas<TData = Awaited<ReturnType<typeo
 
 
 
+/**
+ * @summary Obtener tarifas filtradas por tipo de vehículo, zona y transportista
+ */
 export const tarifasControllerTarifasFiltradas = (
     params: TarifasControllerTarifasFiltradasParams, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<void>> => {
+ ): Promise<AxiosResponse<TarifaDto[]>> => {
     
     
     return axios.get(
@@ -3859,7 +4391,7 @@ export const getTarifasControllerTarifasFiltradasQueryKey = (params: TarifasCont
     }
 
     
-export const getTarifasControllerTarifasFiltradasQueryOptions = <TData = Awaited<ReturnType<typeof tarifasControllerTarifasFiltradas>>, TError = AxiosError<unknown>>(params: TarifasControllerTarifasFiltradasParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof tarifasControllerTarifasFiltradas>>, TError, TData>>, axios?: AxiosRequestConfig}
+export const getTarifasControllerTarifasFiltradasQueryOptions = <TData = Awaited<ReturnType<typeof tarifasControllerTarifasFiltradas>>, TError = AxiosError<void>>(params: TarifasControllerTarifasFiltradasParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof tarifasControllerTarifasFiltradas>>, TError, TData>>, axios?: AxiosRequestConfig}
 ) => {
 
 const {query: queryOptions, axios: axiosOptions} = options ?? {};
@@ -3878,10 +4410,10 @@ const {query: queryOptions, axios: axiosOptions} = options ?? {};
 }
 
 export type TarifasControllerTarifasFiltradasQueryResult = NonNullable<Awaited<ReturnType<typeof tarifasControllerTarifasFiltradas>>>
-export type TarifasControllerTarifasFiltradasQueryError = AxiosError<unknown>
+export type TarifasControllerTarifasFiltradasQueryError = AxiosError<void>
 
 
-export function useTarifasControllerTarifasFiltradas<TData = Awaited<ReturnType<typeof tarifasControllerTarifasFiltradas>>, TError = AxiosError<unknown>>(
+export function useTarifasControllerTarifasFiltradas<TData = Awaited<ReturnType<typeof tarifasControllerTarifasFiltradas>>, TError = AxiosError<void>>(
  params: TarifasControllerTarifasFiltradasParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof tarifasControllerTarifasFiltradas>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof tarifasControllerTarifasFiltradas>>,
@@ -3891,7 +4423,7 @@ export function useTarifasControllerTarifasFiltradas<TData = Awaited<ReturnType<
       >, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useTarifasControllerTarifasFiltradas<TData = Awaited<ReturnType<typeof tarifasControllerTarifasFiltradas>>, TError = AxiosError<unknown>>(
+export function useTarifasControllerTarifasFiltradas<TData = Awaited<ReturnType<typeof tarifasControllerTarifasFiltradas>>, TError = AxiosError<void>>(
  params: TarifasControllerTarifasFiltradasParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof tarifasControllerTarifasFiltradas>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof tarifasControllerTarifasFiltradas>>,
@@ -3901,12 +4433,15 @@ export function useTarifasControllerTarifasFiltradas<TData = Awaited<ReturnType<
       >, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useTarifasControllerTarifasFiltradas<TData = Awaited<ReturnType<typeof tarifasControllerTarifasFiltradas>>, TError = AxiosError<unknown>>(
+export function useTarifasControllerTarifasFiltradas<TData = Awaited<ReturnType<typeof tarifasControllerTarifasFiltradas>>, TError = AxiosError<void>>(
  params: TarifasControllerTarifasFiltradasParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof tarifasControllerTarifasFiltradas>>, TError, TData>>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Obtener tarifas filtradas por tipo de vehículo, zona y transportista
+ */
 
-export function useTarifasControllerTarifasFiltradas<TData = Awaited<ReturnType<typeof tarifasControllerTarifasFiltradas>>, TError = AxiosError<unknown>>(
+export function useTarifasControllerTarifasFiltradas<TData = Awaited<ReturnType<typeof tarifasControllerTarifasFiltradas>>, TError = AxiosError<void>>(
  params: TarifasControllerTarifasFiltradasParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof tarifasControllerTarifasFiltradas>>, TError, TData>>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {

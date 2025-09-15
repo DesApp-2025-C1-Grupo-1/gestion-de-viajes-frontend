@@ -4,16 +4,18 @@ import { TipoViajeSchema } from "./enums/tipoViajeSchema";
 
 export const CreateViajeDistribucionSchema = z.object({
     fecha_inicio: DateSchema,
-    empresa: RequireSelectSchema,
-    deposito_origen: RequireSelectSchema,
+    transportista: RequireSelectSchema,
+    origen: RequireSelectSchema,
     chofer: RequireSelectSchema,
     vehiculo: RequireSelectSchema,
     kilometros_camion: z
         .number({ required_error: "La cantidad de kilómetros es obligatoria" })
         .min(0.01, "La cantidad de kilómetros debe ser mayor o igual a 0.01"),
-    remitos: z.array(z.number({ required_error: "Debe seleccionar ids de remitos" })).min(1, "Debe seleccionar al menos un remito"),
+    remitos_ids: z.array(z.number({ required_error: "Debe seleccionar ids de remitos" })).min(1, "Debe seleccionar al menos un remito"),
     tipo_viaje: TipoViajeSchema,
-    tarifa: z.string().optional(),
+    tarifa_id: z.string().optional(),
+    estado: z.string().optional(),
+    observaciones: z.string().max(500, "Las observaciones no pueden superar los 500 caracteres").optional(),
 });
 
 export const ViajeDistribucionUpdateSchema = CreateViajeDistribucionSchema.extend({

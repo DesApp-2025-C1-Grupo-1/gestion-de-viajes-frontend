@@ -65,17 +65,14 @@ export default function Sidebar({isVisible, setIsVisible}: SidebarProps) {
       `}
     >
         {/* Encabezado */}
-        <div className="flex items-center h-20 px-4 border-b border-gray-100 relative">
-            <Truck className="text-[#E65F2B] size-8 shrink-0" />
-            <h2 
-            className={`
-                text-base font-semibold ml-3 whitespace-nowrap
-                transition-all duration-300
-                ${isCollapsed ? 'opacity-0 translate-x-[-10px] w-0' : 'opacity-100 translate-x-0 w-auto'}
-            `}
-            >
-            Logística Acme SRL
-            </h2>
+        <div className="flex items-center px-4 border-b border-gray-100 relative">
+            <img 
+              src="/logo.jpg" 
+              alt="Gestión de viajes logo con camión naranja sobre fondo blanco, transmite profesionalismo y confianza"  
+              className={`min-h-12 my-3 mx-auto object-contain transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]
+                ${isCollapsed ? 'w-10' : 'w-full'}
+              `} 
+            />
         </div>
 
         {/* Menú */}

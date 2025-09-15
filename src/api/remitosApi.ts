@@ -20,7 +20,7 @@ export const fetchRemitos = async (params: FetchRemitosParams): Promise<Remito[]
       pais: params.pais || undefined,
       provincia: params.provincia || undefined,
       localidad: params.localidad || undefined,
-      estadoId: 1, // Filtrar solo remitos con estadoId 8 (autorizado)
+      estadoId: 1, // Filtrar solo remitos con estadoId 1 (autorizado)
     },
   });
   

@@ -38,30 +38,6 @@ export type Tarifa = {
 
 const URL_ZONAS = 'https://tarifas-de-costos-acme-backend.onrender.com/api/zonas';
 
-export const zonas: Zona[] = [
-  {
-    "id": 2,
-    "nombre": "AMBA",
-    "descripcion": "Área Metropolitana de Buenos Aires",
-    "regionMapa": "CABA_GBA",
-    "provincias": [
-      { "id": 1, "nombre": "Buenos Aires" },
-      { "id": 2, "nombre": "CABA" }
-    ],
-    "activo": true
-  },
-  {
-    "id": 3,
-    "nombre": "Ituzaingo - Hurlingham",
-    "descripcion": "Partidos de la zona oeste del Gran Buenos Aires",
-    "regionMapa": "GBA Oeste",
-    "provincias": [
-      { "id": 3, "nombre": "Buenos Aires" },
-      { "id": 4, "nombre": "CABA" }
-    ],
-    "activo": true
-  }
-]
 
 export const tarifas: Tarifa[] = [
   {
@@ -75,7 +51,7 @@ export const tarifas: Tarifa[] = [
     "tipoCargaNombre": "Madera",
     "transportistaId": "683f7e044904b1a84fc05249",
     "tipoVehiculoId": "683f7d734904b1a84fc0523b",
-    "zonaId": 2,
+    "zonaId": 46,
     "tipoCargaId": 1,
     "total": 34000,
     "adicionales": [

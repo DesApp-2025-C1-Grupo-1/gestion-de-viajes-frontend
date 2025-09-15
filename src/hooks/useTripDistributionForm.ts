@@ -24,20 +24,23 @@ export const useTripDistributionForm = (id?: string) => {
         clearErrors,
         setError,
         setValue,
-        formState: { isLoading,errors: formErrors , isValid,isSubmitting},
+        formState: { isLoading, errors: formErrors, isSubmitting},
     } = useForm<CreateViajeDistribucionSchema>({
         resolver: zodResolver(CreateViajeDistribucionSchema),
         mode: "onBlur",
         reValidateMode: "onChange",
         defaultValues: {
             fecha_inicio: undefined,
-            empresa: "",
-            deposito_origen: "",
+            transportista: "",
+            origen: "",
             chofer: "",
             vehiculo: "",
             tipo_viaje: "nacional",
             kilometros_camion: 0,
-            remitos: [],
+            remitos_ids: [],
+            observaciones: "",
+            tarifa_id: "",
+            estado: "",
         },
     });
     
@@ -55,7 +58,7 @@ export const useTripDistributionForm = (id?: string) => {
         errorDrivers,
         errorDepots,
         filterByCompany
-    } = useTripAuxData({control, resetField});
+    } = useTripAuxData({control, resetField, companyName: "transportista"});
     
 
     const handleSelectChofer = (choferId: string) => {

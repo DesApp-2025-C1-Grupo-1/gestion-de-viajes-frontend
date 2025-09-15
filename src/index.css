@@ -40,8 +40,12 @@
   @apply !bg-orange-500 !text-white !border-orange-500 !shadow-none;
 }
 
+.rbc-toolbar {
+  @apply flex items-center justify-between mb-4 gap-2;
+}
+
 .rbc-toolbar-label {
-  @apply text-xl font-semibold text-gray-700;
+  @apply text-xl font-semibold text-gray-700 capitalize;
 }
 
 .rbc-toolbar button {
@@ -54,4 +58,8 @@
 
 .rbc-month-view {
   @apply bg-white rounded-md overflow-hidden;
+}
+
+.rbc-header {
+  @apply uppercase;
 }

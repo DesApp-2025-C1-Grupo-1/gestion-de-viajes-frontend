@@ -8,10 +8,10 @@ export const CreateViajeDistribucionSchema = z.object({
     origen: RequireSelectSchema,
     chofer: RequireSelectSchema,
     vehiculo: RequireSelectSchema,
-    kilometros_camion: z
+    kilometros: z
         .number({ required_error: "La cantidad de kilómetros es obligatoria" })
         .min(0.01, "La cantidad de kilómetros debe ser mayor o igual a 0.01"),
-    remitos_ids: z.array(z.number({ required_error: "Debe seleccionar ids de remitos" })).min(1, "Debe seleccionar al menos un remito"),
+    remito_ids: z.array(z.number({ required_error: "Debe seleccionar ids de remitos" })).min(1, "Debe seleccionar al menos un remito"),
     tipo_viaje: TipoViajeSchema,
     tarifa_id: z.string().optional(),
     estado: z.string().optional(),

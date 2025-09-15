@@ -50,7 +50,7 @@ export default function DistributionFormPage() {
     const [selectedLocalidad, setSelectedLocalidad] = useState<Localidad | null>(null);
     const [selectedZona, setSelectedZona] = useState<number | null>(null);
     const [tarifasDisponibles, setTarifasDisponibles] = useState<any[]>([]);
-    const [activeField, setActiveField] = useState<"origen" | "remitos_ids" | null>(null);
+    const [activeField, setActiveField] = useState<"origen" | "remito_ids" | null>(null);
     const {remitos, loading} = useRemitos(selectedPais, selectedProvincia, selectedLocalidad);
 
     const {
@@ -145,13 +145,13 @@ export default function DistributionFormPage() {
 
     const handleConfirmRemitos = (remitos: number[]) => {
         setSelectedRemitos(remitos);
-        setValue("remitos_ids", remitos);
+        setValue("remito_ids", remitos);
     };
 
     return <>
         <SectionHeader 
-        title="Viajes de distribución" 
-        description="Complete el formulario para registrar un nuevo viaje de distribución con sus remitos y recursos asociados."
+        title={isEditing ? "Editar Viaje de Distribución" : "Registrar Viaje de Distribución"}
+        description={isEditing ? "Actualizá los datos del viaje de distribución registrado." : "Completá el formulario para dar de alta un viaje de distribución."}
         />
         <Paper sx={{ padding: 4, mx: 'auto', width: "100%", borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "1px solid #C7C7C7", backgroundClip: "padding-box"}} >
                 <form onSubmit={handleSubmit(handleFormSubmit)} className="w-full max-w-[800px] mx-auto">
@@ -207,10 +207,10 @@ export default function DistributionFormPage() {
                         <Grid item xs={12} md={6}>
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Kilómetros del camión</Typography>
                             <TextField className="inside-paper" 
-                                id="kilometros_camion" 
+                                id="kilometros" 
                                 type="number" 
                                 placeholder="Ingresar km del camión" 
-                                {...register("kilometros_camion", {
+                                {...register("kilometros", {
                                     valueAsNumber: true,
                                     validate: (value) =>
                                     !isNaN(value) && value >= 0.01 || "Mínimo 0.01 kms",
@@ -221,8 +221,8 @@ export default function DistributionFormPage() {
                                     step: "0.01",
                                     min: "0.01"
                                 }} 
-                                error={!!formErrors.kilometros_camion}
-                                helperText={formErrors.kilometros_camion?.message}
+                                error={!!formErrors.kilometros}
+                                helperText={formErrors.kilometros?.message}
                         />
                         </Grid>
                     </Grid>
@@ -383,8 +383,8 @@ export default function DistributionFormPage() {
                                     No hay remitos disponibles para {tieneLocalidadSeleccionada ? selectedLocalidad.nombre : selectedProvincia.nombre}.
                                 </Alert>
                             )}
-                            <FormHelperText error={!!formErrors.remitos_ids}>
-                                {formErrors.remitos_ids?.message}
+                            <FormHelperText error={!!formErrors.remito_ids}>
+                                {formErrors.remito_ids?.message}
                             </FormHelperText>
                         </Grid>
                     </Grid>

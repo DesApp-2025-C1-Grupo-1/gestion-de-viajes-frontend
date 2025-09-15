@@ -1,12 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { useNotify } from "./useNotify";
-import { TipoVehiculoDtoLicenciaPermitida} from "../api/generated";
+import { TipoVehiculoDtoLicenciaPermitida, viajeDistribucionControllerCreate, viajeDistribucionControllerUpdate} from "../api/generated";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useTripAuxData from "./trip/useTripAuxData";
 import { isValidateLicense } from "../services/validateLicense";
-import { CreateViajeDistribucionSchema, UpdateViajeDistribucionSchema, ViajeDistribucionSchema } from "../api/schemas/viajeDistribucion.schema";
+import { CreateViajeDistribucionSchema, UpdateViajeDistribucionSchema } from "../api/schemas/viajeDistribucion.schema";
 import { useState } from "react";
+import { useTripDistributionData } from "./trip/useTripData";
 
 
 export const useTripDistributionForm = (id?: string) => {
@@ -18,13 +19,14 @@ export const useTripDistributionForm = (id?: string) => {
     const {
         register,
         control,
+        reset,
         handleSubmit,
         trigger,
         resetField,
         clearErrors,
         setError,
         setValue,
-        formState: { isLoading, errors: formErrors, isSubmitting},
+        formState: { errors: formErrors, isSubmitting},
     } = useForm<CreateViajeDistribucionSchema>({
         resolver: zodResolver(CreateViajeDistribucionSchema),
         mode: "onBlur",
@@ -36,16 +38,16 @@ export const useTripDistributionForm = (id?: string) => {
             chofer: "",
             vehiculo: "",
             tipo_viaje: "nacional",
-            kilometros_camion: 0,
-            remitos_ids: [],
+            kilometros: 0,
+            remito_ids: [],
             observaciones: "",
             tarifa_id: "",
             estado: "",
         },
     });
     
-/*     // 1. Cargar viaje si estamos editando
-    const {isLoading,error} = useTripData(id, reset); */
+    // 1. Cargar viaje si estamos editando
+    const {isLoading ,error: errorLoading} = useTripDistributionData(id, reset);
     
     // 2. Cargar datos auxiliares
     const {
@@ -81,7 +83,7 @@ export const useTripDistributionForm = (id?: string) => {
 
     const handleCreate = async (formData: CreateViajeDistribucionSchema) => {
         try {
-            /* await viajeControllerCreate(formData as CreateViajeDistribucionSchema); */
+            await viajeDistribucionControllerCreate(formData as CreateViajeDistribucionSchema);
             notify("create");
             navigate("/trips/distribution");
         } catch (e) {
@@ -93,10 +95,10 @@ export const useTripDistributionForm = (id?: string) => {
     };
 
     const handleUpdate = async (formData: UpdateViajeDistribucionSchema) => {
-        /* try {
-            const {_id, ...dataToUpdate} = formData;
-            
-            await viajeControllerUpdate(id!, dataToUpdate as UpdateViajeDistribucionSchema);
+        try {
+            const {id, ...dataToUpdate} = formData;
+
+            await viajeDistribucionControllerUpdate(id!, dataToUpdate as UpdateViajeDistribucionSchema);
             notify("update");
             navigate("/trips");
             } catch (e) {
@@ -104,7 +106,7 @@ export const useTripDistributionForm = (id?: string) => {
             if (error.response?.data?.message) {
                 notify("error", error.response.data.message);
             }
-        } */
+        }
     };
 
     const onSubmit = async (formData: CreateViajeDistribucionSchema | UpdateViajeDistribucionSchema) => {
@@ -163,6 +165,7 @@ export const useTripDistributionForm = (id?: string) => {
         errorVehicles,
         errorDrivers,
         errorDepots,
+        errorLoading,
         isLoading,
         filteredChoferes,
         filteredVehiculos,

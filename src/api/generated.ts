@@ -575,13 +575,16 @@ export const CreateViajeDistribucionDtoEstado = {
 } as const;
 
 export interface CreateViajeDistribucionDto {
-  fecha_inicio: string;
+  fecha_inicio: Date;
   origen: string;
+  /** Tipo de viaje */
+  tipo_viaje: string;
   chofer: string;
   transportista: string;
   vehiculo: string;
   remito_ids: string[];
-  tarifa_id: number;
+  kilometros: number;
+  tarifa_id?: number;
   estado?: CreateViajeDistribucionDtoEstado;
   observaciones?: string;
 }
@@ -623,10 +626,13 @@ export const ViajeDistribucionDtoEstado = {
 export interface ViajeDistribucionDto {
   fecha_inicio: string;
   origen: ObjectId;
+  /** Tipo de viaje */
+  tipo_viaje: string;
   chofer: ObjectId;
   transportista: ObjectId;
   vehiculo: ObjectId;
   remito_ids: string[];
+  kilometros: number;
   remitos_info?: RemitoInfoDto[];
   tarifa_id: number;
   tarifa?: TarifaDto;
@@ -648,10 +654,13 @@ export const UpdateViajeDistribucionDtoEstado = {
 export interface UpdateViajeDistribucionDto {
   fecha_inicio?: string;
   origen?: string;
+  /** Tipo de viaje */
+  tipo_viaje?: string;
   chofer?: string;
   transportista?: string;
   vehiculo?: string;
   remito_ids?: string[];
+  kilometros?: number;
   tarifa_id?: number;
   estado?: UpdateViajeDistribucionDtoEstado;
   observaciones?: string;

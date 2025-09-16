@@ -15,6 +15,7 @@ import { TarifaDto, viajeDistribucionControllerRemove, ViajeDistribucionDto, Via
 import { useTheme } from "@mui/material/styles";
 import MenuItemDialog from "../../components/buttons/MenuItem";
 //import { DetailsTrip } from "../../components/trip/DetailsTrip";
+import { DetailsTripDistribution } from "../../components/tripsDistribution/DetailsTripDistribution";
 
 
 export default function DistributionListPage() {
@@ -30,7 +31,7 @@ export default function DistributionListPage() {
   const [openDetailsDialog, setOpenDetailsDialog] = useState<boolean>(false);
  
   const [viajeDistribucionSelected, setviajeDistribucionSelected] = useState<ViajeDistribucionDto>();
-  const [tripsDistribution, setTripsDistribution] = useState<ViajeDistribucionDto[]>([]);
+  //const [tripsDistribution, setTripsDistribution] = useState<ViajeDistribucionDto[]>([]);
 
 
   const [rowsPerPage, setRowsPerPage] = useState<number>(5);
@@ -161,11 +162,13 @@ export default function DistributionListPage() {
                                             <TableCell>{`${tripDistribucion.remito_ids}`}</TableCell>
                                             <TableCell>{tripDistribucion.estado}</TableCell>
                                             <TableCell sx={{ verticalAlign: "middle"}}>
-                                                <MenuItemDialog  
-                                                        handleOpenDialog={() => handleOpenDialog(tripDistribucion)}
-                                                        id={tripDistribucion.viaje_id}
+                                                <MenuItem  
+                                                    handleOpenDialog={() => handleOpenDialog(tripDistribucion)}
+                                                    handleOpenDetails={() => handleOpenDetails(tripDistribucion)}
+                                                    id={tripDistribucion.viaje_id}
                                                 >
-                                                </MenuItemDialog>
+                                                        <Eye className="text-gray-500 hover:text-gray-700 size-4" />
+                                                </MenuItem>
                                             </TableCell>
                                         </TableRow>
                                     ))
@@ -197,18 +200,15 @@ export default function DistributionListPage() {
                 />
             )}
 
-
             {/*Detalles*/}
-            {/*{viajeDistribucionSelected && (
+            {viajeDistribucionSelected && (
                 <DetailsTripDistribution
-                    viajeDistribucionSelected={viajeDistribucionSelected}
+                    tripDistributionSelected={viajeDistribucionSelected}
                     setOpenDetailsDialog={setOpenDetailsDialog}
                     openDetailsDialog={openDetailsDialog}
                 />
                 
             )}
-                */}
-            
  
   </>
   );

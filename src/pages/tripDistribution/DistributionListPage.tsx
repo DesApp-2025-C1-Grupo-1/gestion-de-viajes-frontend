@@ -178,6 +178,7 @@ export default function DistributionListPage() {
                                             <TableCell>{tripDistribucion.estado}</TableCell>
                                             <TableCell sx={{ verticalAlign: "middle"}}>
                                                 <MenuItem  
+                                                    module="trips/distribution"
                                                     handleOpenDialog={() => handleOpenDialog(tripDistribucion)}
                                                     handleOpenDetails={() => handleOpenDetails(tripDistribucion)}
                                                     id={tripDistribucion._id}

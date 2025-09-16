@@ -9,9 +9,10 @@ interface MenuItemProps{
     children?: React.ReactNode;
     handleOpenDetails?: () => void;
     titleItem?: string;
+    module?:string;
 }
 
-export default function MenuItem({handleOpenDialog, id, children, handleOpenDetails, titleItem = "Detalles"}: MenuItemProps){
+export default function MenuItem({handleOpenDialog, id, children, handleOpenDetails, titleItem = "Detalles", module}: MenuItemProps){
     const navigate = useNavigate();
     const location = useLocation();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -26,7 +27,9 @@ export default function MenuItem({handleOpenDialog, id, children, handleOpenDeta
 
     const open = Boolean(anchorEl);
     const pathParts = location.pathname.split("/");
-    const module = pathParts[1];
+    const currentModule  = pathParts[1];
+
+    const resolvedModule = module ?? currentModule;
     
 
     return(
@@ -62,7 +65,7 @@ export default function MenuItem({handleOpenDialog, id, children, handleOpenDeta
                 <List dense disablePadding>
                     <ListItemButton
                         onClick={() => {
-                        navigate(`/${module}/edit/${id ?? ""}`);
+                        navigate(`/${resolvedModule}/edit/${id ?? ""}`);
                         handleClose();
                         }}
                         sx={{ gap: 1, px: 2 }}

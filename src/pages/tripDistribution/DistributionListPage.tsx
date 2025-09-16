@@ -31,7 +31,7 @@ export default function DistributionListPage() {
   const [openDetailsDialog, setOpenDetailsDialog] = useState<boolean>(false);
  
   const [viajeDistribucionSelected, setviajeDistribucionSelected] = useState<ViajeDistribucionDto>();
-  //const [tripsDistribution, setTripsDistribution] = useState<ViajeDistribucionDto[]>([]);
+  const [tripsDistribution, setTripsDistribution] = useState<ViajeDistribucionDto[]>([]);
 
 
   const [rowsPerPage, setRowsPerPage] = useState<number>(5);

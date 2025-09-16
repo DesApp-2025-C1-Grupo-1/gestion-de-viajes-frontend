@@ -1,12 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { useNotify } from "./useNotify";
-import { TipoVehiculoDtoLicenciaPermitida} from "../api/generated";
+import { TipoVehiculoDtoLicenciaPermitida, viajeDistribucionControllerUpdate} from "../api/generated";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useTripAuxData from "./trip/useTripAuxData";
 import { isValidateLicense } from "../services/validateLicense";
 import { CreateViajeDistribucionSchema, UpdateViajeDistribucionSchema, ViajeDistribucionSchema } from "../api/schemas/viajeDistribucion.schema";
 import { useState } from "react";
+import { useTripDistributionData } from "./tripDistribution/useTripDistributionData";
 
 
 export const useTripDistributionForm = (id?: string) => {
@@ -24,7 +25,8 @@ export const useTripDistributionForm = (id?: string) => {
         clearErrors,
         setError,
         setValue,
-        formState: { isLoading,errors: formErrors , isValid,isSubmitting},
+        reset,
+        formState: { isLoading: isFormLoading ,errors: formErrors , isValid,isSubmitting},
     } = useForm<CreateViajeDistribucionSchema>({
         resolver: zodResolver(CreateViajeDistribucionSchema),
         mode: "onBlur",
@@ -40,9 +42,9 @@ export const useTripDistributionForm = (id?: string) => {
             remitos: [],
         },
     });
-    
-/*     // 1. Cargar viaje si estamos editando
-    const {isLoading,error} = useTripData(id, reset); */
+
+    //1. Cargar viaje si estamos editando
+    const {isLoading, error} = useTripDistributionData(id, reset);
     
     // 2. Cargar datos auxiliares
     const {
@@ -90,18 +92,24 @@ export const useTripDistributionForm = (id?: string) => {
     };
 
     const handleUpdate = async (formData: UpdateViajeDistribucionSchema) => {
-        /* try {
-            const {_id, ...dataToUpdate} = formData;
+        try {
+            const { id, fecha_inicio, ...rest } = formData;
+
+            const dataToUpdate = {
+            ...rest,
+            fecha_inicio: fecha_inicio.toISOString(), 
+            };
             
-            await viajeControllerUpdate(id!, dataToUpdate as UpdateViajeDistribucionSchema);
+           // await viajeDistribucionControllerUpdate(id!, dataToUpdate as UpdateViajeDistribucionSchema);
+            await viajeDistribucionControllerUpdate(id!, dataToUpdate);
             notify("update");
-            navigate("/trips");
+            navigate("/trips/distribution");
             } catch (e) {
             const error = e as { response?: { data?: { message?: string } } };
             if (error.response?.data?.message) {
                 notify("error", error.response.data.message);
             }
-        } */
+        }
     };
 
     const onSubmit = async (formData: CreateViajeDistribucionSchema | UpdateViajeDistribucionSchema) => {

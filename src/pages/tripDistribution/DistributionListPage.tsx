@@ -33,9 +33,6 @@ export default function DistributionListPage() {
   const [tripsDistribution, setTripsDistribution] = useState<ViajeDistribucionDto[]>([]);
 
 
-  const viajesDistribucion = trips?.data || [];
-
-
   const [rowsPerPage, setRowsPerPage] = useState<number>(5);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
@@ -49,6 +46,7 @@ export default function DistributionListPage() {
       setOpenDetailsDialog(true);
       setviajeDistribucionSelected(tripDistribution);
   };
+
 
   //handle de filtros
 
@@ -78,11 +76,6 @@ export default function DistributionListPage() {
       setPage(value);
   };
 
-
-  /*useEffect(() => {
-      setPage(1);
-  }, [debouncedQuery]);*/
-
   useEffect(() => {
     setPage(1);
   }, [trips?.data]);
@@ -109,14 +102,16 @@ export default function DistributionListPage() {
                     subtitle={`${tripsDistribution.estado}`}
                     icon={<MapPinned size={24}/>}
                     fields={[
-                        { label: "Fecha y hora de Inicio", value: tripsDistribution.fecha_inicio, isLong: true},
-                        { label: "Deposito de origen", value: `${tripsDistribution.origen}`, isLong: true},
-                        { label: "Transportista", value: `${tripsDistribution.transportista}`, isLong: true},
-                        { label: "Chofer", value: `${tripsDistribution.chofer}`, isLong: true},
-                         { label: "Vehículo", value: `${tripsDistribution.vehiculo}`, isLong: true}
+                        { label: "Fecha de Inicio", value: new Date(tripsDistribution.fecha_inicio).toLocaleDateString().split('/').join('-'), isLong: true},
+                        { label: "Deposito de origen", value: `${tripsDistribution.origen.nombre}`, isLong: true},
+                        { label: "Transportista", value: `${tripsDistribution.transportista.nombre_comercial}`, isLong: true},
+                        { label: 'Chofer', value: [tripsDistribution.chofer.nombre, ' ', tripsDistribution.chofer.apellido], isLong: true },
+                        { label: "Vehículo", value: `${tripsDistribution.vehiculo.modelo}`, isLong: true},
+                        { label: "Remitos Asociados", value: `${tripsDistribution.remito_ids}`, isLong: true}
                     ]}
                     onDelete={() => handleOpenDialog(tripsDistribution)}
-                    onEdit={() => navigate(`/trips/distribution/edit/${tripsDistribution.viaje_id}`)}            
+                    onEdit={() => navigate(`/trips/distribution/edit/${tripsDistribution.viaje_id}`)}  
+                    onView={() => handleOpenDetails(tripsDistribution)}          
                 />
             ))}
         </div>
@@ -132,9 +127,10 @@ export default function DistributionListPage() {
                             <TableHead >
                                 <TableRow>
                                     <TableCell>Número</TableCell>
-                                    <TableCell>Fecha y Hora de Inicio</TableCell>
+                                    <TableCell>Fecha de Inicio</TableCell>
                                     <TableCell>Deposito de Origen</TableCell>
                                     <TableCell>Transportista</TableCell>
+                                    <TableCell>Remitos</TableCell>
                                     <TableCell>Estado actual</TableCell>
                                     <TableCell align="center" sx={{width: 72}}>Acciones</TableCell>
                                 </TableRow>
@@ -146,7 +142,7 @@ export default function DistributionListPage() {
                                             <LoadingState title="viajesDistribucion"/>
                                         </TableCell>
                                     </TableRow>
-                                ) : tripsDistribution.length === 0 ? (
+                                ) : paginated.length === 0 ? (
                                     <TableRow key="no-trips">
                                         <TableCell
                                             colSpan={6}
@@ -156,11 +152,13 @@ export default function DistributionListPage() {
                                         </TableCell>
                                     </TableRow>
                                 ):(
-                                    tripsDistribution.map((tripDistribucion) => (
+                                    paginated.map((tripDistribucion) => (
                                         <TableRow key={tripDistribucion.viaje_id} className="hover:bg-gray-50 overflow-hidden">
-                                            <TableCell sx={{fontWeight: "bold"}}>{tripDistribucion.fecha_inicio}</TableCell>
-                                            <TableCell>{`${tripDistribucion.origen}`}</TableCell>
-                                            <TableCell>{`${tripDistribucion.transportista}, ${tripDistribucion.chofer}`}</TableCell>
+                                            <TableCell sx={{fontWeight: "bold"}} className="truncate">{tripDistribucion.viaje_id}</TableCell>
+                                            <TableCell>{new Date(tripDistribucion.fecha_inicio).toLocaleDateString().split('/').join('-')}</TableCell>
+                                            <TableCell>{`${tripDistribucion.origen.nombre}`}</TableCell>
+                                            <TableCell>{`${tripDistribucion.transportista.nombre_comercial}`}</TableCell>
+                                            <TableCell>{`${tripDistribucion.remito_ids}`}</TableCell>
                                             <TableCell>{tripDistribucion.estado}</TableCell>
                                             <TableCell sx={{ verticalAlign: "middle"}}>
                                                 <MenuItemDialog  

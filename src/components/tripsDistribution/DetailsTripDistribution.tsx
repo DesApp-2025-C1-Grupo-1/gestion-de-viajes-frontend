@@ -69,7 +69,7 @@ export const DetailsTripDistribution = ({tripDistributionSelected, setOpenDetail
                             >
                                 <Grid container spacing={2}>
                                     <Grid item xs={12} sm={6}>
-                                        <Field label="Número de viaje" value={tripDistributionSelected.viaje_id} />
+                                        <Field label="Número de viaje" value={tripDistributionSelected._id} />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <Field

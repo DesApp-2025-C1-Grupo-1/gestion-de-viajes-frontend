@@ -6,15 +6,13 @@ import LoadingState from "../../components/LoadingState";
 import MenuItem from "../../components/buttons/MenuItem";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { useNotify } from "../../hooks/useNotify";
-import {  Eye, User, MapPinned} from "lucide-react";
+import {  Building2, Calendar, Clock, Eye, MapPinned, User} from "lucide-react";
 import { DoubleCell } from "../../components/DoubleCell";
 import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 import EntityCard from "../../components/EntityCard";
 import PaginationEntity from "../../components/PaginationEntity";
 import { TarifaDto, viajeDistribucionControllerRemove, ViajeDistribucionDto, ViajeDistribucionDtoEstado, useViajeDistribucionControllerFindAll, EmpresaDto, VehiculoDto, ChoferDto, empresaControllerFindAll, vehiculoControllerFindAll, choferControllerFindAll, DepositoDto, depositoControllerFindAll } from '../../api/generated';
 import { useTheme } from "@mui/material/styles";
-import MenuItemDialog from "../../components/buttons/MenuItem";
-//import { DetailsTrip } from "../../components/trip/DetailsTrip";
 import { DetailsTripDistribution } from "../../components/tripsDistribution/DetailsTripDistribution";
 
 
@@ -98,20 +96,21 @@ export default function DistributionListPage() {
         <div className="grid gap-4  lg:grid-cols-2">
             {paginated.map(tripsDistribution => (
                 <EntityCard
-                    key={tripsDistribution.viaje_id}
-                    title={tripsDistribution.viaje_id}
+                    key={tripsDistribution._id}
+                    title={tripsDistribution._id}
                     subtitle={`${tripsDistribution.estado}`}
                     icon={<MapPinned size={24}/>}
                     fields={[
-                        { label: "Fecha de Inicio", value: new Date(tripsDistribution.fecha_inicio).toLocaleDateString().split('/').join('-'), isLong: true},
+                        { label: "Itinerario", value: `${new Date(tripsDistribution.fecha_inicio).toLocaleDateString()} - ${new Date(tripsDistribution.fecha_inicio).toLocaleTimeString()}  `, isLong: true},
                         { label: "Deposito de origen", value: `${tripsDistribution.origen.nombre}`, isLong: true},
-                        { label: "Transportista", value: `${tripsDistribution.transportista.nombre_comercial}`, isLong: true},
-                        { label: 'Chofer', value: [tripsDistribution.chofer.nombre, ' ', tripsDistribution.chofer.apellido], isLong: true },
-                        { label: "Vehículo", value: `${tripsDistribution.vehiculo.modelo}`, isLong: true},
-                        { label: "Remitos Asociados", value: `${tripsDistribution.remito_ids}`, isLong: true}
+                        { label: "Transportista", value: `${tripsDistribution.transportista.nombre_comercial}`},
+                        { label: 'Chofer', value: `${tripsDistribution.chofer.nombre}, ${tripsDistribution.chofer.apellido}`}, 
+                        { label: "Vehículo", value: `${tripsDistribution.vehiculo.modelo} - ${tripsDistribution.vehiculo.patente}`},
+                        { label: "Remitos Asociados", value: `${tripsDistribution.remito_ids}`},
+                        { label: "Tarifas", value: `${tripsDistribution.tarifa_id}`}
                     ]}
                     onDelete={() => handleOpenDialog(tripsDistribution)}
-                    onEdit={() => navigate(`/trips/distribution/edit/${tripsDistribution.viaje_id}`)}  
+                    onEdit={() => navigate(`/trips/distribution/edit/${tripsDistribution._id}`)}  
                     onView={() => handleOpenDetails(tripsDistribution)}          
                 />
             ))}
@@ -128,10 +127,11 @@ export default function DistributionListPage() {
                             <TableHead >
                                 <TableRow>
                                     <TableCell>Número</TableCell>
-                                    <TableCell>Fecha de Inicio</TableCell>
+                                    <TableCell>Itinerario</TableCell>
                                     <TableCell>Deposito de Origen</TableCell>
                                     <TableCell>Transportista</TableCell>
                                     <TableCell>Remitos</TableCell>
+                                    <TableCell>Tarifas</TableCell>
                                     <TableCell>Estado actual</TableCell>
                                     <TableCell align="center" sx={{width: 72}}>Acciones</TableCell>
                                 </TableRow>
@@ -154,18 +154,33 @@ export default function DistributionListPage() {
                                     </TableRow>
                                 ):(
                                     paginated.map((tripDistribucion) => (
-                                        <TableRow key={tripDistribucion.viaje_id} className="hover:bg-gray-50 overflow-hidden">
-                                            <TableCell sx={{fontWeight: "bold"}} className="truncate">{tripDistribucion.viaje_id}</TableCell>
-                                            <TableCell>{new Date(tripDistribucion.fecha_inicio).toLocaleDateString().split('/').join('-')}</TableCell>
+                                        <TableRow key={tripDistribucion._id} className="hover:bg-gray-50 overflow-hidden">
+                                            <TableCell sx={{fontWeight: "bold", maxWidth: 150}} className="truncate">{tripDistribucion._id}</TableCell>
+                                            <TableCell sx={{minWidth: 150}} >
+                                                <DoubleCell 
+                                                    primarySection={`${new Date(tripDistribucion.fecha_inicio).toLocaleDateString()}`} 
+                                                    secondarySection={`${new Date(tripDistribucion.fecha_inicio).toLocaleTimeString()}`}
+                                                    primaryIcon={<Calendar size={18} color="#AFB3B9"/>}
+                                                    secondaryIcon={<Clock size={18} color="#AFB3B9"/>}
+                                                />
+                                            </TableCell>
                                             <TableCell>{`${tripDistribucion.origen.nombre}`}</TableCell>
-                                            <TableCell>{`${tripDistribucion.transportista.nombre_comercial}`}</TableCell>
+                                            <TableCell sx={{minWidth: 150}} >
+                                                <DoubleCell 
+                                                    primarySection={`${tripDistribucion.transportista.nombre_comercial}`} 
+                                                    secondarySection={`${tripDistribucion.chofer.nombre}, ${tripDistribucion.chofer.apellido}`}
+                                                    primaryIcon={<Building2 size={18} color="#AFB3B9"/>}
+                                                    secondaryIcon={<User size={18} color="#AFB3B9"/>}
+                                                />
+                                            </TableCell>
                                             <TableCell>{`${tripDistribucion.remito_ids}`}</TableCell>
+                                            <TableCell>{`${tripDistribucion.tarifa_id}`}</TableCell>
                                             <TableCell>{tripDistribucion.estado}</TableCell>
                                             <TableCell sx={{ verticalAlign: "middle"}}>
                                                 <MenuItem  
                                                     handleOpenDialog={() => handleOpenDialog(tripDistribucion)}
                                                     handleOpenDetails={() => handleOpenDetails(tripDistribucion)}
-                                                    id={tripDistribucion.viaje_id}
+                                                    id={tripDistribucion._id}
                                                 >
                                                         <Eye className="text-gray-500 hover:text-gray-700 size-4" />
                                                 </MenuItem>
@@ -195,8 +210,8 @@ export default function DistributionListPage() {
                     open= {openDialog}
                     onClose={() => setOpenDialog(false)}
                     title="viajes"
-                    entityName={viajeDistribucionSelected.viaje_id}
-                    onConfirm={() => handleDelete(viajeDistribucionSelected?.viaje_id)}
+                    entityName={viajeDistribucionSelected._id}
+                    onConfirm={() => handleDelete(viajeDistribucionSelected?._id)}
                 />
             )}
 

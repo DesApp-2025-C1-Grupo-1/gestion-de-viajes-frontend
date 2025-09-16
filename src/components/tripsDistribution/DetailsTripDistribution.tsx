@@ -11,7 +11,6 @@ import { Field } from "../detailts/Field";
 import { HeaderDetails } from "../detailts/HeaderDetails";
 import { MapPinned, Route, Truck, Building2, ClipboardMinus, Ticket} from "lucide-react";
 import { ViajeDistribucionDto } from "../../api/generated";
-//import { TripType } from "../TripType";
 
 interface TripDistributionDetailsProps {
     tripDistributionSelected: ViajeDistribucionDto;
@@ -107,12 +106,12 @@ export const DetailsTripDistribution = ({tripDistributionSelected, setOpenDetail
                                         value={`${tripDistributionSelected.origen.nombre}`}
                                         />
                                     </Grid>
-                                    {/*<Grid item xs={12} sm={6}>
+                                    <Grid item xs={12} sm={6}>
                                         <Field
-                                            label="Horarios de atención"
-                                            value={`${triptDistributionSelected.origen.direccion.calle} ${triptDistributionSelected.origen.direccion.numero}, ${triptDistributionSelected.origen.direccion.ciudad}`}
+                                            label="Dirección"
+                                            value={`${tripDistributionSelected.origen.direccion.calle} ${tripDistributionSelected.origen.direccion.numero}, ${tripDistributionSelected.origen.direccion.ciudad}`}
                                         />
-                                    </Grid>*/}
+                                    </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <Field
                                         label="Horarios de atención"
@@ -150,25 +149,6 @@ export const DetailsTripDistribution = ({tripDistributionSelected, setOpenDetail
                                             value={`${tripDistributionSelected.chofer.nombre}, ${tripDistributionSelected.chofer.apellido}`}
                                         />
                                     </Grid>
-                                </Grid>
-                            </Paper>
-                        </Grid>
-
-                        {/* Transporte */}
-                        <Grid item xs={12}>
-                            <HeaderDetails
-                                icon={<Truck className="h-5 w-5" color="#E65F2B" />}
-                                title="Transporte"
-                            />
-                            <Paper
-                                variant="outlined"
-                                sx={{
-                                    p: 2,
-                                    backgroundColor: "#F6F7FB", 
-                                    borderColor: "#C7C7C7", 
-                                }}
-                            >
-                                <Grid container spacing={2}>
                                     <Grid item xs={12} sm={6}>
                                         <Field
                                             label="Vehículo asignado"

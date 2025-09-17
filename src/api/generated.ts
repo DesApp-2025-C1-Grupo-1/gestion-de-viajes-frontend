@@ -569,20 +569,20 @@ export type CreateViajeDistribucionDtoEstado = typeof CreateViajeDistribucionDto
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const CreateViajeDistribucionDtoEstado = {
   iniciado: 'iniciado',
-  cargando: 'cargando',
-  cargado: 'cargado',
-  finalizado: 'finalizado',
+  inicio_de_carga: 'inicio de carga',
+  fin_de_carga: 'fin de carga',
+  fin_de_viaje: 'fin de viaje',
 } as const;
 
 export interface CreateViajeDistribucionDto {
-  fecha_inicio: string;
+  fecha_inicio: Date;
   origen: string;
   /** Tipo de viaje */
   tipo_viaje: string;
   chofer: string;
   transportista: string;
   vehiculo: string;
-  remito_ids: string[];
+  remito_ids: number[];
   kilometros: number;
   tarifa_id?: number;
   estado?: CreateViajeDistribucionDtoEstado;
@@ -618,22 +618,22 @@ export type ViajeDistribucionDtoEstado = typeof ViajeDistribucionDtoEstado[keyof
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ViajeDistribucionDtoEstado = {
   iniciado: 'iniciado',
-  cargando: 'cargando',
-  cargado: 'cargado',
-  finalizado: 'finalizado',
+  inicio_de_carga: 'inicio de carga',
+  fin_de_carga: 'fin de carga',
+  fin_de_viaje: 'fin de viaje',
 } as const;
 
 export interface ViajeDistribucionDto {
   /** ID del viaje */
   _id: string;
-  fecha_inicio: string;
+  fecha_inicio: Date;
   origen: ObjectId;
   /** Tipo de viaje */
   tipo_viaje: string;
   chofer: ObjectId;
   transportista: ObjectId;
   vehiculo: ObjectId;
-  remito_ids: string[];
+  remito_ids: number[];
   kilometros: number;
   remitos_info?: RemitoInfoDto[];
   tarifa_id?: number;
@@ -648,20 +648,20 @@ export type UpdateViajeDistribucionDtoEstado = typeof UpdateViajeDistribucionDto
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const UpdateViajeDistribucionDtoEstado = {
   iniciado: 'iniciado',
-  cargando: 'cargando',
-  cargado: 'cargado',
-  finalizado: 'finalizado',
+  inicio_de_carga: 'inicio de carga',
+  fin_de_carga: 'fin de carga',
+  fin_de_viaje: 'fin de viaje',
 } as const;
 
 export interface UpdateViajeDistribucionDto {
-  fecha_inicio?: string;
+  fecha_inicio?: Date;
   origen?: string;
   /** Tipo de viaje */
   tipo_viaje?: string;
   chofer?: string;
   transportista?: string;
   vehiculo?: string;
-  remito_ids?: string[];
+  remito_ids?: number[];
   kilometros?: number;
   tarifa_id?: number;
   estado?: UpdateViajeDistribucionDtoEstado;
@@ -790,9 +790,9 @@ export type RemitoDtoPrioridad = typeof RemitoDtoPrioridad[keyof typeof RemitoDt
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const RemitoDtoPrioridad = {
+  normal: 'normal',
   alta: 'alta',
-  media: 'media',
-  baja: 'baja',
+  urgente: 'urgente',
 } as const;
 
 export interface RemitoDto {

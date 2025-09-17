@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
-export const TipoEstadoViajeSchema = z.enum(['iniciado', 'cargando',  'cargado', 'finalizado'], {
-    errorMap: () => ({ message: "Tipo debe ser 'iniciado', o 'cargando'" }),
+export const TipoEstadoViajeSchema = z.enum(['iniciado', 'inicio de carga',  'fin de carga', 'fin de viaje'], {
+    errorMap: () => ({ message: "Tipo debe ser 'iniciado', o 'inicio de carga', o 'fin de carga', o 'fin de viaje'" }),
 })
 
 ;

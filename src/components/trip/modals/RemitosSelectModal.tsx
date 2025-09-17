@@ -1,15 +1,15 @@
 import { Box, Button, Checkbox, Dialog, DialogContent, DialogTitle, Grid, Typography } from "@mui/material";
-import { Remito } from "../../../services/remitos";
 import {  Package, X } from "lucide-react";
 import { useState } from "react";
 import { useDebouncedValue } from "../../../hooks/useDebouncedValue";
 import RemitoCard from "./RemitoCard";
 import RemitoSearchBar from "./RemitoSearchBar";
+import { RemitoDto } from "../../../api/generated";
 
 interface RemitosSelectModalProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    availableRemitos: Remito[];
+    availableRemitos: RemitoDto[];
     selectedRemitos: number[];
     onRemitoToggle: (remitoId: number) => void;
     targetProvince: string;
@@ -20,11 +20,11 @@ export default function RemitosSelectModal({ open, onOpenChange, availableRemito
   const [remitosSearch, setRemitosSearch] = useState("")
   const debouncedQuery = useDebouncedValue(remitosSearch, 500);
 
-  const filteredRemitos = availableRemitos.filter(
+  const filteredRemitos = Array.isArray(availableRemitos) ? availableRemitos.filter(
     (remito) =>
       remito.numeroAsignado?.toLowerCase().includes(debouncedQuery.toLowerCase()) ||
-      remito.destino.direccion.toLowerCase().includes(debouncedQuery.toLowerCase()),
-  )
+      remito.destino?.direccion.toLowerCase().includes(debouncedQuery.toLowerCase()),
+  ) : [];
 
   const handleSelectAll = () => {
     const allIds = filteredRemitos.map((remito) => remito.id)
@@ -46,17 +46,17 @@ export default function RemitosSelectModal({ open, onOpenChange, availableRemito
       })
     }
   }
-  const selectedCountInFiltered = filteredRemitos.filter((r) =>
+  const selectedCountInFiltered = filteredRemitos?.filter((r) =>
     selectedRemitos.includes(r.id)
   ).length;
 
   const allFilteredSelected =
-    filteredRemitos.length > 0 && filteredRemitos.every((remito) => selectedRemitos.includes(remito.id))
+    filteredRemitos?.length > 0 && filteredRemitos?.every((remito) => selectedRemitos.includes(remito.id))
 
 
   return (
     <Dialog open={open} onClose={() => onOpenChange(false)} maxWidth="md" fullWidth
-      sx={{ overflowY: "auto"}}
+      sx={{ overflowY: "auto"}} aria-labelledby="remitos-select-modal-title" aria-describedby="remitos-select-modal-description"
     >
       <Box>
         <Box sx={{ display: "flex", gap: 2, alignItems: "center", width: "100%"}}>

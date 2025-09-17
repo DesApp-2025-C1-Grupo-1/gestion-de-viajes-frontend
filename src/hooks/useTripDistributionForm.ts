@@ -40,9 +40,9 @@ export const useTripDistributionForm = (id?: string) => {
             tipo_viaje: "nacional",
             kilometros: 0,
             remito_ids: [],
+            tarifa_id: undefined,
+            estado: undefined,
             observaciones: "",
-            tarifa_id: "",
-            estado: "",
         },
     });
     
@@ -146,6 +146,7 @@ export const useTripDistributionForm = (id?: string) => {
             await handleUpdate(formData as  UpdateViajeDistribucionSchema);
         } else {
             await handleCreate(formData as CreateViajeDistribucionSchema);
+            console.log("Creating trip with data:", formData);
             
         }
     };

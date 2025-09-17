@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { DateSchema, RequireSelectSchema } from "./commons";
 import { TipoViajeSchema } from "./enums/tipoViajeSchema";
+import { TipoEstadoViajeSchema } from "./enums/tipoEstadoViaje.schema";
 
 export const CreateViajeDistribucionSchema = z.object({
     fecha_inicio: DateSchema,
@@ -13,8 +14,8 @@ export const CreateViajeDistribucionSchema = z.object({
         .min(0.01, "La cantidad de kilómetros debe ser mayor o igual a 0.01"),
     remito_ids: z.array(z.number({ required_error: "Debe seleccionar ids de remitos" })).min(1, "Debe seleccionar al menos un remito"),
     tipo_viaje: TipoViajeSchema,
-    tarifa_id: z.string().optional(),
-    estado: z.string().optional(),
+    tarifa_id: z.number().optional(),
+    estado: TipoEstadoViajeSchema.optional(),
     observaciones: z.string().max(500, "Las observaciones no pueden superar los 500 caracteres").optional(),
 });
 

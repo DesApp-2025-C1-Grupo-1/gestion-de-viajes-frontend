@@ -1,9 +1,9 @@
 import { Box, Card, CardContent, Checkbox, Chip, Grid, Typography } from "@mui/material";
 import { MapPin } from "lucide-react";
-import { Remito } from "../../../services/remitos";
+import { RemitoDto } from "../../../api/generated";
 
 interface RemitoCardProps {
-  rem: Remito;
+  rem: RemitoDto;
   selectedRemitos: number[];
   onRemitoToggle: (remitoId: number) => void;
 }

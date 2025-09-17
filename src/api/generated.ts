@@ -575,7 +575,7 @@ export const CreateViajeDistribucionDtoEstado = {
 } as const;
 
 export interface CreateViajeDistribucionDto {
-  fecha_inicio: Date;
+  fecha_inicio: string;
   origen: string;
   /** Tipo de viaje */
   tipo_viaje: string;
@@ -624,6 +624,8 @@ export const ViajeDistribucionDtoEstado = {
 } as const;
 
 export interface ViajeDistribucionDto {
+  /** ID del viaje */
+  _id: string;
   fecha_inicio: string;
   origen: ObjectId;
   /** Tipo de viaje */
@@ -634,7 +636,7 @@ export interface ViajeDistribucionDto {
   remito_ids: string[];
   kilometros: number;
   remitos_info?: RemitoInfoDto[];
-  tarifa_id: number;
+  tarifa_id?: number;
   tarifa?: TarifaDto;
   estado: ViajeDistribucionDtoEstado;
   createdAt: string;
@@ -781,21 +783,6 @@ export interface MercaderiaDto {
 }
 
 /**
- * Observaciones del remito
- */
-export type RemitoDtoObservaciones = { [key: string]: unknown };
-
-/**
- * Archivo adjunto del remito
- */
-export type RemitoDtoArchivoAdjunto = { [key: string]: unknown };
-
-/**
- * Razón de no entrega
- */
-export type RemitoDtoRazonNoEntrega = { [key: string]: unknown };
-
-/**
  * Prioridad del remito
  */
 export type RemitoDtoPrioridad = typeof RemitoDtoPrioridad[keyof typeof RemitoDtoPrioridad];
@@ -808,21 +795,6 @@ export const RemitoDtoPrioridad = {
   baja: 'baja',
 } as const;
 
-/**
- * Fecha agendada para el remito
- */
-export type RemitoDtoFechaAgenda = { [key: string]: unknown };
-
-/**
- * Archivo del remito firmado
- */
-export type RemitoDtoRemitoFirmado = { [key: string]: unknown };
-
-/**
- * ID del estado anterior del remito
- */
-export type RemitoDtoEstadoAnteriorId = { [key: string]: unknown };
-
 export interface RemitoDto {
   /** ID del remito */
   id: number;
@@ -831,19 +803,19 @@ export interface RemitoDto {
   /** Fecha de emisión del remito */
   fechaEmision: string;
   /** Observaciones del remito */
-  observaciones?: RemitoDtoObservaciones;
+  observaciones?: string;
   /** Archivo adjunto del remito */
-  archivoAdjunto?: RemitoDtoArchivoAdjunto;
+  archivoAdjunto?: string;
   /** Razón de no entrega */
-  razonNoEntrega?: RemitoDtoRazonNoEntrega;
+  razonNoEntrega?: string;
   /** Prioridad del remito */
   prioridad: RemitoDtoPrioridad;
   /** Indica si el remito está activo */
   activo: boolean;
   /** Fecha agendada para el remito */
-  fechaAgenda?: RemitoDtoFechaAgenda;
+  fechaAgenda?: string;
   /** Archivo del remito firmado */
-  remitoFirmado?: RemitoDtoRemitoFirmado;
+  remitoFirmado?: string;
   /** ID del cliente */
   clienteId: number;
   /** ID del destino */
@@ -851,7 +823,7 @@ export interface RemitoDto {
   /** ID del estado actual del remito */
   estadoId: number;
   /** ID del estado anterior del remito */
-  estadoAnteriorId?: RemitoDtoEstadoAnteriorId;
+  estadoAnteriorId?: number;
   /** Fecha de creación del remito */
   createdAt: string;
   /** Fecha de última actualización del remito */
@@ -864,6 +836,17 @@ export interface RemitoDto {
   estado?: EstadoDto;
   /** Lista de mercaderías asociadas al remito */
   mercaderias?: MercaderiaDto[];
+}
+
+export interface RemitoResponseDto {
+  /** Lista de remitos */
+  data: RemitoDto[];
+  /** Cantidad de remitos */
+  totalItems: number;
+  /** Cantidad total de páginas */
+  totalPages: number;
+  /** Página actual */
+  currentPage: number;
 }
 
 export interface EmpresaPublicDto {
@@ -3383,7 +3366,7 @@ export const useDepositoControllerRemove = <TError = AxiosError<void>,
  */
 export const viajeDistribucionControllerCreate = (
     createViajeDistribucionDto: CreateViajeDistribucionDto, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<ViajeDistribucionDto>> => {
+ ): Promise<AxiosResponse<CreateViajeDistribucionDto>> => {
     
     
     return axios.post(
@@ -3804,7 +3787,7 @@ export const useViajeDistribucionControllerUpdateEstado = <TError = AxiosError<v
  */
 export const remitosControllerGetRemitos = (
     params?: RemitosControllerGetRemitosParams, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<RemitoDto[]>> => {
+ ): Promise<AxiosResponse<RemitoResponseDto>> => {
     
     
     return axios.get(
@@ -4031,6 +4014,128 @@ export const useRemitosControllerCambiarEstado = <TError = AxiosError<void>,
       > => {
 
       const mutationOptions = getRemitosControllerCambiarEstadoMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * @summary Entregar remito (requiere archivo firmado)
+ */
+export const remitosControllerEntregarRemito = (
+    id: number, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<RemitoDto>> => {
+    
+    
+    return axios.put(
+      `/remito/${id}/firmar`,undefined,options
+    );
+  }
+
+
+
+export const getRemitosControllerEntregarRemitoMutationOptions = <TError = AxiosError<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof remitosControllerEntregarRemito>>, TError,{id: number}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof remitosControllerEntregarRemito>>, TError,{id: number}, TContext> => {
+
+const mutationKey = ['remitosControllerEntregarRemito'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, axios: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof remitosControllerEntregarRemito>>, {id: number}> = (props) => {
+          const {id} = props ?? {};
+
+          return  remitosControllerEntregarRemito(id,axiosOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RemitosControllerEntregarRemitoMutationResult = NonNullable<Awaited<ReturnType<typeof remitosControllerEntregarRemito>>>
+    
+    export type RemitosControllerEntregarRemitoMutationError = AxiosError<void>
+
+    /**
+ * @summary Entregar remito (requiere archivo firmado)
+ */
+export const useRemitosControllerEntregarRemito = <TError = AxiosError<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof remitosControllerEntregarRemito>>, TError,{id: number}, TContext>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof remitosControllerEntregarRemito>>,
+        TError,
+        {id: number},
+        TContext
+      > => {
+
+      const mutationOptions = getRemitosControllerEntregarRemitoMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * @summary Marcar remito como no entregado
+ */
+export const remitosControllerMarcarNoEntregado = (
+    id: number, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<RemitoDto>> => {
+    
+    
+    return axios.put(
+      `/remito/${id}/no-entregado`,undefined,options
+    );
+  }
+
+
+
+export const getRemitosControllerMarcarNoEntregadoMutationOptions = <TError = AxiosError<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof remitosControllerMarcarNoEntregado>>, TError,{id: number}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof remitosControllerMarcarNoEntregado>>, TError,{id: number}, TContext> => {
+
+const mutationKey = ['remitosControllerMarcarNoEntregado'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, axios: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof remitosControllerMarcarNoEntregado>>, {id: number}> = (props) => {
+          const {id} = props ?? {};
+
+          return  remitosControllerMarcarNoEntregado(id,axiosOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RemitosControllerMarcarNoEntregadoMutationResult = NonNullable<Awaited<ReturnType<typeof remitosControllerMarcarNoEntregado>>>
+    
+    export type RemitosControllerMarcarNoEntregadoMutationError = AxiosError<void>
+
+    /**
+ * @summary Marcar remito como no entregado
+ */
+export const useRemitosControllerMarcarNoEntregado = <TError = AxiosError<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof remitosControllerMarcarNoEntregado>>, TError,{id: number}, TContext>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof remitosControllerMarcarNoEntregado>>,
+        TError,
+        {id: number},
+        TContext
+      > => {
+
+      const mutationOptions = getRemitosControllerMarcarNoEntregadoMutationOptions(options);
 
       return useMutation(mutationOptions , queryClient);
     }

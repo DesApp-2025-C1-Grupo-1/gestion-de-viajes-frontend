@@ -9,7 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 export const useDepositForm = (id? : string) => {
     const navigate = useNavigate();
-    const {notify} = useNotify("Depósito");
+    const {notify} = useNotify("Depósito", "male");
     const isEditing = !!(id);
     const {
         register,

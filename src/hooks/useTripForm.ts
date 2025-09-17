@@ -12,7 +12,7 @@ import { isValidateLicense } from "../services/validateLicense";
 export const useTripForm = (id?: string) => {
     const navigate = useNavigate();
     const isEditing = !!id;
-    const { notify } = useNotify("Viaje");
+    const { notify } = useNotify("Viaje", "male");
 
     const {
         register,

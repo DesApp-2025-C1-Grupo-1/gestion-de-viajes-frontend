@@ -9,7 +9,7 @@ import {
 import { CreateTipoVehiculoForm, TipoVehiculoForm, UpdateTipoVehiculoForm } from "../api/schemas";
 
 export const useTipoVehiculo = () => {
-  const { notify } = useNotify("Tipo de vehículo");
+  const { notify } = useNotify("Tipo de vehículo", "male");
   const { data, isLoading, refetch } = useTipoVehiculoControllerFindAll();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentItem, setCurrentItem] = useState<TipoVehiculoForm | null>(null);

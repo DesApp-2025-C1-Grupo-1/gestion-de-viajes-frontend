@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useNotify } from "./useNotify";
@@ -47,7 +46,7 @@ export const useCompanyForm = (id?: string) => {
     });
 
     const { data, isLoading, error } = useEmpresaControllerFindOne(id!, { query: { enabled: isEditing } });
-    const { notify } = useNotify("Empresa");
+    const { notify } = useNotify("Empresa", "female");
 
     useEffect(() => {
         if (isEditing && data && data.data) {

@@ -53,7 +53,7 @@ export const useDriverForm = (id?: string) => {
   const { data: companies, error: errorEmpresa, isLoading: loadingEmpresas } = useEmpresaControllerFindAll();
   const { data: vehiculos, error: errorVehicles, isLoading: loadingVehicles } = useVehiculoControllerFindAll();
 
-  const { notify } = useNotify("Chofer");
+  const { notify } = useNotify("Chofer", "male");
 
   useEffect(() => {
     if (isEditing && data && data.data) {
@@ -114,8 +114,6 @@ export const useDriverForm = (id?: string) => {
       return;
     }
     const licenciasCompatibles = selectedVehicle.tipo.licencia_permitida as TipoVehiculoDtoLicenciaPermitida; 
-    // Actualizar que ya no recibira un array, sino un string.
-    //const licenciasCompatibles = selectedVehicle.tipo.licencias_permitidas as TipoVehiculoDtoLicenciasPermitidasItem; 
     
     if (!isValidateLicense(FormData.tipo_licencia, licenciasCompatibles)) {
       setError("vehiculo", {
@@ -162,7 +160,7 @@ export const useDriverForm = (id?: string) => {
           numero: FormData.telefono.numero ?? "",
         },
       };
-      //console.log("payload final", JSON.stringify(payload, null, 2));
+
       await choferControllerCreate(payload);
       notify("create");
       navigate("/drivers");

@@ -36,7 +36,7 @@ export const useVehicleForm = (id?: string) => {
   const { data: companies, error: errorEmpresa, isLoading: loadingEmpresas } = useEmpresaControllerFindAll();
   const { data: vehicleTypes, error: errorTipoVehiculo, isLoading: loadingTipos } = useTipoVehiculoControllerFindAll();
 
-  const { notify } = useNotify("Vehículo");
+  const { notify } = useNotify("Vehículo", "male");
 
   useEffect(() => {
     if (isEditing && data && data.data) {

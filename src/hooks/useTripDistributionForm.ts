@@ -42,9 +42,9 @@ export const useTripDistributionForm = (id?: string) => {
             tipo_viaje: "nacional",
             kilometros: 0,
             remito_ids: [],
-            observaciones: "",
             tarifa_id: undefined,
-            estado: "",
+            estado: undefined,
+            observaciones: "",
         },
     });
 
@@ -86,7 +86,7 @@ export const useTripDistributionForm = (id?: string) => {
         }
     }
 
-/*    
+   
     const handleCreate = async (formData: CreateViajeDistribucionSchema) => {
         try {
             const payload = {
@@ -108,17 +108,9 @@ export const useTripDistributionForm = (id?: string) => {
 
     const handleUpdate = async (formData: UpdateViajeDistribucionSchema) => {
         try {
-            //const {id, fecha_inicio, ...dataToUpdate} = formData;
-            const { id, fecha_inicio, ...rest } = formData;
+            const {id, fecha_inicio, ...dataToUpdate} = formData;
 
-            const dataToUpdate = {
-                ...rest,
-                fecha_inicio: fecha_inicio.toISOString(), 
-            };
-    
-            await viajeDistribucionControllerUpdate(id!, dataToUpdate);
-            //await viajeDistribucionControllerUpdate(id!, dataToUpdate as UpdateViajeDistribucionSchema);
-
+            await viajeDistribucionControllerUpdate(id!, dataToUpdate as UpdateViajeDistribucionSchema);
             notify("update");
             navigate("/trips/distribution");
             } catch (e) {
@@ -127,7 +119,7 @@ export const useTripDistributionForm = (id?: string) => {
                 notify("error", error.response.data.message);
             }
         }
-    };*/
+    };
 
     const onSubmit = async (formData: CreateViajeDistribucionSchema | UpdateViajeDistribucionSchema) => {
         const selectedVehicle = filteredVehiculos.find(v => v._id === formData.vehiculo);
@@ -162,9 +154,10 @@ export const useTripDistributionForm = (id?: string) => {
         clearErrors("vehiculo");
 
         if (isEditing) {
-            //await handleUpdate(formData as  UpdateViajeDistribucionSchema);
+            await handleUpdate(formData as  UpdateViajeDistribucionSchema);
         } else {
-            //await handleCreate(formData as CreateViajeDistribucionSchema);
+            await handleCreate(formData as CreateViajeDistribucionSchema);
+            //console.log("Creating trip with data:", formData);
             
         }
     };

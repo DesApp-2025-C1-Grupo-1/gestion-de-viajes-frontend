@@ -10,15 +10,13 @@ import { DepositoSelectModal } from "../../components/DepositSelectModal";
 import FormActions from "../../components/deposit/FormActions";
 import { CreateViajeDistribucionSchema } from "../../api/schemas/viajeDistribucion.schema";
 import RemitosSelectModal from "../../components/trip/modals/RemitosSelectModal";
-import {Remito} from "../../services/remitos"
 import { Package } from "lucide-react";
 import { CountryProvinceSelect } from "../../components/trip/CountryProvinceSelect";
 import { ZonaTarifaSelect } from "../../components/trip/ZonaTarifaSelect";
 import { Localidad, Provincia} from "../../hooks/useGeoref";
 import { LocalidadSelect } from "../../components/trip/LocalidadSelected";
-import { useRemitos } from "../../hooks/useRemitos";
 import { toLocalDate, toUTCDate } from "../../lib/formatDate";
-
+import { RemitoDto, useRemitosControllerGetRemitos } from "../../api/generated";
 const depositoSelectButtonStyle = {
   height: "48px",
   textTransform: "none",
@@ -43,7 +41,6 @@ export default function DistributionFormPage() {
 
     const [modalOpen, setModalOpen] = useState(false);
     const [remitosModalOpen, setRemitosModalOpen] = useState(false);
-    const [availableRemitos, setAvailableRemitos] = useState<Remito[]>([])
     const [selectedRemitos, setSelectedRemitos] = useState<number[]>([]);
     const [selectedPais, setSelectedPais] = useState<string>("");
     const [selectedProvincia, setSelectedProvincia] = useState<Provincia | null>(null);
@@ -51,7 +48,19 @@ export default function DistributionFormPage() {
     const [selectedZona, setSelectedZona] = useState<number | null>(null);
     const [tarifasDisponibles, setTarifasDisponibles] = useState<any[]>([]);
     const [activeField, setActiveField] = useState<"origen" | "remito_ids" | null>(null);
-    const {remitos, loading} = useRemitos(selectedPais, selectedProvincia, selectedLocalidad);
+    const { data: remitos, isLoading: loading, refetch } = useRemitosControllerGetRemitos(
+        {
+            provincia: selectedProvincia ? selectedProvincia.nombre : undefined,
+            localidad: selectedLocalidad ? selectedLocalidad.nombre : undefined,
+        },
+        {
+            query: {
+                enabled: !!selectedPais && !!selectedProvincia, // 👈 solo fetch si hay país + provincia
+            },
+        }
+    );
+
+    const availableRemitos: RemitoDto[] = remitos?.data.data || [];
 
     const {
         handleSubmit,
@@ -75,21 +84,19 @@ export default function DistributionFormPage() {
         handleSelectChofer,
         register,
         setValue,
-        typeOfVehicleId,
         setTypeOfVehicleId,
     } = useTripDistributionForm(id);
 
     const selectedOrigen = useWatch({ control, name: "origen" });
 
     const tipoViaje = useWatch({ control, name: "tipo_viaje" });
-    const transportistaId = useWatch({ control, name: "transportista" });
     const tieneRemitosDisponibles = availableRemitos.length > 0;
     const tieneLocalidadSeleccionada = !!selectedLocalidad;
 
     useEffect(() => {
         // Cuando cambia el tipo de viaje, resetear la tarifa si ya no es nacional
         if (tipoViaje !== 'nacional') {
-            setValue('tarifa_id', '');
+            setValue('tarifa_id', undefined);
             clearErrors('tarifa_id');
         }
     }, [tipoViaje, setValue, clearErrors]);
@@ -97,16 +104,16 @@ export default function DistributionFormPage() {
       // Efecto para limpiar tarifa cuando cambia la zona
     useEffect(() => {
         if (!selectedZona) {
-            setValue("tarifa_id", "");
+            setValue("tarifa_id", undefined);
             setTarifasDisponibles([]);
         }
     }, [selectedZona, setValue]);
 
-    // efecto para filtrar remitos
     useEffect(() => {
-        setAvailableRemitos(remitos || []);
-    }, [remitos]);
-
+        if(selectedPais !== "Argentina") {
+            setValue("tipo_viaje", "internacional");
+        }
+    }, [selectedPais]);
 
     /* if (isLoading || loadingAuxData) return <CircularProgress />; */
     if (errorCompanies || errorVehicles || errorDrivers || errorDepots) return (
@@ -129,7 +136,7 @@ export default function DistributionFormPage() {
     const handleFormSubmit = (data: CreateViajeDistribucionSchema) => {
 
         // Validación manual de tarifa para viajes nacionales
-        if (data.tipo_viaje === 'nacional' && (!data.tarifa_id || data.tarifa_id.trim() === '')) {
+        if (data.tipo_viaje === 'nacional' && (!data.tarifa_id || data.tarifa_id === undefined)) {
             setError('tarifa_id', {
                 type: 'manual',
                 message: 'La tarifa es obligatoria para viajes nacionales'
@@ -389,7 +396,7 @@ export default function DistributionFormPage() {
                         </Grid>
                     </Grid>
 
-                    {selectedPais === "ARG" && (
+                    {/* {selectedPais === "ARG" && (
                         <ZonaTarifaSelect
                             control={control}
                             formErrors={formErrors}
@@ -402,7 +409,7 @@ export default function DistributionFormPage() {
                             setTarifasDisponibles={setTarifasDisponibles}
                             setValues={setValue}
                         />
-                    )}  
+                    )}   */}
 
                     <FormActions
                         isEditing={isEditing}
@@ -433,7 +440,7 @@ export default function DistributionFormPage() {
                 <RemitosSelectModal
                     open={remitosModalOpen}
                     onOpenChange={setRemitosModalOpen}
-                    availableRemitos={availableRemitos}
+                    availableRemitos={availableRemitos ?? []}
                     selectedRemitos={selectedRemitos}
                     onRemitoToggle={handleRemitoToggle}
                     targetProvince={selectedProvincia?.nombre || ""}

@@ -5,6 +5,7 @@ interface ConfirmDialogProps {
   onClose: () => void;
   onConfirm: () => void;
   title: string;
+  genre: string;
   entityName: string;
   content?: React.ReactNode;
   confirmText?: string;
@@ -16,6 +17,7 @@ export const ConfirmDialog = ({
   onClose,
   onConfirm,
   title,
+  genre,
   content,
   entityName ,
   confirmText = "Eliminar",
@@ -32,7 +34,7 @@ export const ConfirmDialog = ({
       <DialogTitle id="confirm-dialog-title">Eliminar {title}</DialogTitle>
       <DialogContent>
         <Typography variant="body1" gutterBottom>
-          ¿Estás seguro que deseas eliminar el {title}{": "}
+          ¿Estás seguro que deseas eliminar {genre} {title}{": "}
           <strong>{entityName}</strong>?
         </Typography>
         {content}

@@ -210,6 +210,7 @@ export default function DriverPage(){
                     open= {openDialog}
                     onClose={() => setOpenDialog(false)}
                     title="chofer"
+                    genre="el"
                     entityName={`${choferSelect?.nombre} ${choferSelect?.apellido}`}
                     onConfirm={() => handleDelete(choferSelect?._id)}
                 />

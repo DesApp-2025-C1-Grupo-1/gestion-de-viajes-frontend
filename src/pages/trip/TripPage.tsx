@@ -248,6 +248,7 @@ export default function TripPage() {
                     open={openDialog}
                     onClose={() => setOpenDialog(false)}
                     title="Viajes"
+                    genre="el"
                     aria-labelledby="confirm-delete-title"
                     aria-describedby="confirm-delete-description"
                     entityName={tripSelected._id}

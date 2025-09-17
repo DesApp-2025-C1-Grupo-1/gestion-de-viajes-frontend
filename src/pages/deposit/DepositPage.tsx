@@ -207,6 +207,7 @@ export default function DepositPage() {
                     open={openDialog}
                     onClose={() => setOpenDialog(false)}
                     title="Depósito"
+                    genre="el"
                     aria-labelledby="confirm-delete-title"
                     aria-describedby="confirm-delete-description"
                     entityName={depositSelected.nombre}

@@ -170,6 +170,7 @@ export default function CompanyPage(){
                     open= {openDialog}
                     onClose={() => setOpenDialog(false)}
                     title="empresa"
+                    genre="la"
                     entityName={empresaSelected.nombre_comercial}
                     onConfirm={() => handleDelete(empresaSelected?._id)}
                 />

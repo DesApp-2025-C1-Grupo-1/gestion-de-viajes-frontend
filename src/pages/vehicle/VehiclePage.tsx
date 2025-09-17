@@ -234,6 +234,7 @@ export default function VehiclePage() {
                     open={openDialog}
                     onClose={() => setOpenDialog(false)}
                     title="Vehículo"
+                    genre="el"
                     entityName={vehicleSelected.patente}
                     onConfirm={() => handleDelete(vehicleSelected?._id)}
                 />

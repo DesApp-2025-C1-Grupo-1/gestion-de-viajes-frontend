@@ -1,8 +1,9 @@
 import { Alert, FormHelperText, Grid, MenuItem, Select, Typography } from "@mui/material";
 import { Controller, UseFormSetValue } from "react-hook-form";
-import { getTarifasFiltradas, Tarifa, zonas } from "../../services/zonaTarifas";
+import { getTarifasFiltradas, Tarifa, Zona} from "../../services/zonaTarifas";
 import { CreateViajeDistribucionSchema } from "../../api/schemas/viajeDistribucion.schema";
 import { ta } from "date-fns/locale";
+import { useTarifasControllerListarZonas, ZonaDto } from "../../api/generated";
 
 interface ZonaTarifaSelectProps {
   control: any;
@@ -29,7 +30,10 @@ export const ZonaTarifaSelect = ({
   setTarifasDisponibles,
   setValues
 }: ZonaTarifaSelectProps) => {
-  
+
+  const {data} = useTarifasControllerListarZonas();
+  const zonas : ZonaDto[] = data?.data || [];
+
   const handleZonaChange = (zonaId: number) => {
     setSelectedZona(zonaId);
     
@@ -37,7 +41,7 @@ export const ZonaTarifaSelect = ({
     if (empresaId && vehiculoId) {
       const tarifasFiltradas = getTarifasFiltradas(empresaId, vehiculoId, zonaId);
       setTarifasDisponibles(tarifasFiltradas);
-      setValues("tarifa", tarifasFiltradas[0]?.id.toString() || ""); // Resetear selección de tarifa
+      setValues("tarifa_id", tarifasFiltradas[0]?.id.toString() || ""); // Resetear selección de tarifa
     }
 
   };
@@ -68,7 +72,7 @@ export const ZonaTarifaSelect = ({
             </MenuItem>
             {zonas.map((zona) => (
               <MenuItem key={zona.id} value={zona.id}>
-                {zona.nombre} - {zona.descripcion}
+                {zona.nombre}
               </MenuItem>
             ))}
           </Select>
@@ -78,7 +82,7 @@ export const ZonaTarifaSelect = ({
           <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb: 1 }}>Tarifa</Typography>
           <Controller
             control={control}
-            name="tarifa"
+            name="tarifa_id"
             render={({ field }) => (
               <>
                 <Select
@@ -103,16 +107,11 @@ export const ZonaTarifaSelect = ({
                     </MenuItem>
                   ))}
                 </Select>
-                {tarifasDisponibles.length > 0 && field.value && (
-                  <Alert sx={{ mt: 1 }}>
-                    Valor: ${tarifasDisponibles.find(t => t.id === Number(field.value))?.valorBase || "N/A"}
-                  </Alert>
-                )}
               </>
             )}
           />
-          <FormHelperText error={!!formErrors.tarifa}>
-            {formErrors.tarifa?.message}
+          <FormHelperText error={!!formErrors.tarifa_id}>
+            {formErrors.tarifa_id?.message}
           </FormHelperText>
         </Grid>
       </Grid>

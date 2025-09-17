@@ -12,9 +12,10 @@ import { useWatch } from "react-hook-form";
 interface UseTripAuxDataProps {
     control: any; // Assuming control is passed from a form library like react-hook-form
     resetField: any; // Function to reset form fields
+    companyName: string; // Optional company name to filter vehicles and drivers
 }
 
-export default function useTripAuxData({control, resetField}: UseTripAuxDataProps) {
+export default function useTripAuxData({control, resetField, companyName}: UseTripAuxDataProps) {
     const { data: companies, error: errorCompanies, isLoading: loadingCompanies } = useEmpresaControllerFindAll();
     const { data: vehicles, error: errorVehicles, isLoading: loadingVehicles } = useVehiculoControllerFindAll();
     const { data: drivers, error: errorDrivers, isLoading: loadingDrivers } = useChoferControllerFindAll();
@@ -23,7 +24,7 @@ export default function useTripAuxData({control, resetField}: UseTripAuxDataProp
     const [filteredVehiculos, setFilteredVehiculos] = useState<VehiculoDto[]>([]);
     const [filteredChoferes, setFilteredChoferes] = useState<ChoferDto[]>([]);
 
-    const companyIdTrip = useWatch({ control, name: "empresa" });
+    const companyIdTrip = useWatch({ control, name: companyName });
     const currentDriverId = useWatch({ control, name: "chofer" });
     const currentVehicleId = useWatch({ control, name: "vehiculo" });
 

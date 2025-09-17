@@ -52,7 +52,7 @@ export default function VehicleFormPage() {
                 description={isEditing ? "Actualizá los datos del vehículo registrado." : "Completá el formulario para dar de alta un vehículo."}
             />
 
-            <Paper  sx={{maxHeight:"90%", padding:4, overflow:"auto", mx:'auto', width:"100%", borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "0.5px solid #C7C7C7", pb: 5}  }>
+            <Paper  sx={{ padding:4, mx:'auto', width:"100%", borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "0.5px solid #C7C7C7"}} >
                 <form onSubmit={handleSubmit(handleFormSubmit)} className="w-full max-w-[800px] mx-auto">
                     <Typography variant="h6" sx={{color: "#5A5A65" , fontWeight: 550 , fontSize: "1.4rem", mb:2}}>Datos básicos</Typography>
 

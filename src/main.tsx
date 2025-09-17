@@ -1,6 +1,5 @@
 import ReactDOM from 'react-dom/client';
 import { ThemeProvider } from '@mui/material';
-import { Provider } from 'react-redux';
 import axios from 'axios';
 
 import { customMuiTheme } from './config/customMuiTheme';
@@ -15,7 +14,16 @@ axios.defaults.baseURL = 'http://localhost:3000';
 // Aseguramos que 'root' no sea null
 const rootElement = document.getElementById('root') as HTMLElement;
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 60, // 1h en cache
+      refetchOnWindowFocus: false, 
+      refetchOnReconnect: false,
+      retry: 1,
+    },
+  },
+});
 
 ReactDOM.createRoot(rootElement).render(
     <QueryClientProvider client={queryClient}>

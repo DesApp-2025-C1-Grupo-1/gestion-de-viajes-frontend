@@ -59,7 +59,7 @@ export const useTripForm = (id?: string) => {
         errorDepots,
         loadingAuxData,
         filterByCompany
-    } = useTripAuxData({control, resetField});
+    } = useTripAuxData({control, resetField, companyName: "empresa"});
     
     // 3. Configurar validación cruzada
     useCrossFieldValidation({watch, trigger, setValue, depots});

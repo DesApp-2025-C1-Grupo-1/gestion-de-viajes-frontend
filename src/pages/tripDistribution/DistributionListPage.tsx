@@ -151,7 +151,6 @@ const filtered = trips?.data
                                     <TableCell>Deposito de Origen</TableCell>
                                     <TableCell>Transportista</TableCell>
                                     <TableCell>Remitos</TableCell>
-                                    <TableCell>Tarifas</TableCell>
                                     <TableCell>Estado actual</TableCell>
                                     <TableCell align="center" sx={{width: 72}}>Acciones</TableCell>
                                 </TableRow>
@@ -194,7 +193,6 @@ const filtered = trips?.data
                                                 />
                                             </TableCell>
                                             <TableCell>{`${tripDistribucion.remito_ids}`}</TableCell>
-                                            <TableCell>{`${tripDistribucion.tarifa_id}`}</TableCell>
                                             <TableCell>{tripDistribucion.estado}</TableCell>
                                             <TableCell sx={{ verticalAlign: "middle"}}>
                                                 <MenuItem  
@@ -229,6 +227,7 @@ const filtered = trips?.data
             {viajeDistribucionSelected && (
                 <ConfirmDialog
                     open= {openDialog}
+                    genre="el"
                     onClose={() => setOpenDialog(false)}
                     title="viajes"
                     entityName={viajeDistribucionSelected._id}

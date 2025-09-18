@@ -184,30 +184,36 @@ export const DetailsTripDistribution = ({tripDistributionSelected, setOpenDetail
                             </Paper>
                         </Grid>
 
-                        {/* Tarifa */}
-                        <Grid item xs={12}>
-                            <HeaderDetails
-                                icon={<Ticket className="h-5 w-5" color="#E65F2B" />}
-                                title="Tarifas"
-                            />
-                            <Paper
-                                variant="outlined"
-                                sx={{
-                                    p: 2,
-                                    backgroundColor: "#F6F7FB", 
-                                    borderColor: "#C7C7C7", 
-                                }}
-                            >
-                                <Grid container spacing={2}>
-                                    <Grid item xs={12} sm={6}>
-                                        <Field
-                                            label="Asignadas"
-                                            value={`${tripDistributionSelected.tarifa_id}`}
-                                        />
-                                    </Grid>
+                            {/* Tarifa */}
+                            {tripDistributionSelected.tarifa_id !== undefined && (
+                                <Grid item xs={12}>
+                                    <HeaderDetails
+                                        icon={<Ticket className="h-5 w-5" color="#E65F2B" />}
+                                        title="Tarifas"
+                                    />
+                                
+                                
+                                    <Paper
+                                        variant="outlined"
+                                        sx={{
+                                            p: 2,
+                                            backgroundColor: "#F6F7FB", 
+                                            borderColor: "#C7C7C7", 
+                                        }}
+                                    >
+                                        <Grid container spacing={2}>
+                                            <Grid item xs={12} sm={6}>
+                                                <Field
+                                                    label="Asignadas"
+                                                    value={`${tripDistributionSelected.tarifa_id}`}
+                                                />
+                                            </Grid>
+                                        </Grid>
+                                    </Paper>
                                 </Grid>
-                            </Paper>
-                        </Grid>
+                            )}
+                            
+                        
 
                     </Grid>
                 </DialogContent>

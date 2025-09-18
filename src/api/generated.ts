@@ -190,6 +190,8 @@ export interface ContactoDto {
 export interface EmpresaDto {
   /** ID de la empresa */
   _id: string;
+  /** CUIT de la empresa (único) */
+  cuit: string;
   /** Razón social de la empresa */
   razon_social: string;
   /** Nombre comercial de la empresa */
@@ -575,7 +577,7 @@ export const CreateViajeDistribucionDtoEstado = {
 } as const;
 
 export interface CreateViajeDistribucionDto {
-  fecha_inicio: string;
+  fecha_inicio: Date;
   origen: string;
   /** Tipo de viaje */
   tipo_viaje: string;
@@ -588,8 +590,6 @@ export interface CreateViajeDistribucionDto {
   estado?: CreateViajeDistribucionDtoEstado;
   observaciones?: string;
 }
-
-export interface ObjectId { [key: string]: unknown }
 
 export interface RemitoInfoDto {
   id: string;
@@ -627,18 +627,18 @@ export interface ViajeDistribucionDto {
   /** ID del viaje */
   _id: string;
   fecha_inicio: Date;
-  origen: ObjectId;
   /** Tipo de viaje */
   tipo_viaje: string;
-  chofer: ObjectId;
-  transportista: ObjectId;
-  vehiculo: ObjectId;
-  remito_ids: number[];
+  estado: ViajeDistribucionDtoEstado;
   kilometros: number;
+  origen: DepositoDto;
+  chofer: ChoferDto;
+  transportista: EmpresaDto;
+  vehiculo: VehiculoDto;
+  remito_ids: number[];
   remitos_info?: RemitoInfoDto[];
   tarifa_id?: number;
   tarifa?: TarifaDto;
-  estado: ViajeDistribucionDtoEstado;
   createdAt: string;
 }
 

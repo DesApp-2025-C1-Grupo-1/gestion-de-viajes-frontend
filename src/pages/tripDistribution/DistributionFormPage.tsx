@@ -52,6 +52,7 @@ export default function DistributionFormPage() {
         {
             provincia: selectedProvincia ? selectedProvincia.nombre : undefined,
             localidad: selectedLocalidad ? selectedLocalidad.nombre : undefined,
+            estadoId: 2, // Asumiendo que 2 es el ID para "En preparación"
         },
         {
             query: {

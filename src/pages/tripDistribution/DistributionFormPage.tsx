@@ -85,10 +85,11 @@ export default function DistributionFormPage() {
         register,
         setValue,
         setTypeOfVehicleId,
+        typeOfVehicleId,
     } = useTripDistributionForm(id);
 
     const selectedOrigen = useWatch({ control, name: "origen" });
-
+    const transportistaId = useWatch({ control, name: "transportista" });
     const tipoViaje = useWatch({ control, name: "tipo_viaje" });
     const tieneRemitosDisponibles = availableRemitos.length > 0;
     const tieneLocalidadSeleccionada = !!selectedLocalidad;
@@ -396,7 +397,7 @@ export default function DistributionFormPage() {
                         </Grid>
                     </Grid>
 
-                    {/* {selectedPais === "ARG" && (
+                    {selectedPais === "ARG" && (
                         <ZonaTarifaSelect
                             control={control}
                             formErrors={formErrors}
@@ -409,7 +410,7 @@ export default function DistributionFormPage() {
                             setTarifasDisponibles={setTarifasDisponibles}
                             setValues={setValue}
                         />
-                    )}   */}
+                    )}  
 
                     <FormActions
                         isEditing={isEditing}

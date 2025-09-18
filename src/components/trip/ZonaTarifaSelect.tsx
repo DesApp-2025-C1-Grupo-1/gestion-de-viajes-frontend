@@ -41,7 +41,7 @@ export const ZonaTarifaSelect = ({
     if (empresaId && vehiculoId) {
       const tarifasFiltradas = getTarifasFiltradas(empresaId, vehiculoId, zonaId);
       setTarifasDisponibles(tarifasFiltradas);
-      setValues("tarifa_id", tarifasFiltradas[0]?.id.toString() || ""); // Resetear selección de tarifa
+      setValues("tarifa_id", tarifasFiltradas[0]?.id || undefined); // Resetear selección de tarifa
     }
 
   };

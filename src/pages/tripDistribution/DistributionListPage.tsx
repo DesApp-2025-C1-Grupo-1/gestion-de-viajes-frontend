@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SectionHeader } from "../../components/SectionHeader";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery} from "@mui/material";
@@ -14,6 +14,7 @@ import PaginationEntity from "../../components/PaginationEntity";
 import { TarifaDto, viajeDistribucionControllerRemove, ViajeDistribucionDto, ViajeDistribucionDtoEstado, useViajeDistribucionControllerFindAll, EmpresaDto, VehiculoDto, ChoferDto, empresaControllerFindAll, vehiculoControllerFindAll, choferControllerFindAll, DepositoDto, depositoControllerFindAll } from '../../api/generated';
 import { useTheme } from "@mui/material/styles";
 import { DetailsTripDistribution } from "../../components/tripsDistribution/DetailsTripDistribution";
+import SearchBar from "../../components/SearchBar";
 
 
 export default function DistributionListPage() {
@@ -23,6 +24,9 @@ export default function DistributionListPage() {
   const {notify} = useNotify("Viajes");
   const [filterOpen, setFilterOpen] = useState(false);
   const {data: trips, isLoading, refetch} = useViajeDistribucionControllerFindAll();
+
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const debouncedQuery = useDebouncedValue(searchQuery, 500);
  
   const [page, setPage] = useState<number>(1);
   const [openDialog, setOpenDialog] = useState(false);
@@ -65,7 +69,22 @@ export default function DistributionListPage() {
       }
   };
 
-  const filtered = trips?.data || [];
+const filtered = trips?.data
+  ? trips.data.filter((trip) => {
+      const choferNombre = `${trip.chofer?.nombre ?? ""} ${trip.chofer?.apellido ?? ""}`.toLocaleLowerCase();
+      const vehiculoInfo = `${trip.vehiculo?.modelo ?? ""} ${trip.vehiculo?.patente ?? ""}`.toLocaleLowerCase();
+      const empresaNombre = `${trip.transportista?.nombre_comercial ?? ""}`.toLocaleLowerCase();
+      const id = trip._id.toLocaleLowerCase();
+
+      return (
+        choferNombre.includes(debouncedQuery.toLocaleLowerCase()) ||
+        vehiculoInfo.includes(debouncedQuery.toLocaleLowerCase()) ||
+        empresaNombre.includes(debouncedQuery.toLocaleLowerCase()) ||
+        id.includes(debouncedQuery.toLocaleLowerCase())
+      );
+    })
+  : [];
+
 
   const totalPages = Math.ceil(filtered.length / rowsPerPage);
   const paginated = filtered.slice((page - 1) * rowsPerPage, page * rowsPerPage);
@@ -77,19 +96,20 @@ export default function DistributionListPage() {
 
   useEffect(() => {
     setPage(1);
-  }, [trips?.data]);
+  }, [trips?.data, searchQuery]);
 
   return(
     <>
-      <SectionHeader
-        title="Viajes de distribución"
-        description="Gestione y planifique viajes de distribución asociando remitos, costos y recursos de transporte."
-        buttonText="Nuevo viaje"
-        onAdd={() => navigate('/trips/distribution/form')}
-      />
-   
-      {/*filtros*/}
+      <div>
+        <SectionHeader
+          title="Viajes de distribución"
+          description="Gestione y planifique viajes de distribución asociando remitos, costos y recursos de transporte."
+          buttonText="Nuevo viaje"
+          onAdd={() => navigate('/trips/distribution/form')}
+        /> 
 
+        <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} placeholder="Buscar chofer, vehiculo o número"></SearchBar>
+      </div>
 
       {/*tabla*/}
       {isMobile ? (

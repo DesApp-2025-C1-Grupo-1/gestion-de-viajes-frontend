@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useViajeControllerFindOne } from "../../api/generated";
+import { useViajeControllerFindOne, useViajeDistribucionControllerFindOne } from "../../api/generated";
 
 export const useTripData = (id?: string, reset?: (data: any) => void) => {
   const isEditing = !!id;
@@ -17,6 +17,29 @@ export const useTripData = (id?: string, reset?: (data: any) => void) => {
         vehiculo: viaje.vehiculo._id,
         empresa: viaje.empresa._id,
         chofer: viaje.chofer._id,
+      });
+    }
+  }, [data, isEditing, reset]);
+
+  return { isEditing, data, isLoading, error };
+};
+
+export const useTripDistributionData = (id?: string, reset?: (data: any) => void) => {
+  const isEditing = !!id;
+  const { data, isLoading, error } = useViajeDistribucionControllerFindOne(id!, { query: { enabled: isEditing } });
+
+  useEffect(() => {
+    if (isEditing && data?.data && reset) {
+      const viaje = data.data;
+      reset({
+        ...viaje,
+        fecha_inicio: viaje.fecha_inicio ? new Date(viaje.fecha_inicio) : undefined,
+        origen: viaje.origen._id,
+        vehiculo: viaje.vehiculo._id,
+        transportista: viaje.transportista._id,
+        chofer: viaje.chofer._id,
+        tarifa_id: viaje.tarifa_id,
+        remito_ids: viaje.remito_ids,
       });
     }
   }, [data, isEditing, reset]);

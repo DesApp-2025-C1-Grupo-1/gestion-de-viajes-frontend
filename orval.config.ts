@@ -1,9 +1,12 @@
 import { defineConfig } from 'orval';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 export default defineConfig({
     api: {
         input: {
-            target: 'http://localhost:3000/api-json',
+            target: process.env.VITE_API_URL as string,
         },
         output: {
             mode: 'single',

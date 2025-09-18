@@ -169,6 +169,34 @@ export const customMuiTheme = createTheme({
           transition: "box-shadow 0.3s ease",
         },
       },
-    }
-  }
-});
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          "& .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#E0E0E0", // borde inicial
+          },
+          "&:hover .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#5A5A65", // borde hover (gris oscuro, igual a tus otros select)
+          },
+          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#C94715", // borde focus naranja custom
+          },
+        },
+      },
+    },
+    MuiAutocomplete: {
+      styleOverrides: {
+        root: {
+          "& .MuiOutlinedInput-root": {
+            borderRadius: "6px",
+            height: "48px",
+            padding: "0px 14px",
+            backgroundColor: "#fff",
+            fontSize: '0.900rem',
+          },
+        },
+      },
+    },
+
+}});

@@ -577,7 +577,7 @@ export const CreateViajeDistribucionDtoEstado = {
 } as const;
 
 export interface CreateViajeDistribucionDto {
-  fecha_inicio: Date;
+  fecha_inicio: string;
   origen: string;
   /** Tipo de viaje */
   tipo_viaje: string;
@@ -626,7 +626,7 @@ export const ViajeDistribucionDtoEstado = {
 export interface ViajeDistribucionDto {
   /** ID del viaje */
   _id: string;
-  fecha_inicio: Date;
+  fecha_inicio: string;
   /** Tipo de viaje */
   tipo_viaje: string;
   estado: ViajeDistribucionDtoEstado;
@@ -654,7 +654,7 @@ export const UpdateViajeDistribucionDtoEstado = {
 } as const;
 
 export interface UpdateViajeDistribucionDto {
-  fecha_inicio?: Date;
+  fecha_inicio?: string;
   origen?: string;
   /** Tipo de viaje */
   tipo_viaje?: string;

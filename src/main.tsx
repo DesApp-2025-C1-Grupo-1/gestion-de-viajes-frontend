@@ -9,7 +9,7 @@ import './index.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 
-axios.defaults.baseURL = 'http://localhost:3000';
+axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 
 // Aseguramos que 'root' no sea null
 const rootElement = document.getElementById('root') as HTMLElement;

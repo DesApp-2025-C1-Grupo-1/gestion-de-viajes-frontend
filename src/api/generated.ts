@@ -374,9 +374,9 @@ export interface UpdateChoferDto { [key: string]: unknown }
 
 export interface CreateViajeDto {
   /** Fecha y hora de inicio del viaje */
-  fecha_inicio: string;
+  fecha_inicio: Date;
   /** Fecha y hora estimada de llegada */
-  fecha_llegada: string;
+  fecha_llegada: Date;
   /** Tipo de viaje */
   tipo_viaje: string;
   /** ID del depósito de origen */
@@ -416,9 +416,9 @@ export interface ViajeDto {
   /** ID del viaje */
   _id: string;
   /** Fecha y hora de inicio del viaje */
-  fecha_inicio: string;
+  fecha_inicio: Date;
   /** Fecha y hora de llegada */
-  fecha_llegada: string;
+  fecha_llegada: Date;
   /** Tipo de viaje */
   tipo_viaje: string;
   /** ID del depósito de origen */
@@ -477,9 +477,9 @@ export interface DashboardResponseDto {
 
 export interface UpdateViajeDto {
   /** Fecha y hora de inicio del viaje */
-  fecha_inicio?: string;
+  fecha_inicio?: Date;
   /** Fecha y hora estimada de llegada */
-  fecha_llegada?: string;
+  fecha_llegada?: Date;
   /** Tipo de viaje */
   tipo_viaje?: string;
   /** ID del depósito de origen */
@@ -577,7 +577,7 @@ export const CreateViajeDistribucionDtoEstado = {
 } as const;
 
 export interface CreateViajeDistribucionDto {
-  fecha_inicio: string;
+  fecha_inicio: Date;
   origen: string;
   /** Tipo de viaje */
   tipo_viaje: string;
@@ -604,8 +604,8 @@ export interface TarifaDto {
   tipoVehiculoNombre: string;
   zonaNombre: string;
   tipoCargaNombre: string;
-  transportistaId: number;
-  tipoVehiculoId: number;
+  transportistaId: string;
+  tipoVehiculoId: string;
   zonaId: number;
   tipoCargaId: number;
   total: number;
@@ -626,7 +626,7 @@ export const ViajeDistribucionDtoEstado = {
 export interface ViajeDistribucionDto {
   /** ID del viaje */
   _id: string;
-  fecha_inicio: string;
+  fecha_inicio: Date;
   /** Tipo de viaje */
   tipo_viaje: string;
   estado: ViajeDistribucionDtoEstado;
@@ -654,7 +654,7 @@ export const UpdateViajeDistribucionDtoEstado = {
 } as const;
 
 export interface UpdateViajeDistribucionDto {
-  fecha_inicio?: string;
+  fecha_inicio?: Date;
   origen?: string;
   /** Tipo de viaje */
   tipo_viaje?: string;

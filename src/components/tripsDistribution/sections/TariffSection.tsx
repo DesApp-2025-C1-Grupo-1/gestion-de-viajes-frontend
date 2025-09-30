@@ -176,13 +176,17 @@ export default function TariffSection() {
   if (esViajeInternacional) {
 
     return (
-      <Alert severity="info" sx={{ mb: 3 }}>
+      <Alert severity="info" 
+        sx={{ 
+          borderLeft: '6px solid #0288d1', 
+          backgroundColor: '#e5f6fd' 
+        }}
+      >
         <Typography variant="subtitle2" fontWeight="bold">
           Viaje Internacional
         </Typography>
         <Typography variant="body2">
-          Para viajes internacionales no es necesario seleccionar tarifa. 
-          La cotización se gestionará de forma separada.
+          Para viajes internacionales no es necesario seleccionar tarifa.
         </Typography>
       </Alert>
     );
@@ -304,19 +308,22 @@ export default function TariffSection() {
         {/* Resumen de tarifa seleccionada */}
         {tarifaParaMostrar && (
           <Grid item xs={12}>
-            <Alert severity="success">
-              <Typography variant="subtitle2" fontWeight="bold">
+            <Alert  severity="success" sx={{ 
+              borderLeft: '6px solid #2F691D', 
+              backgroundColor: '#E6F4EA' 
+            }}>
+              <Typography variant="subtitle2" fontWeight="bold" color="success.main">
                 {safeIsEditing && tarifaParaMostrar.id === safeTripData.tarifa_id ? "📋 Tarifa Existente" : "✅ Tarifa Seleccionada"}
               </Typography>
               <Box sx={{ mt: 1 }}>
-                <Typography>
-                  <strong>Nombre:</strong> {tarifaParaMostrar.nombre}
+                <Typography >
+                  <strong className="text-[#2F691D]">Nombre:</strong> {tarifaParaMostrar.nombre}
                 </Typography>
                 <Typography>
-                  <strong>Precio Total:</strong> ${tarifaParaMostrar.total}
+                  <strong className="text-[#2F691D]">Precio Total:</strong> ${tarifaParaMostrar.total}
                 </Typography>
                 <Typography>
-                  <strong>Valor Base:</strong> ${tarifaParaMostrar.valorBase}
+                  <strong className="text-[#2F691D]">Valor Base:</strong> ${tarifaParaMostrar.valorBase}
                 </Typography>
                 <Typography variant="caption" color="textSecondary">
                   Incluye {tarifaParaMostrar.adicionales?.length || 0} adicional(es)

@@ -30,7 +30,7 @@ export function TripManagementSection() {
       
       // Validación para "fin de viaje"
       if (newState === 'fin de viaje') {
-        const remitosEnCamino = tripData.remitos?.filter((r: any) => 
+        const remitosEnCamino = tripData.remito_ids?.filter((r: any) => 
           r.estadoId !== 4 && r.estadoId !== 5 // 4: ENTREGADO, 5: NO ENTREGADO
         ) || [];
         
@@ -53,7 +53,7 @@ export function TripManagementSection() {
   const canFinalizeTrip = () => {
     if (tripData?.estado !== 'fin de viaje') return false;
     
-    const allRemitosFinalized = tripData.remitos?.every((r: any) => 
+    const allRemitosFinalized = tripData.remito_ids?.every((r: any) => 
       r.estadoId === 4 || r.estadoId === 5 // ENTREGADO o NO ENTREGADO
     );
     

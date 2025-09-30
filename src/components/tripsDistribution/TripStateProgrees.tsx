@@ -1,5 +1,5 @@
 // components/trip/TripStateProgress.tsx
-import { Box, Typography, Step, StepLabel, Stepper } from '@mui/material';
+import { Box, Typography, Step, StepLabel, Stepper, LinearProgress } from '@mui/material';
 import { CheckCircle, Circle, Truck, Package, CheckSquare } from 'lucide-react';
 import { TripEstado } from '../../hooks/useTripPermissions';
 
@@ -20,7 +20,7 @@ export function TripStateProgress({ currentState, onStateClick, clickable = fals
   const currentIndex = states.findIndex(state => state.value === currentState);
 
   return (
-    <Box sx={{ width: '100%', mb: 4 }}>
+    <Box sx={{ width: '100%', mb: 4, maxWidth: '900px', mx: 'auto'}}>
       <Stepper activeStep={currentIndex} alternativeLabel>
         {states.map((state, index) => {
           const isCompleted = index < currentIndex;

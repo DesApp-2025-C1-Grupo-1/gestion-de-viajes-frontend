@@ -2,9 +2,7 @@ import { SectionHeader } from "../../components/SectionHeader";
 import { Paper, Box, CircularProgress, Alert } from "@mui/material";
 import { useEditDistributionForm } from "../../hooks/tripDistribution/useEditDistributionForm";
 import { DistributionForm } from "./DistributionForm";
-import { TripStateProgress } from "./TripStateProgrees";
-import { ViajeDistribucionDtoEstado } from "../../api/generated";
-import { TripStateActions } from "./sections/TripStateActions";
+import { TripStateFlow } from "./TripStateFlow";
 
 interface EditDistributionFormProps {
   tripId: string;
@@ -37,37 +35,6 @@ export default function EditDistributionForm({ tripId }: EditDistributionFormPro
     );
   }
 
-  // NUEVA: Función para manejar cambios de estado
-  const handleStateChange = async (nuevoEstado: string) => {
-    try {
-      console.log(`🔄 Cambiando estado de "${form.tripData?.estado}" a "${nuevoEstado}"`);
-      
-      // Actualizar en el formulario
-      form.form.setValue('estado', nuevoEstado as ViajeDistribucionDtoEstado);
-      
-      // Mostrar confirmación basada en el estado
-      const confirmMessages: Record<string, string> = {
-        'inicio de carga': '¿Confirmar inicio de carga?',
-        'fin de carga': '¿Confirmar fin de carga?', 
-        'fin de viaje': '¿Confirmar fin del viaje?'
-      };
-      
-      const message = confirmMessages[nuevoEstado];
-      if (message && window.confirm(message)) {
-        // Aquí podrías hacer la llamada a la API para actualizar el estado
-        // await actualizarEstadoViaje(tripId, nuevoEstado);
-        
-        console.log(`✅ Estado cambiado a: ${nuevoEstado}`);
-        
-        // Opcional: Recargar datos o mostrar mensaje de éxito
-        // form.form.handleSubmit(form.onSubmit)();
-      }
-      
-    } catch (error) {
-      console.error('Error cambiando estado:', error);
-      // Aquí podrías mostrar un toast de error
-    }
-  };
 
   return (
     <>
@@ -86,20 +53,19 @@ export default function EditDistributionForm({ tripId }: EditDistributionFormPro
       }}>
         {/* Progreso de estados - Solo en edición */}
         <Box sx={{ mb: 4,  bgcolor: 'background.default', borderRadius: 2 }}>
-          <TripStateProgress currentState={form.tripData?.estado} />
-          
-          <TripStateActions 
-            currentState={form.tripData?.estado}
-            onStateChange={handleStateChange}
-            tripData={form.tripData}
+          <TripStateFlow
+            setValue={form.form.setValue}
+            control={form.form.control}
+            initialState={form.tripData.estado}
           />
         </Box>
-
+ 
         <DistributionForm 
           form={form}
           isEditing={true}
           tripData={form.tripData}
         />
+
       </Paper>
     </>
   );

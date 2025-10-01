@@ -2,11 +2,14 @@ import { useEffect } from "react";
 import { useDistributionFormBase } from "./useDistributionFormBase";
 import { useDistributionAuxData } from "./useDistributionAuxData";
 import { useTripDistributionData } from "./useTripDistributionData";
-import { viajeDistribucionControllerUpdate } from "../../api/generated";
+import { viajeDistribucionControllerUpdate, ViajeDistribucionDtoEstado } from "../../api/generated";
 import { useNotify } from "../useNotify";
 import { useNavigate } from "react-router-dom";
 import { handleApiError, validateDriverVehicleCompatibility, mapTripToFormValues } from "./utils";
 import { CreateViajeDistribucionSchema } from "../../api/schemas/viajeDistribucion.schema";
+import { UseFormReturn } from "react-hook-form";
+
+
 
 export const useEditDistributionForm = (tripId: string) => {
   const navigate = useNavigate();
@@ -23,7 +26,6 @@ export const useEditDistributionForm = (tripId: string) => {
 
   useEffect(() => {
     if (tripData && reset) {
-      console.log('🔄 Reseteando formulario con datos del viaje. Tipo viaje:', tripData.tipo_viaje);
 
       reset({
           ...tripData,
@@ -39,6 +41,7 @@ export const useEditDistributionForm = (tripId: string) => {
           tipo_viaje: tripData.tipo_viaje === "nacional" || tripData.tipo_viaje === "internacional"
             ? tripData.tipo_viaje
             : undefined,
+          observaciones: tripData.observaciones ?? "",
         });
     }
   }, [tripData, reset]);

@@ -60,27 +60,26 @@ export default function TripDataSection() {
               permission={permissions.canEditFechaInicio}
               fieldName="fecha de inicio"
             >
-              
-                <Controller
-                  name="fecha_inicio"
-                  control={control}
-                  render={({ field }) => (
-                    <DateTimePicker
-                      {...field}
-                      className="inside-paper" 
-                      value={field.value ? toLocalDate(field.value) : null}
-                      onChange={(date: Date | null) => field.onChange(toUTCDate(date))}
-                      slotProps={{
-                        textField: {
-                          fullWidth: true,
-                          error: !!errors.fecha_inicio,
-                          helperText: errors.fecha_inicio?.message,
-                        },
-                      }}      
-                      format="dd/MM/yyyy HH:mm" 
-                    />
-                  )}
-                />
+              <Controller
+                name="fecha_inicio"
+                control={control}
+                render={({ field }) => (
+                  <DateTimePicker
+                    {...field}
+                    className="inside-paper" 
+                    value={field.value ? toLocalDate(field.value) : null}
+                    onChange={(date: Date | null) => field.onChange(toUTCDate(date))}
+                    slotProps={{
+                      textField: {
+                        fullWidth: true,
+                        error: !!errors.fecha_inicio,
+                        helperText: errors.fecha_inicio?.message,
+                      },
+                    }}      
+                    format="dd/MM/yyyy HH:mm" 
+                  />
+                )}
+              />
               
             </ConditionalField>
           </LocalizationProvider>
@@ -141,6 +140,32 @@ export default function TripDataSection() {
               fullWidth 
               error={!!errors.kilometros}
               helperText={errors.kilometros?.message as string | undefined}
+            />
+          </ConditionalField>
+        </Grid>
+
+        {/* Descripción */}
+        <Grid item xs={12} md={6}>
+          <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb: 1 }}>
+            Descripción (opcional)
+          </Typography>
+          <ConditionalField 
+            permission={permissions.canEditDescripcion}
+            fieldName="observaciones"
+          >
+            <TextField className="inside-paper"
+              id="observaciones" 
+              placeholder="Ingresar descripción"
+              {...register("observaciones", {
+                  maxLength: { value: 200, message: "Máximo 200 caracteres" }
+              })} 
+              inputProps={{
+                  "aria-label": "Descripción del viaje",
+                  maxLength: 200
+              }} 
+              fullWidth
+              error={!!errors.descripcion}
+              helperText={errors.descripcion?.message as string | undefined}
             />
           </ConditionalField>
         </Grid>

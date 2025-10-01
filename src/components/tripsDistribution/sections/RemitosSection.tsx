@@ -133,6 +133,7 @@ export default function RemitosSection() {
           selectedPais={selectedPais? selectedPais : ""}
           setSelectedPais={setSelectedPais}
           setSelectedLocalidad={setSelectedLocalidad}
+          permissions={permissions}
         />
 
         <LocalidadSelect
@@ -140,6 +141,7 @@ export default function RemitosSection() {
           selectedLocalidad={selectedLocalidad}
           setSelectedLocalidad={setSelectedLocalidad}
           selectedProvincia={selectedProvincia}
+          permissions={permissions}
         />
 
         <Grid item xs={12}>

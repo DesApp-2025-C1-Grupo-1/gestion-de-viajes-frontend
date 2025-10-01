@@ -26,7 +26,6 @@ export function ConditionalField({
           sx={{ 
             position: 'relative',
             cursor: 'not-allowed',
-            opacity: 0.6,
             ...sx 
           }}
         >
@@ -59,37 +58,4 @@ export function ConditionalField({
   }
 
   return <Box sx={sx}>{children}</Box>;
-}
-
-// Versión simplificada para solo texto
-export function ReadOnlyField({ 
-  value, 
-  label, 
-  helperText 
-}: { 
-  value: string; 
-  label: string; 
-  helperText?: string;
-}) {
-  return (
-    <Box sx={{ py: 1 }}>
-      <Typography variant="body2" color="textSecondary" sx={{ mb: 0.5 }}>
-        {label}
-      </Typography>
-      <Typography variant="body1" sx={{ 
-        p: 1, 
-        bgcolor: 'grey.50', 
-        borderRadius: 1,
-        border: '1px solid',
-        borderColor: 'grey.300'
-      }}>
-        {value || 'No asignado'}
-      </Typography>
-      {helperText && (
-        <Typography variant="caption" color="textSecondary">
-          {helperText}
-        </Typography>
-      )}
-    </Box>
-  );
 }

@@ -41,11 +41,13 @@ export const useTripPermissions = (estado: TripEstado): TripPermissions => {
       canEditChofer: isIniciado,
       canEditVehiculo: isIniciado,
       canEditTransportista: isIniciado,
-      canEditRemitos: isIniciado,
+      canEditRemitos: isIniciado || isInicioCarga,
       canEditOrigen: isIniciado,
       canEditFechaInicio: isIniciado,
       canEditKilometrosIniciales: isIniciado,
       canEditKilometrosFinales: isFinViaje,
+      canEditPais: isIniciado || isInicioCarga,
+      canEditDescripcion: isIniciado || isInicioCarga || isFinCarga || isFinViaje,
       
       // Gestión de estados
       canChangeRemitosState: isIniciado || isInicioCarga || isFinCarga || isFinViaje,

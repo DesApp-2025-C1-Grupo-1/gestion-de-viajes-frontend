@@ -1,8 +1,7 @@
 // contexts/DistributionFormContext.tsx
 import { createContext, useContext } from 'react';
 import { Localidad, Provincia } from '../hooks/useGeoref';
-import { UseFormProps } from 'react-hook-form';
-import { CreateViajeDistribucionDto, ViajeDistribucionDto } from '../api/generated';
+import { ViajeDistribucionDto } from '../api/generated';
 
 export interface DistributionFormContextType {
   form: any;

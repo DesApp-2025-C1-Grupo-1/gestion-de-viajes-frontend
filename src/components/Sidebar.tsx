@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, Truck } from "lucide-react";
+import { ChevronLeft, ChevronRight, CircleDollarSign, ClipboardList, Truck } from "lucide-react";
 import HomeIcon from "./icons/HomeIcon";
 import DriverIcon from "./icons/DriverIcon";
 import VehicleIcon from "./icons/VehicleIcon";
@@ -31,7 +31,9 @@ export default function Sidebar({isVisible, setIsVisible}: SidebarProps) {
     { src: TripIcon, title: "Viajes", link: "trips/distribution" },
     { src: DriverIcon, title: "Choferes", link: "drivers" },
     { src: VehicleIcon, title: "Vehículos", link: "vehicles" },
-    { src: DepotIcon, title: "Depósitos", link: "depots" }
+    { src: DepotIcon, title: "Depósitos", link: "depots" },
+    { src: ClipboardList, title: "Remitos", link: "https://remitos-front.netlify.app" },
+    { src: CircleDollarSign, title: "Tarifas", link: "https://68d73033f00e1875e53568ce--tarifas-de-costo.netlify.app" },
   ];
 
   

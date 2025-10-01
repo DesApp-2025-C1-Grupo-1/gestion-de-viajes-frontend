@@ -6,9 +6,9 @@ import RemitosSection from "./sections/RemitosSection";
 import ResourcesSection from "./sections/ResourcesSection";
 import TariffSection from "./sections/TariffSection";
 import TripDataSection from "./sections/TripDataSection";
-import { TripManagementSection } from "./sections/TripManagementSection";
 import { Localidad, Provincia } from "../../hooks/useGeoref";
-import { ViajeDistribucionDto } from "../../api/generated";
+import { ViajeDistribucionDto, ViajeDistribucionDtoEstado } from "../../api/generated";
+import { useWatch } from "react-hook-form";
 
 interface DistributionFormProps {
   form: any;
@@ -17,7 +17,9 @@ interface DistributionFormProps {
 }
 
 export function DistributionForm({ form, isEditing, tripData }: DistributionFormProps) {
-  const permissions = useTripPermissions(tripData?.estado || 'iniciado');
+  const estado = useWatch<{ estado: ViajeDistribucionDtoEstado }>({ control: form.form.control, name: 'estado' });
+  const permissions = useTripPermissions(estado || (tripData ? tripData.estado : "iniciado"));
+
   const [selectedPais, setSelectedPais] = useState<string>("");
   const [selectedProvincia, setSelectedProvincia] = useState<Provincia | null>(null);
   const [selectedLocalidad, setSelectedLocalidad] = useState<Localidad | null>(null);
@@ -52,14 +54,12 @@ export function DistributionForm({ form, isEditing, tripData }: DistributionForm
         <RemitosSection />
         <TariffSection />
         
-        {/* Solo mostrar gestión si no está en estado "iniciado" */}
-        {permissions.canManageTrip && isEditing && <TripManagementSection />}
-        
         <FormActions 
           isSubmitting={form.form.formState.isSubmitting}
           isEditing={isEditing}
           loading={form.isLoading}
         />
+
       </form>
     </DistributionFormContext.Provider>
   );

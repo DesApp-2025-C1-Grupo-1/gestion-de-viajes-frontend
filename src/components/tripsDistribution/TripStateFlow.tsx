@@ -1,6 +1,6 @@
-import { Box, Typography, Step, StepLabel, Stepper, Button, Paper, Chip, Stack, Dialog } from '@mui/material';
+import { Box, Typography, Step, StepLabel, Stepper, Button, Paper, Chip, Stack, Dialog, TextField } from '@mui/material';
 import { Truck, Package, CheckCircle, CheckSquare, Check } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ViajeDistribucionDtoEstado } from '../../api/generated';
 import { useWatch } from 'react-hook-form';
 
@@ -8,6 +8,9 @@ interface TripStateFlowProps {
   setValue: any;
   control: any;
   initialState: ViajeDistribucionDtoEstado;
+  initialKm?: number;
+  register: any;
+  error: any;
 }
 
 const states = [
@@ -17,14 +20,28 @@ const states = [
   { value: 'fin de viaje', label: 'Fin de Viaje', icon: <CheckSquare size={24} />, description: 'El viaje ha concluido exitosamente.' }
 ];
 
-export function TripStateFlow({ setValue, control, initialState }: TripStateFlowProps) {
+export function TripStateFlow({ setValue, control, initialState, register, error, initialKm }: TripStateFlowProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  const initialKmRef = useRef<number | null>(initialKm ?? null);
+  useEffect(() => {
+    // si cambia initialKilometros (cuando llega el fetch), lo actualizamos una vez
+    if (typeof initialKm === 'number') initialKmRef.current = initialKm;
+  }, [initialKm]);
 
   // Estado actual del viaje
   const currentState = useWatch({ control, name: 'estado', defaultValue: initialState });
 
+    // Watch del campo kilometros (valor que tiene el form, que el usuario puede editar)
+  const kmFinalRaw = useWatch({ control, name: 'kilometros', defaultValue: initialKmRef.current ?? '' });
+  const kmFinal = kmFinalRaw === '' || kmFinalRaw === undefined ? NaN : Number(kmFinalRaw);
+
+
   const currentIndex = states.findIndex(s => s.value === currentState);
   const nextState = currentIndex >= 0 && currentIndex < states.length - 1 ? states[currentIndex + 1] : null;
+
+  const needsFinalKm = nextState?.value === 'fin de viaje';
+  const kmInicial = initialKmRef.current ?? 0;
 
   const handleStateChange = async (nuevoEstado: ViajeDistribucionDtoEstado) => {
     setDialogOpen(false);
@@ -33,6 +50,23 @@ export function TripStateFlow({ setValue, control, initialState }: TripStateFlow
     
   };
 
+  const kmValid = !needsFinalKm || (!isNaN(kmFinal) && kmFinal > Number(kmInicial));
+  
+  // Mensaje de error local (no dependemos exclusivamente del formState)
+  const kmErrorMessage = needsFinalKm && (!kmFinal || isNaN(kmFinal) || kmFinal <= kmInicial)
+    ? `Los km finales deben ser mayores a ${kmInicial}`
+    : undefined;
+
+  useEffect(() => {
+    if (dialogOpen) {
+      // si el campo está vacío o no definido, lo inicializamos con el km inicial para que el usuario lo modifique
+      const currentKm = Number(kmFinalRaw);
+      if (!currentKm && initialKmRef.current !== null) {
+        setValue('kilometros', initialKmRef.current);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dialogOpen]);
 
   return (
     <Paper
@@ -146,18 +180,42 @@ export function TripStateFlow({ setValue, control, initialState }: TripStateFlow
               ¿Estás seguro que deseas cambiar el estado a "{nextState?.label}"?
             </Typography>
           </Box>
+          {needsFinalKm && (
+            <Box sx={{ px: 3, pb: 2 }}>
+              <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb: 1 }}>
+                Kilómetros del camión al finalizar el viaje:
+              </Typography>
+              <TextField
+                id="kilometros"
+                type="number"
+                placeholder="Ingresar km finales"
+                {...register("kilometros", {
+                  valueAsNumber: true
+                  // podés dejar validación adicional aquí, pero controlamos visualmente abajo
+                })}
+                inputProps={{ "aria-label": "Kilómetros del camión", step: "0.01", min: "0.01" }}
+                fullWidth
+                error={Boolean(error?.kilometros) || Boolean(kmErrorMessage)}
+                helperText={error?.kilometros?.message ?? kmErrorMessage}
+                defaultValue={initialKmRef.current ?? ''}
+              />
+            </Box>
+          )}
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', px: 3, pb: 3 }}>
             <Button onClick={() => setDialogOpen(false)} sx={{ mr: 2 }}>
               Cancelar
             </Button>
             <Button
-              onClick={() => {
-                if (nextState) handleStateChange(nextState.value as ViajeDistribucionDtoEstado);
-              }}
-              variant="contained"
-            >
-              Confirmar
-            </Button>
+            onClick={async () => {
+              // opcional: trigger validation si querés utilizar react-hook-form validation
+              // await trigger('kilometros'); // si tenés access a trigger
+              if (nextState) handleStateChange(nextState.value as ViajeDistribucionDtoEstado);
+            }}
+            variant="contained"
+            disabled={!kmValid} // deshabilita si es fin de viaje y los km no son válidos
+          >
+            Confirmar
+          </Button>
           </Box>
         </Dialog>
     </Paper>

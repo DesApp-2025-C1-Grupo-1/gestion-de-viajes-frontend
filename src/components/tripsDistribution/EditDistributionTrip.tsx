@@ -57,6 +57,9 @@ export default function EditDistributionForm({ tripId }: EditDistributionFormPro
             setValue={form.form.setValue}
             control={form.form.control}
             initialState={form.tripData.estado}
+            initialKm={form.tripData.kilometros}
+            register={form.form.register}
+            error={form.form.formState.errors}
           />
         </Box>
  

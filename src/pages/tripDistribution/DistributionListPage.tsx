@@ -138,7 +138,7 @@ const filtered = trips?.data
                 <EntityCard
                     key={tripsDistribution._id}
                     title={tripsDistribution._id}
-                    subtitle={`${tripsDistribution.estado}`}
+                    subtitle={`${tripsDistribution.estado[0].toUpperCase()}${tripsDistribution.estado.slice(1).toLowerCase()}`}
                     icon={<MapPinned size={24}/>}
                     fields={[
                         { label: "Itinerario", value: `${new Date(tripsDistribution.fecha_inicio).toLocaleDateString()} - ${new Date(tripsDistribution.fecha_inicio).toLocaleTimeString()}  `, isLong: true},

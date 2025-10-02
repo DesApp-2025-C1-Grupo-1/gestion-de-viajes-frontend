@@ -20,7 +20,8 @@ import SearchBar from "../../components/SearchBar";
 export default function DistributionListPage() {
   const navigate = useNavigate();
 
-
+  const [rowsPerPage, setRowsPerPage] = useState<number>(5);
+  
   const {notify} = useNotify("Viajes");
   const [filterOpen, setFilterOpen] = useState(false);
   const {data: trips, isLoading, refetch} = useViajeDistribucionControllerFindAll();
@@ -36,7 +37,7 @@ export default function DistributionListPage() {
   const [tripsDistribution, setTripsDistribution] = useState<ViajeDistribucionDto[]>([]);
 
 
-  const [rowsPerPage, setRowsPerPage] = useState<number>(5);
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
  
@@ -70,7 +71,7 @@ export default function DistributionListPage() {
   };
 
 const filtered = trips?.data
-  ? trips.data.filter((trip) => {
+  ? trips.data.data.filter((trip) => {
       const choferNombre = `${trip.chofer?.nombre ?? ""} ${trip.chofer?.apellido ?? ""}`.toLocaleLowerCase();
       const vehiculoInfo = `${trip.vehiculo?.modelo ?? ""} ${trip.vehiculo?.patente ?? ""}`.toLocaleLowerCase();
       const empresaNombre = `${trip.transportista?.nombre_comercial ?? ""}`.toLocaleLowerCase();

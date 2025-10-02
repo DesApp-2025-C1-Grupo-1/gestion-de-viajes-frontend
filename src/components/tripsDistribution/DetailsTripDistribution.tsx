@@ -11,6 +11,7 @@ import { Field } from "../detailts/Field";
 import { HeaderDetails } from "../detailts/HeaderDetails";
 import { MapPinned, Route, Truck, Building2, ClipboardMinus, Ticket} from "lucide-react";
 import { ViajeDistribucionDto } from "../../api/generated";
+import { TripDistributionType } from "../TripDistributionType";
 
 interface TripDistributionDetailsProps {
     tripDistributionSelected: ViajeDistribucionDto;
@@ -72,7 +73,8 @@ export const DetailsTripDistribution = ({tripDistributionSelected, setOpenDetail
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <Field
-                                            label="Estado Actual" value={tripDistributionSelected.estado}/>
+                                            label="Estado Actual" value={<TripDistributionType tipo={tripDistributionSelected.estado} />}/>
+                        
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <Field label="Fecha y hora de Inicio" value={`${new Date(tripDistributionSelected.fecha_inicio).toLocaleDateString().split('/').join('-')}`} />

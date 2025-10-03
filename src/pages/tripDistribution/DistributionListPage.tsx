@@ -22,15 +22,15 @@ export default function DistributionListPage() {
   const navigate = useNavigate();
 
   const [rowsPerPage, setRowsPerPage] = useState<number>(5);
+  const [page, setPage] = useState<number>(1);
   
   const {notify} = useNotify("Viajes");
   const [filterOpen, setFilterOpen] = useState(false);
-  const {data: trips, isLoading, refetch} = useViajeDistribucionControllerFindAll();
+  const {data: trips, isLoading, refetch} = useViajeDistribucionControllerFindAll({page, limit: rowsPerPage});
 
   const [searchQuery, setSearchQuery] = useState<string>("");
   const debouncedQuery = useDebouncedValue(searchQuery, 500);
  
-  const [page, setPage] = useState<number>(1);
   const [openDialog, setOpenDialog] = useState(false);
   const [openDetailsDialog, setOpenDetailsDialog] = useState<boolean>(false);
  
@@ -88,17 +88,16 @@ const filtered = trips?.data
   : [];
 
 
-  const totalPages = Math.ceil(filtered.length / rowsPerPage);
-  const paginated = filtered.slice((page - 1) * rowsPerPage, page * rowsPerPage);
-
+  const totalPages = Math.ceil((trips?.data?.total ?? 0) / rowsPerPage)
 
   const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
-      setPage(value);
+    console.log("page", value);
+    setPage(value);
   };
 
   useEffect(() => {
     setPage(1);
-  }, [trips?.data, searchQuery]);
+  }, [searchQuery]);
 
   return(
     <>
@@ -135,7 +134,7 @@ const filtered = trips?.data
       {/*tabla*/}
       {isMobile ? (
         <div className="grid gap-4  lg:grid-cols-2">
-            {paginated.map(tripsDistribution => (
+            {filtered.map(tripsDistribution => (
                 <EntityCard
                     key={tripsDistribution._id}
                     title={tripsDistribution._id}
@@ -158,7 +157,7 @@ const filtered = trips?.data
             ))}
         </div>
             ):(          
-                <div className="bg-white rounded-lg overflow-hidden" style={{
+                <div className="bg-white rounded-lg" style={{
                     boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
                     border: "0.5px solid #C7C7C7",
                 }}>
@@ -182,7 +181,7 @@ const filtered = trips?.data
                                             <LoadingState title="viajesDistribucion"/>
                                         </TableCell>
                                     </TableRow>
-                                ) : paginated.length === 0 ? (
+                                ) : filtered.length === 0 ? (
                                     <TableRow key="no-trips">
                                         <TableCell
                                             colSpan={6}
@@ -192,7 +191,7 @@ const filtered = trips?.data
                                         </TableCell>
                                     </TableRow>
                                 ):(
-                                    paginated.map((tripDistribucion) => (
+                                    filtered.map((tripDistribucion) => (
                                         <TableRow key={tripDistribucion._id} className="hover:bg-gray-50 overflow-hidden">
                                             <TableCell sx={{fontWeight: "bold", maxWidth: 150}} className="truncate">{tripDistribucion._id}</TableCell>
                                             <TableCell sx={{minWidth: 150}} >

@@ -638,6 +638,7 @@ export interface ViajeDistribucionDto {
   remito_ids: number[];
   remitos_info?: RemitoInfoDto[];
   tarifa_id?: number;
+  observaciones?: string;
   tarifa?: TarifaDto;
   createdAt: string;
 }

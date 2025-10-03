@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SectionHeader } from "../../components/SectionHeader";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery} from "@mui/material";
+import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery} from "@mui/material";
 import LoadingState from "../../components/LoadingState";
 import MenuItem from "../../components/buttons/MenuItem";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
@@ -15,6 +15,7 @@ import { TarifaDto, viajeDistribucionControllerRemove, ViajeDistribucionDto, Via
 import { useTheme } from "@mui/material/styles";
 import { DetailsTripDistribution } from "../../components/tripsDistribution/DetailsTripDistribution";
 import SearchBar from "../../components/SearchBar";
+import { TripDistributionType } from "../../components/TripDistributionType";
 
 
 export default function DistributionListPage() {
@@ -109,7 +110,26 @@ const filtered = trips?.data
           onAdd={() => navigate('/trips/distribution/form')}
         /> 
 
-        <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} placeholder="Buscar chofer, vehiculo o número"></SearchBar>
+        <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} placeholder="Buscar chofer, vehiculo o número">
+            <Button
+                variant="contained"
+                onClick={() => navigate("/trips/collection")} 
+                sx={{
+                    backgroundColor: "#00A86B",
+                    textTransform: "none",
+                    borderRadius: "8px",
+                    fontWeight: "500",
+                    boxShadow: "none",
+                    '&:hover': {
+                        backgroundColor: "#008c5a",
+                        boxShadow: "none",
+                    },
+                }}
+                className="w-full sm:max-w-max"
+            >
+                Viajes
+            </Button>
+        </SearchBar>
       </div>
 
       {/*tabla*/}
@@ -119,7 +139,7 @@ const filtered = trips?.data
                 <EntityCard
                     key={tripsDistribution._id}
                     title={tripsDistribution._id}
-                    subtitle={`${tripsDistribution.estado}`}
+                    subtitle={`${tripsDistribution.estado[0].toUpperCase()}${tripsDistribution.estado.slice(1).toLowerCase()}`}
                     icon={<MapPinned size={24}/>}
                     fields={[
                         { label: "Itinerario", value: `${new Date(tripsDistribution.fecha_inicio).toLocaleDateString()} - ${new Date(tripsDistribution.fecha_inicio).toLocaleTimeString()}  `, isLong: true},
@@ -128,8 +148,9 @@ const filtered = trips?.data
                         { label: 'Chofer', value: `${tripsDistribution.chofer.nombre}, ${tripsDistribution.chofer.apellido}`}, 
                         { label: "Vehículo", value: `${tripsDistribution.vehiculo.modelo} - ${tripsDistribution.vehiculo.patente}`},
                         { label: "Remitos Asociados", value: `${tripsDistribution.remito_ids}`},
-                        { label: "Tarifas", value: `${tripsDistribution.tarifa_id}`}
+                        ...(tripsDistribution.tarifa_id ? [{ label: "Tarifas", value: `${tripsDistribution.tarifa_id}`}] : [])
                     ]}
+                  
                     onDelete={() => handleOpenDialog(tripsDistribution)}
                     onEdit={() => navigate(`/trips/distribution/edit/${tripsDistribution._id}`)}  
                     onView={() => handleOpenDetails(tripsDistribution)}          
@@ -141,8 +162,6 @@ const filtered = trips?.data
                     boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
                     border: "0.5px solid #C7C7C7",
                 }}>
-
-
                     <TableContainer className=" text-sm rounded-lg">
                         <Table aria-label="simple table">
                             <TableHead >
@@ -194,7 +213,7 @@ const filtered = trips?.data
                                                 />
                                             </TableCell>
                                             <TableCell>{`${tripDistribucion.remito_ids}`}</TableCell>
-                                            <TableCell>{tripDistribucion.estado}</TableCell>
+                                            <TableCell><TripDistributionType tipo={tripDistribucion.estado}/></TableCell>
                                             <TableCell sx={{ verticalAlign: "middle"}}>
                                                 <MenuItem  
                                                     module="trips/distribution"

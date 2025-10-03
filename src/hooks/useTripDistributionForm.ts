@@ -7,9 +7,7 @@ import useTripAuxData from "./trip/useTripAuxData";
 import { isValidateLicense } from "../services/validateLicense";
 import { CreateViajeDistribucionSchema, UpdateViajeDistribucionSchema } from "../api/schemas/viajeDistribucion.schema";
 import { useState } from "react";
-//import { useTripDistributionData } from "./tripDistribution/useTripDistributionData";
-import { useTripDistributionData } from "./trip/useTripData";
-import { number } from "zod";
+import { useTripDistributionData } from "./tripDistribution/useTripDistributionData";
 
 
 export const useTripDistributionForm = (id?: string) => {
@@ -50,10 +48,7 @@ export const useTripDistributionForm = (id?: string) => {
 
     //1. Cargar viaje si estamos editando
     const {isLoading, error} = useTripDistributionData(id, reset);
-    
-    // 1. Cargar viaje si estamos editando
-    //const {isLoading ,error: errorLoading} = useTripDistributionData(id, reset);
-    
+
     // 2. Cargar datos auxiliares
     const {
         companies,

@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, Truck } from "lucide-react";
+import { ChevronLeft, ChevronRight, CircleDollarSign, ClipboardList, Truck } from "lucide-react";
 import HomeIcon from "./icons/HomeIcon";
 import DriverIcon from "./icons/DriverIcon";
 import VehicleIcon from "./icons/VehicleIcon";
@@ -31,7 +31,9 @@ export default function Sidebar({isVisible, setIsVisible}: SidebarProps) {
     { src: TripIcon, title: "Viajes", link: "trips/distribution" },
     { src: DriverIcon, title: "Choferes", link: "drivers" },
     { src: VehicleIcon, title: "Vehículos", link: "vehicles" },
-    { src: DepotIcon, title: "Depósitos", link: "depots" }
+    { src: DepotIcon, title: "Depósitos", link: "depots" },
+    { src: ClipboardList, title: "Remitos", link: "https://remitos-front.netlify.app" },
+    { src: CircleDollarSign, title: "Tarifas", link: "https://68d73033f00e1875e53568ce--tarifas-de-costo.netlify.app" },
   ];
 
   
@@ -68,16 +70,16 @@ export default function Sidebar({isVisible, setIsVisible}: SidebarProps) {
     >
         {/* Encabezado */}
         <div 
-          className="flex items-center px-4 border-b border-gray-100 relative" 
+          className="flex items-center px-3 border-b border-gray-100 relative" 
           onClick={() => navigate("/")}
           style={{ cursor: 'pointer' }}
           aria-label="Ir a la página de inicio"
         >
             <img 
-              src="/logo.jpg" 
+              src={isCollapsed ? "/logo_chico.png" : "/logo.jpg"}
               alt="Gestión de viajes logo con camión naranja sobre fondo blanco, transmite profesionalismo y confianza"  
               className={`min-h-12 my-3 mx-auto object-contain transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]
-                ${isCollapsed ? 'w-10' : 'w-full'}
+                ${isCollapsed ? 'w-full' : 'w-full'}
               `} 
 
             />

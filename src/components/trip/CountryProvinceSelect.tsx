@@ -2,6 +2,7 @@ import { Grid, MenuItem, Select, Typography } from "@mui/material";
 import { countriesData } from "../../services/countriesData";
 import { Localidad, Provincia, useProvincias } from "../../hooks/useGeoref";
 import { useEffect } from "react";
+import { ConditionalField } from "../tripsDistribution/fields/ConditionalField";
 
 interface CountryProvinceSelectProps {
   selectedPais: string;
@@ -9,6 +10,7 @@ interface CountryProvinceSelectProps {
   selectedProvincia: Provincia | null;
   setSelectedProvincia: (provincia: Provincia | null) => void;
   setSelectedLocalidad: (localidad: Localidad | null) => void;
+  permissions: any;
 }
 
 export const CountryProvinceSelect = ({
@@ -16,7 +18,8 @@ export const CountryProvinceSelect = ({
   setSelectedPais,
   selectedProvincia,
   setSelectedProvincia,
-  setSelectedLocalidad
+  setSelectedLocalidad,
+  permissions
 }: CountryProvinceSelectProps) => {
   const {provincias, loading} = useProvincias(selectedPais);
 
@@ -37,51 +40,62 @@ export const CountryProvinceSelect = ({
         <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb: 1 }}>
           País de destino
         </Typography>
-        <Select
-          value={selectedPais}
-          fullWidth
-          displayEmpty
-          className="inside-paper"
-          onChange={(event) => setSelectedPais(event.target.value)}
+        <ConditionalField 
+          permission={permissions.canEditPais}
+          fieldName="pais"
         >
-          <MenuItem value="" disabled>
-            Seleccione un país
-          </MenuItem>
-          {countriesData.map((country) => (
-            <MenuItem key={country._id} value={country._id}>
-              {country.nombre_comercial}
+          <Select
+            value={selectedPais}
+            fullWidth
+            displayEmpty
+            className="inside-paper"
+            onChange={(event) => setSelectedPais(event.target.value)}
+          >
+            <MenuItem value="" disabled>
+              Seleccione un país
             </MenuItem>
-          ))}
-        </Select>
+            {countriesData.map((country) => (
+              <MenuItem key={country._id} value={country._id}>
+                {country.nombre_comercial}
+              </MenuItem>
+            ))}
+          </Select>
+        </ConditionalField>
       </Grid>
 
       <Grid item xs={12} md={6}>
         <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb: 1 }}>
           Provincia/Estado
         </Typography>
-        <Select
-          value={selectedProvincia?.nombre || ""}
-          fullWidth
-          displayEmpty
-          className="inside-paper"
-          onChange={(event) => {
-            const provinciaId = event.target.value;
-            const provincia = provincias.find(p => p.nombre === provinciaId);
-            if (provincia) {
-              setSelectedProvincia(provincia);
-            }
-          }}
-          disabled={!selectedPais}
+
+        <ConditionalField 
+          permission={permissions.canEditPais}
+          fieldName="provincia"
         >
-          <MenuItem value="" disabled>
-            {selectedPais ? (loading ? 'Cargando...' : 'Seleccione una provincia/estado') : 'Seleccione un país primero'}
-          </MenuItem>
-          {provincias.map((provincia) => (
-            <MenuItem key={provincia.id} value={provincia.nombre} sx={{ textTransform: 'capitalize' }}>
-              {provincia.nombre}
+          <Select
+            value={selectedProvincia?.nombre || ""}
+            fullWidth
+            displayEmpty
+            className="inside-paper"
+            onChange={(event) => {
+              const provinciaId = event.target.value;
+              const provincia = provincias.find(p => p.nombre === provinciaId);
+              if (provincia) {
+                setSelectedProvincia(provincia);
+              }
+            }}
+            disabled={!selectedPais}
+          >
+            <MenuItem value="" disabled>
+              {selectedPais ? (loading ? 'Cargando...' : 'Seleccione una provincia/estado') : 'Seleccione un país primero'}
             </MenuItem>
-          ))}
-        </Select>
+            {provincias.map((provincia) => (
+              <MenuItem key={provincia.id} value={provincia.nombre} sx={{ textTransform: 'capitalize' }}>
+                {provincia.nombre}
+              </MenuItem>
+            ))}
+          </Select>
+        </ConditionalField>
       </Grid>
 
     </>

@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import React, { useEffect, useRef, useState } from "react";
 
 interface OptionMenuProps {
@@ -14,6 +14,8 @@ export default function OptionMenu({ isCollapsed,onClick, IconComponent, title, 
   const textRef = useRef<HTMLParagraphElement>(null);
   const [isActive, setIsActive] = useState(false);
 
+    const isExternal = link.startsWith("http");
+
   // Verificar si la ruta actual comienza con el link asignado
   useEffect(() => {
     const currentPath = location.pathname;
@@ -27,35 +29,49 @@ export default function OptionMenu({ isCollapsed,onClick, IconComponent, title, 
     } else {
       setIsActive(false);
     }
+
+
   }, [location, link]);
 
-  return (
-      <Link 
-        to={`/${link}`}
-        onClick={onClick}
+
+  const commonClasses = `
+    flex items-center h-14 rounded-lg overflow-hidden
+    transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]
+    w-full px-4
+    ${isActive 
+      ? "bg-menu-hover text-primary-orange"
+      : "hover:bg-menu-hover text-gray-600"}
+  `;
+
+  const content = (
+    <div className={`flex items-center ${!isCollapsed && "gap-4"} w-full`}>
+      <IconComponent color={isActive ? "#E65F2B" : "#5A5A65"} />
+      <p
+        ref={textRef}
         className={`
-          flex items-center h-14 rounded-lg overflow-hidden
+          text-sm whitespace-nowrap
           transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]
-          w-full px-4
-          ${isActive 
-            ? 'bg-menu-hover text-primary-orange' 
-            : 'hover:bg-menu-hover text-gray-600'
-          }
+          ${isCollapsed ? "opacity-0 translate-x-[-10px] w-0" : "opacity-100 translate-x-0 w-auto"}
         `}
       >
-      <div className={`flex items-center  ${!isCollapsed && "gap-4 "} w-full`}>
-        <IconComponent color={isActive ? " #E65F2B" : "#5A5A65" } />
-        <p 
-          ref={textRef}
-          className={`
-            text-sm  whitespace-nowrap
-            transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]
-            ${isCollapsed ? 'opacity-0 translate-x-[-10px] w-0' : 'opacity-100 translate-x-0 w-auto'}
-          `}
-        >
-          {title}
-        </p>
-      </div>
+        {title}
+      </p>
+    </div>
+  );
+
+  return isExternal ? (
+    <a
+      href={link}
+      target="_self"
+      rel="noopener noreferrer"
+      onClick={onClick}
+      className={commonClasses}
+    >
+      {content}
+    </a>
+  ) : (
+    <Link to={`/${link}`} onClick={onClick} className={commonClasses}>
+      {content}
     </Link>
   );
 }

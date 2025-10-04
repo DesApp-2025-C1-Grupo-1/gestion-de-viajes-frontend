@@ -11,7 +11,7 @@ import { DoubleCell } from "../../components/DoubleCell";
 import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 import EntityCard from "../../components/EntityCard";
 import PaginationEntity from "../../components/PaginationEntity";
-import { TarifaDto, viajeDistribucionControllerRemove, ViajeDistribucionDto, ViajeDistribucionDtoEstado, useViajeDistribucionControllerFindAll, EmpresaDto, VehiculoDto, ChoferDto, empresaControllerFindAll, vehiculoControllerFindAll, choferControllerFindAll, DepositoDto, depositoControllerFindAll, BuscarViajeDistribucionDto, useViajeDistribucionControllerBuscar } from '../../api/generated';
+import { TarifaDto, viajeDistribucionControllerRemove, ViajeDistribucionDto, ViajeDistribucionDtoEstado, useViajeDistribucionControllerFindAll, EmpresaDto, VehiculoDto, ChoferDto, empresaControllerFindAll, vehiculoControllerFindAll, choferControllerFindAll, DepositoDto, depositoControllerFindAll, BuscarViajeDistribucionDto, useViajeDistribucionControllerBuscar, RemitoDto, remitosControllerGetRemitos } from '../../api/generated';
 import { useTheme } from "@mui/material/styles";
 import { DetailsTripDistribution } from "../../components/tripsDistribution/DetailsTripDistribution";
 import { TripDistributionType } from "../../components/TripDistributionType";
@@ -43,11 +43,15 @@ export default function DistributionListPage() {
   const [vehiculos, setVehiculos] = useState<VehiculoDto[]>([]);
   const [choferes, setChoferes] = useState<ChoferDto[]>([]);
   const [depositos, setDepositos] = useState<DepositoDto[]>([]);
+  const [remitos, setRemitos] = useState<RemitoDto[]>([]);
+  const [tarifas, setTarifas] = useState<TarifaDto[]>([]);
   const [loadingOptions, setLoadingOptions] = useState({
       empresas: false,
       vehiculos: false,
       choferes: false,
-      depositos: false
+      depositos: false,
+      remitos: false,
+      tarifas: false,
   });
 
   // Función para cargar las opciones de los selects
@@ -68,6 +72,11 @@ export default function DistributionListPage() {
           setLoadingOptions(prev => ({...prev, depositos: true}));
           const resDepositos = await depositoControllerFindAll();
           setDepositos(resDepositos.data);
+
+          setLoadingOptions(prev => ({...prev, remitos: true}));
+          const resRemitos = await remitosControllerGetRemitos();
+          setRemitos(resRemitos.data.data);
+
       } catch (error) {
           notify("error", "Error al cargar opciones de filtros");
       } finally {
@@ -75,7 +84,9 @@ export default function DistributionListPage() {
               empresas: false,
               vehiculos: false,
               choferes: false,
-              depositos: false
+              depositos: false,
+              remitos: false,
+              tarifas: false,
           });
       }
   }, []);
@@ -175,27 +186,9 @@ export default function DistributionListPage() {
           vehiculos={vehiculos}
           choferes={choferes}
           depositos={depositos}
+          remitos={remitos}
           loadingOptions={loadingOptions}
         />
-
-        <Button
-            variant="contained"
-            onClick={() => navigate("/trips/collection")} 
-            sx={{
-                backgroundColor: "#00A86B",
-                textTransform: "none",
-                borderRadius: "8px",
-                fontWeight: "500",
-                boxShadow: "none",
-                '&:hover': {
-                    backgroundColor: "#008c5a",
-                    boxShadow: "none",
-                },
-            }}
-            className="w-full sm:max-w-max"
-        >
-            Viajes
-        </Button>
       </div>
 
       {/*tabla*/}

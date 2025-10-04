@@ -1,9 +1,10 @@
 import { useCallback, useState } from "react";
-import { BuscarViajeDistribucionDto, BuscarViajeDto, ChoferDto, DepositoDto, EmpresaDto, VehiculoDto } from "../api/generated";
+import { BuscarViajeDistribucionDto, BuscarViajeDto, ChoferDto, DepositoDto, EmpresaDto, RemitoDto, VehiculoDto } from "../api/generated";
 import { Stack, Button, Chip, Collapse, Paper, Typography, TextField, Select, MenuItem,Box, Grid  } from "@mui/material";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { ListFilter } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface TripFiltersProps {
     filterOpen: boolean;
@@ -14,11 +15,14 @@ interface TripFiltersProps {
     vehiculos: VehiculoDto[];
     choferes: ChoferDto[];
     depositos: DepositoDto[];
+    remitos: RemitoDto[];
     loadingOptions: {
         empresas: boolean;
         vehiculos: boolean;
         choferes: boolean;
         depositos: boolean;
+        remitos: boolean;
+        tarifas: boolean;
     };
 }
 
@@ -41,10 +45,12 @@ export default function DistributionFilters({
     vehiculos,
     choferes,
     depositos,
+    remitos,
     loadingOptions
 }: TripFiltersProps) {
     const [localFilters, setLocalFilters] = useState<BuscarViajeDistribucionDto>(initialFilters);
     const [appliedFilters, setAppliedFilters] = useState<BuscarViajeDistribucionDto>(initialFilters);
+    const navigate = useNavigate();
 
     const handleChange = useCallback((key: keyof BuscarViajeDistribucionDto, value: string | Date | number | number[] | null | undefined) => {
         let adjustedValue: any = value;
@@ -121,38 +127,75 @@ export default function DistributionFilters({
 
     return (
         <Box sx={{ width: "100%", mb: 2 }}>
-            <Stack direction="row" alignItems="center" flexWrap="wrap" gap={1}>
-                <Button
-                    variant="contained"
-                    onClick={() => setFilterOpen(!filterOpen)}
-                    sx={{
-                        display: "flex", alignItems: "center",
-                        backgroundColor: "white", color: "#5A5A65",
-                        boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", borderRadius: "8px", border: "0.5px solid #C7C7C7",
-                        "&:hover": { backgroundColor: "#f5f5f5", boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" },
-                        padding: "8px 20px"
-                    }}
-                    startIcon={<ListFilter className={`size-5 ${filterOpen && "rotate-180"} transtiton-all duration-200 ease-in`} />}
-                >
-                    Filtros
-                </Button>
+          <Stack sx={{
+            display: "flex",
+            flexDirection: "column-reverse", // mobile
+            gap: 1.5,
+            "@media (min-width:640px)": {
+              flexDirection: "row", // a partir de 640px
+              justifyContent: "space-between",
+            },
+          }}>
+            {/* Botón Filtros */}
+            <Button
+              variant="contained"
+              onClick={() => setFilterOpen(!filterOpen)}
+              sx={{
+                display: "flex", alignItems: "center",
+                backgroundColor: "white", color: "#5A5A65",
+                boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", borderRadius: "8px", border: "0.5px solid #C7C7C7",
+                "&:hover": { backgroundColor: "#f5f5f5", boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" },
+                padding: "8px 20px"
+              }}
+              startIcon={<ListFilter className={`size-5 ${filterOpen && "rotate-180"} transtiton-all duration-200 ease-in`} />}
+            >
+              Filtros
+            </Button>
+
+            {/* Botón Viajes */}
+            <Button
+              variant="contained"
+              onClick={() => navigate("/trips/collection")} 
+              sx={{
+                backgroundColor: "#00A86B",
+                textTransform: "none",
+                borderRadius: "8px",
+                fontWeight: "500",
+                boxShadow: "none",
+                '&:hover': {
+                    backgroundColor: "#008c5a",
+                    boxShadow: "none",
+                },
+              }}
+              className="md:pt-2 pb-3 sm:pb-5 sm:max-w-max"
+            >
+              Viajes
+            </Button>
+          </Stack>
+
+          {/* Segunda fila: Chips debajo del botón Filtros */}
+          {appliedFilters && Object.values(appliedFilters).some(
+              value => value && (Array.isArray(value) ? value.length > 0 : true)
+            ) && (
+              <Stack sx={{ marginTop: "16px" }} direction="row" flexWrap="wrap" gap={1}>
                 {Object.entries(appliedFilters)
-                    .filter(([_, value]) => value && (Array.isArray(value) ? value.length > 0 : true))
-                    .map(([key, value]) => (
-                        <Chip
-                            key={key}
-                            label={formatChipLabel(key, value)}
-                            onDelete={() => handleDeleteChip(key as keyof BuscarViajeDistribucionDto)}
-                            variant="outlined"
-                            sx={{
-                                backgroundColor: "#F0F4F8",
-                                color: "#474752",
-                                fontWeight: "500",
-                                "& .MuiChip-deleteIcon": { color: "#5A5A65", transition: "color 0.2s" },
-                            }}
-                        />
-                    ))}
-            </Stack>
+                  .filter(([_, value]) => value && (Array.isArray(value) ? value.length > 0 : true))
+                  .map(([key, value]) => (
+                    <Chip
+                      key={key}
+                      label={formatChipLabel(key, value)}
+                      onDelete={() => handleDeleteChip(key as keyof BuscarViajeDistribucionDto)}
+                      variant="outlined"
+                      sx={{
+                        backgroundColor: "#F0F4F8",
+                        color: "#474752",
+                        fontWeight: "500",
+                        "& .MuiChip-deleteIcon": { color: "#5A5A65", transition: "color 0.2s" },
+                      }}
+                    />
+                ))}
+              </Stack>
+          )}
 
             <Collapse in={filterOpen} timeout="auto" unmountOnExit>
                 <Box sx={{ mt: 2 }}>
@@ -272,20 +315,48 @@ export default function DistributionFilters({
                             </Grid>
 
                             <Grid item xs={12} sm={6} lg={4}>
-                                <Typography variant="subtitle2">Remitos</Typography>
-                                <TextField
+                                <Typography variant="subtitle2">Remito</Typography>
+                                  <Select
                                     fullWidth
-                                    placeholder="Separados por coma"
-                                    value={localFilters.remito?.join(',') || ''}
-                                    onChange={(e) => handleChange('remito', e.target.value.split(',').map(Number))}
-                                    sx={{ mt: 1 }}
-                                />
+                                    multiple
+                                    value={localFilters.remito || []}
+                                    onChange={(e) => {
+                                      const value = e.target.value as string[];
+                                      const remitoIds = Array.from(value.map(Number)); 
+                                      handleChange("remito", remitoIds);
+                                    }}
+                                    displayEmpty
+                                    renderValue={(selected) => {
+                                      if (!selected || (Array.isArray(selected) && selected.length === 0)) {
+                                        return <p>Seleccionar remitos</p>; // placeholder visible
+                                      }
+                                      return Array.isArray(selected) ? selected.join(", ") : selected;
+                                    }}
+                                    sx={{
+                                      backgroundColor: "white",
+                                      "& .MuiSelect-select": { padding: "10px 14px" },
+                                      "& .MuiOutlinedInput-notchedOutline": { borderColor: "#c7c7c7" },
+                                      "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#5A5A65" },
+                                      mt: 1,
+                                    }}
+                                  >
+                                    {loadingOptions.remitos ? (
+                                      <MenuItem disabled>Cargando...</MenuItem>
+                                    ) : (
+                                      remitos.map((rem) => (
+                                        <MenuItem key={rem.id} value={rem.id}>
+                                          {rem.id}
+                                        </MenuItem>
+                                      ))
+                                    )}
+                                  </Select>
                             </Grid>
 
                             <Grid item xs={12} sm={6} lg={4}>
                                 <Typography variant="subtitle2">Tarifa</Typography>
                                 <TextField
                                     fullWidth
+                                    className="inside-paper"
                                     placeholder="Número de tarifa"
                                     type="number"
                                     value={localFilters.tarifa || ''}
@@ -293,7 +364,6 @@ export default function DistributionFilters({
                                     sx={{ mt: 1 }}
                                 />
                             </Grid>
-
                         </Grid>
 
                         <Box display="flex" justifyContent="flex-end" gap={2} mt={2} sx={{ flexDirection: { xs: "column", sm: "row" } }}>

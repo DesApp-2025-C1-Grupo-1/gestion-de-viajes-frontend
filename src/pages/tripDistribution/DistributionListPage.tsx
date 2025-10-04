@@ -11,23 +11,26 @@ import { DoubleCell } from "../../components/DoubleCell";
 import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 import EntityCard from "../../components/EntityCard";
 import PaginationEntity from "../../components/PaginationEntity";
-import { TarifaDto, viajeDistribucionControllerRemove, ViajeDistribucionDto, ViajeDistribucionDtoEstado, useViajeDistribucionControllerFindAll, EmpresaDto, VehiculoDto, ChoferDto, empresaControllerFindAll, vehiculoControllerFindAll, choferControllerFindAll, DepositoDto, depositoControllerFindAll } from '../../api/generated';
+import { TarifaDto, viajeDistribucionControllerRemove, ViajeDistribucionDto, ViajeDistribucionDtoEstado, useViajeDistribucionControllerFindAll, EmpresaDto, VehiculoDto, ChoferDto, empresaControllerFindAll, vehiculoControllerFindAll, choferControllerFindAll, DepositoDto, depositoControllerFindAll, BuscarViajeDistribucionDto, useViajeDistribucionControllerBuscar } from '../../api/generated';
 import { useTheme } from "@mui/material/styles";
 import { DetailsTripDistribution } from "../../components/tripsDistribution/DetailsTripDistribution";
-import SearchBar from "../../components/SearchBar";
 import { TripDistributionType } from "../../components/TripDistributionType";
+import DistributionFilters from "../../components/DistributionFilters";
 
 
 export default function DistributionListPage() {
   const navigate = useNavigate();
-
-  const [rowsPerPage, setRowsPerPage] = useState<number>(5);
-  const [page, setPage] = useState<number>(1);
   
   const {notify} = useNotify("Viajes");
+  const [rowsPerPage, setRowsPerPage] = useState<number>(5);
+  const [page, setPage] = useState<number>(1);
   const [filterOpen, setFilterOpen] = useState(false);
-  const {data: trips, isLoading, refetch} = useViajeDistribucionControllerFindAll({page, limit: rowsPerPage});
+  const [appliedFilters, setAppliedFilters] = useState<BuscarViajeDistribucionDto>({});
 
+  const [trips, setTrips] = useState<ViajeDistribucionDto[]>([]);;
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  
   const [searchQuery, setSearchQuery] = useState<string>("");
   const debouncedQuery = useDebouncedValue(searchQuery, 500);
  
@@ -35,9 +38,83 @@ export default function DistributionListPage() {
   const [openDetailsDialog, setOpenDetailsDialog] = useState<boolean>(false);
  
   const [viajeDistribucionSelected, setviajeDistribucionSelected] = useState<ViajeDistribucionDto>();
-  const [tripsDistribution, setTripsDistribution] = useState<ViajeDistribucionDto[]>([]);
 
+  const [empresas, setEmpresas] = useState<EmpresaDto[]>([]);
+  const [vehiculos, setVehiculos] = useState<VehiculoDto[]>([]);
+  const [choferes, setChoferes] = useState<ChoferDto[]>([]);
+  const [depositos, setDepositos] = useState<DepositoDto[]>([]);
+  const [loadingOptions, setLoadingOptions] = useState({
+      empresas: false,
+      vehiculos: false,
+      choferes: false,
+      depositos: false
+  });
 
+  // Función para cargar las opciones de los selects
+  const loadSelectOptions = useCallback(async () => {
+      try {
+          setLoadingOptions(prev => ({...prev, empresas: true}));
+          const resEmpresas = await empresaControllerFindAll();
+          setEmpresas(resEmpresas.data);
+
+          setLoadingOptions(prev => ({...prev, vehiculos: true}));
+          const resVehiculos = await vehiculoControllerFindAll();
+          setVehiculos(resVehiculos.data);
+
+          setLoadingOptions(prev => ({...prev, choferes: true}));
+          const resChoferes = await choferControllerFindAll();
+          setChoferes(resChoferes.data);
+
+          setLoadingOptions(prev => ({...prev, depositos: true}));
+          const resDepositos = await depositoControllerFindAll();
+          setDepositos(resDepositos.data);
+      } catch (error) {
+          notify("error", "Error al cargar opciones de filtros");
+      } finally {
+          setLoadingOptions({
+              empresas: false,
+              vehiculos: false,
+              choferes: false,
+              depositos: false
+          });
+      }
+  }, []);
+
+  useEffect(() => {
+      loadSelectOptions();
+  }, [loadSelectOptions]);
+
+  const { mutateAsync: buscarViajes } = useViajeDistribucionControllerBuscar();
+
+  const fetchTrips = useCallback(async () => {
+      setIsLoading(true);
+      try {
+          const res = await buscarViajes({
+              data: appliedFilters,
+              params: {
+                  page: page,
+                  limit: rowsPerPage,
+              },
+          });
+          const responseData = res.data
+
+          setTrips(responseData.data); // Ajustá si hay paginación en backend
+          const totalPages = Math.ceil((responseData.total ?? 0) / rowsPerPage)
+          setTotalPages(totalPages);
+      } catch (err) {
+          notify("error", "No se pudieron cargar los viajes.");
+      } finally {
+          setIsLoading(false);
+      }
+  }, [page, rowsPerPage, appliedFilters, buscarViajes]);
+
+  useEffect(() => {
+      const timer = setTimeout(() => {
+          fetchTrips();
+      }, 300); // Pequeño debounce para evitar llamadas rápidas consecutivas
+
+      return () => clearTimeout(timer);
+  }, [fetchTrips, page]);
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
@@ -53,14 +130,17 @@ export default function DistributionListPage() {
   };
 
 
-  //handle de filtros
+  const handleApplyFilters = useCallback((newFilters: BuscarViajeDistribucionDto) => {
+      setAppliedFilters(newFilters)
+      setPage(1);
+  },[]);
 
 
   const handleDelete = async (id: string) => {
       try {
           await viajeDistribucionControllerRemove(id);
           setOpenDialog(false);
-          await refetch();
+          await fetchTrips();
           notify("delete", "Viaje eliminado correctamente");
           setPage(1);
       } catch (e) {
@@ -71,70 +151,57 @@ export default function DistributionListPage() {
       }
   };
 
-const filtered = trips?.data
-  ? trips.data.data.filter((trip) => {
-      const choferNombre = `${trip.chofer?.nombre ?? ""} ${trip.chofer?.apellido ?? ""}`.toLocaleLowerCase();
-      const vehiculoInfo = `${trip.vehiculo?.modelo ?? ""} ${trip.vehiculo?.patente ?? ""}`.toLocaleLowerCase();
-      const empresaNombre = `${trip.transportista?.nombre_comercial ?? ""}`.toLocaleLowerCase();
-      const id = trip._id.toLocaleLowerCase();
-
-      return (
-        choferNombre.includes(debouncedQuery.toLocaleLowerCase()) ||
-        vehiculoInfo.includes(debouncedQuery.toLocaleLowerCase()) ||
-        empresaNombre.includes(debouncedQuery.toLocaleLowerCase()) ||
-        id.includes(debouncedQuery.toLocaleLowerCase())
-      );
-    })
-  : [];
-
-
-  const totalPages = Math.ceil((trips?.data?.total ?? 0) / rowsPerPage)
 
   const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
     console.log("page", value);
     setPage(value);
   };
 
-  useEffect(() => {
-    setPage(1);
-  }, [searchQuery]);
-
   return(
     <>
-      <div>
-        <SectionHeader
-          title="Viajes de distribución"
-          description="Gestione y planifique viajes de distribución asociando remitos, costos y recursos de transporte."
-          buttonText="Nuevo viaje"
-          onAdd={() => navigate('/trips/distribution/form')}
-        /> 
+      <SectionHeader
+        title="Viajes de distribución"
+        description="Gestione y planifique viajes de distribución asociando remitos, costos y recursos de transporte."
+        buttonText="Nuevo viaje"
+        onAdd={() => navigate('/trips/distribution/form')}
+      /> 
 
-        <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} placeholder="Buscar chofer, vehiculo o número">
-            <Button
-                variant="contained"
-                onClick={() => navigate("/trips/collection")} 
-                sx={{
-                    backgroundColor: "#00A86B",
-                    textTransform: "none",
-                    borderRadius: "8px",
-                    fontWeight: "500",
+      <div className="flex justify-around">
+        <DistributionFilters 
+          filterOpen={filterOpen} 
+          setFilterOpen={setFilterOpen} 
+          onApply={handleApplyFilters}
+          empresas={empresas}
+          vehiculos={vehiculos}
+          choferes={choferes}
+          depositos={depositos}
+          loadingOptions={loadingOptions}
+        />
+
+        <Button
+            variant="contained"
+            onClick={() => navigate("/trips/collection")} 
+            sx={{
+                backgroundColor: "#00A86B",
+                textTransform: "none",
+                borderRadius: "8px",
+                fontWeight: "500",
+                boxShadow: "none",
+                '&:hover': {
+                    backgroundColor: "#008c5a",
                     boxShadow: "none",
-                    '&:hover': {
-                        backgroundColor: "#008c5a",
-                        boxShadow: "none",
-                    },
-                }}
-                className="w-full sm:max-w-max"
-            >
-                Viajes
-            </Button>
-        </SearchBar>
+                },
+            }}
+            className="w-full sm:max-w-max"
+        >
+            Viajes
+        </Button>
       </div>
 
       {/*tabla*/}
       {isMobile ? (
         <div className="grid gap-4  lg:grid-cols-2">
-            {filtered.map(tripsDistribution => (
+            {trips.map(tripsDistribution => (
                 <EntityCard
                     key={tripsDistribution._id}
                     title={tripsDistribution._id}
@@ -181,7 +248,7 @@ const filtered = trips?.data
                                             <LoadingState title="viajesDistribucion"/>
                                         </TableCell>
                                     </TableRow>
-                                ) : filtered.length === 0 ? (
+                                ) : trips.length === 0 ? (
                                     <TableRow key="no-trips">
                                         <TableCell
                                             colSpan={6}
@@ -191,7 +258,7 @@ const filtered = trips?.data
                                         </TableCell>
                                     </TableRow>
                                 ):(
-                                    filtered.map((tripDistribucion) => (
+                                    trips.map((tripDistribucion) => (
                                         <TableRow key={tripDistribucion._id} className="hover:bg-gray-50 overflow-hidden">
                                             <TableCell sx={{fontWeight: "bold", maxWidth: 150}} className="truncate">{tripDistribucion._id}</TableCell>
                                             <TableCell sx={{minWidth: 150}} >
@@ -237,7 +304,7 @@ const filtered = trips?.data
                 page={page}
                 totalPages={totalPages}
                 rowsPerPage={rowsPerPage}
-                filtered={filtered}
+                filtered={trips}
                 handleChangePage={handleChangePage}
                 setRowsPerPage={setRowsPerPage}
                 setPage={setPage}

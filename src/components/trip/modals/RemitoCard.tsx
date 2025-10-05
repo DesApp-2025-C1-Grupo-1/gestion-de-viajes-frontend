@@ -8,9 +8,10 @@ interface RemitoCardProps {
   onRemitoToggle: (remitoId: number) => void;
   showCheckbox?: boolean;
   compactMode?: boolean;
+  permissionsEdit?: boolean;
 }
 
-export default function RemitoCard({ rem, selectedRemitos, onRemitoToggle, showCheckbox = true, compactMode = false }: RemitoCardProps) {
+export default function RemitoCard({ rem, selectedRemitos, onRemitoToggle, showCheckbox = true, compactMode = false, permissionsEdit = true }: RemitoCardProps) {
     const prioridadColor =rem.prioridad === "urgente"? "#D32F2F" // rojo
         : rem.prioridad === "alta"? "#ED6C02" : "#2E7D32"; // verde para normal
 
@@ -50,7 +51,9 @@ export default function RemitoCard({ rem, selectedRemitos, onRemitoToggle, showC
                     sx={{
                         color: "#8648B9",
                         "&.Mui-checked": { color: "#8648B9" },
-                        padding: 0
+                        padding: 0,
+                        cursor: showCheckbox && permissionsEdit ? "pointer" : "default",
+                        display: showCheckbox && permissionsEdit ? "block" : "none",
                     }}
                 />
 

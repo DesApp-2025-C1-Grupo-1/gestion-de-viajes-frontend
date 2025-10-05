@@ -1,13 +1,23 @@
 import axios from "axios";
 
+const aliasProvincia: { [key: string]: string } = {
+  "Tierra del Fuego, Antártida e Islas del Atlántico Sur": "Tierra del Fuego",
+  "Ciudad Autónoma de Buenos Aires": "CABA"
+  // otros alias que quieras corregir
+};
+
+function normalizarProvincia(nombre: string): string {
+  return aliasProvincia[nombre] ?? nombre;
+}
+
 // ---------- Argentina ----------
 export const getProvinciasAR = async () => {
   const { data } = await axios.get(
-    "https://apis.datos.gob.ar/georef/api/provincias"
+    "https://apis.datos.gob.ar/georef/api/provincias?campos=nombre"
   );
   return data.provincias.map((p: any) => ({
     id: p.id,
-    nombre: p.nombre,
+    nombre: normalizarProvincia(p.nombre),
   })).sort((a: any, b: any) => a.nombre.localeCompare(b.nombre));
 };
 

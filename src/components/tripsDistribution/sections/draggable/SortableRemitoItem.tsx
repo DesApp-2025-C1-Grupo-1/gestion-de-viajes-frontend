@@ -4,6 +4,7 @@ import { Box } from "@mui/material";
 import RemitoCard from "../../../trip/modals/RemitoCard";
 import { CSS } from '@dnd-kit/utilities';
 import { GripVertical } from "lucide-react";
+import { useDistributionFormContext } from "../../../../contexts/DistributionFormContext";
 
 export default function SortableRemitoItem({ 
   rem, 
@@ -18,6 +19,9 @@ export default function SortableRemitoItem({
   onToggleRemito: (id: number) => void;
   quitarRemito: (remito: RemitoDto) => void;
 }) {
+
+  const {permissions} = useDistributionFormContext();
+
   const {
     attributes,
     listeners,
@@ -32,6 +36,14 @@ export default function SortableRemitoItem({
     transition,
     opacity: isDragging ? 0.5 : 1,
   };
+
+  const handleRemitoToggle = () => {
+    if (remitoIds.includes(rem.id)) {
+      quitarRemito(rem);
+    } else {
+      onToggleRemito(rem.id); // el caso de agregar desde otros contextos
+    }
+  }
 
   return (
     <Box
@@ -83,21 +95,21 @@ export default function SortableRemitoItem({
 
             {/* Handle de arrastre */}
             <Box
-                {...attributes}
-                {...listeners}
+                {...(permissions.canEditPositionRemitos ? attributes : {})}
+                {...(permissions.canEditPositionRemitos ? listeners : {})}
                 sx={{
                     height: '100%',
                     p: 0.5,
                     border: '1px solid #CCC',
                     borderRadius: "50%",
-                    cursor: 'grab',
+                    cursor: permissions.canEditPositionRemitos ? 'grab' : 'default',
                     color: '#666',
                     '&:hover': {
                     backgroundColor: '#F0F0F0',
                     color: '#8648B9'
                     },
                     '&:active': {
-                    cursor: 'grabbing'
+                      cursor: permissions.canEditPositionRemitos ? 'grabbing' : 'default'
                     }
                 }}
             >
@@ -107,18 +119,11 @@ export default function SortableRemitoItem({
 
         <Box sx={{ flex: 1, minWidth: 0 }}>
             <RemitoCard
-            rem={rem}
-            selectedRemitos={remitoIds}
-            onRemitoToggle={() => {
-              // si ya está seleccionado -> lo quitamos en vez de solo hacer toggle
-              if (remitoIds.includes(rem.id)) {
-                quitarRemito(rem);
-              } else {
-                onToggleRemito(rem.id); // el caso de agregar desde otros contextos
-              }
-            }}
-            showCheckbox={false}
-            compactMode={true}
+              rem={rem}
+              selectedRemitos={remitoIds}
+              onRemitoToggle={permissions.canEditRemitos ? handleRemitoToggle : () => {}}
+              showCheckbox={false}
+              compactMode={true}
             />
         </Box>
     </Box>

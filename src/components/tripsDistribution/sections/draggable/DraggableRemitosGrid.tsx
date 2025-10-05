@@ -73,7 +73,7 @@ export default function DraggableRemitosGrid({
     setActiveId(null);
   }
 
-   const activeRemito = remitos.find(rem => rem.id === activeId);
+  const activeRemito = remitos.find(rem => rem.id === activeId);
 
   // Resumen por países
   const remitosPorPais = remitos.reduce((acc, remito) => {
@@ -173,14 +173,14 @@ export default function DraggableRemitosGrid({
               <Box  sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
                 {remitos.map((remito, index) => (
                   
-                    <SortableRemitoItem
-                      key={remito.id}
-                      rem={remito}
-                      index={index}
-                      remitoIds={remitoIds}
-                      onToggleRemito={onToggleRemito}
-                      quitarRemito={quitarRemito}
-                    />
+                  <SortableRemitoItem
+                    key={remito.id}
+                    rem={remito}
+                    index={index}
+                    remitoIds={remitoIds}
+                    onToggleRemito={onToggleRemito}
+                    quitarRemito={quitarRemito}
+                  />
                   
                 ))}
               </Box>

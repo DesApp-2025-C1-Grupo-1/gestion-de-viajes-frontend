@@ -40,7 +40,10 @@ export default function RemitosSection() {
       isLoading,
       toggleRemito,
       remitosCompletos,
-      reordenarRemitos
+      reordenarRemitos,
+      quitarRemito,
+      remitosQuitados,
+      restaurarRemito
     } = useRemitosManagement({
       control,
       setValue,
@@ -124,14 +127,16 @@ export default function RemitosSection() {
             )}
           </ConditionalField>
 
-          {remitoIds.length > 0 && (
-            <DraggableRemitosGrid
-              remitos={remitosCompletos}
-              remitoIds={remitoIds}
-              onToggleRemito={toggleRemito}
-              onReorderRemitos={reordenarRemitos}
-            />
-          )}
+
+          <DraggableRemitosGrid
+            remitos={remitosCompletos}
+            remitoIds={remitoIds}
+            onToggleRemito={toggleRemito}
+            onReorderRemitos={reordenarRemitos}
+            quitarRemito={quitarRemito}
+            remitosQuitados={remitosQuitados}
+            restaurarRemito={restaurarRemito}
+          />
         </Grid>
 
         <RemitosSelectModal

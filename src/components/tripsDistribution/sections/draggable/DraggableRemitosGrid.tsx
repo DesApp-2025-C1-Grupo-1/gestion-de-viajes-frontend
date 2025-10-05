@@ -13,11 +13,10 @@ import {
 import {
   arrayMove,
   SortableContext,
-  sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 
-import { Grid, Typography, Paper, Box, Chip, Divider } from "@mui/material";
+import { Grid, Typography, Paper, Box, Chip, Divider, Button, Alert } from "@mui/material";
 import { MapPin, Info, GripVertical } from "lucide-react";
 import { RemitoDto } from '../../../../api/generated';
 import RemitoCard from '../../../trip/modals/RemitoCard';
@@ -28,13 +27,19 @@ interface DraggableRemitosGridProps {
   remitoIds: number[];
   onToggleRemito: (remitoId: number) => void;
   onReorderRemitos: (nuevoOrden: number[]) => void;
+  remitosQuitados: RemitoDto[];
+  restaurarRemito: (remito: RemitoDto) => void;
+  quitarRemito: (remito: RemitoDto) => void;
 }
 
 export default function DraggableRemitosGrid({ 
   remitos, 
   remitoIds, 
   onToggleRemito,
-  onReorderRemitos 
+  onReorderRemitos,
+  remitosQuitados,
+  restaurarRemito,
+  quitarRemito
 }: DraggableRemitosGridProps) {
   const [activeId, setActiveId] = useState<number | null>(null);
 
@@ -140,20 +145,31 @@ export default function DraggableRemitosGrid({
             strategy={verticalListSortingStrategy}
           >
             <Box sx={{ mb: 3 }}>
-              <Typography 
-                variant="subtitle2" 
-                sx={{ 
-                  color: "#5A5A65", 
-                  fontWeight: 500, 
-                  mb: 2,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 1
-                }}
-              >
-                <GripVertical size={16} />
-                Orden de entrega (arrastrá para reordenar)
-              </Typography>
+              {remitos.length === 0 ? (
+                <Typography 
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ fontStyle: 'italic', textAlign: 'center', py: 4 }}
+                >
+                  No hay remitos seleccionados.
+                </Typography>
+              ):(
+                <Typography 
+                  variant="subtitle2" 
+                  sx={{ 
+                    color: "#5A5A65", 
+                    fontWeight: 500, 
+                    mb: 2,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1
+                  }}
+                >
+                  <GripVertical size={16} />
+                  Orden de entrega (arrastrá para reordenar)
+                </Typography>
+              )}
+              
               <Box  sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
                 {remitos.map((remito, index) => (
                   
@@ -163,6 +179,7 @@ export default function DraggableRemitosGrid({
                       index={index}
                       remitoIds={remitoIds}
                       onToggleRemito={onToggleRemito}
+                      quitarRemito={quitarRemito}
                     />
                   
                 ))}
@@ -247,22 +264,44 @@ export default function DraggableRemitosGrid({
           </DragOverlay>
         </DndContext>
 
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1,
-            p: 2,
-            backgroundColor: '#E3F2FD',
-            borderRadius: 1,
-            border: '1px solid #BBDEFB'
-          }}
-        >
-          <Info size={16} color="#1976D2" />
-          <Typography variant="body2" color="#1565C0" sx={{ fontSize: '0.875rem' }}>
-            <strong>Ayuda:</strong> Hacé click en el checkbox para quitar un remito del viaje. 
-          </Typography>
-        </Box>
+        {remitos.length > 0 &&       
+          <Alert severity="info" sx={{ mt: 2, backgroundColor: '#E3F2FD', color: '#0D47A1',p: 1, borderRadius: 1, border: '1px solid #BBDEFB', display: 'flex', alignItems: 'center'}}
+          >
+            <Typography variant="body2" color="#1565C0" sx={{ fontSize: '0.875rem' }}>
+              <strong>Ayuda:</strong> Hacé click en el checkbox para quitar un remito del viaje. 
+            </Typography>
+          </Alert>
+        }
+
+        {remitosQuitados.length > 0 && (
+          <>
+            <Divider sx={{ my: 3 }} />
+            <Box sx={{ mb: 2 }}>
+              <Typography 
+                variant="subtitle2"
+                sx={{ color: "#B71C1C", fontWeight: 600 }}
+              >
+                Remitos quitados (podés volver a agregarlos)
+              </Typography>
+            </Box>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+              {remitosQuitados.map((remito) => (
+                <Box 
+                  key={remito.id} 
+                  sx={{ display: "flex", alignItems: "center", gap: 2 }}
+                >
+                  <RemitoCard
+                    rem={remito}
+                    selectedRemitos={[]}
+                    onRemitoToggle={() => restaurarRemito(remito)}
+                    showCheckbox={false}
+                    compactMode={true}
+                  />
+                </Box>
+              ))}
+            </Box>
+          </>
+        )}
       </Paper>
     </Grid>
   );

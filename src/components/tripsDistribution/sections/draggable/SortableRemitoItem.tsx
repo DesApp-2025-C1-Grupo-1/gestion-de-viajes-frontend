@@ -10,11 +10,13 @@ export default function SortableRemitoItem({
   index, 
   remitoIds, 
   onToggleRemito 
+  , quitarRemito
 }: { 
   rem: RemitoDto;
   index: number;
   remitoIds: number[];
   onToggleRemito: (id: number) => void;
+  quitarRemito: (remito: RemitoDto) => void;
 }) {
   const {
     attributes,
@@ -107,7 +109,14 @@ export default function SortableRemitoItem({
             <RemitoCard
             rem={rem}
             selectedRemitos={remitoIds}
-            onRemitoToggle={() => onToggleRemito(rem.id)}
+            onRemitoToggle={() => {
+              // si ya está seleccionado -> lo quitamos en vez de solo hacer toggle
+              if (remitoIds.includes(rem.id)) {
+                quitarRemito(rem);
+              } else {
+                onToggleRemito(rem.id); // el caso de agregar desde otros contextos
+              }
+            }}
             showCheckbox={false}
             compactMode={true}
             />

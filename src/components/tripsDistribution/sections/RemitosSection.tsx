@@ -6,8 +6,8 @@ import { useEffect, useMemo, useState } from "react";
 import RemitosSelectModal from "../../trip/modals/RemitosSelectModal";
 import { CountryProvinceSelect } from "../../trip/CountryProvinceSelect";
 import { LocalidadSelect } from "../../trip/LocalidadSelected";
-import RemitosSelectedGrid from "./RemitosSelectedGrid";
 import { useRemitosManagement } from "../../../hooks/tripDistribution/useRemitosManagement";
+import DraggableRemitosGrid from "./draggable/DraggableRemitosGrid";
 
 const depositoSelectButtonStyle = {
   height: "48px",
@@ -40,6 +40,7 @@ export default function RemitosSection() {
       isLoading,
       toggleRemito,
       remitosCompletos,
+      reordenarRemitos
     } = useRemitosManagement({
       control,
       setValue,
@@ -58,9 +59,6 @@ export default function RemitosSection() {
     const nuevoTipoViaje = tieneRemitosInternacionales ? "internacional" : "nacional";
     setValue("tipo_viaje", nuevoTipoViaje);
   }, [tieneRemitosInternacionales, setValue]);
-
-  console.log("Remitos seleccionados:", remitosSeleccionados);
-  console.log("Remitos IDs:", remitoIds);
 
   return (
     <>
@@ -126,14 +124,15 @@ export default function RemitosSection() {
             )}
           </ConditionalField>
 
-        {remitoIds.length > 0 && (
-          <RemitosSelectedGrid
-            remitos={remitosCompletos}
-            onToggleRemito={toggleRemito}
-            remitoIds={remitoIds}
-          />
-        )}
-      </Grid>
+          {remitoIds.length > 0 && (
+            <DraggableRemitosGrid
+              remitos={remitosCompletos}
+              remitoIds={remitoIds}
+              onToggleRemito={toggleRemito}
+              onReorderRemitos={reordenarRemitos}
+            />
+          )}
+        </Grid>
 
         <RemitosSelectModal
           open={remitosModalOpen}

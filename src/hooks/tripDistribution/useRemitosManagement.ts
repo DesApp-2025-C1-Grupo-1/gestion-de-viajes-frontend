@@ -46,7 +46,7 @@ export const useRemitosManagement = ({
   // Función para agregar/remover remitos
   const toggleRemito = (remitoId: number) => {
     const nuevosIds = remitoIds.includes(remitoId)
-      ? remitoIds.filter(id => id !== remitoId)
+      ? remitoIds.filter((id : number) => id !== remitoId)
       : [...remitoIds, remitoId];
 
     setRemitosCompletos(prev =>
@@ -58,12 +58,12 @@ export const useRemitosManagement = ({
     setValue("remito_ids", nuevosIds, { shouldValidate: true });
   };
 
-  // Función para reordenar (preparación para drag & drop)
-  const reordenarRemitos = (desdeIndex: number, hastaIndex: number) => {
-    const nuevosIds = [...remitoIds];
-    const [removido] = nuevosIds.splice(desdeIndex, 1);
-    nuevosIds.splice(hastaIndex, 0, removido);
-    setValue("remito_ids", nuevosIds, { shouldValidate: true });
+  const reordenarRemitos = (nuevosIds: number[]) => {
+    setRemitosCompletos(prev => prev.sort((a, b) => nuevosIds.indexOf(a.id) - nuevosIds.indexOf(b.id)));
+    setValue("remito_ids", nuevosIds, {
+      shouldValidate: true,
+      shouldDirty: true 
+    });
   };
 
   return {

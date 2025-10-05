@@ -10,18 +10,18 @@ interface RemitoCardProps {
   compactMode?: boolean;
 }
 
-export default function RemitoCard({ rem, selectedRemitos, onRemitoToggle, showCheckbox, compactMode }: RemitoCardProps) {
+export default function RemitoCard({ rem, selectedRemitos, onRemitoToggle, showCheckbox = true, compactMode = false }: RemitoCardProps) {
     const prioridadColor =rem.prioridad === "urgente"? "#D32F2F" // rojo
-        : rem.prioridad === "alta"? "#ED6C02"  : "#2E7D32"; // verde para normal
+        : rem.prioridad === "alta"? "#ED6C02" : "#2E7D32"; // verde para normal
 
     const backgroundPriorityColor =rem.prioridad === "urgente" ? "#FFEBEE"
         : rem.prioridad === "alta" ? "#FFF4E5" : "#E8F5E9"; // verde claro
 
     return (
         <Card
-            onClick={() => onRemitoToggle(rem.id)}
+            onClick={showCheckbox ? () => onRemitoToggle(rem.id) : undefined}
             sx={{
-                cursor: "pointer",
+                cursor: showCheckbox ? "pointer" : "default",
                 border: "2px solid transparent", // siempre 2px
                 borderColor: selectedRemitos.includes(rem.id) ? "#8648B9" : "#ddd", // cambia el color del borde si está seleccionado
                 backgroundColor: selectedRemitos.includes(rem.id) ? "#F5EBFF" : "#fff",
@@ -38,7 +38,7 @@ export default function RemitoCard({ rem, selectedRemitos, onRemitoToggle, showC
             <CardContent
                 sx={{
                     display: "flex",
-                    gap: 1.5,
+                    gap: compactMode ? 1 : 1.5,
                     alignItems: "flex-start",
                     p: { xs: 1.5, sm: 2 },
                 }}
@@ -46,10 +46,11 @@ export default function RemitoCard({ rem, selectedRemitos, onRemitoToggle, showC
                 {/* Checkbox */}
                 <Checkbox
                     checked={selectedRemitos.includes(rem.id)}
+                    onChange={!showCheckbox ? () => onRemitoToggle(rem.id) : undefined}
                     sx={{
-                    color: "#8648B9",
-                    "&.Mui-checked": { color: "#8648B9" },
-                    padding: 0
+                        color: "#8648B9",
+                        "&.Mui-checked": { color: "#8648B9" },
+                        padding: 0
                     }}
                 />
 

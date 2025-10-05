@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SectionHeader } from "../../components/SectionHeader";
-import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery} from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery} from "@mui/material";
 import LoadingState from "../../components/LoadingState";
 import MenuItem from "../../components/buttons/MenuItem";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
@@ -16,6 +16,8 @@ import { useTheme } from "@mui/material/styles";
 import { DetailsTripDistribution } from "../../components/tripsDistribution/DetailsTripDistribution";
 import { TripDistributionType } from "../../components/TripDistributionType";
 import DistributionFilters from "../../components/DistributionFilters";
+
+//import { DistributionDetails } from "./DistributionDetails";
 
 
 export default function DistributionListPage() {
@@ -133,7 +135,7 @@ export default function DistributionListPage() {
   const handleOpenDialog = (tripDistribution : ViajeDistribucionDto) => {
     setOpenDialog(true);
     setviajeDistribucionSelected(tripDistribution);
-} ;
+    } ;
  
   const handleOpenDetails = (tripDistribution: ViajeDistribucionDto) => {
       setOpenDetailsDialog(true);
@@ -212,7 +214,8 @@ export default function DistributionListPage() {
                   
                     onDelete={() => handleOpenDialog(tripsDistribution)}
                     onEdit={() => navigate(`/trips/distribution/edit/${tripsDistribution._id}`)}  
-                    onView={() => handleOpenDetails(tripsDistribution)}          
+                    //onView={() => handleOpenDetails(tripsDistribution)}  
+                    onView={() => navigate(`/trips/distribution/details/${tripsDistribution._id}`)}        
                 />
             ))}
         </div>
@@ -277,7 +280,9 @@ export default function DistributionListPage() {
                                                 <MenuItem  
                                                     module="trips/distribution"
                                                     handleOpenDialog={() => handleOpenDialog(tripDistribucion)}
-                                                    handleOpenDetails={() => handleOpenDetails(tripDistribucion)}
+                                                    //handleOpenDetails={() => handleOpenDetails(tripDistribucion)}
+                                                    handleOpenDetails={() => navigate(`/trips/distribution/details/${tripDistribucion._id}`)}
+                        
                                                     id={tripDistribucion._id}
                                                 >
                                                         <Eye className="text-gray-500 hover:text-gray-700 size-4" />
@@ -293,7 +298,7 @@ export default function DistributionListPage() {
             )}
 
             <PaginationEntity
-                entity="empresas"
+                entity="viajes"
                 page={page}
                 totalPages={totalPages}
                 rowsPerPage={rowsPerPage}
@@ -314,15 +319,14 @@ export default function DistributionListPage() {
                 />
             )}
 
-            {/*Detalles*/}
+            {/*Detalles
             {viajeDistribucionSelected && (
                 <DetailsTripDistribution
                     tripDistributionSelected={viajeDistribucionSelected}
                     setOpenDetailsDialog={setOpenDetailsDialog}
                     openDetailsDialog={openDetailsDialog}
-                />
-                
-            )}
+                />                              
+            )}*/}
  
   </>
   );

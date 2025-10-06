@@ -4,27 +4,31 @@ interface TripDistributionTypeProps {
   tipo: string;
 }
 
-const tripDistributionType: Record<string, { label: string; bgColor: string; textColor: string }> = {
+const tripDistributionType: Record<string, { label: string; bgColor: string; textColor: string; brColor:string}> = {
 
    'iniciado': {
     label: 'Iniciado',
     bgColor: '#e1eefae3',     
-    textColor: '#64748B'
+    textColor: '#626c7bff',
+    brColor: '#626c7bff'
   },
   'inicio de carga': {
     label: 'Inicio de Carga',
-    bgColor: '#e9dc9eff',    
-    textColor: '#b96419ff'
+    bgColor: '#efed9cff',    
+    textColor: '#c46c1eff',
+    brColor: '#c46c1eff'
   },
   'fin de carga': {
     label: 'Fin de Carga',
     bgColor: '#DBEAFE', 
-     textColor: '#1E40AF',
+    textColor: '#1E40AF',
+    brColor: '#1E40AF'
   },
   'fin de viaje': {
     label: 'Fin de Viaje', 
-    bgColor: '#E6F4EA',
+    bgColor: '#e6f4eaff',
     textColor: '#2F855A',
+    brColor: '#2F855A'
   }
 };
 
@@ -47,6 +51,8 @@ export const TripDistributionType = ({ tipo }: TripDistributionTypeProps) => {
         px: 1.5,
         backgroundColor: config.bgColor,
         color: config.textColor,
+        border: '0.5px solid',
+        borderColor: config.brColor,
         '& .MuiChip-icon': {
           ml: '4px',
           mr: '2px',

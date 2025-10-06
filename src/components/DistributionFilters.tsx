@@ -27,103 +27,133 @@ interface TripFiltersProps {
 }
 
 export default function DistributionFilters({
-    filterOpen,
-    setFilterOpen,
-    onApply,
-    initialFilters = {
-        fecha_inicio: undefined,
-        _id: '',
-        transportista: '',
-        chofer: '',
-        vehiculo: '',
-        tipo: undefined,
-        origen: '',
-        remito: [],
-        tarifa: undefined,
-    },
-    empresas,
-    vehiculos,
-    choferes,
-    depositos,
-    remitos,
-    loadingOptions
+  filterOpen,
+  setFilterOpen,
+  onApply,
+  initialFilters = {
+    fecha_desde: undefined,
+    fecha_hasta: undefined,
+    _id: "",
+    transportista: "",
+    chofer: "",
+    vehiculo: "",
+    tipo: undefined,
+    origen: "",
+    remito: [],
+    tarifa: undefined,
+  },
+  empresas,
+  vehiculos,
+  choferes,
+  depositos,
+  remitos,
+  loadingOptions,
 }: TripFiltersProps) {
-    const [localFilters, setLocalFilters] = useState<BuscarViajeDistribucionDto>(initialFilters);
-    const [appliedFilters, setAppliedFilters] = useState<BuscarViajeDistribucionDto>(initialFilters);
-    const navigate = useNavigate();
+  const [localFilters, setLocalFilters] = useState<BuscarViajeDistribucionDto>(initialFilters);
+  const [appliedFilters, setAppliedFilters] = useState<BuscarViajeDistribucionDto>(initialFilters);
+  const navigate = useNavigate();
 
-    const handleChange = useCallback((key: keyof BuscarViajeDistribucionDto, value: string | Date | number | number[] | null | undefined) => {
-        let adjustedValue: any = value;
-    
-        if (value instanceof Date) {
-            const date = new Date(value);
-            date.setHours(0, 0, 0, 0);
-            adjustedValue = date.toISOString();
-        }
-    
-        setLocalFilters(prev => ({ ...prev, [key]: adjustedValue }));
-    }, []);
+  // ✅ Cambios en filtros
+  const handleChange = useCallback(
+    (
+      key: keyof BuscarViajeDistribucionDto,
+      value: string | Date | number | number[] | null | undefined
+    ) => {
+      let adjustedValue: any = value;
 
-    const handleApply = () => {
-        setAppliedFilters(localFilters);
-        onApply(localFilters);
-        setFilterOpen(false);
+      if (value instanceof Date) {
+        const date = new Date(value);
+        if (key === "fecha_desde") date.setHours(0, 0, 0, 0);
+        if (key === "fecha_hasta") date.setHours(23, 59, 59, 999);
+        adjustedValue = date.toISOString();
+      }
+
+      setLocalFilters((prev) => ({ ...prev, [key]: adjustedValue }));
+    },
+    []
+  );
+
+  const handleApply = () => {
+      setAppliedFilters(localFilters);
+      onApply(localFilters);
+      setFilterOpen(false);
+  };
+
+  const handleClear = () => {
+    const empty: BuscarViajeDistribucionDto = {
+      fecha_desde: undefined,
+      fecha_hasta: undefined,
+      _id: "",
+      transportista: "",
+      chofer: "",
+      vehiculo: "",
+      tipo: undefined,
+      origen: "",
+      remito: [],
+      tarifa: undefined,
     };
+    setLocalFilters(empty);
+    setAppliedFilters(empty);
+    onApply(empty);
+  };
 
-    const handleClear = () => {
-        const empty: BuscarViajeDistribucionDto = {
-            fecha_inicio: undefined,
-            _id: '',
-            transportista: '',
-            chofer: '',
-            vehiculo: '',
-            tipo: undefined,
-            origen: '',
-            remito: [],
-            tarifa: undefined,
-        };
-        setLocalFilters(empty);
-        setAppliedFilters(empty);
-        onApply(empty);
-    };
+  const handleDeleteChip = (key: keyof BuscarViajeDistribucionDto) => {
+    const clearedValue =
+      key === "tipo" || key === "fecha_desde" || key === "fecha_hasta"
+        ? undefined
+        : key === "remito"
+        ? []
+        : "";
+    const updatedFilters = { ...appliedFilters, [key]: clearedValue };
+    setAppliedFilters(updatedFilters);
+    setLocalFilters(updatedFilters);
+    onApply(updatedFilters);
+  };
 
-    const handleDeleteChip = (key: keyof BuscarViajeDistribucionDto) => {
-        const clearedValue = key === 'tipo' || key === 'fecha_inicio' ? undefined : key === 'remito' ? [] : '';
-        const updatedFilters = { ...appliedFilters, [key]: clearedValue };
-        setAppliedFilters(updatedFilters);
-        setLocalFilters(updatedFilters);
-        onApply(updatedFilters);
-    };
+  // Helpers para mostrar chips
+  const nameEmpresaChip = (id: string) =>
+    empresas.find((e) => e._id === id)?.nombre_comercial || "Empresa no encontrada";
+  const nameVehiculoChip = (id: string) =>
+    vehiculos.find((v) => v._id === id)
+      ? `${vehiculos.find((v) => v._id === id)!.modelo} - ${
+          vehiculos.find((v) => v._id === id)!.patente
+        }`
+      : "Vehículo no encontrado";
+  const nameChoferChip = (id: string) =>
+    choferes.find((c) => c._id === id)
+      ? `${choferes.find((c) => c._id === id)!.nombre} ${
+          choferes.find((c) => c._id === id)!.apellido
+        }`
+      : "Chofer no encontrado";
+  const nameDepositoChip = (id: string) =>
+    depositos.find((d) => d._id === id)?.nombre || "Depósito no encontrado";
 
-    const nameEmpresaChip = (id: string) => empresas.find(e => e._id === id)?.nombre_comercial || 'Empresa no encontrada';
-    const nameVehiculoChip = (id: string) => vehiculos.find(v => v._id === id) ? `${vehiculos.find(v => v._id === id)!.modelo} - ${vehiculos.find(v => v._id === id)!.patente}` : 'Vehículo no encontrado';
-    const nameChoferChip = (id: string) => choferes.find(c => c._id === id) ? `${choferes.find(c => c._id === id)!.nombre} ${choferes.find(c => c._id === id)!.apellido}` : 'Chofer no encontrado';
-    const nameDepositoChip = (id: string) => depositos.find(d => d._id === id)?.nombre || 'Depósito no encontrado';
-
-    const formatChipLabel = (key: string, value: any) => {
-        switch (key) {
-            case 'fecha_inicio':
-                return `Desde: ${value ? new Date(value).toLocaleDateString() : ''}`;
-            case '_id':
-                return `N° Viaje: ${value}`;
-            case 'transportista':
-                return `Transportista: ${nameEmpresaChip(value)}`;
-            case 'vehiculo':
-                return `Vehículo: ${nameVehiculoChip(value)}`;
-            case 'chofer':
-                return `Chofer: ${nameChoferChip(value)}`;
-            case 'origen':
-                return `Origen: ${nameDepositoChip(value)}`;
-            case 'tipo':
-                return `Tipo: ${value}`;
-            case 'remito':
-                return `Remitos: ${value.join(', ')}`;
-            case 'tarifa':
-                return `Tarifa: ${value}`;
-            default:
-                return `${key}: ${value}`;
-        }
-    };
+  const formatChipLabel = (key: string, value: any) => {
+    switch (key) {
+        case "fecha_desde":
+          return `Desde: ${new Date(value).toLocaleDateString()}`;
+        case "fecha_hasta":
+          return `Hasta: ${new Date(value).toLocaleDateString()}`;
+        case '_id':
+            return `N° Viaje: ${value}`;
+        case 'transportista':
+            return `Transportista: ${nameEmpresaChip(value)}`;
+        case 'vehiculo':
+            return `Vehículo: ${nameVehiculoChip(value)}`;
+        case 'chofer':
+            return `Chofer: ${nameChoferChip(value)}`;
+        case 'origen':
+            return `Origen: ${nameDepositoChip(value)}`;
+        case 'tipo':
+            return `Tipo: ${value}`;
+        case 'remito':
+            return `Remitos: ${value.join(', ')}`;
+        case 'tarifa':
+            return `Tarifa: ${value}`;
+        default:
+            return `${key}: ${value}`;
+    }
+  };
 
     return (
         <Box sx={{ width: "100%", mb: 2 }}>
@@ -201,18 +231,46 @@ export default function DistributionFilters({
                 <Box sx={{ mt: 2 }}>
                     <Paper elevation={3} sx={{ p: 2, backgroundColor: "white", borderRadius: "8px", boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "0.5px solid #c7c7c7" }}>
                         <Grid container spacing={4} sx={{ color: "#5A5A65" }}>
-                            <Grid item xs={12} sm={6} lg={4}>
-                                <Typography variant="subtitle2">Rango de fechas</Typography>
-                                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                    <Box display="flex" justifyContent="space-between" gap={2} mt={1}>
-                                        <DatePicker
-                                            slotProps={{ textField: { fullWidth: true, className: "inside-paper", placeholder: "Desde" } }}
-                                            value={localFilters.fecha_inicio ? new Date(localFilters.fecha_inicio) : undefined}
-                                            onChange={(value) => handleChange('fecha_inicio', value)}
-                                        />
-                                    </Box>
-                                </LocalizationProvider>
-                            </Grid>
+
+                          <Grid item xs={12} sm={6} lg={4}>
+                            <Typography variant="subtitle2">Rango de fechas</Typography>
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                              <Box display="flex" justifyContent="space-between" gap={2} mt={1}>
+                                <DatePicker
+                                  slotProps={{
+                                    textField: {
+                                      fullWidth: true,
+                                      className: "inside-paper",
+                                      placeholder: "Desde",
+                                    },
+                                  }}
+                                  format="dd/MM/yyyy"
+                                  value={
+                                    localFilters.fecha_desde
+                                      ? new Date(localFilters.fecha_desde)
+                                      : null
+                                  }
+                                  onChange={(value) => handleChange("fecha_desde", value)}
+                                />
+                                <DatePicker
+                                  slotProps={{
+                                    textField: {
+                                      fullWidth: true,
+                                      className: "inside-paper",
+                                      placeholder: "Hasta",
+                                    },
+                                  }}
+                                  format="dd/MM/yyyy"
+                                  value={
+                                    localFilters.fecha_hasta
+                                      ? new Date(localFilters.fecha_hasta)
+                                      : null
+                                  }
+                                  onChange={(value) => handleChange("fecha_hasta", value)}
+                                />
+                              </Box>
+                            </LocalizationProvider>
+                          </Grid>
 
                             <Grid item xs={12} sm={6} lg={4}>
                                 <Typography variant="subtitle2">Número de viaje</Typography>

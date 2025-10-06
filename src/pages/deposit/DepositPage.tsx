@@ -121,7 +121,7 @@ export default function DepositPage() {
                     border: "0.5px solid #C7C7C7",
                 }}
                 >
-                    <TableContainer className="h-full text-sm">
+                    <TableContainer className="h-full text-sm rounded-lg">
                         <Table aria-label="simple table">
                             <TableHead>
                                 <TableRow>

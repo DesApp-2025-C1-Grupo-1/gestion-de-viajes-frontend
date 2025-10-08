@@ -14,9 +14,9 @@ const tripDistributionType: Record<string, { label: string; bgColor: string; tex
   },
   'inicio de carga': {
     label: 'Inicio de Carga',
-    bgColor: '#efed9cff',    
-    textColor: '#c46c1eff',
-    brColor: '#c46c1eff'
+    bgColor: '#fffed6ff',    
+    textColor: '#de7316ff',
+    brColor: '#de7316ff'
   },
   'fin de carga': {
     label: 'Fin de Carga',

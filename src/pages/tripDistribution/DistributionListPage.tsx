@@ -13,11 +13,8 @@ import EntityCard from "../../components/EntityCard";
 import PaginationEntity from "../../components/PaginationEntity";
 import { TarifaDto, viajeDistribucionControllerRemove, ViajeDistribucionDto, ViajeDistribucionDtoEstado, useViajeDistribucionControllerFindAll, EmpresaDto, VehiculoDto, ChoferDto, empresaControllerFindAll, vehiculoControllerFindAll, choferControllerFindAll, DepositoDto, depositoControllerFindAll, BuscarViajeDistribucionDto, useViajeDistribucionControllerBuscar, RemitoDto, remitosControllerGetRemitos } from '../../api/generated';
 import { useTheme } from "@mui/material/styles";
-import { DetailsTripDistribution } from "../../components/tripsDistribution/DetailsTripDistribution";
 import { TripDistributionType } from "../../components/TripDistributionType";
 import DistributionFilters from "../../components/DistributionFilters";
-
-//import { DistributionDetails } from "./DistributionDetails";
 
 
 export default function DistributionListPage() {
@@ -166,7 +163,6 @@ export default function DistributionListPage() {
 
 
   const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
-    console.log("page", value);
     setPage(value);
   };
 
@@ -198,9 +194,9 @@ export default function DistributionListPage() {
         <div className="grid gap-4  lg:grid-cols-2">
             {trips.map(tripsDistribution => (
                 <EntityCard
-                    key={tripsDistribution._id}
-                    title={tripsDistribution._id}
-                    subtitle={`${tripsDistribution.estado[0].toUpperCase()}${tripsDistribution.estado.slice(1).toLowerCase()}`}
+                    key={tripsDistribution.id}
+                    title={tripsDistribution.id}
+                    subtitle={<TripDistributionType tipo={tripsDistribution.estado} />}
                     icon={<MapPinned size={24}/>}
                     fields={[
                         { label: "Itinerario", value: `${new Date(tripsDistribution.fecha_inicio).toLocaleDateString()} - ${new Date(tripsDistribution.fecha_inicio).toLocaleTimeString()}  `, isLong: true},
@@ -211,11 +207,9 @@ export default function DistributionListPage() {
                         { label: "Remitos Asociados", value: `${tripsDistribution.remito_ids}`},
                         ...(tripsDistribution.tarifa_id ? [{ label: "Tarifas", value: `${tripsDistribution.tarifa_id}`}] : [])
                     ]}
-                  
                     onDelete={() => handleOpenDialog(tripsDistribution)}
-                    onEdit={() => navigate(`/trips/distribution/edit/${tripsDistribution._id}`)}  
-                    //onView={() => handleOpenDetails(tripsDistribution)}  
-                    onView={() => navigate(`/trips/distribution/details/${tripsDistribution._id}`)}        
+                    onEdit={() => navigate(`/trips/distribution/edit/${tripsDistribution.id}`)}  
+                    onView={() => navigate(`/trips/distribution/details/${tripsDistribution.id}`)}        
                 />
             ))}
         </div>
@@ -255,8 +249,8 @@ export default function DistributionListPage() {
                                     </TableRow>
                                 ):(
                                     trips.map((tripDistribucion) => (
-                                        <TableRow key={tripDistribucion._id} className="hover:bg-gray-50 overflow-hidden">
-                                            <TableCell sx={{fontWeight: "bold", maxWidth: 150}} className="truncate">{tripDistribucion._id}</TableCell>
+                                        <TableRow key={tripDistribucion.id} className="hover:bg-gray-50 overflow-hidden">
+                                            <TableCell sx={{fontWeight: "bold", maxWidth: 150}} className="truncate">{tripDistribucion.id}</TableCell>
                                             <TableCell sx={{minWidth: 150}} >
                                                 <DoubleCell 
                                                     primarySection={`${new Date(tripDistribucion.fecha_inicio).toLocaleDateString()}`} 
@@ -280,12 +274,10 @@ export default function DistributionListPage() {
                                                 <MenuItem  
                                                     module="trips/distribution"
                                                     handleOpenDialog={() => handleOpenDialog(tripDistribucion)}
-                                                    //handleOpenDetails={() => handleOpenDetails(tripDistribucion)}
-                                                    handleOpenDetails={() => navigate(`/trips/distribution/details/${tripDistribucion._id}`)}
-                        
-                                                    id={tripDistribucion._id}
+                                                    handleOpenDetails={() => navigate(`/trips/distribution/details/${tripDistribucion.id}`)}
+                                                    id={tripDistribucion.id}
                                                 >
-                                                        <Eye className="text-gray-500 hover:text-gray-700 size-4" />
+                                                    <Eye className="text-gray-500 hover:text-gray-700 size-4" />
                                                 </MenuItem>
                                             </TableCell>
                                         </TableRow>
@@ -314,8 +306,8 @@ export default function DistributionListPage() {
                     genre="el"
                     onClose={() => setOpenDialog(false)}
                     title="viajes"
-                    entityName={viajeDistribucionSelected._id}
-                    onConfirm={() => handleDelete(viajeDistribucionSelected?._id)}
+                    entityName={viajeDistribucionSelected.id}
+                    onConfirm={() => handleDelete(viajeDistribucionSelected?.id)}
                 />
             )}
 
@@ -327,7 +319,7 @@ export default function DistributionListPage() {
                     openDetailsDialog={openDetailsDialog}
                 />                              
             )}*/}
- 
-  </>
+
+    </>
   );
 }

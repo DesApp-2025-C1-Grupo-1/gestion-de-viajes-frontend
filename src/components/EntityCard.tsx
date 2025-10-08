@@ -1,4 +1,4 @@
-import { Button, Card, Tooltip, Typography } from "@mui/material";
+import { Box, Button, Card, Tooltip, Typography } from "@mui/material";
 import { Edit, Eye, Trash2 } from "lucide-react";
 import { ReactNode } from "react";
 
@@ -18,7 +18,7 @@ type Action = {
 type EntityCardProps = {
   icon: ReactNode;
   title: string;
-  subtitle?: string;
+  subtitle?: ReactNode;
   fields: Field[];
   headerAction?: Action; // como el botón "Agenda"
   onView?: () => void;
@@ -27,9 +27,6 @@ type EntityCardProps = {
 };
 
 export default function EntityCard({ title, subtitle, icon, fields, onView, onEdit, onDelete ,headerAction}: EntityCardProps) {
-
-
-
     return (
         <Card className="w-full border border-line rounded-lg overflow-hidden">
             <header className="p-5 bg-gray-100 flex justify-between items-center gap-4 border-b border-line w-full h-24">
@@ -37,13 +34,13 @@ export default function EntityCard({ title, subtitle, icon, fields, onView, onEd
                     <div className="p-3 rounded-full shadow-sm bg-primary-orange text-white h-max w-max ">
                         {icon}
                     </div>
-                    <div className="flex flex-col justify-center w-full">
+                    <div className="flex flex-col justify-center w-full gap-y-1">
                         <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '1.10rem' }} className="text-gray-800 line-clamp-1">
                             {title}
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
+                        <Box sx={{ fontSize: '0.875rem', color: 'text.secondary' }}>
                             {subtitle}
-                        </Typography>
+                        </Box>
                     </div>
                 </div>
                 {headerAction && (

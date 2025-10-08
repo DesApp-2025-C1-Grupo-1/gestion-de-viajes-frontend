@@ -595,6 +595,18 @@ export interface RemitoInfoDto {
   id: string;
 }
 
+export interface AdicionalDto {
+  id: number;
+  /** Nombre del adicional */
+  nombre: string;
+  /** Costo por defecto del adicional */
+  costoDefault: number;
+  descripcion: string;
+  activo: boolean;
+  esGlobal: boolean;
+  costoEspecifico: number;
+}
+
 export interface TarifaDto {
   id: number;
   nombre: string;
@@ -624,8 +636,8 @@ export const ViajeDistribucionDtoEstado = {
 } as const;
 
 export interface ViajeDistribucionDto {
-  /** ID del viaje */
-  _id: string;
+  /** ID legible del viaje de distribución */
+  id: string;
   fecha_inicio: string;
   /** Tipo de viaje */
   tipo_viaje: string;
@@ -638,6 +650,7 @@ export interface ViajeDistribucionDto {
   remito_ids: number[];
   remitos_info?: RemitoInfoDto[];
   tarifa_id?: number;
+  observaciones?: string;
   tarifa?: TarifaDto;
   createdAt: string;
 }
@@ -904,18 +917,6 @@ export interface ZonaDto {
   id: number;
   /** Nombre de la zona */
   nombre: string;
-}
-
-export interface AdicionalDto {
-  id: number;
-  /** Nombre del adicional */
-  nombre: string;
-  /** Costo por defecto del adicional */
-  costoDefault: number;
-  descripcion: string;
-  activo: boolean;
-  esGlobal: boolean;
-  costoEspecifico: number;
 }
 
 export type ViajeControllerFindAllParams = {

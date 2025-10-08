@@ -50,19 +50,9 @@ export default function CardDetails ({icon, fields, title, onView, onEdit}: deta
                             {field.label}
                         </Typography>
                         {!field.isLong ? (
-                            /*{typeof field.value === 'string' || typeof field.value === 'number' ? (
-                                <Typography variant="body2" color="text.secondary">
-                                    {field.value}
-                                </Typography>
-                                ) : (
-                                <Box>{field.value}</Box>
-                            )}*/
                            <Box sx={{ fontSize: '0.875rem', color: 'text.secondary' }}>
                                 {field.value}
                            </Box>
-                            /*<Typography variant="body2" color="text.secondary"> 
-                                {field.value}
-                            </Typography>*/
                         ) : (
                             <Tooltip 
                                 title={field.value} 

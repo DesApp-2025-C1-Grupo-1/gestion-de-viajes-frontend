@@ -688,8 +688,10 @@ export const BuscarViajeDistribucionDtoTipo = {
 } as const;
 
 export interface BuscarViajeDistribucionDto {
-  /** Fecha de inicio del viaje en formato ISO 8601 */
-  fecha_inicio?: string;
+  /** Fecha de desde la cual se empieza a filtrar el viaje en formato ISO 8601 */
+  fecha_desde?: string;
+  /** Fecha hasta la cual se empieza a filtrar el viaje en formato ISO 8601 */
+  fecha_hasta?: string;
   /** ID del viaje | ID parcial del viaje */
   _id?: string;
   /** Id de la empresa | Razon social de la empresa | nombre comercial de la empresa */

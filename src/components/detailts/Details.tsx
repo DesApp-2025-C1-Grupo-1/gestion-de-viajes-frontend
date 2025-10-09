@@ -68,7 +68,7 @@ export default function CardDetails ({icon, fields, title, onView, onEdit}: deta
                                     },],},
                                 }}
                             >
-                                <Typography variant="body2" color="text.secondary">
+                                <Typography variant="body2" color="text.secondary" className="truncate">
                                     {field.value}
                                 </Typography>
                             </Tooltip>

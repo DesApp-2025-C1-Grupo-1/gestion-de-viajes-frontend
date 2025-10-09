@@ -47,15 +47,11 @@ export const TripType = ({tipo}: TripTypeProps) => {
                     px: '2px', 
                 },
                 ...(isNacional ? {
-                backgroundColor: '#DBEAFE', 
-                color: '#1E40AF',
-                border: '1px solid',
-                borderColor: '#1E40AF'
+                backgroundColor: '#ddebfcff', 
+                color: '#2a49b1ff',
                 } : {
-                backgroundColor: '#E9D5FF', 
-                color: '#6B21A8',
-                border: '1px solid',
-                borderColor: '#6B21A8'
+                backgroundColor: '#ede0fcff', 
+                color: '#7131a5ff',
                 }),
             }}
             

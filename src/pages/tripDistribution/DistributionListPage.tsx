@@ -13,8 +13,9 @@ import EntityCard from "../../components/EntityCard";
 import PaginationEntity from "../../components/PaginationEntity";
 import { TarifaDto, viajeDistribucionControllerRemove, ViajeDistribucionDto, ViajeDistribucionDtoEstado, useViajeDistribucionControllerFindAll, EmpresaDto, VehiculoDto, ChoferDto, empresaControllerFindAll, vehiculoControllerFindAll, choferControllerFindAll, DepositoDto, depositoControllerFindAll, BuscarViajeDistribucionDto, useViajeDistribucionControllerBuscar, RemitoDto, remitosControllerGetRemitos } from '../../api/generated';
 import { useTheme } from "@mui/material/styles";
-import { TripDistributionType } from "../../components/TripDistributionType";
+import { TripDistributionType } from "../../components/tripsDistribution/TripDistributionType";
 import DistributionFilters from "../../components/DistributionFilters";
+import { TripType } from "../../components/trip/TripType";
 
 
 export default function DistributionListPage() {
@@ -220,15 +221,15 @@ export default function DistributionListPage() {
                 }}>
                     <TableContainer className=" text-sm rounded-lg">
                         <Table aria-label="simple table">
-                            <TableHead >
+                            <TableHead>
                                 <TableRow>
                                     <TableCell>Número</TableCell>
                                     <TableCell>Itinerario</TableCell>
                                     <TableCell>Deposito de Origen</TableCell>
+                                    <TableCell align="center" sx={{verticalAlign: 'middle',textAlign: 'center'}}>Tipo de viaje</TableCell>
                                     <TableCell>Transportista</TableCell>
-                                    <TableCell>Remitos</TableCell>
-                                    <TableCell>Estado actual</TableCell>
-                                    <TableCell align="center" sx={{width: 72}}>Acciones</TableCell>
+                                    <TableCell align="center" sx={{verticalAlign: 'middle',textAlign: 'center'}}>Estado actual</TableCell>
+                                    <TableCell align="center" sx={{width: 72}}>Acciones</TableCell> 
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -260,6 +261,7 @@ export default function DistributionListPage() {
                                                 />
                                             </TableCell>
                                             <TableCell>{`${tripDistribucion.origen.nombre}`}</TableCell>
+                                            <TableCell align="center"><TripType tipo={tripDistribucion.tipo_viaje}/></TableCell>
                                             <TableCell sx={{minWidth: 150}} >
                                                 <DoubleCell 
                                                     primarySection={`${tripDistribucion.transportista.nombre_comercial}`} 
@@ -268,8 +270,8 @@ export default function DistributionListPage() {
                                                     secondaryIcon={<User size={18} color="#AFB3B9"/>}
                                                 />
                                             </TableCell>
-                                            <TableCell>{`${tripDistribucion.remito_ids}`}</TableCell>
-                                            <TableCell><TripDistributionType tipo={tripDistribucion.estado}/></TableCell>
+
+                                            <TableCell align="center"><TripDistributionType tipo={tripDistribucion.estado}/></TableCell>
                                             <TableCell sx={{ verticalAlign: "middle"}}>
                                                 <MenuItem  
                                                     module="trips/distribution"

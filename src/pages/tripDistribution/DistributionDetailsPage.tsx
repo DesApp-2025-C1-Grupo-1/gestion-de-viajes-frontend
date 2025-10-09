@@ -1,13 +1,15 @@
 import { TripDistributionType } from "../../components/tripsDistribution/TripDistributionType";
 import { SectionHeader } from "../../components/SectionHeader";
-import { CircularProgress, Paper} from "@mui/material";
+import { CircularProgress, Paper, Table, TableCell, TableHead, TableRow} from "@mui/material";
 import { Building2, ClipboardMinus, MapPinned, Route, Ticket } from "lucide-react";
 import { useParams } from 'react-router-dom';
 import CardDetails from "../../components/detailts/Details";
 import { TripType } from "../../components/trip/TripType";
-import { useViajeDistribucionControllerFindOne, RemitoDto, useRemitosControllerGetRemitos, useTarifasControllerListarZonas, useTarifasControllerTarifasFiltradas, TarifaDto, ZonaDto} from '../../api/generated';
+import { useViajeDistribucionControllerFindOne, RemitoDto, useRemitosControllerGetRemitos, useTarifasControllerListarZonas, useTarifasControllerTarifasFiltradas, TarifaDto, ZonaDto, useRemitosControllerGetRemitosByIds, remitosControllerGetRemitosByIds, ViajeDistribucionDto} from '../../api/generated';
+import CardRemitosDetails from "../../components/tripsDistribution/RemitosDetails";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useRemitosFromTrip } from "../../hooks/tripDistribution/useRemitosDetails";
 //import { useTarifaMockDesdeViaje } from "../../hooks/tripDistribution/useDistributionDetails";
 
 const tarifasMock: TarifaDto[] = [
@@ -49,48 +51,36 @@ const fetchTarifasPorZona = async (zonaId: number, transportistaId: string, tipo
 export default function DistributionDetailsPage() {
     const { id } = useParams<{ id: string }>();
 
-    const {data: tripSelected, isLoading, isError} = useViajeDistribucionControllerFindOne(id!, {
+    const {
+        data: tripSelectedRaw,
+        isLoading,
+        isError,
+    } = useViajeDistribucionControllerFindOne(id!, {
         query: {
-            enabled: !!id,
-            select: (response) => response.data, 
+        enabled: !!id,
+        select: (response) => response.data,
         },
     });
 
-    if (isLoading) return <CircularProgress />;
-    if (isError || !tripSelected) return <p>No se encontró el viaje con ID: {id}</p>;
+    const [tripSelected, setTripSelected] = useState<ViajeDistribucionDto | null>(null);
 
-    const tarifaAsignada = tarifasMock.find(t => t.id === tripSelected?.tarifa_id);
+    useEffect(() => {
+        if (tripSelectedRaw) {
+        setTripSelected(tripSelectedRaw);
+        }
+    }, [tripSelectedRaw]);
 
-    console.log(tripSelected)
+    const { remitos, isLoading: isLoadingRemito } = useRemitosFromTrip(tripSelected ?? undefined);
 
-    /*const esViajeNacional = tripSelected.tipo_viaje === 'nacional';
+    if (isLoading || !tripSelected) return <CircularProgress />;
+    if (isError) return <p>No se encontró el viaje con ID: {id}</p>;
 
-    const { data: zonasResponse, isLoading: loadingZonas } = useTarifasControllerListarZonas();
-    const zonas: ZonaDto[] = zonasResponse?.data ?? [];
+    const tarifaAsignada = tarifasMock.find(t => t.id === tripSelected.tarifa_id);
 
-    const zonaSeleccionada = zonas.find(z => z.id === tarifa?.zonaId);
 
-    const { tarifa, isLoading: isLoadingTarifa } = useTarifaDesdeViaje({
-        tripSelected,
-        zonaDto: zonaSeleccionada,
-        });
-    
+    //console.log(tripSelected)
+    //console.log(remitos)
 
-    const { data: zonasResponse } = useTarifasControllerListarZonas();
-    const zonas: ZonaDto[] = zonasResponse?.data ?? [];
-
-    const { tarifa, isLoading: isLoadingTarifa } = useTarifaDesdeViaje({
-    tripSelected,
-    zonaDto: undefined, 
-    });
-
-    const zonaInferida = useMemo(() => {
-    if (!tarifa || !tarifa.zonaId || zonas.length === 0) return undefined;
-    return zonas.find(z => z.id === tarifa.zonaId);
-    }, [tarifa, zonas]);*/
-
-   
-    
     return (
         <>
             <SectionHeader
@@ -105,7 +95,7 @@ export default function DistributionDetailsPage() {
                             icon={<MapPinned color="#E65F2B" />}
                             title="Información General"
                             fields={[
-                                { label: "Número de viaje", value: `${tripSelected.id}` },
+                                { label: "Número de viaje", value: `${tripSelected.numeroDeViaje}` },
                                 { label: "Estado actual", value: <TripDistributionType tipo={tripSelected.estado} /> },
                                 { label: "Kilómetros", value: `${tripSelected.kilometros}` },
                                 { label: "Tipo de viaje", value: <TripType tipo={tripSelected.tipo_viaje} /> },
@@ -132,13 +122,11 @@ export default function DistributionDetailsPage() {
                                 { label: "Chofer asignado", value: `${tripSelected.chofer.apellido} ${tripSelected.chofer.nombre}` },
                                 { label: "Vehículo asignado", value: `${tripSelected.vehiculo.modelo} - ${tripSelected.vehiculo.patente}` },
                             ]}
-                        />                
-                        <CardDetails 
+                        />  
+                        <CardRemitosDetails 
                             icon={<ClipboardMinus color="#E65F2B" />}
                             title="Remitos"
-                            fields={[
-                                { label: "Asignados", value: `${tripSelected.remito_ids}`, isLong: true },
-                            ]}
+                            remitos={remitos}
                         />
                         {tripSelected.tarifa_id !== undefined && tarifaAsignada && (
                             <CardDetails 

@@ -195,8 +195,8 @@ export default function DistributionListPage() {
         <div className="grid gap-4  lg:grid-cols-2">
             {trips.map(tripsDistribution => (
                 <EntityCard
-                    key={tripsDistribution.id}
-                    title={tripsDistribution.id}
+                    key={tripsDistribution._id}
+                    title={tripsDistribution.numeroDeViaje}
                     subtitle={<TripDistributionType tipo={tripsDistribution.estado} />}
                     icon={<MapPinned size={24}/>}
                     fields={[
@@ -209,8 +209,8 @@ export default function DistributionListPage() {
                         ...(tripsDistribution.tarifa_id ? [{ label: "Tarifas", value: `${tripsDistribution.tarifa_id}`}] : [])
                     ]}
                     onDelete={() => handleOpenDialog(tripsDistribution)}
-                    onEdit={() => navigate(`/trips/distribution/edit/${tripsDistribution.id}`)}  
-                    onView={() => navigate(`/trips/distribution/details/${tripsDistribution.id}`)}        
+                    onEdit={() => navigate(`/trips/distribution/edit/${tripsDistribution._id}`)}  
+                    onView={() => navigate(`/trips/distribution/details/${tripsDistribution._id}`)}        
                 />
             ))}
         </div>
@@ -250,8 +250,8 @@ export default function DistributionListPage() {
                                     </TableRow>
                                 ):(
                                     trips.map((tripDistribucion) => (
-                                        <TableRow key={tripDistribucion.id} className="hover:bg-gray-50 overflow-hidden">
-                                            <TableCell sx={{fontWeight: "bold", maxWidth: 150}} className="truncate">{tripDistribucion.id}</TableCell>
+                                        <TableRow key={tripDistribucion._id} className="hover:bg-gray-50 overflow-hidden">
+                                            <TableCell sx={{fontWeight: "bold", maxWidth: 150}} className="truncate">{tripDistribucion.numeroDeViaje}</TableCell>
                                             <TableCell sx={{minWidth: 150}} >
                                                 <DoubleCell 
                                                     primarySection={`${new Date(tripDistribucion.fecha_inicio).toLocaleDateString()}`} 
@@ -270,14 +270,13 @@ export default function DistributionListPage() {
                                                     secondaryIcon={<User size={18} color="#AFB3B9"/>}
                                                 />
                                             </TableCell>
-
                                             <TableCell align="center"><TripDistributionType tipo={tripDistribucion.estado}/></TableCell>
                                             <TableCell sx={{ verticalAlign: "middle"}}>
                                                 <MenuItem  
                                                     module="trips/distribution"
                                                     handleOpenDialog={() => handleOpenDialog(tripDistribucion)}
-                                                    handleOpenDetails={() => navigate(`/trips/distribution/details/${tripDistribucion.id}`)}
-                                                    id={tripDistribucion.id}
+                                                    handleOpenDetails={() => navigate(`/trips/distribution/details/${tripDistribucion._id}`)}
+                                                    id={tripDistribucion._id}
                                                 >
                                                     <Eye className="text-gray-500 hover:text-gray-700 size-4" />
                                                 </MenuItem>
@@ -308,19 +307,10 @@ export default function DistributionListPage() {
                     genre="el"
                     onClose={() => setOpenDialog(false)}
                     title="viajes"
-                    entityName={viajeDistribucionSelected.id}
-                    onConfirm={() => handleDelete(viajeDistribucionSelected?.id)}
+                    entityName={viajeDistribucionSelected._id}
+                    onConfirm={() => handleDelete(viajeDistribucionSelected?._id)}
                 />
             )}
-
-            {/*Detalles
-            {viajeDistribucionSelected && (
-                <DetailsTripDistribution
-                    tripDistributionSelected={viajeDistribucionSelected}
-                    setOpenDetailsDialog={setOpenDetailsDialog}
-                    openDetailsDialog={openDetailsDialog}
-                />                              
-            )}*/}
 
     </>
   );

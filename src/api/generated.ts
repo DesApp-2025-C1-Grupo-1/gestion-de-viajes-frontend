@@ -1014,6 +1014,10 @@ limit?: number;
 page?: number;
 };
 
+export type RemitosControllerGetRemitosByIdsBody = {
+  ids?: number[];
+};
+
 export type TarifasControllerTarifasFiltradasParams = {
 /**
  * ID del tipo de vehículo
@@ -4258,20 +4262,21 @@ export const useRemitosControllerMarcarNoEntregado = <TError = AxiosError<void>,
  * @summary Obtener remitos por lista de IDs
  */
 export const remitosControllerGetRemitosByIds = (
-     options?: AxiosRequestConfig
+    remitosControllerGetRemitosByIdsBody: RemitosControllerGetRemitosByIdsBody, options?: AxiosRequestConfig
  ): Promise<AxiosResponse<RemitoDto[]>> => {
     
     
     return axios.post(
-      `/remito/by-id`,undefined,options
+      `/remito/by-id`,
+      remitosControllerGetRemitosByIdsBody,options
     );
   }
 
 
 
 export const getRemitosControllerGetRemitosByIdsMutationOptions = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof remitosControllerGetRemitosByIds>>, TError,void, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof remitosControllerGetRemitosByIds>>, TError,void, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof remitosControllerGetRemitosByIds>>, TError,{data: RemitosControllerGetRemitosByIdsBody}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof remitosControllerGetRemitosByIds>>, TError,{data: RemitosControllerGetRemitosByIdsBody}, TContext> => {
 
 const mutationKey = ['remitosControllerGetRemitosByIds'];
 const {mutation: mutationOptions, axios: axiosOptions} = options ?
@@ -4283,10 +4288,10 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof remitosControllerGetRemitosByIds>>, void> = () => {
-          
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof remitosControllerGetRemitosByIds>>, {data: RemitosControllerGetRemitosByIdsBody}> = (props) => {
+          const {data} = props ?? {};
 
-          return  remitosControllerGetRemitosByIds(axiosOptions)
+          return  remitosControllerGetRemitosByIds(data,axiosOptions)
         }
 
         
@@ -4295,18 +4300,18 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type RemitosControllerGetRemitosByIdsMutationResult = NonNullable<Awaited<ReturnType<typeof remitosControllerGetRemitosByIds>>>
-    
+    export type RemitosControllerGetRemitosByIdsMutationBody = RemitosControllerGetRemitosByIdsBody
     export type RemitosControllerGetRemitosByIdsMutationError = AxiosError<void>
 
     /**
  * @summary Obtener remitos por lista de IDs
  */
 export const useRemitosControllerGetRemitosByIds = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof remitosControllerGetRemitosByIds>>, TError,void, TContext>, axios?: AxiosRequestConfig}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof remitosControllerGetRemitosByIds>>, TError,{data: RemitosControllerGetRemitosByIdsBody}, TContext>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof remitosControllerGetRemitosByIds>>,
         TError,
-        void,
+        {data: RemitosControllerGetRemitosByIdsBody},
         TContext
       > => {
 

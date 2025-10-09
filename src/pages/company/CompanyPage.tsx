@@ -96,7 +96,7 @@ export default function CompanyPage(){
                     ))}
                 </div>
             ):(           
-                <div className="bg-white rounded-lg overflow-hidden" style={{
+                <div className="bg-white rounded-lg" style={{
                     boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
                     border: "0.5px solid #C7C7C7",
                 }}>

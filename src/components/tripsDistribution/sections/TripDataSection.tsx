@@ -130,12 +130,12 @@ export default function TripDataSection() {
               {...register("kilometros", {
                   valueAsNumber: true,
                   validate: (value : number) =>
-                  !isNaN(value) && value >= 0.01 || "Mínimo 0.01 kms",
+                  !isNaN(value) && value >= 1 || "Mínimo 1 km",
               })} 
               inputProps={{
                   "aria-label": "Kilómetros del camión",
-                  step: "0.01",
-                  min: "0.01"
+                  step: "1",
+                  min: "1"
               }} 
               fullWidth 
               error={!!errors.kilometros}

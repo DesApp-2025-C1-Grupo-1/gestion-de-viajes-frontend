@@ -41,6 +41,7 @@ export default function OptionMenu({ isCollapsed,onClick, IconComponent, title, 
     ${isActive 
       ? "bg-menu-hover text-primary-orange"
       : "hover:bg-menu-hover text-gray-600"}
+    
   `;
 
   const content = (
@@ -65,12 +66,12 @@ export default function OptionMenu({ isCollapsed,onClick, IconComponent, title, 
       target="_self"
       rel="noopener noreferrer"
       onClick={onClick}
-      className={commonClasses}
+      className={`${commonClasses} sidebar-item`}
     >
       {content}
     </a>
   ) : (
-    <Link to={`/${link}`} onClick={onClick} className={commonClasses}>
+    <Link to={`/${link}`} onClick={onClick} className={`${commonClasses} sidebar-item`}>
       {content}
     </Link>
   );

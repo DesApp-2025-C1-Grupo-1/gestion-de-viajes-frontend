@@ -116,12 +116,12 @@ export default function DepositPage() {
                     ))}
                 </div>
             ) : (
-                <div className="bg-white rounded-lg overflow-hidden" style={{
+                <div className="bg-white rounded-lg" style={{
                     boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
                     border: "0.5px solid #C7C7C7",
                 }}
                 >
-                    <TableContainer className="h-full text-sm">
+                    <TableContainer className="h-full text-sm rounded-lg">
                         <Table aria-label="simple table">
                             <TableHead>
                                 <TableRow>

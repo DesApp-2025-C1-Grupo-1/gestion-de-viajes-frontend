@@ -1,5 +1,5 @@
 import { useWatch } from 'react-hook-form';
-import { RemitoDto, useRemitosControllerGetRemitos } from '../../api/generated';
+import { RemitoDto, remitosControllerGetRemitosByIds, useRemitosControllerGetRemitos, useRemitosControllerGetRemitosByIds } from '../../api/generated';
 import { useEffect, useState } from 'react';
 
 interface UseRemitosManagementProps {
@@ -29,25 +29,35 @@ export const useRemitosManagement = ({
     { query: { enabled: remitoIds.length > 0 } }
   ); */
   
-  useEffect(() => {
-    
-    const fetchRemitos = async () => {
-      if (initialRemitoIds.length === 0) return;
+/*   const getRemitosByIdsMutation = useRemitosControllerGetRemitosByIds();
 
-      const promises = await Promise.all(
-        initialRemitoIds.map(async (id) => {
-          const response = await fetch(`https://remitos-backend.onrender.com/remito/${id}`);
-          if (response.ok) {
-            return response.json() as Promise<RemitoDto>;
-          }
-          return null;
-        })
-      );
-      setRemitosCompletos(promises.filter((r): r is RemitoDto => r !== null));
+  // Cargar remitos cuando cambien los IDs seleccionados
+  useEffect(() => {
+    if (remitoIds.length === 0) {
+      setRemitosCompletos([]);
+      return;
     }
 
-    fetchRemitos();
-  }, [initialRemitoIds, setValue]);
+    getRemitosByIdsMutation.mutate(
+      { data: { ids: remitoIds } },
+      {
+        onSuccess: (response) => {
+          setRemitosCompletos(response.data?.data || []);
+        },
+      }
+    );
+  }, [remitoIds]); */
+
+  // --- Cargar remitos iniciales (si vienen del servidor) ---
+  useEffect(() => {
+    if (initialRemitoIds.length === 0) return;
+
+    (async () => {
+      const { data } = await remitosControllerGetRemitosByIds({ ids: initialRemitoIds });
+      setRemitosCompletos(data?.data || []);
+    })();
+  }, [initialRemitoIds]);
+
 
   // Remitos seleccionados (objetos completos)
   const remitosSeleccionados = remitosCompletos || [] as RemitoDto[];
@@ -64,10 +74,9 @@ export const useRemitosManagement = ({
 
   const remitosDisponibles = remitosDisponiblesData?.data?.data || [];
 
-  // Función para agregar/remover remitos
   const toggleRemito = (remitoId: number) => {
     const nuevosIds = remitoIds.includes(remitoId)
-      ? remitoIds.filter((id : number) => id !== remitoId)
+      ? remitoIds.filter((id: number) => id !== remitoId)
       : [...remitoIds, remitoId];
 
     setRemitosQuitados(prev => prev.filter(r => r.id !== remitoId));
@@ -75,14 +84,19 @@ export const useRemitosManagement = ({
     setRemitosCompletos(prev =>
       prev.find(r => r.id === remitoId)
         ? prev.filter(r => r.id !== remitoId)
-        : [...prev, ...(remitosDisponibles.find(r => r.id === remitoId) ? [remitosDisponibles.find(r => r.id === remitoId)!] : [])]
+        : [
+            ...prev,
+            ...(remitosDisponibles.find(r => r.id === remitoId)
+              ? [remitosDisponibles.find(r => r.id === remitoId)!]
+              : []),
+          ]
     );
-    
+
     setValue("remito_ids", nuevosIds, { shouldValidate: true });
   };
 
   const quitarRemito = (remito: RemitoDto) => {
-    setValue("remito_ids", remitoIds.filter((id : number) => id !== remito.id), { shouldValidate: true });
+    setValue("remito_ids", remitoIds.filter((id: number) => id !== remito.id), { shouldValidate: true });
     setRemitosCompletos(prev => prev.filter(r => r.id !== remito.id));
     setRemitosQuitados(prev => [...prev, remito]);
   };
@@ -94,13 +108,14 @@ export const useRemitosManagement = ({
   };
 
   const reordenarRemitos = (nuevosIds: number[]) => {
-    setRemitosCompletos(prev => prev.sort((a, b) => nuevosIds.indexOf(a.id) - nuevosIds.indexOf(b.id)));
+    setRemitosCompletos(prev =>
+      [...prev].sort((a, b) => nuevosIds.indexOf(a.id) - nuevosIds.indexOf(b.id))
+    );
     setValue("remito_ids", nuevosIds, {
       shouldValidate: true,
-      shouldDirty: true 
+      shouldDirty: true,
     });
   };
-
   return {
     remitosSeleccionados,
     remitosDisponibles,

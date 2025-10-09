@@ -82,6 +82,11 @@ export default function DraggableRemitosGrid({
     return acc;
   }, {} as Record<string, number>);
 
+  const remitosOrdenadosPorPais = Object.keys(remitosPorPais).sort().reduce((obj, key) => {
+    obj[key] = remitosPorPais[key];
+    return obj;
+  }, {} as Record<string, number>);
+
   return (
     <Grid item xs={12} sx={{ mt: 4 }}>
       <Paper 
@@ -115,7 +120,7 @@ export default function DraggableRemitosGrid({
               <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
                 Distribución:
               </Typography>
-              {Object.entries(remitosPorPais).map(([pais, count]) => (
+              {Object.entries(remitosOrdenadosPorPais).map(([pais, count]) => (
                 <Chip
                   key={pais}
                   label={`${count} ${pais}`}

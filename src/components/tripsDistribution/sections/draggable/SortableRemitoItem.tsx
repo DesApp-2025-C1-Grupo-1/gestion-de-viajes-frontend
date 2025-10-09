@@ -122,7 +122,7 @@ export default function SortableRemitoItem({
               rem={rem}
               selectedRemitos={remitoIds}
               onRemitoToggle={permissions.canEditRemitos ? handleRemitoToggle : () => {}}
-              showCheckbox={false}
+              showCheckbox={permissions.canEditRemitos}
               compactMode={true}
             />
         </Box>

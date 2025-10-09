@@ -10,7 +10,7 @@ import { useNotify } from "../../hooks/useNotify";
 import { viajeControllerRemove, ViajeDto, BuscarViajeDto, useViajeControllerBuscar, EmpresaDto, VehiculoDto, ChoferDto, empresaControllerFindAll, vehiculoControllerFindAll, choferControllerFindAll, DepositoDto, depositoControllerFindAll } from '../../api/generated';
 import {  Eye, User, Building2} from "lucide-react";
 import { DoubleCell } from "../../components/DoubleCell";
-import { TripType } from "../../components/TripType";
+import { TripType } from "../../components/trip/TripType";
 import { DetailsTrip } from "../../components/trip/DetailsTrip";
 import PaginationEntity from "../../components/PaginationEntity";
 

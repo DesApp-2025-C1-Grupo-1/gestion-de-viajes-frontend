@@ -92,8 +92,10 @@ export default function DistributionListPage() {
   }, []);
 
   useEffect(() => {
-      loadSelectOptions();
-  }, [loadSelectOptions]);
+      if(filterOpen) {
+        loadSelectOptions();
+      }
+  }, [filterOpen]);
 
   const { mutateAsync: buscarViajes } = useViajeDistribucionControllerBuscar();
 

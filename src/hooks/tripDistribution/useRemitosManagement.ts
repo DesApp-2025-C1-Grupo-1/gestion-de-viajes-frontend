@@ -53,6 +53,7 @@ export const useRemitosManagement = ({
     if (initialRemitoIds.length === 0) return;
 
     (async () => {
+      console.log("Cargando remitos iniciales por IDs:", initialRemitoIds);
       const { data } = await remitosControllerGetRemitosByIds({ ids: initialRemitoIds });
       setRemitosCompletos(data?.data || []);
     })();

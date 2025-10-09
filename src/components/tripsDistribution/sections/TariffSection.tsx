@@ -68,7 +68,6 @@ export default function TariffSection() {
     if (esViajeInternacional || inicializado) return;
 
     if (safeIsEditing && safeTripData.tarifa_id) {
-      console.log('🔄 Inicializando desde tarifa existente...', safeTripData.tarifa_id);
       
       const inicializarDesdeTarifaExistente = async () => {
         try {

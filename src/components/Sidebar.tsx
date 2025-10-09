@@ -62,7 +62,7 @@ export default function Sidebar({isVisible, setIsVisible}: SidebarProps) {
     <aside 
       className={`
         fixed top-0 left-0 h-full bg-white border-r border-gray-200 shadow-md z-40
-        flex flex-col
+        flex flex-col 
         ${isVisible ? 'translate-x-0' : '-translate-x-full'} 
         md:translate-x-0 md:relative 
         ${isCollapsed ? 'w-16' : 'w-60'} transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]
@@ -86,7 +86,7 @@ export default function Sidebar({isVisible, setIsVisible}: SidebarProps) {
         </div>
 
         {/* Menú */}
-        <nav className="flex-1 overflow-y-auto py-3 px-0"> {/* Cambiado px-2 a px-0 */}
+        <nav className="flex-1 overflow-y-auto py-3 px-0 min-h-0"> {/* Cambiado px-2 a px-0 */}
             <div className="flex flex-col gap-1 p-1 items-center"> {/* Añadido items-center */}
                 {menuItems.map((item) => (
                 <OptionMenu

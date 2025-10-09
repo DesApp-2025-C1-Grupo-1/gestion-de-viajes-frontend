@@ -2,17 +2,18 @@ import { useEffect } from "react";
 import { useDistributionFormBase } from "./useDistributionFormBase";
 import { useDistributionAuxData } from "./useDistributionAuxData";
 import { useTripDistributionData } from "./useTripDistributionData";
-import { viajeDistribucionControllerUpdate, ViajeDistribucionDtoEstado } from "../../api/generated";
+import { viajeDistribucionControllerUpdate } from "../../api/generated";
 import { useNotify } from "../useNotify";
 import { useNavigate } from "react-router-dom";
 import { handleApiError, validateDriverVehicleCompatibility, mapTripToFormValues } from "./utils";
 import { CreateViajeDistribucionSchema } from "../../api/schemas/viajeDistribucion.schema";
-import { UseFormReturn } from "react-hook-form";
+import { useQueryClient } from "@tanstack/react-query";
 
 
 
 export const useEditDistributionForm = (tripId: string) => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { notify } = useNotify("Viaje");
    // Cargar datos del viaje existente
   const { data: tripData, isLoading, error } = useTripDistributionData(tripId);
@@ -87,6 +88,8 @@ export const useEditDistributionForm = (tripId: string) => {
     try {
       const { fecha_inicio, ...dataToUpdate } = formData;
       await viajeDistribucionControllerUpdate(tripId, dataToUpdate);
+      queryClient.invalidateQueries(["viajeDistribucion", tripId]);
+      reset(formData)
       notify("update");
       navigate("/trips/distribution");
     } catch (e) {

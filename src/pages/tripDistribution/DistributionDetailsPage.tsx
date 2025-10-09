@@ -61,7 +61,7 @@ export default function DistributionDetailsPage() {
 
     const tarifaAsignada = tarifasMock.find(t => t.id === tripSelected?.tarifa_id);
 
-    //console.log(tripSelected)
+    console.log(tripSelected)
 
     /*const esViajeNacional = tripSelected.tipo_viaje === 'nacional';
 
@@ -98,6 +98,70 @@ export default function DistributionDetailsPage() {
                 description="Visualice los detalles del viaje en distribución y gestione su estado"
             />
 
+            <div className="flex-1 overflow-y-auto px-4 py-6 flex flex-col items-center">
+    
+                <div className="w-full max-w-5xl flex flex-col gap-10">
+                    <CardDetails 
+                        icon={<MapPinned color="#E65F2B" />}
+                        title="Información General"
+                        fields={[
+                            { label: "Número de viaje", value: `${tripSelected.id}` },
+                            { label: "Estado actual", value: <TripDistributionType tipo={tripSelected.estado} /> },
+                            { label: "Kilómetros", value: `${tripSelected.kilometros}` },
+                            { label: "Tipo de viaje", value: <TripType tipo={tripSelected.tipo_viaje} /> },
+                            { label: "Fecha de inicio", value: `${new Date(tripSelected.fecha_inicio).toLocaleDateString().split('/').join('-')}` },
+                            { label: "Hora de inicio", value: `${new Date(tripSelected.fecha_inicio).toLocaleTimeString()}` },
+                            ...(tripSelected.observaciones ? [{ label: "Observaciones", value: tripSelected.observaciones, isLong: true }] : []),
+                        ]}
+                    />                
+                    <CardDetails 
+                        icon={<Route color="#E65F2B" />}
+                        title="Depósito de Origen"
+                        fields={[
+                            { label: "Nombre del depósito", value: `${tripSelected.origen.nombre}` },
+                            { label: "Dirección", value: `${tripSelected.origen.direccion.calle} ${tripSelected.origen.direccion.numero}, ${tripSelected.origen.direccion.ciudad}`, isLong: true },
+                            { label: "Horarios de atención", value: `${tripSelected.origen.horario_entrada} - ${tripSelected.origen.horario_salida}` },
+                            { label: "Mail de contacto", value: `${tripSelected.origen.contacto.email}`, isLong: true },
+                        ]}
+                    />                
+                    <CardDetails 
+                        icon={<Building2 color="#E65F2B" />}
+                        title="Transportista"
+                        fields={[
+                            { label: "Empresa transportista", value: `${tripSelected.transportista.nombre_comercial}` },
+                            { label: "Chofer asignado", value: `${tripSelected.chofer.apellido} ${tripSelected.chofer.nombre}` },
+                            { label: "Vehículo asignado", value: `${tripSelected.vehiculo.modelo} - ${tripSelected.vehiculo.patente}` },
+                        ]}
+                    />                
+                    <CardDetails 
+                        icon={<ClipboardMinus color="#E65F2B" />}
+                        title="Remitos"
+                        fields={[
+                            { label: "Asignados", value: `${tripSelected.remito_ids}`, isLong: true },
+                        ]}
+                    />
+                    {tripSelected.tarifa_id !== undefined && tarifaAsignada && (
+                        <CardDetails 
+                            icon={<Ticket color="#E65F2B" />}
+                            title="Tarifas"
+                            fields={[
+                            { label: "Nombre", value: tarifaAsignada.nombre },
+                            { label: "Valor base", value: `$ ${tarifaAsignada.valorBase}` },
+                            { label: "Precio total", value: `$ ${tarifaAsignada.total}` },
+                            { label: "Zona", value: tarifaAsignada.zonaNombre },
+                            { label: "Tipo de carga", value: tarifaAsignada.tipoCargaNombre },
+                            ]}
+                        />
+                    )}
+                </div>
+            </div>
+                
+                    
+               
+            
+
+
+            {/** 
             <div className="flex-1 overflow-y-auto px-2 py-2">  
                 
                 <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 pb-4 px-0.5">
@@ -147,7 +211,7 @@ export default function DistributionDetailsPage() {
                         icon={<ClipboardMinus color="#E65F2B" />}
                         title="Remitos"
                         fields={[
-                            { label: "Asignados", value: `${tripSelected.remitos_info}`, isLong: true},
+                            { label: "Asignados", value: `${tripSelected.remito_ids}`, isLong: true},
                             
                         ]}
                     />  
@@ -158,8 +222,6 @@ export default function DistributionDetailsPage() {
                                 icon={<Ticket color="#E65F2B" />}
                                 title="Tarifas"
                             fields={[
-                                    //{ label: "Zona", value: tripSelected.tarifa?.nombre },
-                                    //{ label: "Total", value: `$ ${tripSelected.tarifa?.valorBase}` },
                                     { label: "Nombre", value: tarifaAsignada.nombre },
                                     { label: "Valor base", value: `$ ${tarifaAsignada.valorBase}` },
                                     { label: "Precio total", value: `$ ${tarifaAsignada.total}` },
@@ -170,7 +232,7 @@ export default function DistributionDetailsPage() {
                     )}
                 </div>
                         
-            </div>
+            </div>*/}
 
 
 

@@ -37,7 +37,7 @@ export default function CardRemitosDetails({ icon, remitos, title,} : detailsRem
                 }}
             >
                 <div className="w-full flex flex-col gap-2 px-15">
-                    <div className="grid grid-cols-4 gap-4 text-xs font-semibold text-gray-500 border-b border-gray-300 pb-2">
+                    <div className="grid grid-cols-4 gap-4 text-xs font-semibold border-b border-gray-300 pb-2">
                         <div className="flex justify-center items-center truncate">
                             <Typography variant="h6" fontWeight={600} sx={{ fontSize: "0.9rem",  }}>Número</Typography>   
                         </div>

@@ -46,15 +46,15 @@ export default function CardDetails({ icon, fields, title, onView, onEdit }: det
                 }}
             >
                 
-                <div className="w-full px-15">
+                <div className="w-full px-8 ">
                     <article
-                        className="w-full max-w-5xl grid gap-6 sm:grid-cols-2 items-start"
-                        style={{justifyItems: "center",}}
+                        className="w-full max-w-5xl grid gap-6 sm:grid-cols-2 items-start mx-auto"
+                        
                     >
                     {fields.map((field, index) => (
                         <div
                             key={index}
-                            className="flex flex-col gap-1 justify-between w-full max-w-md"
+                            className="flex flex-col gap-1 justify-start items-start w-full "
                         >
                             <Typography
                                 variant="h6"

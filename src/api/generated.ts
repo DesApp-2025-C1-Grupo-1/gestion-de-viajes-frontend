@@ -636,8 +636,10 @@ export const ViajeDistribucionDtoEstado = {
 } as const;
 
 export interface ViajeDistribucionDto {
-  /** ID legible del viaje de distribución */
-  id: string;
+  /** ID de Mongo del viaje */
+  _id: string;
+  /** Código legible del viaje de distribución */
+  numeroDeViaje: string;
   fecha_inicio: string;
   /** Tipo de viaje */
   tipo_viaje: string;

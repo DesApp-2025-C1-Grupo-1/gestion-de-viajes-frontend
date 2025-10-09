@@ -63,3 +63,9 @@
 .rbc-header {
   @apply uppercase;
 }
+
+@media (max-height: 600px) {
+  .sidebar-item {
+    @apply h-12;
+  }
+}

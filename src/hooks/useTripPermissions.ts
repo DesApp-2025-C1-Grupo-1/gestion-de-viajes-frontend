@@ -8,6 +8,7 @@ export interface TripPermissions {
   canEditVehiculo: boolean;
   canEditTransportista: boolean;
   canEditRemitos: boolean;
+  canEditPositionRemitos: boolean;
   canEditOrigen: boolean;
   canEditFechaInicio: boolean;
   canEditKilometrosIniciales: boolean;
@@ -41,6 +42,7 @@ export const useTripPermissions = (estado: TripEstado): TripPermissions => {
       canEditVehiculo: isIniciado,
       canEditTransportista: isIniciado,
       canEditRemitos: isIniciado || isInicioCarga,
+      canEditPositionRemitos: isIniciado || isInicioCarga || isFinCarga,
       canEditOrigen: isIniciado,
       canEditFechaInicio: isIniciado,
       canEditKilometrosIniciales: isIniciado || isFinViaje,

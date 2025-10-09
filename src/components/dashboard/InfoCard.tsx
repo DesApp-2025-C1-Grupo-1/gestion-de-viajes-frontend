@@ -1,7 +1,7 @@
 import { Card, Typography, List, ListItem, IconButton, Divider, Box, Badge, Stack, Button } from "@mui/material";
 import { ChevronRight } from "lucide-react";
 import { ReactNode } from 'react';
-import { TripType } from "../../components/TripType";
+import { TripType } from "../trip/TripType";
 import { ViajeDto } from "../../api/generated";
 import ButtonAdd from "../buttons/ButtonAdd";
 

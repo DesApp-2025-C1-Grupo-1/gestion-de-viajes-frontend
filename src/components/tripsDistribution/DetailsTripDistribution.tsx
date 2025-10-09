@@ -11,7 +11,7 @@ import { Field } from "../detailts/Field";
 import { HeaderDetails } from "../detailts/HeaderDetails";
 import { MapPinned, Route, Truck, Building2, ClipboardMinus, Ticket} from "lucide-react";
 import { ViajeDistribucionDto } from "../../api/generated";
-import { TripDistributionType } from "../TripDistributionType";
+import { TripDistributionType } from "./TripDistributionType";
 
 interface TripDistributionDetailsProps {
     tripDistributionSelected: ViajeDistribucionDto;

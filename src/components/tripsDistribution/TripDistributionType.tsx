@@ -1,30 +1,37 @@
 import { Chip } from '@mui/material';
+import { CircleCheck, PackageCheck, PackagePlus, Truck } from 'lucide-react';
+import { ReactElement } from 'react';
 
 interface TripDistributionTypeProps {
   tipo: string;
 }
 
-const tripDistributionType: Record<string, { label: string; bgColor: string; textColor: string }> = {
+const tripDistributionType: Record<string, { label: string; bgColor: string; textColor: string; icon?: ReactElement}> = {
 
    'iniciado': {
     label: 'Iniciado',
-    bgColor: '#e1eefae3',     
-    textColor: '#64748B'
+    bgColor: '#00A86B',
+    textColor: '#ffffff',
+    icon: <Truck size={15}  style={{ color: 'white' }}  /> 
   },
   'inicio de carga': {
     label: 'Inicio de Carga',
-    bgColor: '#e9dc9eff',    
-    textColor: '#b96419ff'
+    bgColor: '#3B82F6',    
+    textColor: '#ffffff',
+    icon: <PackagePlus size={15} style={{ color: 'white' }}/> 
   },
   'fin de carga': {
     label: 'Fin de Carga',
-    bgColor: '#DBEAFE', 
-     textColor: '#1E40AF',
+    bgColor: '#F97316',  
+    textColor: '#ffffff',
+    icon: <PackageCheck size={15} style={{ color: 'white' }}/>
+ 
   },
   'fin de viaje': {
     label: 'Fin de Viaje', 
-    bgColor: '#E6F4EA',
-    textColor: '#2F855A',
+    bgColor: '#9699a1ff',    
+    textColor: '#ffffff',
+    icon: <CircleCheck size={15} style={{ color: 'white' }}/>
   }
 };
 
@@ -38,6 +45,7 @@ export const TripDistributionType = ({ tipo }: TripDistributionTypeProps) => {
     <Chip
       size="small"
       label={config.label}
+      icon={config.icon ? config.icon : undefined}
       sx={{
         borderRadius: '16px',
         fontWeight: 500,

@@ -181,26 +181,6 @@ export default function DistributionFilters({
             >
               Filtros
             </Button>
-
-            {/* Botón Viajes */}
-            <Button
-              variant="contained"
-              onClick={() => navigate("/trips/collection")} 
-              sx={{
-                backgroundColor: "#00A86B",
-                textTransform: "none",
-                borderRadius: "8px",
-                fontWeight: "500",
-                boxShadow: "none",
-                '&:hover': {
-                    backgroundColor: "#008c5a",
-                    boxShadow: "none",
-                },
-              }}
-              className="md:pt-2 pb-3 sm:pb-5 sm:max-w-max"
-            >
-              Viajes
-            </Button>
           </Stack>
 
           {/* Segunda fila: Chips debajo del botón Filtros */}

@@ -12,7 +12,7 @@ import { Field } from "../detailts/Field";
 import { HeaderDetails } from "../detailts/HeaderDetails";
 import { MapPinned, CalendarDays, Route, Truck} from "lucide-react";
 import { ViajeDto } from "../../api/generated";
-import { TripType } from "../TripType";
+import { TripType } from "./TripType";
 
 interface TripDetailsProps {
     triptSelected: ViajeDto;

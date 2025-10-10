@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SectionHeader } from "../../components/SectionHeader";
-import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery} from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery} from "@mui/material";
 import LoadingState from "../../components/LoadingState";
 import MenuItem from "../../components/buttons/MenuItem";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
@@ -13,9 +13,9 @@ import EntityCard from "../../components/EntityCard";
 import PaginationEntity from "../../components/PaginationEntity";
 import { TarifaDto, viajeDistribucionControllerRemove, ViajeDistribucionDto, ViajeDistribucionDtoEstado, useViajeDistribucionControllerFindAll, EmpresaDto, VehiculoDto, ChoferDto, empresaControllerFindAll, vehiculoControllerFindAll, choferControllerFindAll, DepositoDto, depositoControllerFindAll, BuscarViajeDistribucionDto, useViajeDistribucionControllerBuscar, RemitoDto, remitosControllerGetRemitos } from '../../api/generated';
 import { useTheme } from "@mui/material/styles";
-import { DetailsTripDistribution } from "../../components/tripsDistribution/DetailsTripDistribution";
-import { TripDistributionType } from "../../components/TripDistributionType";
+import { TripDistributionType } from "../../components/tripsDistribution/TripDistributionType";
 import DistributionFilters from "../../components/DistributionFilters";
+import { TripType } from "../../components/trip/TripType";
 
 
 export default function DistributionListPage() {
@@ -135,7 +135,7 @@ export default function DistributionListPage() {
   const handleOpenDialog = (tripDistribution : ViajeDistribucionDto) => {
     setOpenDialog(true);
     setviajeDistribucionSelected(tripDistribution);
-} ;
+    } ;
  
   const handleOpenDetails = (tripDistribution: ViajeDistribucionDto) => {
       setOpenDetailsDialog(true);
@@ -166,7 +166,6 @@ export default function DistributionListPage() {
 
 
   const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
-    console.log("page", value);
     setPage(value);
   };
 
@@ -199,8 +198,8 @@ export default function DistributionListPage() {
             {trips.map(tripsDistribution => (
                 <EntityCard
                     key={tripsDistribution._id}
-                    title={tripsDistribution._id}
-                    subtitle={`${tripsDistribution.estado[0].toUpperCase()}${tripsDistribution.estado.slice(1).toLowerCase()}`}
+                    title={tripsDistribution.numeroDeViaje}
+                    subtitle={<TripDistributionType tipo={tripsDistribution.estado} />}
                     icon={<MapPinned size={24}/>}
                     fields={[
                         { label: "Itinerario", value: `${new Date(tripsDistribution.fecha_inicio).toLocaleDateString()} - ${new Date(tripsDistribution.fecha_inicio).toLocaleTimeString()}  `, isLong: true},
@@ -211,10 +210,9 @@ export default function DistributionListPage() {
                         { label: "Remitos Asociados", value: `${tripsDistribution.remito_ids}`},
                         ...(tripsDistribution.tarifa_id ? [{ label: "Tarifas", value: `${tripsDistribution.tarifa_id}`}] : [])
                     ]}
-                  
                     onDelete={() => handleOpenDialog(tripsDistribution)}
                     onEdit={() => navigate(`/trips/distribution/edit/${tripsDistribution._id}`)}  
-                    onView={() => handleOpenDetails(tripsDistribution)}          
+                    onView={() => navigate(`/trips/distribution/details/${tripsDistribution._id}`)}        
                 />
             ))}
         </div>
@@ -225,15 +223,15 @@ export default function DistributionListPage() {
                 }}>
                     <TableContainer className=" text-sm rounded-lg">
                         <Table aria-label="simple table">
-                            <TableHead >
+                            <TableHead>
                                 <TableRow>
                                     <TableCell>Número</TableCell>
                                     <TableCell>Itinerario</TableCell>
                                     <TableCell>Deposito de Origen</TableCell>
+                                    <TableCell align="center" sx={{verticalAlign: 'middle',textAlign: 'center'}}>Tipo de viaje</TableCell>
                                     <TableCell>Transportista</TableCell>
-                                    <TableCell>Remitos</TableCell>
-                                    <TableCell>Estado actual</TableCell>
-                                    <TableCell align="center" sx={{width: 72}}>Acciones</TableCell>
+                                    <TableCell align="center" sx={{verticalAlign: 'middle',textAlign: 'center'}}>Estado actual</TableCell>
+                                    <TableCell align="center" sx={{width: 72}}>Acciones</TableCell> 
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -255,7 +253,7 @@ export default function DistributionListPage() {
                                 ):(
                                     trips.map((tripDistribucion) => (
                                         <TableRow key={tripDistribucion._id} className="hover:bg-gray-50 overflow-hidden">
-                                            <TableCell sx={{fontWeight: "bold", maxWidth: 150}} className="truncate">{tripDistribucion._id}</TableCell>
+                                            <TableCell sx={{fontWeight: "bold", maxWidth: 150}} className="truncate">{tripDistribucion.numeroDeViaje}</TableCell>
                                             <TableCell sx={{minWidth: 150}} >
                                                 <DoubleCell 
                                                     primarySection={`${new Date(tripDistribucion.fecha_inicio).toLocaleDateString()}`} 
@@ -265,6 +263,7 @@ export default function DistributionListPage() {
                                                 />
                                             </TableCell>
                                             <TableCell>{`${tripDistribucion.origen.nombre}`}</TableCell>
+                                            <TableCell align="center"><TripType tipo={tripDistribucion.tipo_viaje}/></TableCell>
                                             <TableCell sx={{minWidth: 150}} >
                                                 <DoubleCell 
                                                     primarySection={`${tripDistribucion.transportista.nombre_comercial}`} 
@@ -273,16 +272,15 @@ export default function DistributionListPage() {
                                                     secondaryIcon={<User size={18} color="#AFB3B9"/>}
                                                 />
                                             </TableCell>
-                                            <TableCell>{`${tripDistribucion.remito_ids}`}</TableCell>
-                                            <TableCell><TripDistributionType tipo={tripDistribucion.estado}/></TableCell>
+                                            <TableCell align="center"><TripDistributionType tipo={tripDistribucion.estado}/></TableCell>
                                             <TableCell sx={{ verticalAlign: "middle"}}>
                                                 <MenuItem  
                                                     module="trips/distribution"
                                                     handleOpenDialog={() => handleOpenDialog(tripDistribucion)}
-                                                    handleOpenDetails={() => handleOpenDetails(tripDistribucion)}
+                                                    handleOpenDetails={() => navigate(`/trips/distribution/details/${tripDistribucion._id}`)}
                                                     id={tripDistribucion._id}
                                                 >
-                                                        <Eye className="text-gray-500 hover:text-gray-700 size-4" />
+                                                    <Eye className="text-gray-500 hover:text-gray-700 size-4" />
                                                 </MenuItem>
                                             </TableCell>
                                         </TableRow>
@@ -295,7 +293,7 @@ export default function DistributionListPage() {
             )}
 
             <PaginationEntity
-                entity="empresas"
+                entity="viajes"
                 page={page}
                 totalPages={totalPages}
                 rowsPerPage={rowsPerPage}
@@ -316,16 +314,6 @@ export default function DistributionListPage() {
                 />
             )}
 
-            {/*Detalles*/}
-            {viajeDistribucionSelected && (
-                <DetailsTripDistribution
-                    tripDistributionSelected={viajeDistribucionSelected}
-                    setOpenDetailsDialog={setOpenDetailsDialog}
-                    openDetailsDialog={openDetailsDialog}
-                />
-                
-            )}
- 
-  </>
+    </>
   );
 }

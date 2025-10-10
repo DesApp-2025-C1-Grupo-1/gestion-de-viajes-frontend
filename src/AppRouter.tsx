@@ -15,6 +15,7 @@ import TripFormPage from "./pages/trip/TripForm";
 import AgendaPage from "./pages/trip/AgendaPage";
 import DistributionListPage from "./pages/tripDistribution/DistributionListPage";
 import DistributionFormPage from "./pages/tripDistribution/DistributionFormPage";
+import DistributionDetailsPage from "./pages/tripDistribution/DistributionDetailsPage";
 
 export function AppRouter() {
   return (
@@ -41,6 +42,7 @@ export function AppRouter() {
         <Route path="/trips/distribution" element={<DistributionListPage />} />
         <Route path="/trips/distribution/form" element={<DistributionFormPage />} />
         <Route path="/trips/distribution/edit/:id" element={<DistributionFormPage />} />
+        <Route path="/trips/distribution/details/:id" element={<DistributionDetailsPage />} />
       </Route>
     </Routes>
   );

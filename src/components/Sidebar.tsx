@@ -33,7 +33,7 @@ export default function Sidebar({isVisible, setIsVisible}: SidebarProps) {
     { src: VehicleIcon, title: "Vehículos", link: "vehicles" },
     { src: DepotIcon, title: "Depósitos", link: "depots" },
     { src: ClipboardList, title: "Remitos", link: "https://remitos-front.netlify.app" },
-    { src: CircleDollarSign, title: "Tarifas", link: "https://68d73033f00e1875e53568ce--tarifas-de-costo.netlify.app" },
+    { src: CircleDollarSign, title: "Tarifas", link: "https://tarifas-de-costo.netlify.app" },
   ];
 
   

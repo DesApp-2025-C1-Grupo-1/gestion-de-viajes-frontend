@@ -91,7 +91,8 @@ export default function CompanyPage(){
                                 { label: 'Domicilio fiscal', value: [company.direccion?.ciudad, ' - ', company.direccion?.calle, ' ', company.direccion?.numero,], isLong: true },
                             ]}
                             onDelete={() => handleOpenDialog(company)}
-                            onEdit={() => navigate(`/companies/edit/${company._id}`)}            
+                            onEdit={() => navigate(`/companies/edit/${company._id}`)}   
+                            onView={() => navigate(`/companies/details/${company._id}`)}         
                         />
                     ))}
                 </div>

@@ -171,7 +171,8 @@ export default function DepositPage() {
                                             <TableCell>{formatTelefono(deposit.contacto?.telefono)}</TableCell>
                                             <TableCell sx={{ verticalAlign: "middle"}}>
                                                 <MenuItem  handleOpenDialog={() => handleOpenDialog(deposit)}
-                                                handleOpenDetails={() => handleOpenDetails(deposit)}
+                                                //handleOpenDetails={() => handleOpenDetails(deposit)}
+                                                handleOpenDetails={() => navigate(`/depots/details/${deposit._id}`)}
                                                 id={deposit._id}
                                                 >
                                                     <Eye className="text-gray-500 hover:text-gray-700 size-4" />
@@ -215,13 +216,13 @@ export default function DepositPage() {
                 />
             )}
 
-            {depositSelected && (
+            {/*{depositSelected && (
                 <DetailsDeposit 
                     depositSelected={depositSelected}
                     setOpenDetailsDialog={setOpenDetailsDialog}
                     openDetailsDialog={openDetailsDialog}
                 />
-            )}
+            )}*/}
 
         </>
     )

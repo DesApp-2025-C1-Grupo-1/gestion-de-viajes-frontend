@@ -141,7 +141,8 @@ export default function CompanyPage(){
                                             <TableCell sx={{ verticalAlign: "middle"}}>
                                                 <MenuItemDialog  
                                                         handleOpenDialog={() => handleOpenDialog(company)}
-                                                        id={company._id}
+                                                        handleOpenDetails={() => navigate(`/trips/distribution/details/${company._id}`)}
+                                                        id={company._id}                                                      
                                                 >
                                                 </MenuItemDialog>
                                             </TableCell>

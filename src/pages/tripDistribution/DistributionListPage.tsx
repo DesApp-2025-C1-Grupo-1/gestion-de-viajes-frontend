@@ -199,20 +199,17 @@ export default function DistributionListPage() {
                 <EntityCard
                     key={tripsDistribution._id}
                     title={tripsDistribution.numeroDeViaje}
-                    subtitle={<TripDistributionType tipo={tripsDistribution.estado} />}
                     icon={<MapPinned size={24}/>}
                     fields={[
                         { label: "Itinerario", value: `${new Date(tripsDistribution.fecha_inicio).toLocaleDateString()} - ${new Date(tripsDistribution.fecha_inicio).toLocaleTimeString()}  `, isLong: true},
+                        { label: "Tipo de viaje", value: <TripType tipo={tripsDistribution.tipo_viaje} />},
                         { label: "Deposito de origen", value: `${tripsDistribution.origen.nombre}`, isLong: true},
                         { label: "Transportista", value: `${tripsDistribution.transportista.nombre_comercial}`},
-                        { label: 'Chofer', value: `${tripsDistribution.chofer.nombre}, ${tripsDistribution.chofer.apellido}`}, 
-                        { label: "Vehículo", value: `${tripsDistribution.vehiculo.modelo} - ${tripsDistribution.vehiculo.patente}`},
-                        { label: "Remitos Asociados", value: `${tripsDistribution.remito_ids}`},
-                        ...(tripsDistribution.tarifa_id ? [{ label: "Tarifas", value: `${tripsDistribution.tarifa_id}`}] : [])
                     ]}
                     onDelete={() => handleOpenDialog(tripsDistribution)}
                     onEdit={() => navigate(`/trips/distribution/edit/${tripsDistribution._id}`)}  
-                    onView={() => navigate(`/trips/distribution/details/${tripsDistribution._id}`)}        
+                    onView={() => navigate(`/trips/distribution/details/${tripsDistribution._id}`)}  
+                    headerEstado={ <TripDistributionType tipo={tripsDistribution.estado} />}      
                 />
             ))}
         </div>

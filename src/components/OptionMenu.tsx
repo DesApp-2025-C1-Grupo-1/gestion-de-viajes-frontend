@@ -7,14 +7,16 @@ interface OptionMenuProps {
   title: string;
   link?: string;
   IconComponent: React.FC<{color?: string}>;
+  commonClasses?: string;
+  isSubmenu?: boolean;
 }
 
-export default function OptionMenu({ isCollapsed,onClick, IconComponent, title, link = "" }: OptionMenuProps) {
+export default function OptionMenu({ isCollapsed,onClick, IconComponent, title, link, commonClasses, isSubmenu = false }: OptionMenuProps) {
   const location = useLocation();
   const textRef = useRef<HTMLParagraphElement>(null);
   const [isActive, setIsActive] = useState(false);
 
-    const isExternal = link.startsWith("http");
+  const isExternal = link &&link.startsWith("http");
 
   // Verificar si la ruta actual comienza con el link asignado
   useEffect(() => {
@@ -24,7 +26,7 @@ export default function OptionMenu({ isCollapsed,onClick, IconComponent, title, 
     // Si es la home exacta
     if (link === "" && currentPath === "/") {
       setIsActive(true);
-    } else if (link !== "" && currentPath.startsWith(targetPath)) {
+    } else if (link && currentPath.includes(link)) {
       setIsActive(true);
     } else {
       setIsActive(false);
@@ -34,14 +36,14 @@ export default function OptionMenu({ isCollapsed,onClick, IconComponent, title, 
   }, [location, link]);
 
 
-  const commonClasses = `
+  const commonSubmenuClasses = `
     flex items-center h-14 rounded-lg overflow-hidden
     transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]
     w-full px-4
     ${isActive 
       ? "bg-menu-hover text-primary-orange"
       : "hover:bg-menu-hover text-gray-600"}
-    
+    ${isSubmenu && !isCollapsed ? "pl-10 " : ""}
   `;
 
   const content = (
@@ -65,13 +67,13 @@ export default function OptionMenu({ isCollapsed,onClick, IconComponent, title, 
       href={link}
       target="_self"
       rel="noopener noreferrer"
-      onClick={onClick}
-      className={`${commonClasses} sidebar-item`}
+      onClick={() => { onClick(); }}
+      className={`${commonClasses? commonClasses : commonSubmenuClasses} sidebar-item`}
     >
       {content}
     </a>
   ) : (
-    <Link to={`/${link}`} onClick={onClick} className={`${commonClasses} sidebar-item`}>
+    <Link to={`/${link}`} onClick={onClick} className={`${commonClasses? commonClasses : commonSubmenuClasses} sidebar-item`}>
       {content}
     </Link>
   );

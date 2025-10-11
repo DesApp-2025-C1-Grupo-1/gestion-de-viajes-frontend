@@ -1,18 +1,21 @@
 import { Popover, Typography, ListItemButton, ListItemIcon, ListItemText, List } from "@mui/material";
-import { Edit, Ellipsis, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { CalendarDays, Edit, Ellipsis, Trash2 } from "lucide-react";
+import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 interface MenuItemProps{
     handleOpenDialog:() => void;
     id:string;
     children?: React.ReactNode;
+    childrenAdicional?: React.ReactNode;
     handleOpenDetails?: () => void;
+    handleOpenAdicional?: () => void;
     titleItem?: string;
+    titleItemAdicional?: string;
     module?:string;
 }
 
-export default function MenuItem({handleOpenDialog, id, children, handleOpenDetails, titleItem = "Detalles", module}: MenuItemProps){
+export default function MenuItem({handleOpenDialog, id, children, childrenAdicional, handleOpenDetails, handleOpenAdicional, titleItemAdicional, titleItem = "Detalles", module}: MenuItemProps){
     const navigate = useNavigate();
     const location = useLocation();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -101,6 +104,20 @@ export default function MenuItem({handleOpenDialog, id, children, handleOpenDeta
                                 {children}
                             </ListItemIcon>
                             <ListItemText primary={titleItem} primaryTypographyProps={{ fontSize: 13, color: "#4B5563" }} />
+                        </ListItemButton>
+                    )}
+                    {children && handleOpenAdicional &&(
+                        <ListItemButton
+                            onClick={() => {
+                                handleOpenAdicional();
+                                handleClose();
+                            }}
+                            sx={{ gap: 1, px: 2 }}
+                        >
+                            <ListItemIcon sx={{ minWidth: 20 }}>
+                                <CalendarDays className="size-4 text-gray-500 hover:text-gray-700" />
+                            </ListItemIcon>
+                            <ListItemText primary={titleItemAdicional} primaryTypographyProps={{ fontSize: 13, color: "#4B5563" }} />
                         </ListItemButton>
                     )}
                 </List>

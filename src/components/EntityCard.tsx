@@ -21,12 +21,13 @@ type EntityCardProps = {
   subtitle?: ReactNode;
   fields: Field[];
   headerAction?: Action; // como el botón "Agenda"
+  headerEstado?: ReactNode; // para el estado
   onView?: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
 };
 
-export default function EntityCard({ title, subtitle, icon, fields, onView, onEdit, onDelete ,headerAction}: EntityCardProps) {
+export default function EntityCard({ title, subtitle, icon, fields, onView, onEdit, onDelete ,headerAction, headerEstado}: EntityCardProps) {
     return (
         <Card className="w-full border border-line rounded-lg overflow-hidden">
             <header className="p-5 bg-gray-100 flex justify-between items-center gap-4 border-b border-line w-full h-24">
@@ -35,7 +36,7 @@ export default function EntityCard({ title, subtitle, icon, fields, onView, onEd
                         {icon}
                     </div>
                     <div className="flex flex-col justify-center w-full gap-y-1">
-                        <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '1.10rem' }} className="text-gray-800 line-clamp-1">
+                        <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '1.10rem' }} className="text-gray-600 line-clamp-1">
                             {title}
                         </Typography>
                         <Box sx={{ fontSize: '0.875rem', color: 'text.secondary' }}>
@@ -52,6 +53,11 @@ export default function EntityCard({ title, subtitle, icon, fields, onView, onEd
                     >
                         {headerAction.label}
                     </Button>
+                )}
+                {headerEstado && (
+                    <Box>
+                        {headerEstado}
+                    </Box>
                 )}
             </header>
             <article className="p-5 grid gap-4 sm:grid-cols-2 items-start">

@@ -61,7 +61,7 @@ export default function Dashboard() {
                             description="Vista previa de los próximos viajes"
                             icon={<MapPinned className={`size-7 block`} color="#E65F2B"/>} 
                             list={proximosViajes}
-                            onClick={() => navigate("/trips")}
+                            onClick={() => navigate("/trips/distribution")}
                         />
                     </Grid>
 

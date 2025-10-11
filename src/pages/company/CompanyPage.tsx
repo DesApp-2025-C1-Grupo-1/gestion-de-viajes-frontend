@@ -10,7 +10,7 @@ import { empresaControllerDelete, EmpresaDto, useEmpresaControllerFindAll} from 
 import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 
-import { Building2 } from "lucide-react";
+import { Building2, Eye } from "lucide-react";
 import EntityCard from "../../components/EntityCard";
 import PaginationEntity from "../../components/PaginationEntity";
 
@@ -91,7 +91,8 @@ export default function CompanyPage(){
                                 { label: 'Domicilio fiscal', value: [company.direccion?.ciudad, ' - ', company.direccion?.calle, ' ', company.direccion?.numero,], isLong: true },
                             ]}
                             onDelete={() => handleOpenDialog(company)}
-                            onEdit={() => navigate(`/companies/edit/${company._id}`)}            
+                            onEdit={() => navigate(`/companies/edit/${company._id}`)}   
+                            onView={() => navigate(`/companies/details/${company._id}`)}         
                         />
                     ))}
                 </div>
@@ -141,8 +142,10 @@ export default function CompanyPage(){
                                             <TableCell sx={{ verticalAlign: "middle"}}>
                                                 <MenuItemDialog  
                                                         handleOpenDialog={() => handleOpenDialog(company)}
-                                                        id={company._id}
+                                                        handleOpenDetails={() => navigate(`/companies/details/${company._id}`)}
+                                                        id={company._id}                                                      
                                                 >
+                                                    <Eye className="text-gray-500 hover:text-gray-700 size-4" />
                                                 </MenuItemDialog>
                                             </TableCell>
                                         </TableRow>

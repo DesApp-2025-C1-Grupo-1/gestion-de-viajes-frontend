@@ -123,7 +123,7 @@ export default function VehiclePage() {
                             ]}
                             onDelete={() => handleOpenDialog(vehicle)}
                             onEdit={() => navigate(`/vehicles/edit/${vehicle._id}`)}
-                            onView={() => handleOpenDetails(vehicle)}
+                            onView={() => navigate(`/vehicles/details/${vehicle._id}`)}
                             headerAction={
                                 {
                                     label: "Agenda",

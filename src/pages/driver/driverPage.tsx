@@ -103,7 +103,7 @@ export default function DriverPage(){
                             ]}
                             onDelete={() => handleOpenDialog(driver)}
                             onEdit={() => navigate(`/drivers/edit/${driver._id}`)}
-                            onView={() => handleOpenDetails(driver)}
+                            onView={() => navigate(`/drivers/details/${driver._id}`)}
                             headerAction={
                                 {
                                     label: "Agenda",

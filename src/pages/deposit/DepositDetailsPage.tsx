@@ -26,7 +26,7 @@ export default function DepositDetailsPage() {
         <>
             <SectionHeader
                 title="Detalles del depósito"
-                description="Visualice los detalles del depósito"
+                description="Visualice los detalles del depósito."
             />
             <Paper  sx={{ padding:4, mx:'auto', width:"100%", borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "0.5px solid #C7C7C7"}} >
                 <div className="flex-1 overflow-y-auto px-4 py-6 flex flex-col items-center">

@@ -10,7 +10,7 @@ import { empresaControllerDelete, EmpresaDto, useEmpresaControllerFindAll} from 
 import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 
-import { Building2 } from "lucide-react";
+import { Building2, Eye } from "lucide-react";
 import EntityCard from "../../components/EntityCard";
 import PaginationEntity from "../../components/PaginationEntity";
 
@@ -141,9 +141,10 @@ export default function CompanyPage(){
                                             <TableCell sx={{ verticalAlign: "middle"}}>
                                                 <MenuItemDialog  
                                                         handleOpenDialog={() => handleOpenDialog(company)}
-                                                        handleOpenDetails={() => navigate(`/trips/distribution/details/${company._id}`)}
+                                                        handleOpenDetails={() => navigate(`/companies/details/${company._id}`)}
                                                         id={company._id}                                                      
                                                 >
+                                                    <Eye className="text-gray-500 hover:text-gray-700 size-4" />
                                                 </MenuItemDialog>
                                             </TableCell>
                                         </TableRow>

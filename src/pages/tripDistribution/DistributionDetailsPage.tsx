@@ -1,8 +1,8 @@
 import { TripDistributionType } from "../../components/tripsDistribution/TripDistributionType";
 import { SectionHeader } from "../../components/SectionHeader";
-import { CircularProgress, Paper, Table, TableCell, TableHead, TableRow} from "@mui/material";
+import { Button, CircularProgress, DialogActions, Paper, Table, TableCell, TableHead, TableRow} from "@mui/material";
 import { Building2, ClipboardMinus, MapPinned, Route, Ticket } from "lucide-react";
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import CardDetails from "../../components/detailts/Details";
 import { TripType } from "../../components/trip/TripType";
 import { useViajeDistribucionControllerFindOne, RemitoDto, useRemitosControllerGetRemitos, useTarifasControllerListarZonas, useTarifasControllerTarifasFiltradas, TarifaDto, ZonaDto, useRemitosControllerGetRemitosByIds, remitosControllerGetRemitosByIds, ViajeDistribucionDto} from '../../api/generated';
@@ -50,6 +50,7 @@ const fetchTarifasPorZona = async (zonaId: number, transportistaId: string, tipo
 
 export default function DistributionDetailsPage() {
     const { id } = useParams<{ id: string }>();
+    const navigate = useNavigate();
 
     const {
         data: tripSelectedRaw,
@@ -85,7 +86,7 @@ export default function DistributionDetailsPage() {
         <>
             <SectionHeader
                 title="Detalles del viaje"
-                description="Visualice los detalles del viaje en distribución y gestione su estado"
+                description="Visualice los detalles del viaje en distribución y gestione su estado."
             />
             <Paper  sx={{ padding:4, mx:'auto', width:"100%", borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "0.5px solid #C7C7C7"}} >
                 <div className="flex-1 overflow-y-auto px-4 py-6 flex flex-col items-center">
@@ -144,7 +145,24 @@ export default function DistributionDetailsPage() {
                     </div>
                 </div>
                   
-            </Paper>             
+            </Paper>   
+            <DialogActions sx={{paddingTop:4}}>
+                <Button
+                    onClick={() => navigate(`/trips/distribution`)}
+                    variant="contained"
+                    sx={{
+                    backgroundColor: "#E65F2B",
+                    "&:hover": {
+                        backgroundColor: "#C94715",
+                    },
+                    color: "#FFF",
+                    textTransform: "none",
+                    fontWeight: 500,
+                    }}
+                >
+                    Cerrar
+                </Button>
+            </DialogActions>          
 
         </>
     )

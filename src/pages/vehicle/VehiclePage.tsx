@@ -9,7 +9,7 @@ import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { useVehiculoControllerFindAll, vehiculoControllerRemove, VehiculoDto } from "../../api/generated";
 import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 import { useNotify } from "../../hooks/useNotify";
-import { CalendarDays, Truck } from "lucide-react";
+import { CalendarDays, Eye, Truck } from "lucide-react";
 import EntityCard from "../../components/EntityCard";
 import { DetailsVehicle } from "../../components/vehicle/DetailsVehicle";
 import PaginationEntity from "../../components/PaginationEntity";
@@ -196,11 +196,14 @@ export default function VehiclePage() {
                                             <TableCell sx={{ verticalAlign: "middle"}}>
                                                 <MenuItemDialog  
                                                     handleOpenDialog={() => handleOpenDialog(vehicle)}
-                                                    handleOpenDetails={() => navigate(`/agenda/vehicles/${vehicle._id}`)}
-                                                    titleItem="Agenda"
+                                                    //handleOpenDetails={() => navigate(`/agenda/vehicles/${vehicle._id}`)}
+                                                    handleOpenDetails={() => navigate(`/vehicles/details/${vehicle._id}`)}
+                                                    titleItem="Detalles"
+                                                   //titleItem="Agenda"
                                                     id={vehicle._id}
                                                 >
-                                                    <CalendarDays className="size-4 text-gray-500 hover:text-gray-700" />
+                                                    <Eye className="text-gray-500 hover:text-gray-700 size-4" />
+                                                    {/*<CalendarDays className="size-4 text-gray-500 hover:text-gray-700" />*/}
                                                 </MenuItemDialog>
                                             
                                             </TableCell>

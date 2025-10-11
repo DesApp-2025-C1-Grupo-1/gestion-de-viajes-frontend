@@ -10,7 +10,7 @@ import { choferControllerRemove, ChoferDto, useChoferControllerFindAll } from ".
 import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { DoubleCell } from "../../components/DoubleCell";
-import { Phone, Mail, Building2, Car, CalendarDays, PersonStanding, UserRound } from "lucide-react";
+import { Phone, Mail, Building2, Car, CalendarDays, PersonStanding, UserRound, Eye } from "lucide-react";
 import { formatTelefono } from "../../lib/formatters";
 import EntityCard from "../../components/EntityCard";
 import { DriverDetailsDialog } from "../../components/driver/DriverDetailsDialog";
@@ -176,11 +176,14 @@ export default function DriverPage(){
                                             <TableCell sx={{ verticalAlign: "middle"}}>
                                                 <MenuItemDialog  
                                                     handleOpenDialog={() => handleOpenDialog(driver)}
-                                                    handleOpenDetails={() => navigate(`/agenda/drivers/${driver._id}`)}
-                                                    titleItem="Agenda"
+                                                    handleOpenDetails={() => navigate(`/drivers/details/${driver._id}`)}
+                                                    //handleOpenDetails={() => navigate(`/agenda/drivers/${driver._id}`)}
+                                                    titleItem="Detalles"
+                                                    //titleItem="Agenda"
                                                     id={driver._id}
                                                 >
-                                                    <CalendarDays size={18} className="text-gray-500" />
+                                                    <Eye className="text-gray-500 hover:text-gray-700 size-4" />
+                                                    {/*<CalendarDays size={18} className="text-gray-500" />*/}
                                                 </MenuItemDialog>
                                             </TableCell>
                                         </TableRow>

@@ -196,14 +196,14 @@ export default function VehiclePage() {
                                             <TableCell sx={{ verticalAlign: "middle"}}>
                                                 <MenuItemDialog  
                                                     handleOpenDialog={() => handleOpenDialog(vehicle)}
-                                                    //handleOpenDetails={() => navigate(`/agenda/vehicles/${vehicle._id}`)}
                                                     handleOpenDetails={() => navigate(`/vehicles/details/${vehicle._id}`)}
+                                                    handleOpenAdicional={() => navigate(`/agenda/vehicles/${vehicle._id}`)}
                                                     titleItem="Detalles"
-                                                   //titleItem="Agenda"
+                                                    titleItemAdicional="Agenda"
                                                     id={vehicle._id}
                                                 >
                                                     <Eye className="text-gray-500 hover:text-gray-700 size-4" />
-                                                    {/*<CalendarDays className="size-4 text-gray-500 hover:text-gray-700" />*/}
+                                     
                                                 </MenuItemDialog>
                                             
                                             </TableCell>

@@ -177,13 +177,12 @@ export default function DriverPage(){
                                                 <MenuItemDialog  
                                                     handleOpenDialog={() => handleOpenDialog(driver)}
                                                     handleOpenDetails={() => navigate(`/drivers/details/${driver._id}`)}
-                                                    //handleOpenDetails={() => navigate(`/agenda/drivers/${driver._id}`)}
+                                                    handleOpenAdicional={() => navigate(`/agenda/drivers/${driver._id}`)}
                                                     titleItem="Detalles"
-                                                    //titleItem="Agenda"
+                                                    titleItemAdicional="Agenda"
                                                     id={driver._id}
                                                 >
                                                     <Eye className="text-gray-500 hover:text-gray-700 size-4" />
-                                                    {/*<CalendarDays size={18} className="text-gray-500" />*/}
                                                 </MenuItemDialog>
                                             </TableCell>
                                         </TableRow>

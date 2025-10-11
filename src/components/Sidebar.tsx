@@ -1,13 +1,10 @@
-import { ChevronLeft, ChevronRight, CircleDollarSign, ClipboardList, Truck } from "lucide-react";
-import HomeIcon from "./icons/HomeIcon";
-import DriverIcon from "./icons/DriverIcon";
-import VehicleIcon from "./icons/VehicleIcon";
-import DepotIcon from "./icons/DepotIcon";
+import { ChevronLeft, ChevronRight, ClipboardList, DollarSign } from "lucide-react";
 import TripIcon from "./icons/TripIcon";
-import CompanyIcon from "./icons/CompanyIcon";
 import { useEffect, useState } from "react";
-import OptionMenu from "./OptionMenu";
 import { useNavigate } from "react-router-dom";
+import DropdownMenu from "./DropdownMenu";
+import HomeIcon from "./icons/HomeIcon";
+import { sidebarMenus } from "../lib/sidebarMenus";
 
 interface SidebarProps {
   isVisible: boolean;
@@ -18,6 +15,7 @@ export default function Sidebar({isVisible, setIsVisible}: SidebarProps) {
   const navigate = useNavigate();
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [openSection, setOpenSection] = useState<string | null>(null);
 
   const toggleSidebar = () => {
     setIsTransitioning(true);
@@ -26,17 +24,12 @@ export default function Sidebar({isVisible, setIsVisible}: SidebarProps) {
   };
 
   const menuItems = [
-    { src: HomeIcon, title: "Inicio", link: "" },
-    { src: CompanyIcon, title: "Empresas", link: "companies" },
-    { src: TripIcon, title: "Viajes", link: "trips/distribution" },
-    { src: DriverIcon, title: "Choferes", link: "drivers" },
-    { src: VehicleIcon, title: "Vehículos", link: "vehicles" },
-    { src: DepotIcon, title: "Depósitos", link: "depots" },
-    { src: ClipboardList, title: "Remitos", link: "https://remitos-front.netlify.app" },
-    { src: CircleDollarSign, title: "Tarifas", link: "https://tarifas-de-costo.netlify.app" },
+    { key: "inicio", src: HomeIcon, title: "Inicio" },
+    { key: "viajes", src: TripIcon, title: "Gestión de Viajes" },
+    { key: "remitos", src: ClipboardList, title: "Gestión de Remitos" },
+    { key: "costos", src: DollarSign, title: "Gestión de Costos" },
   ];
 
-  
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   
   useEffect(() => {
@@ -57,6 +50,12 @@ export default function Sidebar({isVisible, setIsVisible}: SidebarProps) {
   const selectOption =() => {
     setIsVisible(false);
   }
+
+  type SidebarMenuKey = keyof typeof sidebarMenus;
+
+  const getItems = (key: SidebarMenuKey) => {
+    return sidebarMenus[key] || [];
+  };
 
   return (
     <aside 
@@ -88,16 +87,18 @@ export default function Sidebar({isVisible, setIsVisible}: SidebarProps) {
         {/* Menú */}
         <nav className="flex-1 overflow-y-auto py-3 px-0 min-h-0"> {/* Cambiado px-2 a px-0 */}
             <div className="flex flex-col gap-1 p-1 items-center"> {/* Añadido items-center */}
-                {menuItems.map((item) => (
-                <OptionMenu
-                    key={item.link || 'home'}
-                    isCollapsed={isCollapsed}
-                    onClick={selectOption}
-                    IconComponent={item.src}
-                    title={item.title}
-                    link={item.link}
+              {menuItems.map((item, index) => (
+                <DropdownMenu
+                  key={index}
+                  IconComponent={item.src}
+                  isCollapsed={isCollapsed}
+                  title={item.title}
+                  items={getItems(item.key as SidebarMenuKey)}
+                  onClick={selectOption}
+                  isOpen={openSection === item.title}
+                  onToggle={() => setOpenSection(prev => prev === item.title ? null : item.title)}
                 />
-                ))}
+              ))}
             </div>
         </nav>
 

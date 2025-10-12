@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DropdownMenu from "./DropdownMenu";
 import { sidebarMenus } from "../lib/sidebarMenus";
+import { Tooltip } from "@mui/material";
 
 
 interface SidebarProps {
@@ -56,6 +57,16 @@ export default function Sidebar({isVisible, setIsVisible}: SidebarProps) {
     return sidebarMenus[key] || [];
   };
 
+  const isMainApp = window.location.host.includes("gestion-de-viajes.vercel.app") || window.location.host.includes("localhost");
+
+  const handleLogoClick = () => {
+    if (isMainApp) {
+      navigate("/");
+    } else {
+      window.location.href = "https://gestion-de-viajes.vercel.app/";
+    }
+  };
+
   return (
     <aside 
       className={`
@@ -63,24 +74,23 @@ export default function Sidebar({isVisible, setIsVisible}: SidebarProps) {
         flex flex-col 
         ${isVisible ? 'translate-x-0' : '-translate-x-full'} 
         md:translate-x-0 md:relative 
-        ${isCollapsed ? 'w-16' : 'w-60'} transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]
+        ${isCollapsed ? 'w-18' : 'w-60'} transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]
       `}
     >
         {/* Encabezado */}
         <div 
-          className="flex items-center px-3 border-b border-gray-100 relative" 
-          onClick={() => navigate("/")}
+          className="flex items-center px-2 border-b border-gray-100 relative" 
+          onClick={handleLogoClick}
           style={{ cursor: 'pointer' }}
           aria-label="Ir a la página de inicio"
         >
+          <Tooltip title={isCollapsed ? "Ir a la página de inicio" : ""} placement="right" arrow>
             <img 
               src={isCollapsed ? "/logo_chico.png" : "/logo.jpg"}
               alt="Gestión de viajes logo con camión naranja sobre fondo blanco, transmite profesionalismo y confianza"  
-              className={`min-h-12 my-3 mx-auto object-contain transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]
-                ${isCollapsed ? 'w-full' : 'w-full'}
-              `} 
-
+              className={`min-h-12 my-3 mx-auto transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] w-full`} 
             />
+          </Tooltip>
         </div>
 
         {/* Menú */}

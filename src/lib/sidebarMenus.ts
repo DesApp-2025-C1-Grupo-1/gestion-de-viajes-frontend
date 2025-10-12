@@ -1,8 +1,8 @@
-import { Building2, CalendarDays, ChartColumn, DollarSign, FileText, Fuel, Layers, Map, MapPin, Navigation, Package, Truck, Users, Warehouse } from "lucide-react";
+import { Building2, CalendarDays, ChartColumn, DollarSign, FileText, Fuel, Layers, Map, MapPin, Navigation, Package, Truck, User, Users, Warehouse } from "lucide-react";
 
 export const sidebarMenus = {
   viajes: [
-    { src: Users, title: "Choferes", link: "drivers" },
+    { src: User, title: "Choferes", link: "drivers" },
     { src: Warehouse, title: "Depósitos", link: "depots" },
     { src: Building2, title: "Empresas", link: "companies" },
     { src: Truck, title: "Vehículos", link: "vehicles" },

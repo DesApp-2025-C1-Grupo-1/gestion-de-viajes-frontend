@@ -1,12 +1,13 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import React, { useEffect, useRef, useState } from "react";
+import { Tooltip } from "@mui/material";
 
 interface OptionMenuProps {
   isCollapsed: boolean;
   onClick: () => void;
   title: string;
   link?: string;
-  IconComponent: React.FC<{color?: string}>;
+  IconComponent: React.FC<{color?: string, className?: string}>;
   commonClasses?: string;
   isSubmenu?: boolean;
 }
@@ -21,7 +22,6 @@ export default function OptionMenu({ isCollapsed,onClick, IconComponent, title, 
   // Verificar si la ruta actual comienza con el link asignado
   useEffect(() => {
     const currentPath = location.pathname;
-    const targetPath = `/${link}`;
 
     // Si es la home exacta
     if (link === "" && currentPath === "/") {
@@ -47,14 +47,14 @@ export default function OptionMenu({ isCollapsed,onClick, IconComponent, title, 
   `;
 
   const content = (
-    <div className={`flex items-center ${!isCollapsed && "gap-4"} w-full`}>
-      <IconComponent color={isActive ? "#E65F2B" : "#5A5A65"} />
+    <div className={`flex items-center ${!isCollapsed && "gap-4"} w-full mx-auto`}>
+      <IconComponent color={isActive ? "#E65F2B" : "#5A5A65"} className={`mx-auto ${title === "Inicio" ? "size-8" : "size-6"}`}/>
       <p
         ref={textRef}
         className={`
           text-sm whitespace-nowrap
           transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]
-          ${isCollapsed ? "opacity-0 translate-x-[-10px] w-0" : "opacity-100 translate-x-0 w-auto"}
+          ${isCollapsed ? "opacity-0 translate-x-[-10px] w-0" : "opacity-100 translate-x-0 w-full"}
         `}
       >
         {title}
@@ -63,18 +63,22 @@ export default function OptionMenu({ isCollapsed,onClick, IconComponent, title, 
   );
 
   return isExternal ? (
-    <a
-      href={link}
-      target="_self"
-      rel="noopener noreferrer"
-      onClick={() => { onClick(); }}
-      className={`${commonClasses? commonClasses : commonSubmenuClasses} sidebar-item`}
-    >
-      {content}
-    </a>
+    <Tooltip title={isCollapsed ? title : ""} placement="right" arrow>
+      <a
+        href={link}
+        target="_self"
+        rel="noopener noreferrer"
+        onClick={() => { onClick(); }}
+        className={`${commonClasses? commonClasses : commonSubmenuClasses} sidebar-item`}
+      >
+        {content}
+      </a>
+    </Tooltip>
   ) : (
-    <Link to={`/${link}`} onClick={onClick} className={`${commonClasses? commonClasses : commonSubmenuClasses} sidebar-item`}>
-      {content}
-    </Link>
-  );
+    <Tooltip title={isCollapsed ? title : ""} placement="right" arrow>
+      <Link to={`/${link}`} onClick={onClick} className={`${commonClasses? commonClasses : commonSubmenuClasses} sidebar-item`}>
+        {content}
+      </Link>
+    </Tooltip>
+);
 }

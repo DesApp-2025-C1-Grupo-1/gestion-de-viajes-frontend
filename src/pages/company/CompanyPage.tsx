@@ -15,7 +15,7 @@ import EntityCard from "../../components/EntityCard";
 import PaginationEntity from "../../components/PaginationEntity";
 
 export default function CompanyPage(){
-    const {notify} = useNotify("Empresa");
+    const {notify} = useNotify("Empresa", "female");
     const {data, isLoading, refetch} = useEmpresaControllerFindAll();
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);
@@ -38,7 +38,7 @@ export default function CompanyPage(){
             await empresaControllerDelete(id);
             setOpenDialog(false);
             await refetch();
-            notify("delete", "Empresa eliminada correctamente.")
+            notify("delete", "female")
             setPage(1);
         } catch(err){
             const error = err as {response:{data:{message:string}}};

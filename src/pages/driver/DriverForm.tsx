@@ -8,6 +8,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import FormActions from "../../components/deposit/FormActions";
+import { toLocalDate, toUTCDate } from "../../lib/formatDate";
 
 export default function DriverFormPage(){
     const {id} = useParams();
@@ -115,12 +116,10 @@ export default function DriverFormPage(){
                                     name="fecha_nacimiento"
                                     control={control}
                                     render={({ field}) => (
-                                        <DatePicker                     
-                                            value={field.value ? new Date(field.value) : null}
-                                            onChange={(date) => {
-                                                field.onChange(date ? new Date(date) : null)
-                                                console.log(date)
-                                            }}
+                                        <DatePicker
+                                            {...field}                    
+                                            value={field.value ? toLocalDate(field.value) : null}
+                                            onChange={(date: Date | null) => field.onChange(toUTCDate(date))}
                                             className="inside-paper"
                                             slotProps={{
                                                 textField: {
@@ -129,6 +128,7 @@ export default function DriverFormPage(){
                                                 helperText: formErrors.fecha_nacimiento?.message,
                                                 },
                                             }}
+                                            format="dd/MM/yyyy"
                                         />
                                     )}
                                 />

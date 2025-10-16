@@ -1,4 +1,4 @@
-import { Button, MenuItem, Pagination, Select, SelectChangeEvent, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery, useTheme } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery, useTheme } from "@mui/material";
 import { SectionHeader } from "../../components/SectionHeader";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -11,13 +11,12 @@ import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 import { useNotify } from "../../hooks/useNotify";
 import { CalendarDays, Eye, Truck } from "lucide-react";
 import EntityCard from "../../components/EntityCard";
-import { DetailsVehicle } from "../../components/vehicle/DetailsVehicle";
 import PaginationEntity from "../../components/PaginationEntity";
 
 
 export default function VehiclePage() {
     const {notify} = useNotify("Vehículo");
-    const {data, isLoading, error, refetch} = useVehiculoControllerFindAll()
+    const {data, isLoading, refetch} = useVehiculoControllerFindAll()
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);
     const [rowsPerPage, setRowsPerPage] = useState<number>(5);
@@ -25,7 +24,6 @@ export default function VehiclePage() {
     const [vehicleSelected, setVehicleSelected] = useState<VehiculoDto>();
     const vehicles = data?.data || [];
     const debouncedQuery = useDebouncedValue(searchQuery, 500);
-    const [openDetailsDialog, setOpenDetailsDialog] = useState<boolean>(false);
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("lg")); // <1280px
 
@@ -61,13 +59,6 @@ export default function VehiclePage() {
         setPage(value);
     };
 
-    const handleOpenDetails = (vehicle: VehiculoDto) => {
-            setOpenDetailsDialog(true);
-            setVehicleSelected(vehicle);
-    };
-
-    
-
     useEffect(() => {
         // Si el search cambia, reseteamos a página 1
         setPage(1);
@@ -85,26 +76,7 @@ export default function VehiclePage() {
                 />
 
                 {/* Buscador y boton para ir a tipo de vehiculos*/}    
-                <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} placeholder="Buscar vehículo por modelo o patente" >
-                    <Button
-                        variant="contained"
-                        onClick={() => navigate("/type-vehicle")} // o abrir modal
-                        sx={{
-                            backgroundColor: "#00A86B",
-                            textTransform: "none",
-                            borderRadius: "8px",
-                            fontWeight: "500",
-                            boxShadow: "none",
-                            '&:hover': {
-                                backgroundColor: "#008c5a",
-                                boxShadow: "none",
-                            },
-                        }}
-                        className="w-full sm:max-w-max"
-                    >
-                        Tipos de vehículo
-                    </Button>
-                </SearchBar>
+                <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} placeholder="Buscar vehículo por modelo o patente" />
             </div>
 
             {isMobile ? (
@@ -240,14 +212,6 @@ export default function VehiclePage() {
                     genre="el"
                     entityName={vehicleSelected.patente}
                     onConfirm={() => handleDelete(vehicleSelected?._id)}
-                />
-            )}
-
-            {vehicleSelected && (
-                <DetailsVehicle
-                    vehicleSelected={vehicleSelected}
-                    setOpenDetailsDialog={setOpenDetailsDialog}
-                    openDetailsDialog={openDetailsDialog}
                 />
             )}
 

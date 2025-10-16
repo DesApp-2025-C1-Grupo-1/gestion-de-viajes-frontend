@@ -1,15 +1,23 @@
 import { VehicleTypeDialog } from "../../components/vehicle/type-vehicle/VehicleTypeDialog";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
-import { VehicleGrid } from "../../components/vehicle/type-vehicle/VehicleGrid";
 import { EmptyState } from "../../components/EmptyState";
 import LoadingState from "../../components/LoadingState";
 import { SectionHeader } from "../../components/SectionHeader";
 import { useTipoVehiculo } from "../../hooks/useVehicleTypeForm";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { TipoVehiculoDto } from "../../api/generated";
 import { CreateTipoVehiculoForm, UpdateTipoVehiculoForm } from "../../api/schemas";
+import SearchBar from "../../components/SearchBar";
+import PaginationEntity from "../../components/PaginationEntity";
+import { useDebouncedValue } from "../../hooks/useDebouncedValue";
+import CardVehicle from "../../components/vehicle/CardVehicle";
 
 export default function TypeVehicle() {
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [page, setPage] = useState<number>(1);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(5);
+  const debouncedQuery = useDebouncedValue(searchQuery, 500);
+
   const {
     tiposVehiculo,
     isLoading,
@@ -36,7 +44,23 @@ export default function TypeVehicle() {
         setItemToDelete(vehicleType);
     }, []);
 
-  console.log("Tipos de Vehículo:", tiposVehiculo);
+    const filtered = tiposVehiculo.filter((v) =>
+        v.nombre.toLowerCase().includes(debouncedQuery.toLowerCase())
+    );
+
+    const totalPages = Math.ceil(filtered.length / rowsPerPage);
+    const paginated = filtered.slice((page - 1) * rowsPerPage, page * rowsPerPage);
+
+    const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
+        setPage(value);
+    };
+  
+
+    useEffect(() => {
+        // Si el search cambia, reseteamos a página 1
+        setPage(1);
+    }, [searchQuery]);
+
 
   return (
     <>
@@ -47,17 +71,42 @@ export default function TypeVehicle() {
         onAdd={() => openDialog()}
       />
 
+      <SearchBar
+        placeholder="Buscar tipo de vehículo..."
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+      />
+
       {isLoading ? (
         <LoadingState title="Tipos de vehículos" />
-      ) : tiposVehiculo.length === 0 ? (
-        <EmptyState onAdd={() => openDialog()} />
+      ) : filtered.length === 0 ? (
+        <EmptyState />
       ) : (
-        <VehicleGrid
-          vehicleTypes={tiposVehiculo}
-          onEdit={openDialog}
-          onDelete={handleDeleteClick}
-        />
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 pb-4 px-0.5  lg:h-max">
+          {paginated.map((vehicleType) => (
+            <CardVehicle
+              key={vehicleType._id}
+              name={vehicleType.nombre}
+              description={vehicleType.descripcion || ""}
+              licenciaValida={vehicleType.licencia_permitida}
+              handleEdit={() => openDialog(vehicleType)}
+              handleDelete={() => handleDeleteClick(vehicleType)}
+            />
+          ))}
+        </div>
       )}
+
+      {/* Paginación */}
+      <PaginationEntity
+          entity="vehículos"
+          page={page}
+          totalPages={totalPages}
+          rowsPerPage={rowsPerPage}
+          filtered={filtered}
+          handleChangePage={handleChangePage}
+          setRowsPerPage={setRowsPerPage}
+          setPage={setPage}
+      />
 
       <VehicleTypeDialog
         open={isDialogOpen}
@@ -69,6 +118,7 @@ export default function TypeVehicle() {
       <ConfirmDialog
         open={!!itemToDelete}
         onClose={() => setItemToDelete(null)}
+        genre="el"
         onConfirm={() =>  handleDelete(itemToDelete?._id || "")}
         title="Tipo de Vehículo"
         entityName={itemToDelete?.nombre || ""}

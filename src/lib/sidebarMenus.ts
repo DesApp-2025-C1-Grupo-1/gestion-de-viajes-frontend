@@ -6,6 +6,7 @@ export const sidebarMenus = {
     { src: Warehouse, title: "Depósitos", link: "depots" },
     { src: Building2, title: "Empresas", link: "companies" },
     { src: Truck, title: "Vehículos", link: "vehicles" },
+    { src: Layers, title: "Tipos de Vehículos", link: "type-vehicle" },
     { src: Navigation, title: "Viajes", link: "trips/distribution" },
   ],
   remitos: [

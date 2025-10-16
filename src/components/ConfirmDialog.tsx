@@ -43,7 +43,7 @@ export const ConfirmDialog = ({
         <Button onClick={onClose} variant="outlined">
           {cancelText}
         </Button>
-        <Button onClick={onConfirm} color="error" variant="contained" autoFocus>
+        <Button onClick={onConfirm} variant="contained" autoFocus sx={{color: '#fff', fontWeight: 600, textTransform: 'none', boxShadow: 'none', backgroundColor: '#d32f2f', "&:hover": {backgroundColor: "#c62828  ", boxShadow: 'none'} }}>
           {confirmText}
         </Button>
       </DialogActions>

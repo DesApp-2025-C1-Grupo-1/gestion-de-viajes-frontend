@@ -1,4 +1,4 @@
-import { Chip } from "@mui/material";
+import { Button, Card, Chip } from "@mui/material";
 import { 
     Edit, 
     Trash2, 
@@ -59,11 +59,11 @@ const getLicenseSx = (licenseType: string) => {
 
 export default function CardVehicle({ name, description, handleEdit, handleDelete, licenciaValida}: CardVehicleProps) { 
     
-    const icono = <Truck size={24} /> // iconMap[name] || <Truck size={24} />; // fallback genérico
+    const icono = <Truck size={28} /> // iconMap[name] || <Truck size={24} />; // fallback genérico
 
     return(
-        <div className="flex justify-between flex-col gap-4  w-full  shadow-sm bg-white  rounded-lg hover:shadow-lg transition-shadow duration-200">
-            <header className="flex items-center h-20 bg-gradient-to-r from-emerald-500 to-emerald-600 justify-center w-full rounded-t-lg">
+        <Card className="flex justify-between flex-col gap-4  w-full border border-line  rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200">
+            <header className="flex items-center h-24 bg-gradient-to-r from-emerald-500 to-emerald-600 justify-center w-full ">
                 <div className="bg-white p-4 rounded-full shadow-md text-primary-orange hover:scale-105 transition-transform duration-200">
                     {icono}
                 </div>
@@ -81,18 +81,24 @@ export default function CardVehicle({ name, description, handleEdit, handleDelet
                 </div>
                 <p className="text-sm">{description}</p>
             </article>
-            <footer className="flex h-max  items-center justify-end gap-4 px-4 py-3 border-t border-gray-200">
-                <button className="flex gap-1 items-center text-xs font-medium px-2.5 py-2 rounded-md border border-line hover:text-white hover:bg-line transition-colors duration-200 cursor-pointer"
-                    onClick={handleEdit}>
-                    <Edit className="size-4"/> 
+            <footer className="flex h-max  items-center justify-end gap-2 px-4 py-3.5 border-t border-gray-200">
+                <Button
+                    variant="outlined"
+                    onClick={handleEdit}
+                    sx={{ textTransform: 'none', color: '#214BD3', borderColor: '#AFD1FF', backgroundColor: '#DBEAFE', fontWeight: 600, "&:hover": { borderColor: '#214BD3', backgroundColor: '#D0E3FF' }, fontSize: '0.835rem' }}
+                    startIcon={<Edit size={14} color="#214BD3" />}
+                >
                     Editar
-                </button>
-                <button className="flex gap-1 items-center text-xs font-medium px-2.5 py-2 rounded-md text-white bg-delete hover:bg-delete-hover transition-colors duration-200 cursor-pointer"
-                    onClick={handleDelete}>
-                    <Trash2 className="size-4"/>  
+                </Button>
+                <Button
+                    variant="outlined"
+                    onClick={handleDelete}
+                    sx={{fontSize: '0.835rem', color: '#fff', fontWeight: 600, textTransform: 'none', boxShadow: 'none', backgroundColor: '#d32f2f', "&:hover": {backgroundColor: "#c62828  ", boxShadow: 'none'} }}
+                    startIcon={<Trash2 size={14} color="#fff"/>}
+                >
                     Eliminar
-                </button>
+                </Button>
             </footer>
-        </div>
+        </Card>
     )
 }

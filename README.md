@@ -1,16 +1,54 @@
-# Desarrollo de Aplicaciones - Universidad Nacional de Hurlingham - Template para armar un proyecto de FE basado en React
-La organización de este repo se creó usando Vite (https://vitejs.dev/). Integra los siguientes packages (además de React, claro):
-- Material UI.
-- Redux (usado a título demostrativo en un solo componente).
-- React Router.
-- Axios.
+# Gestión de Viajes – Frontend (React + Vite + MUI)
 
-## Cómo trabajar con este template
-Loguearse con un usuario de Github. Entrar a este repo, pulsar el botón "Use this template" que van a ver arriba a la derecha. Se abre un menucito con dos opciones, elegir la primera, "Create a new repository". Llenar los datos que pide la página siguiente, y darle a "Create repository".  
-Eso va a crear un repo en el usuario o la orga que hayan elegido, con el contenido del template en un único commit inicial. 
+SPA para gestionar empresas, choferes, vehículos, viajes y distribución de viajes. Construida con React 18, Vite, Material UI, React Query y React Router.
 
-Clonarse el repo, en la carpeta principal de la copia local ejecutar `npm install` para instalar las dependencias. 
+## Requisitos
 
-Para levantar la app en modo desarrollo, `npm run dev`.
+- Node.js LTS (20.x recomendado)
+- npm
 
-Obviamente las funcionalidades están solamente a modo de ejemplo. Se puede empezar agregando la funcionalidad de nuestro proyecto, y después a medida que este va creciendo, ir borrando el código de ejemplo.
+## Configuración y ejecución
+
+1) Instalar dependencias
+
+```powershell
+npm install
+```
+
+2) Variables de entorno (Opcional)
+
+Crear un archivo `.env` en la raíz del frontend con al menos:
+
+```env
+VITE_API_URL=https://gestion-de-viajes.onrender.com/api-json
+```
+
+Este valor es usado por `orval.config.ts` para generar el cliente de API (`src/api/generated.ts`).
+
+3) Generar cliente API (opcional, si cambia el backend)
+
+```powershell
+npm run orval
+```
+
+4) Ejecutar en modo desarrollo
+
+```powershell
+npm run dev
+```
+
+La app corre por defecto en `http://localhost:5173`.
+
+5) Build de producción
+
+```powershell
+npm run build
+npm run preview
+```
+
+## Librerias utilizadas
+
+- UI: Material UI + tema personalizado en `src/config/customMuiTheme.ts`.
+- React Query: para fetching/caché; cliente generado por Orval desde OpenAPI del backend.
+- React Router (ver `src/AppRouter.tsx`).
+- API de provincias/localidades en `src/api/georefApi.ts`.

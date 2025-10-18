@@ -440,6 +440,78 @@ export interface PaginacionDto {
   limit: number;
 }
 
+export interface RemitoInfoDto {
+  id: string;
+}
+
+export interface AdicionalDetalleDto {
+  id: number;
+  /** Nombre del adicional */
+  nombre: string;
+  /** Costo por defecto del adicional */
+  costoDefault: number;
+  descripcion: string;
+  activo: boolean;
+  esGlobal: boolean;
+}
+
+export interface AdicionalDto {
+  adicional: AdicionalDetalleDto;
+  /** Costo específico del adicional para esta tarifa */
+  costoEspecifico: number;
+  activo: boolean;
+}
+
+export interface TarifaDto {
+  id: number;
+  nombre: string;
+  valorBase: number;
+  esVigente: boolean;
+  transportistaNombre: string;
+  tipoVehiculoNombre: string;
+  zonaNombre: string;
+  tipoCargaNombre: string;
+  transportistaId: string;
+  tipoVehiculoId: string;
+  zonaId: number;
+  tipoCargaId: number;
+  total: number;
+  adicionales: AdicionalDto[];
+}
+
+export type ViajeDistribucionDtoEstado = typeof ViajeDistribucionDtoEstado[keyof typeof ViajeDistribucionDtoEstado];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ViajeDistribucionDtoEstado = {
+  iniciado: 'iniciado',
+  inicio_de_carga: 'inicio de carga',
+  fin_de_carga: 'fin de carga',
+  fin_de_viaje: 'fin de viaje',
+} as const;
+
+export interface ViajeDistribucionDto {
+  /** ID de Mongo del viaje */
+  _id: string;
+  /** Código legible del viaje de distribución */
+  nro_viaje: string;
+  fecha_inicio: string;
+  /** Tipo de viaje */
+  tipo_viaje: string;
+  estado: ViajeDistribucionDtoEstado;
+  kilometros: number;
+  origen: DepositoDto;
+  chofer: ChoferDto;
+  transportista: EmpresaDto;
+  vehiculo: VehiculoDto;
+  remito_ids: number[];
+  remitos_info?: RemitoInfoDto[];
+  tarifa_id?: number;
+  observaciones?: string;
+  tarifa?: TarifaDto;
+  createdAt: string;
+}
+
 export interface EmpresaViajesDto {
   /** ID de la empresa */
   empresaId: string;
@@ -461,8 +533,8 @@ export interface EstadisticasRecientesDto {
 }
 
 export interface DashboardResponseDto {
-  /** Próximos 5 viajes programados */
-  proximosViajes: ViajeDto[];
+  /** Próximos 5 viajes de distribución programados */
+  proximosViajes: ViajeDistribucionDto[];
   /** Cantidad total de vehículos en el sistema */
   totalVehiculos: number;
   /** Cantidad total de choferes en el sistema */
@@ -527,44 +599,6 @@ export interface BuscarViajeDto {
   destino?: string;
 }
 
-export interface CreateDepositoDto {
-  /** Nombre del depósito */
-  nombre: string;
-  /** Latitud del depósito */
-  lat: number;
-  /** Longitud del depósito */
-  long: number;
-  /** Tipo de depósito si propio o de tercero */
-  tipo: string;
-  /** Horario de apertura del depósito */
-  horario_entrada: string;
-  /** Horario de cierre del depósito */
-  horario_salida: string;
-  /** Restricciones del depósito */
-  restricciones: string;
-  direccion: CreateDireccionDto;
-  contacto: CreateContactoDto;
-}
-
-export interface UpdateDepositoDto {
-  /** Nombre del depósito */
-  nombre?: string;
-  /** Latitud del depósito */
-  lat?: number;
-  /** Longitud del depósito */
-  long?: number;
-  /** Tipo de depósito si propio o de tercero */
-  tipo?: string;
-  /** Horario de apertura del depósito */
-  horario_entrada?: string;
-  /** Horario de cierre del depósito */
-  horario_salida?: string;
-  /** Restricciones del depósito */
-  restricciones?: string;
-  direccion?: CreateDireccionDto;
-  contacto?: CreateContactoDto;
-}
-
 export type CreateViajeDistribucionDtoEstado = typeof CreateViajeDistribucionDtoEstado[keyof typeof CreateViajeDistribucionDtoEstado];
 
 
@@ -589,72 +623,6 @@ export interface CreateViajeDistribucionDto {
   tarifa_id?: number;
   estado?: CreateViajeDistribucionDtoEstado;
   observaciones?: string;
-}
-
-export interface RemitoInfoDto {
-  id: string;
-}
-
-export interface AdicionalDto {
-  id: number;
-  /** Nombre del adicional */
-  nombre: string;
-  /** Costo por defecto del adicional */
-  costoDefault: number;
-  descripcion: string;
-  activo: boolean;
-  esGlobal: boolean;
-  costoEspecifico: number;
-}
-
-export interface TarifaDto {
-  id: number;
-  nombre: string;
-  valorBase: number;
-  esVigente: boolean;
-  transportistaNombre: string;
-  tipoVehiculoNombre: string;
-  zonaNombre: string;
-  tipoCargaNombre: string;
-  transportistaId: number;
-  tipoVehiculoId: number;
-  zonaId: number;
-  tipoCargaId: number;
-  total: number;
-  adicionales: AdicionalDto[];
-}
-
-export type ViajeDistribucionDtoEstado = typeof ViajeDistribucionDtoEstado[keyof typeof ViajeDistribucionDtoEstado];
-
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const ViajeDistribucionDtoEstado = {
-  iniciado: 'iniciado',
-  inicio_de_carga: 'inicio de carga',
-  fin_de_carga: 'fin de carga',
-  fin_de_viaje: 'fin de viaje',
-} as const;
-
-export interface ViajeDistribucionDto {
-  /** ID de Mongo del viaje */
-  _id: string;
-  /** Código legible del viaje de distribución */
-  numeroDeViaje: string;
-  fecha_inicio: string;
-  /** Tipo de viaje */
-  tipo_viaje: string;
-  estado: ViajeDistribucionDtoEstado;
-  kilometros: number;
-  origen: DepositoDto;
-  chofer: ChoferDto;
-  transportista: EmpresaDto;
-  vehiculo: VehiculoDto;
-  remito_ids: number[];
-  remitos_info?: RemitoInfoDto[];
-  tarifa_id?: number;
-  observaciones?: string;
-  tarifa?: TarifaDto;
-  createdAt: string;
 }
 
 export interface PaginacionDistribucionDto {
@@ -723,6 +691,44 @@ export interface BuscarViajeDistribucionDto {
   remito?: string[];
   /** Id de la tarifa */
   tarifa?: number;
+}
+
+export interface CreateDepositoDto {
+  /** Nombre del depósito */
+  nombre: string;
+  /** Latitud del depósito */
+  lat: number;
+  /** Longitud del depósito */
+  long: number;
+  /** Tipo de depósito si propio o de tercero */
+  tipo: string;
+  /** Horario de apertura del depósito */
+  horario_entrada: string;
+  /** Horario de cierre del depósito */
+  horario_salida: string;
+  /** Restricciones del depósito */
+  restricciones: string;
+  direccion: CreateDireccionDto;
+  contacto: CreateContactoDto;
+}
+
+export interface UpdateDepositoDto {
+  /** Nombre del depósito */
+  nombre?: string;
+  /** Latitud del depósito */
+  lat?: number;
+  /** Longitud del depósito */
+  long?: number;
+  /** Tipo de depósito si propio o de tercero */
+  tipo?: string;
+  /** Horario de apertura del depósito */
+  horario_entrada?: string;
+  /** Horario de cierre del depósito */
+  horario_salida?: string;
+  /** Restricciones del depósito */
+  restricciones?: string;
+  direccion?: CreateDireccionDto;
+  contacto?: CreateContactoDto;
 }
 
 export interface DestinoDto {
@@ -3057,364 +3063,6 @@ export const useViajeControllerBuscar = <TError = AxiosError<unknown>,
     }
     
 /**
- * @summary Crear un deposito
- */
-export const depositoControllerCreate = (
-    createDepositoDto: CreateDepositoDto, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<DepositoDto>> => {
-    
-    
-    return axios.post(
-      `/deposito`,
-      createDepositoDto,options
-    );
-  }
-
-
-
-export const getDepositoControllerCreateMutationOptions = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof depositoControllerCreate>>, TError,{data: CreateDepositoDto}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof depositoControllerCreate>>, TError,{data: CreateDepositoDto}, TContext> => {
-
-const mutationKey = ['depositoControllerCreate'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof depositoControllerCreate>>, {data: CreateDepositoDto}> = (props) => {
-          const {data} = props ?? {};
-
-          return  depositoControllerCreate(data,axiosOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type DepositoControllerCreateMutationResult = NonNullable<Awaited<ReturnType<typeof depositoControllerCreate>>>
-    export type DepositoControllerCreateMutationBody = CreateDepositoDto
-    export type DepositoControllerCreateMutationError = AxiosError<void>
-
-    /**
- * @summary Crear un deposito
- */
-export const useDepositoControllerCreate = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof depositoControllerCreate>>, TError,{data: CreateDepositoDto}, TContext>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof depositoControllerCreate>>,
-        TError,
-        {data: CreateDepositoDto},
-        TContext
-      > => {
-
-      const mutationOptions = getDepositoControllerCreateMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
-/**
- * @summary Obtener todos los deposito
- */
-export const depositoControllerFindAll = (
-     options?: AxiosRequestConfig
- ): Promise<AxiosResponse<DepositoDto[]>> => {
-    
-    
-    return axios.get(
-      `/deposito`,options
-    );
-  }
-
-
-export const getDepositoControllerFindAllQueryKey = () => {
-    return [`/deposito`] as const;
-    }
-
-    
-export const getDepositoControllerFindAllQueryOptions = <TData = Awaited<ReturnType<typeof depositoControllerFindAll>>, TError = AxiosError<void>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof depositoControllerFindAll>>, TError, TData>>, axios?: AxiosRequestConfig}
-) => {
-
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getDepositoControllerFindAllQueryKey();
-
-  
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof depositoControllerFindAll>>> = ({ signal }) => depositoControllerFindAll({ signal, ...axiosOptions });
-
-      
-
-      
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof depositoControllerFindAll>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type DepositoControllerFindAllQueryResult = NonNullable<Awaited<ReturnType<typeof depositoControllerFindAll>>>
-export type DepositoControllerFindAllQueryError = AxiosError<void>
-
-
-export function useDepositoControllerFindAll<TData = Awaited<ReturnType<typeof depositoControllerFindAll>>, TError = AxiosError<void>>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof depositoControllerFindAll>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof depositoControllerFindAll>>,
-          TError,
-          Awaited<ReturnType<typeof depositoControllerFindAll>>
-        > , 'initialData'
-      >, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useDepositoControllerFindAll<TData = Awaited<ReturnType<typeof depositoControllerFindAll>>, TError = AxiosError<void>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof depositoControllerFindAll>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof depositoControllerFindAll>>,
-          TError,
-          Awaited<ReturnType<typeof depositoControllerFindAll>>
-        > , 'initialData'
-      >, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useDepositoControllerFindAll<TData = Awaited<ReturnType<typeof depositoControllerFindAll>>, TError = AxiosError<void>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof depositoControllerFindAll>>, TError, TData>>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Obtener todos los deposito
- */
-
-export function useDepositoControllerFindAll<TData = Awaited<ReturnType<typeof depositoControllerFindAll>>, TError = AxiosError<void>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof depositoControllerFindAll>>, TError, TData>>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getDepositoControllerFindAllQueryOptions(options)
-
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
-
-  return query;
-}
-
-
-
-
-/**
- * @summary Obtener un deposito por ID
- */
-export const depositoControllerFindOne = (
-    id: string, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<DepositoDto>> => {
-    
-    
-    return axios.get(
-      `/deposito/${id}`,options
-    );
-  }
-
-
-export const getDepositoControllerFindOneQueryKey = (id: string,) => {
-    return [`/deposito/${id}`] as const;
-    }
-
-    
-export const getDepositoControllerFindOneQueryOptions = <TData = Awaited<ReturnType<typeof depositoControllerFindOne>>, TError = AxiosError<void>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof depositoControllerFindOne>>, TError, TData>>, axios?: AxiosRequestConfig}
-) => {
-
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getDepositoControllerFindOneQueryKey(id);
-
-  
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof depositoControllerFindOne>>> = ({ signal }) => depositoControllerFindOne(id, { signal, ...axiosOptions });
-
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof depositoControllerFindOne>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type DepositoControllerFindOneQueryResult = NonNullable<Awaited<ReturnType<typeof depositoControllerFindOne>>>
-export type DepositoControllerFindOneQueryError = AxiosError<void>
-
-
-export function useDepositoControllerFindOne<TData = Awaited<ReturnType<typeof depositoControllerFindOne>>, TError = AxiosError<void>>(
- id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof depositoControllerFindOne>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof depositoControllerFindOne>>,
-          TError,
-          Awaited<ReturnType<typeof depositoControllerFindOne>>
-        > , 'initialData'
-      >, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useDepositoControllerFindOne<TData = Awaited<ReturnType<typeof depositoControllerFindOne>>, TError = AxiosError<void>>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof depositoControllerFindOne>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof depositoControllerFindOne>>,
-          TError,
-          Awaited<ReturnType<typeof depositoControllerFindOne>>
-        > , 'initialData'
-      >, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useDepositoControllerFindOne<TData = Awaited<ReturnType<typeof depositoControllerFindOne>>, TError = AxiosError<void>>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof depositoControllerFindOne>>, TError, TData>>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Obtener un deposito por ID
- */
-
-export function useDepositoControllerFindOne<TData = Awaited<ReturnType<typeof depositoControllerFindOne>>, TError = AxiosError<void>>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof depositoControllerFindOne>>, TError, TData>>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getDepositoControllerFindOneQueryOptions(id,options)
-
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
-
-  return query;
-}
-
-
-
-
-/**
- * @summary Actualizar un deposito
- */
-export const depositoControllerUpdate = (
-    id: string,
-    updateDepositoDto: UpdateDepositoDto, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<DepositoDto>> => {
-    
-    
-    return axios.patch(
-      `/deposito/${id}`,
-      updateDepositoDto,options
-    );
-  }
-
-
-
-export const getDepositoControllerUpdateMutationOptions = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof depositoControllerUpdate>>, TError,{id: string;data: UpdateDepositoDto}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof depositoControllerUpdate>>, TError,{id: string;data: UpdateDepositoDto}, TContext> => {
-
-const mutationKey = ['depositoControllerUpdate'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof depositoControllerUpdate>>, {id: string;data: UpdateDepositoDto}> = (props) => {
-          const {id,data} = props ?? {};
-
-          return  depositoControllerUpdate(id,data,axiosOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type DepositoControllerUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof depositoControllerUpdate>>>
-    export type DepositoControllerUpdateMutationBody = UpdateDepositoDto
-    export type DepositoControllerUpdateMutationError = AxiosError<void>
-
-    /**
- * @summary Actualizar un deposito
- */
-export const useDepositoControllerUpdate = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof depositoControllerUpdate>>, TError,{id: string;data: UpdateDepositoDto}, TContext>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof depositoControllerUpdate>>,
-        TError,
-        {id: string;data: UpdateDepositoDto},
-        TContext
-      > => {
-
-      const mutationOptions = getDepositoControllerUpdateMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
-/**
- * @summary Eliminar un deposito por ID
- */
-export const depositoControllerRemove = (
-    id: string, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<void>> => {
-    
-    
-    return axios.delete(
-      `/deposito/${id}`,options
-    );
-  }
-
-
-
-export const getDepositoControllerRemoveMutationOptions = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof depositoControllerRemove>>, TError,{id: string}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof depositoControllerRemove>>, TError,{id: string}, TContext> => {
-
-const mutationKey = ['depositoControllerRemove'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof depositoControllerRemove>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
-
-          return  depositoControllerRemove(id,axiosOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type DepositoControllerRemoveMutationResult = NonNullable<Awaited<ReturnType<typeof depositoControllerRemove>>>
-    
-    export type DepositoControllerRemoveMutationError = AxiosError<void>
-
-    /**
- * @summary Eliminar un deposito por ID
- */
-export const useDepositoControllerRemove = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof depositoControllerRemove>>, TError,{id: string}, TContext>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof depositoControllerRemove>>,
-        TError,
-        {id: string},
-        TContext
-      > => {
-
-      const mutationOptions = getDepositoControllerRemoveMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
-/**
  * @summary Crear un nuevo viaje de distribución
  */
 export const viajeDistribucionControllerCreate = (
@@ -3896,6 +3544,364 @@ export const useViajeDistribucionControllerBuscar = <TError = AxiosError<unknown
       > => {
 
       const mutationOptions = getViajeDistribucionControllerBuscarMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * @summary Crear un deposito
+ */
+export const depositoControllerCreate = (
+    createDepositoDto: CreateDepositoDto, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<DepositoDto>> => {
+    
+    
+    return axios.post(
+      `/deposito`,
+      createDepositoDto,options
+    );
+  }
+
+
+
+export const getDepositoControllerCreateMutationOptions = <TError = AxiosError<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof depositoControllerCreate>>, TError,{data: CreateDepositoDto}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof depositoControllerCreate>>, TError,{data: CreateDepositoDto}, TContext> => {
+
+const mutationKey = ['depositoControllerCreate'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, axios: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof depositoControllerCreate>>, {data: CreateDepositoDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  depositoControllerCreate(data,axiosOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DepositoControllerCreateMutationResult = NonNullable<Awaited<ReturnType<typeof depositoControllerCreate>>>
+    export type DepositoControllerCreateMutationBody = CreateDepositoDto
+    export type DepositoControllerCreateMutationError = AxiosError<void>
+
+    /**
+ * @summary Crear un deposito
+ */
+export const useDepositoControllerCreate = <TError = AxiosError<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof depositoControllerCreate>>, TError,{data: CreateDepositoDto}, TContext>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof depositoControllerCreate>>,
+        TError,
+        {data: CreateDepositoDto},
+        TContext
+      > => {
+
+      const mutationOptions = getDepositoControllerCreateMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * @summary Obtener todos los deposito
+ */
+export const depositoControllerFindAll = (
+     options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<DepositoDto[]>> => {
+    
+    
+    return axios.get(
+      `/deposito`,options
+    );
+  }
+
+
+export const getDepositoControllerFindAllQueryKey = () => {
+    return [`/deposito`] as const;
+    }
+
+    
+export const getDepositoControllerFindAllQueryOptions = <TData = Awaited<ReturnType<typeof depositoControllerFindAll>>, TError = AxiosError<void>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof depositoControllerFindAll>>, TError, TData>>, axios?: AxiosRequestConfig}
+) => {
+
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getDepositoControllerFindAllQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof depositoControllerFindAll>>> = ({ signal }) => depositoControllerFindAll({ signal, ...axiosOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof depositoControllerFindAll>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type DepositoControllerFindAllQueryResult = NonNullable<Awaited<ReturnType<typeof depositoControllerFindAll>>>
+export type DepositoControllerFindAllQueryError = AxiosError<void>
+
+
+export function useDepositoControllerFindAll<TData = Awaited<ReturnType<typeof depositoControllerFindAll>>, TError = AxiosError<void>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof depositoControllerFindAll>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof depositoControllerFindAll>>,
+          TError,
+          Awaited<ReturnType<typeof depositoControllerFindAll>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useDepositoControllerFindAll<TData = Awaited<ReturnType<typeof depositoControllerFindAll>>, TError = AxiosError<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof depositoControllerFindAll>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof depositoControllerFindAll>>,
+          TError,
+          Awaited<ReturnType<typeof depositoControllerFindAll>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useDepositoControllerFindAll<TData = Awaited<ReturnType<typeof depositoControllerFindAll>>, TError = AxiosError<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof depositoControllerFindAll>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Obtener todos los deposito
+ */
+
+export function useDepositoControllerFindAll<TData = Awaited<ReturnType<typeof depositoControllerFindAll>>, TError = AxiosError<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof depositoControllerFindAll>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getDepositoControllerFindAllQueryOptions(options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * @summary Obtener un deposito por ID
+ */
+export const depositoControllerFindOne = (
+    id: string, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<DepositoDto>> => {
+    
+    
+    return axios.get(
+      `/deposito/${id}`,options
+    );
+  }
+
+
+export const getDepositoControllerFindOneQueryKey = (id: string,) => {
+    return [`/deposito/${id}`] as const;
+    }
+
+    
+export const getDepositoControllerFindOneQueryOptions = <TData = Awaited<ReturnType<typeof depositoControllerFindOne>>, TError = AxiosError<void>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof depositoControllerFindOne>>, TError, TData>>, axios?: AxiosRequestConfig}
+) => {
+
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getDepositoControllerFindOneQueryKey(id);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof depositoControllerFindOne>>> = ({ signal }) => depositoControllerFindOne(id, { signal, ...axiosOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof depositoControllerFindOne>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type DepositoControllerFindOneQueryResult = NonNullable<Awaited<ReturnType<typeof depositoControllerFindOne>>>
+export type DepositoControllerFindOneQueryError = AxiosError<void>
+
+
+export function useDepositoControllerFindOne<TData = Awaited<ReturnType<typeof depositoControllerFindOne>>, TError = AxiosError<void>>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof depositoControllerFindOne>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof depositoControllerFindOne>>,
+          TError,
+          Awaited<ReturnType<typeof depositoControllerFindOne>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useDepositoControllerFindOne<TData = Awaited<ReturnType<typeof depositoControllerFindOne>>, TError = AxiosError<void>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof depositoControllerFindOne>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof depositoControllerFindOne>>,
+          TError,
+          Awaited<ReturnType<typeof depositoControllerFindOne>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useDepositoControllerFindOne<TData = Awaited<ReturnType<typeof depositoControllerFindOne>>, TError = AxiosError<void>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof depositoControllerFindOne>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Obtener un deposito por ID
+ */
+
+export function useDepositoControllerFindOne<TData = Awaited<ReturnType<typeof depositoControllerFindOne>>, TError = AxiosError<void>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof depositoControllerFindOne>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getDepositoControllerFindOneQueryOptions(id,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * @summary Actualizar un deposito
+ */
+export const depositoControllerUpdate = (
+    id: string,
+    updateDepositoDto: UpdateDepositoDto, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<DepositoDto>> => {
+    
+    
+    return axios.patch(
+      `/deposito/${id}`,
+      updateDepositoDto,options
+    );
+  }
+
+
+
+export const getDepositoControllerUpdateMutationOptions = <TError = AxiosError<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof depositoControllerUpdate>>, TError,{id: string;data: UpdateDepositoDto}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof depositoControllerUpdate>>, TError,{id: string;data: UpdateDepositoDto}, TContext> => {
+
+const mutationKey = ['depositoControllerUpdate'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, axios: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof depositoControllerUpdate>>, {id: string;data: UpdateDepositoDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  depositoControllerUpdate(id,data,axiosOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DepositoControllerUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof depositoControllerUpdate>>>
+    export type DepositoControllerUpdateMutationBody = UpdateDepositoDto
+    export type DepositoControllerUpdateMutationError = AxiosError<void>
+
+    /**
+ * @summary Actualizar un deposito
+ */
+export const useDepositoControllerUpdate = <TError = AxiosError<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof depositoControllerUpdate>>, TError,{id: string;data: UpdateDepositoDto}, TContext>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof depositoControllerUpdate>>,
+        TError,
+        {id: string;data: UpdateDepositoDto},
+        TContext
+      > => {
+
+      const mutationOptions = getDepositoControllerUpdateMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * @summary Eliminar un deposito por ID
+ */
+export const depositoControllerRemove = (
+    id: string, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<void>> => {
+    
+    
+    return axios.delete(
+      `/deposito/${id}`,options
+    );
+  }
+
+
+
+export const getDepositoControllerRemoveMutationOptions = <TError = AxiosError<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof depositoControllerRemove>>, TError,{id: string}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof depositoControllerRemove>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['depositoControllerRemove'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, axios: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof depositoControllerRemove>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  depositoControllerRemove(id,axiosOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DepositoControllerRemoveMutationResult = NonNullable<Awaited<ReturnType<typeof depositoControllerRemove>>>
+    
+    export type DepositoControllerRemoveMutationError = AxiosError<void>
+
+    /**
+ * @summary Eliminar un deposito por ID
+ */
+export const useDepositoControllerRemove = <TError = AxiosError<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof depositoControllerRemove>>, TError,{id: string}, TContext>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof depositoControllerRemove>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+
+      const mutationOptions = getDepositoControllerRemoveMutationOptions(options);
 
       return useMutation(mutationOptions , queryClient);
     }

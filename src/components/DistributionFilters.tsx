@@ -369,10 +369,11 @@ export default function DistributionFilters({
                                  <Select
                                     fullWidth
                                     multiple
-                                    value={localFilters.remito || []} // contiene los ids
+                                    value={localFilters.remito || []}
                                     onChange={(e) => {
-                                      const value = e.target.value as string[]; // ids seleccionados
-                                      handleChange("remito", value);
+                                      const value = e.target.value as string[];
+                                      const ids = value.map((v) => Number(v));
+                                      handleChange("remito", ids);
                                     }}
                                     displayEmpty
                                     renderValue={(selected) => {

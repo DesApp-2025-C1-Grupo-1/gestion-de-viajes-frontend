@@ -87,8 +87,13 @@ export const useEditDistributionForm = (tripId: string) => {
 
     try {
       const { fecha_inicio, ...dataToUpdate } = formData;
-      await viajeDistribucionControllerUpdate(tripId, dataToUpdate);
-      queryClient.invalidateQueries(["viajeDistribucion", tripId]);
+      await viajeDistribucionControllerUpdate(tripId, {
+        ...dataToUpdate,
+        fecha_inicio: fecha_inicio.toISOString(),
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["viajeDistribucion", tripId],
+      });
       reset(formData)
       notify("update");
       navigate("/trips/distribution");

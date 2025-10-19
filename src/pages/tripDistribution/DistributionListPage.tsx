@@ -198,7 +198,7 @@ export default function DistributionListPage() {
             {trips.map(tripsDistribution => (
                 <EntityCard
                     key={tripsDistribution._id}
-                    title={tripsDistribution.numeroDeViaje}
+                    title={ tripsDistribution.nro_viaje ?? (tripsDistribution as any).numeroDeViaje}
                     icon={<MapPinned size={24}/>}
                     fields={[
                         { label: "Itinerario", value: `${new Date(tripsDistribution.fecha_inicio).toLocaleDateString()} - ${new Date(tripsDistribution.fecha_inicio).toLocaleTimeString()}  `, isLong: true},
@@ -250,7 +250,7 @@ export default function DistributionListPage() {
                                 ):(
                                     trips.map((tripDistribucion) => (
                                         <TableRow key={tripDistribucion._id} className="hover:bg-gray-50 overflow-hidden">
-                                            <TableCell sx={{fontWeight: "bold", maxWidth: 150}} className="truncate">{tripDistribucion.numeroDeViaje}</TableCell>
+                                            <TableCell sx={{fontWeight: "bold", maxWidth: 150}} className="truncate">{ tripDistribucion.nro_viaje ?? (tripDistribucion as any).numeroDeViaje}</TableCell>
                                             <TableCell sx={{minWidth: 150}} >
                                                 <DoubleCell 
                                                     primarySection={`${new Date(tripDistribucion.fecha_inicio).toLocaleDateString()}`} 

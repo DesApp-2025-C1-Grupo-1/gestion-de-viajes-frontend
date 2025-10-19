@@ -1,4 +1,4 @@
-import { Box, Button, Card, Tooltip, Typography } from "@mui/material";
+import { Box, Button, Card, Grid, Tooltip, Typography } from "@mui/material";
 import { Edit, Eye, Trash2 } from "lucide-react";
 import { ReactNode } from "react";
 
@@ -6,6 +6,7 @@ type Field = {
   label: string;
   value: ReactNode;
   isLong?: boolean;
+  isMail?: boolean;
 };
 
 type Action = {
@@ -30,18 +31,20 @@ type EntityCardProps = {
 export default function EntityCard({ title, subtitle, icon, fields, onView, onEdit, onDelete ,headerAction, headerEstado}: EntityCardProps) {
     return (
         <Card className="w-full border border-line rounded-lg overflow-hidden">
-            <header className="p-5 bg-gray-100 flex justify-between items-center gap-4 border-b border-line w-full h-24">
-                <div className="flex gap-4 items-center w-max">
-                    <div className="p-3 rounded-full shadow-sm bg-primary-orange text-white h-max w-max ">
+            <header className="p-5 bg-gray-100 w-full h-24 flex justify-between items-center border-b border-line">
+                <div className="flex justify-center gap-4 items-center w-max">
+                    <div className="p-3 rounded-full shadow-sm bg-primary-orange text-white h-max w-max flex items-center justify-center">
                         {icon}
                     </div>
                     <div className="flex flex-col justify-center w-full gap-y-1">
-                        <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '1.10rem' }} className="text-gray-600 line-clamp-1">
+                        <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '1.10rem' }} className="text-gray-600">
                             {title}
                         </Typography>
-                        <Box sx={{ fontSize: '0.875rem', color: 'text.secondary' }}>
-                            {subtitle}
-                        </Box>
+                        {subtitle && (
+                            <Box sx={{ fontSize: '0.875rem', color: 'text.secondary' }}>
+                                {subtitle}
+                            </Box>   
+                        )}
                     </div>
                 </div>
                 {headerAction && (
@@ -55,41 +58,19 @@ export default function EntityCard({ title, subtitle, icon, fields, onView, onEd
                     </Button>
                 )}
                 {headerEstado && (
-                    <Box>
+                    <Box sx={{}}>
                         {headerEstado}
                     </Box>
                 )}
             </header>
-            <article className="p-5 grid gap-4 sm:grid-cols-2 items-start">
-                {fields.map((field, index) => (
-                    <div key={index} className="flex flex-col gap-1 justify-between">
-                        <Typography variant="body2" color="text.secondary">
-                            {field.label}
-                        </Typography>
-                        {!field.isLong ? (
-                            <Typography
-                                variant="h6" 
-                                fontWeight={600} 
-                                sx={{ fontSize: '0.90rem'}}
-                                className="truncate"
-                            >
-                                {field.value}
+            <article>
+                <Grid container spacing={2} className="p-5 pb-0">
+                    {fields.map((field, index) => (
+                        <Grid item xs={field.isMail ? 12 : 6} key={index}>
+                            <Typography variant="body2" color="text.secondary">
+                                {field.label}
                             </Typography>
-                        ) : (
-                            <Tooltip 
-                                title={field.value} 
-                                placement="bottom-start"
-                                slotProps={{
-                                    popper: {
-                                    modifiers: [
-                                        {
-                                        name: 'offset',
-                                        options: {
-                                            offset: [0, -14],
-                                        },
-                                    },],},
-                                }}
-                            >
+                            {!field.isLong ? (
                                 <Typography
                                     variant="h6" 
                                     fontWeight={600} 
@@ -98,10 +79,34 @@ export default function EntityCard({ title, subtitle, icon, fields, onView, onEd
                                 >
                                     {field.value}
                                 </Typography>
-                            </Tooltip>
-                        )}
-                    </div>
-                ))}
+                            ) : (
+                                <Tooltip 
+                                    title={field.value} 
+                                    placement="bottom-start"
+                                    slotProps={{
+                                        popper: {
+                                        modifiers: [
+                                            {
+                                            name: 'offset',
+                                            options: {
+                                                offset: [0, -14],
+                                            },
+                                        },],},
+                                    }}
+                                >
+                                    <Typography
+                                        variant="h6" 
+                                        fontWeight={600} 
+                                        sx={{ fontSize: '0.90rem'}}
+                                        className="truncate"
+                                    >
+                                        {field.value}
+                                    </Typography>
+                                </Tooltip>
+                            )}
+                        </Grid>
+                    ))}
+                </Grid>
             </article>
             <footer className="p-5 flex justify-between items-center">
 

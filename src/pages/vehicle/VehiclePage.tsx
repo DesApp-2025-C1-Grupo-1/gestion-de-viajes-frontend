@@ -96,13 +96,6 @@ export default function VehiclePage() {
                             onDelete={() => handleOpenDialog(vehicle)}
                             onEdit={() => navigate(`/vehicles/edit/${vehicle._id}`)}
                             onView={() => navigate(`/vehicles/details/${vehicle._id}`)}
-                            headerAction={
-                                {
-                                    label: "Agenda",
-                                    icon: <CalendarDays size={16} />,
-                                    onClick: () => navigate(`/agenda/vehicles/${vehicle._id}`),
-                                }
-                            }
                         />
                     ))}
                 </div>
@@ -169,9 +162,7 @@ export default function VehiclePage() {
                                                 <MenuItemDialog  
                                                     handleOpenDialog={() => handleOpenDialog(vehicle)}
                                                     handleOpenDetails={() => navigate(`/vehicles/details/${vehicle._id}`)}
-                                                    handleOpenAdicional={() => navigate(`/agenda/vehicles/${vehicle._id}`)}
                                                     titleItem="Detalles"
-                                                    titleItemAdicional="Agenda"
                                                     id={vehicle._id}
                                                 >
                                                     <Eye className="text-gray-500 hover:text-gray-700 size-4" />

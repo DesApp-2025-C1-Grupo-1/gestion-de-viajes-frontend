@@ -3,7 +3,7 @@ import { Controller, useWatch } from "react-hook-form";
 import { useDistributionFormContext } from "../../../contexts/DistributionFormContext";
 import { ConditionalField } from "../fields/ConditionalField";
 import { useEffect, useMemo, useState } from "react";
-import { TarifaDto, useTarifasControllerListarZonas, ZonaDto } from "../../../api/generated";
+import { TarifaDto, useTarifasControllerListarZonas, useTarifasControllerTarifasFiltradas, ZonaDto } from "../../../api/generated";
 
 interface TripData {
   tarifa_id?: number;
@@ -48,6 +48,13 @@ export default function TariffSection() {
 
   const safeTripData: TripData = tripData || {};
   const safeIsEditing = Boolean(isEditing);
+  
+  const {data: tarifas} =  useTarifasControllerTarifasFiltradas({
+    zona: zonaSeleccionada as number,
+    transportista: transportistaId,
+    tipoVehiculo: tipoVehiculoId
+  }, { query: { enabled: !!zonaSeleccionada } });
+
 
   const esViajeInternacional = useMemo(() => {
     // Prioridad: valor del formulario > valor de tripData
@@ -69,15 +76,20 @@ export default function TariffSection() {
 
     if (safeIsEditing && safeTripData.tarifa_id) {
       
-      const inicializarDesdeTarifaExistente = async () => {
+      const inicializarDesdeTarifaExistente = () => {
         try {
-          const tarifaExistente = tarifasMock.find(t => t.id === safeTripData.tarifa_id);
+          const tarifaExistente = tarifas?.data.find(t => t.id === safeTripData.tarifa_id);
+          if (!tarifaExistente) {
+            console.log('❌ Tarifa existente no encontrada en las tarifas filtradas');
+            setInicializado(true);
+            return;
+          }
           
           if (tarifaExistente) {
             
             // PRIMERO: Establecer la zona
             setZonaSeleccionada(tarifaExistente.zonaId);
-            
+            console.log('✅ Tarifa encontrada:', tarifaExistente);
             // ESPERAR UN CICLO PARA GARANTIZAR QUE LA ZONA SE ESTABLECIÓ
             setTimeout(() => {
               // LUEGO: Establecer la tarifa en el formulario
@@ -85,12 +97,7 @@ export default function TariffSection() {
                 shouldValidate: true,
                 shouldDirty: true 
               });
-              
-              // FINALMENTE: Cargar las tarifas disponibles para esta zona
-              fetchTarifasParaZona(tarifaExistente.zonaId).then(tarifas => {
-                setTarifasDisponibles(tarifas || []);
-                setInicializado(true); // 🔥 MARCAR COMO INICIALIZADO
-              });
+              setInicializado(true);
             }, 100);
             
           } else {
@@ -109,31 +116,18 @@ export default function TariffSection() {
     }
   }, [safeIsEditing, safeTripData.tarifa_id, esViajeInternacional, inicializado, setValue]);
 
-  // FUNCIÓN SEPARADA PARA CARGAR TARIFAS
-  const fetchTarifasParaZona = async (zonaId: number): Promise<TarifaDto[]> => {
-    if (esViajeInternacional) return [];
-    
-    try {
-      const tarifas = await fetchTarifasPorZona(zonaId, transportistaId, tipoVehiculoId);
-      return tarifas || [];
-    } catch (error) {
-      console.error('Error cargando tarifas:', error);
-      return [];
-    }
-  };
 
   // EFECTO SIMPLIFICADO: CARGAR TARIFAS CUANDO CAMBIA LA ZONA (SOLO EN CREACIÓN O CAMBIO MANUAL)
   useEffect(() => {
     if (esViajeInternacional || !zonaSeleccionada || inicializado) return;
 
-    const cargarTarifas = async () => {
+    const cargarTarifas = () => {
       setLoadingTarifas(true);
-      const tarifas = await fetchTarifasParaZona(zonaSeleccionada);
-      setTarifasDisponibles(tarifas);
+      setTarifasDisponibles(tarifas?.data || []);
       
       // AUTO-SELECCIONAR SI HAY SOLO UNA TARIFA (SOLO EN CREACIÓN)
-      if (!safeIsEditing && tarifas.length === 1 && !tarifaId) {
-        setValue("tarifa_id", tarifas[0].id, { 
+      if (!safeIsEditing && tarifas?.data.length === 1 && !tarifaId) {
+        setValue("tarifa_id", tarifas?.data[0].id, { 
           shouldValidate: true,
           shouldDirty: true 
         });
@@ -290,7 +284,7 @@ export default function TariffSection() {
                     <MenuItem key={tarifa.id} value={tarifa.id}>
                       <Box>
                         <Typography variant="body2" fontWeight="bold">
-                          ${tarifa.total} - {tarifa.nombre}
+                          ${tarifa.total} - {tarifa.nombreTarifa}
                         </Typography>
                       </Box>
                     </MenuItem>
@@ -312,11 +306,11 @@ export default function TariffSection() {
               backgroundColor: '#E6F4EA' 
             }}>
               <Typography variant="subtitle2" fontWeight="bold" color="success.main">
-                {safeIsEditing && tarifaParaMostrar.id === safeTripData.tarifa_id ? "📋 Tarifa Existente" : "✅ Tarifa Seleccionada"}
+                {safeIsEditing && tarifaParaMostrar.id === safeTripData.tarifa_id ? "Tarifa Existente" : "Tarifa Seleccionada"}
               </Typography>
               <Box sx={{ mt: 1 }}>
                 <Typography >
-                  <strong className="text-[#2F691D]">Nombre:</strong> {tarifaParaMostrar.nombre}
+                  <strong className="text-[#2F691D]">Nombre:</strong> {tarifaParaMostrar.nombreTarifa}
                 </Typography>
                 <Typography>
                   <strong className="text-[#2F691D]">Precio Total:</strong> ${tarifaParaMostrar.total}
@@ -335,40 +329,3 @@ export default function TariffSection() {
     </>
   );
 }
-
-// Mock y función auxiliar (mantener igual)
-const tarifasMock: TarifaDto[] = [
-  { 
-    id: 1,
-    nombre: "Tarifa Estándar",
-    valorBase: 1000,
-    esVigente: true,
-    transportistaNombre: "Transporte Rápido",
-    tipoVehiculoNombre: "Camión Semi",
-    zonaNombre: "Zona Norte",
-    tipoCargaNombre: "General",
-    transportistaId: "683f7e7e4904b1a84fc05250",
-    tipoVehiculoId: "6845d29a9d776351c1752411",
-    zonaId: 46,
-    tipoCargaId: 7,
-    total: 1200,
-    adicionales: [
-      {
-        id: 1,
-        nombre: "Peaje",
-        costoDefault: 100,
-        descripcion: "Costo de peajes en la ruta",
-        activo: true,
-        esGlobal: true,
-        costoEspecifico: 100
-      }
-    ]
-  }
-];
-
-const fetchTarifasPorZona = async (zonaId: number, transportistaId: string, tipoVehiculoId: string): Promise<TarifaDto[]> => {
-  return tarifasMock.filter(t => 
-    t.zonaId === zonaId && 
-    t.esVigente === true
-  );
-};

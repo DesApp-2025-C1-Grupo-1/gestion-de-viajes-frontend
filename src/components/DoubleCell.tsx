@@ -18,7 +18,7 @@ export const DoubleCell = ({
     <Stack spacing={1} sx={{ minWidth: 0, overflow: 'hidden'}}>
       <Box display="flex" alignItems="center" gap={1}>
         {primaryIcon}
-        <Typography variant="body2" fontWeight={450}> 
+        <Typography variant="body2" fontWeight={secondaryIcon ? '500' : 'normal'}> 
           {primarySection}
         </Typography>
       </Box>

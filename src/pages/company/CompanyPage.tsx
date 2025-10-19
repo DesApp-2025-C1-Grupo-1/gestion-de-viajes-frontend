@@ -87,8 +87,8 @@ export default function CompanyPage(){
                             icon={<Building2 size={24}/>}
                             fields={[
                                 { label: "CUIT/RUT", value: company.cuit },
-                                { label: "Contacto", value: company.contacto.email, isLong: true},
-                                { label: 'Domicilio fiscal', value: [company.direccion?.ciudad, ' - ', company.direccion?.calle, ' ', company.direccion?.numero,], isLong: true },
+                                { label: 'Ciudad', value: company.direccion?.ciudad },
+                                { label: "Contacto", value: company.contacto.email, isLong: true, isMail: true},
                             ]}
                             onDelete={() => handleOpenDialog(company)}
                             onEdit={() => navigate(`/companies/edit/${company._id}`)}   
@@ -108,7 +108,6 @@ export default function CompanyPage(){
                                 
                                 <TableRow>
                                     <TableCell>Razón social</TableCell>
-                                    <TableCell>Nombre comercial</TableCell>
                                     <TableCell>CUIT/RUT</TableCell>
                                     <TableCell sx={{minWidth: 200}}>Domicilio fiscal</TableCell>
                                     <TableCell>Contacto</TableCell>
@@ -135,7 +134,6 @@ export default function CompanyPage(){
                                     paginated.map((company) => (
                                         <TableRow key={company._id} className="hover:bg-gray-50 overflow-hidden">
                                             <TableCell sx={{fontWeight: "bold"}}>{company.razon_social}</TableCell>
-                                            <TableCell>{company.nombre_comercial}</TableCell>
                                             <TableCell>{company.cuit}</TableCell>
                                             <TableCell>{`${company.direccion?.ciudad}, ${company.direccion?.calle} ${company.direccion?.numero}`}</TableCell>
                                             <TableCell>{company.contacto?.email}</TableCell>

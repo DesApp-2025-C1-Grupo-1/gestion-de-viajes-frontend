@@ -616,8 +616,8 @@ export interface TarifaDto {
   tipoVehiculoNombre: string;
   zonaNombre: string;
   tipoCargaNombre: string;
-  transportistaId: number;
-  tipoVehiculoId: number;
+  transportistaId: string;
+  tipoVehiculoId: string;
   zonaId: number;
   tipoCargaId: number;
   total: number;
@@ -1026,7 +1026,7 @@ tipoVehiculo: string;
 /**
  * ID de la zona
  */
-zona: string;
+zona: number;
 /**
  * ID del transportista
  */

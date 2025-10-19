@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { BuscarViajeDistribucionDto, BuscarViajeDto, ChoferDto, DepositoDto, EmpresaDto, RemitoDto, VehiculoDto } from "../api/generated";
 import { Stack, Button, Chip, Collapse, Paper, Typography, TextField, Select, MenuItem,Box, Grid  } from "@mui/material";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
@@ -52,6 +52,15 @@ export default function DistributionFilters({
   const [localFilters, setLocalFilters] = useState<BuscarViajeDistribucionDto>(initialFilters);
   const [appliedFilters, setAppliedFilters] = useState<BuscarViajeDistribucionDto>(initialFilters);
   const navigate = useNavigate();
+  const [remitoMap, setRemitoMap] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    const map: Record<string, string> = {};
+    remitos.forEach((r) => {
+      map[r.id] = r.numeroAsignado;
+    });
+    setRemitoMap(map);
+  }, [remitos]);
 
   // ✅ Cambios en filtros
   const handleChange = useCallback(
@@ -130,28 +139,31 @@ export default function DistributionFilters({
 
   const formatChipLabel = (key: string, value: any) => {
     switch (key) {
-        case "fecha_desde":
-          return `Desde: ${new Date(value).toLocaleDateString()}`;
-        case "fecha_hasta":
-          return `Hasta: ${new Date(value).toLocaleDateString()}`;
-        case '_id':
-            return `N° Viaje: ${value}`;
-        case 'transportista':
-            return `Transportista: ${nameEmpresaChip(value)}`;
-        case 'vehiculo':
-            return `Vehículo: ${nameVehiculoChip(value)}`;
-        case 'chofer':
-            return `Chofer: ${nameChoferChip(value)}`;
-        case 'origen':
-            return `Origen: ${nameDepositoChip(value)}`;
-        case 'tipo':
-            return `Tipo: ${value}`;
-        case 'remito':
-            return `Remitos: ${value.join(', ')}`;
-        case 'tarifa':
-            return `Tarifa: ${value}`;
-        default:
-            return `${key}: ${value}`;
+      case "fecha_desde":
+        return `Desde: ${new Date(value).toLocaleDateString()}`;
+      case "fecha_hasta":
+        return `Hasta: ${new Date(value).toLocaleDateString()}`;
+      case "_id":
+        return `N° Viaje: ${value}`;
+      case "transportista":
+        return `Transportista: ${nameEmpresaChip(value)}`;
+      case "vehiculo":
+        return `Vehículo: ${nameVehiculoChip(value)}`;
+      case "chofer":
+        return `Chofer: ${nameChoferChip(value)}`;
+      case "origen":
+        return `Origen: ${nameDepositoChip(value)}`;
+      case "tipo":
+        return `Tipo: ${value}`;
+      case "remito":
+        // Usar remitoMap para mostrar numeroAsignado
+        return `Remitos: ${value
+          .map((id: string) => remitoMap[id] || id)
+          .join(", ")}`;
+      case "tarifa":
+        return `Tarifa: ${value}`;
+      default:
+        return `${key}: ${value}`;
     }
   };
 
@@ -354,21 +366,24 @@ export default function DistributionFilters({
 
                             <Grid item xs={12} sm={6} lg={4}>
                                 <Typography variant="subtitle2">Remito</Typography>
-                                  <Select
+                                 <Select
                                     fullWidth
                                     multiple
                                     value={localFilters.remito || []}
                                     onChange={(e) => {
                                       const value = e.target.value as string[];
-                                      const remitoIds = Array.from(value.map(Number)); 
-                                      handleChange("remito", remitoIds);
+                                      const ids = value.map((v) => Number(v));
+                                      handleChange("remito", ids);
                                     }}
                                     displayEmpty
                                     renderValue={(selected) => {
-                                      if (!selected || (Array.isArray(selected) && selected.length === 0)) {
-                                        return <p>Seleccionar remitos</p>; // placeholder visible
-                                      }
-                                      return Array.isArray(selected) ? selected.join(", ") : selected;
+                                      if (loadingOptions.remitos) return "Cargando...";
+                                      if (!selected || selected.length === 0) return "Seleccionar remitos";
+
+                                      // Mostrar numeroAsignado en el chip
+                                      return selected
+                                        .map((id) => remitos.find((r) => r.id === Number(id))?.numeroAsignado || id)
+                                        .join(", ");
                                     }}
                                     sx={{
                                       backgroundColor: "white",
@@ -383,7 +398,7 @@ export default function DistributionFilters({
                                     ) : (
                                       remitos.map((rem) => (
                                         <MenuItem key={rem.id} value={rem.id}>
-                                          {rem.id}
+                                          {rem.numeroAsignado}
                                         </MenuItem>
                                       ))
                                     )}

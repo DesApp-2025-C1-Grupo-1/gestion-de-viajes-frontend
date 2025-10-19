@@ -72,7 +72,7 @@ export default function TypeVehicle() {
       />
 
       <SearchBar
-        placeholder="Buscar tipo de vehículo..."
+        placeholder="Buscar por nombre"
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
       />

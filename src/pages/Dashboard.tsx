@@ -65,15 +65,12 @@ export default function Dashboard() {
                         />
                     </Grid>
 
-                    <Grid item xs={12}  lg={6} >
-                        {topEmpresas && topEmpresas.length === 0 ? (
-                            <div className="flex items-center justify-center h-full">
-                                <p className="text-gray-500">No hay datos disponibles para mostrar.</p>
-                            </div>
-                        ):(
+                    
+                    {topEmpresas && topEmpresas.length === 0 && (
+                        <Grid item xs={12}  lg={6} >
                             <TopEmpresasChart topEmpresas={topEmpresas ?? []} />
-                        )}
-                    </Grid>
+                        </Grid>
+                    )}
                 </Grid>
             </div>
         </>      

@@ -10,9 +10,6 @@ import DepositPage from "./pages/deposit/DepositPage";
 import DepositFormPage from "./pages/deposit/DepositForm";
 import DriverPage from "./pages/driver/driverPage";
 import DriverFormPage from "./pages/driver/DriverForm";
-import TripPage from "./pages/trip/TripPage";
-import TripFormPage from "./pages/trip/TripForm";
-import AgendaPage from "./pages/trip/AgendaPage";
 import DistributionListPage from "./pages/tripDistribution/DistributionListPage";
 import DistributionFormPage from "./pages/tripDistribution/DistributionFormPage";
 import DistributionDetailsPage from "./pages/tripDistribution/DistributionDetailsPage";
@@ -43,10 +40,6 @@ export function AppRouter() {
         <Route path="/depots/form" element={<DepositFormPage />} />
         <Route path="/depots/edit/:id" element={<DepositFormPage />} />
         <Route path="/depots/details/:id" element={<DepositDetailsPage />} />
-        <Route path="/trips/collection" element={<TripPage />} />
-        <Route path="/trips/collection/form" element={<TripFormPage />} />
-        <Route path="/trips/collection/edit/:id" element={<TripFormPage />} />
-        <Route path="/agenda/:tipo/:id" element={<AgendaPage />} />
         <Route path="/trips/distribution" element={<DistributionListPage />} />
         <Route path="/trips/distribution/form" element={<DistributionFormPage />} />
         <Route path="/trips/distribution/edit/:id" element={<DistributionFormPage />} />

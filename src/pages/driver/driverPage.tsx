@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { MenuItem, Pagination, Select, SelectChangeEvent, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery, useTheme } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery, useTheme } from "@mui/material";
 import { SectionHeader } from "../../components/SectionHeader";
 import { useNavigate } from "react-router-dom";
 import LoadingState from "../../components/LoadingState";
@@ -10,7 +10,7 @@ import { choferControllerRemove, ChoferDto, useChoferControllerFindAll } from ".
 import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { DoubleCell } from "../../components/DoubleCell";
-import { Phone, Mail, Building2, Car, CalendarDays, PersonStanding, UserRound, Eye } from "lucide-react";
+import { Phone, Mail, Building2, Car, UserRound, Eye } from "lucide-react";
 import { formatTelefono } from "../../lib/formatters";
 import EntityCard from "../../components/EntityCard";
 import { DriverDetailsDialog } from "../../components/driver/DriverDetailsDialog";
@@ -56,12 +56,6 @@ export default function DriverPage(){
         dri.nombre.toLocaleLowerCase().includes(debouncedQuery.toLocaleLowerCase())
     );
 
-    const handleOpenDetails = (driver: ChoferDto) => {
-            setOpenDetailsDialog(true);
-            setChoferSelect(driver);
-    };
-    
-
     const totalPages = Math.ceil(filtered.length / rowsPerPage);
     const paginated = filtered.slice((page-1) * rowsPerPage, page*rowsPerPage);
     const handleChangePage = (event: React.ChangeEvent<unknown>, value:number) => {
@@ -96,7 +90,7 @@ export default function DriverPage(){
                             subtitle={`${driver.dni}`}
                             icon={<UserRound size={24}/>}
                             fields={[
-                                { label: "Fecha de nacimiento", value: new Date(driver.fecha_nacimiento).toLocaleDateString() },
+                                { label: "Licencia", value: `${driver.licencia} - ${driver.tipo_licencia}` },
                                 { label: "Teléfono", value: formatTelefono(driver.telefono) },
                                 { label: "Empresa", value: driver.empresa.nombre_comercial },
                                 { label: "Vehículo", value: driver.vehiculo?.modelo },
@@ -104,13 +98,6 @@ export default function DriverPage(){
                             onDelete={() => handleOpenDialog(driver)}
                             onEdit={() => navigate(`/drivers/edit/${driver._id}`)}
                             onView={() => navigate(`/drivers/details/${driver._id}`)}
-                            headerAction={
-                                {
-                                    label: "Agenda",
-                                    icon: <CalendarDays size={16} />,
-                                    onClick: () => navigate(`/agenda/drivers/${driver._id}`),
-                                }
-                            }
                         />
                     ))}
                 </div>
@@ -126,11 +113,10 @@ export default function DriverPage(){
                                 <TableRow>
                                     <TableCell>Nombre completo</TableCell>
                                     <TableCell>DNI</TableCell>
-                                    <TableCell>Fecha de nacimiento</TableCell>
                                     <TableCell>Licencia</TableCell>
-                                    <TableCell>Datos de contacto</TableCell>
+                                    <TableCell sx={{ minWidth: 150, maxWidth: 200}}>Teléfono</TableCell>
                                     <TableCell sx={{minWidth: 200}}>Transporte</TableCell>
-                                    <TableCell align="center" sx={{width: 72}}>Acciones</TableCell>
+                                    <TableCell align="center" sx={{maxWidth: 100}}>Acciones</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -154,17 +140,13 @@ export default function DriverPage(){
                                         <TableRow key={driver._id} className="hover:bg-gray-50 overflow-hidden">
                                             <TableCell sx={{fontWeight: "bold"}}>{`${driver.nombre} ${driver.apellido}`}</TableCell>
                                             <TableCell>{driver.dni}</TableCell>
-                                            <TableCell>{driver.fecha_nacimiento.split('T')[0]}</TableCell>
                                             <TableCell>{`${driver.licencia} - ${driver.tipo_licencia}`}</TableCell>
-                                            <TableCell >
+                                            <TableCell>
                                                 <DoubleCell 
-                                                    primarySection={driver.email}
-                                                    secondarySection={formatTelefono(driver.telefono)}
-                                                    primaryIcon={<Mail size={18} color="#AFB3B9"/>}
-                                                    secondaryIcon={<Phone size={18} color="#AFB3B9"/>}
+                                                    primarySection={formatTelefono(driver.telefono)}
                                                 />
                                             </TableCell>
-                                            <TableCell sx={{ minWidth: 150, maxWidth: 200 }}>
+                                            <TableCell>
                                                 <DoubleCell 
                                                     primarySection={driver.empresa?.nombre_comercial}
                                                     secondarySection={driver.vehiculo?.modelo}
@@ -177,9 +159,7 @@ export default function DriverPage(){
                                                 <MenuItemDialog  
                                                     handleOpenDialog={() => handleOpenDialog(driver)}
                                                     handleOpenDetails={() => navigate(`/drivers/details/${driver._id}`)}
-                                                    handleOpenAdicional={() => navigate(`/agenda/drivers/${driver._id}`)}
                                                     titleItem="Detalles"
-                                                    titleItemAdicional="Agenda"
                                                     id={driver._id}
                                                 >
                                                     <Eye className="text-gray-500 hover:text-gray-700 size-4" />

@@ -97,6 +97,8 @@ export default function DistributionDetailsPage() {
                                     { label: "Precio total", value: `$ ${tarifa.total}` },
                                     { label: "Zona", value: tarifa.zonaNombre },
                                     { label: "Tipo de carga", value: tarifa.tipoCargaNombre },
+                                    { label: "Transportista", value: tarifa.transportistaNombre },
+                                    { label: "Tipo de vehículo", value: tarifa.tipoVehiculoNombre },
                                 ]}
                                 />
                             ) : (

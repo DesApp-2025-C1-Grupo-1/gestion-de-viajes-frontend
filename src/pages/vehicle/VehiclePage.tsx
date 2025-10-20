@@ -9,7 +9,7 @@ import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { useVehiculoControllerFindAll, vehiculoControllerRemove, VehiculoDto } from "../../api/generated";
 import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 import { useNotify } from "../../hooks/useNotify";
-import { CalendarDays, Eye, Truck } from "lucide-react";
+import { Eye, Truck } from "lucide-react";
 import EntityCard from "../../components/EntityCard";
 import PaginationEntity from "../../components/PaginationEntity";
 
@@ -51,7 +51,6 @@ export default function VehiclePage() {
         v.patente.toLowerCase().includes(debouncedQuery.toLowerCase()) ||
         v.modelo.toLowerCase().includes(debouncedQuery.toLowerCase())
     );
-
     const totalPages = Math.ceil(filtered.length / rowsPerPage);
     const paginated = filtered.slice((page - 1) * rowsPerPage, page * rowsPerPage);
 
@@ -96,13 +95,6 @@ export default function VehiclePage() {
                             onDelete={() => handleOpenDialog(vehicle)}
                             onEdit={() => navigate(`/vehicles/edit/${vehicle._id}`)}
                             onView={() => navigate(`/vehicles/details/${vehicle._id}`)}
-                            headerAction={
-                                {
-                                    label: "Agenda",
-                                    icon: <CalendarDays size={16} />,
-                                    onClick: () => navigate(`/agenda/vehicles/${vehicle._id}`),
-                                }
-                            }
                         />
                     ))}
                 </div>
@@ -169,9 +161,7 @@ export default function VehiclePage() {
                                                 <MenuItemDialog  
                                                     handleOpenDialog={() => handleOpenDialog(vehicle)}
                                                     handleOpenDetails={() => navigate(`/vehicles/details/${vehicle._id}`)}
-                                                    handleOpenAdicional={() => navigate(`/agenda/vehicles/${vehicle._id}`)}
                                                     titleItem="Detalles"
-                                                    titleItemAdicional="Agenda"
                                                     id={vehicle._id}
                                                 >
                                                     <Eye className="text-gray-500 hover:text-gray-700 size-4" />

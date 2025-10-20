@@ -5,11 +5,13 @@ import { InfoCard } from "../components/dashboard/InfoCard";
 
 
 import TopEmpresasChart from "../components/dashboard/Chart";
-import { useViajeControllerGetDashboard } from "../api/generated";
+import { useViajeControllerGetDashboard, ViajeDto } from "../api/generated";
 import { Grid } from "@mui/material";
 
 export default function Dashboard() {
     const { data } =  useViajeControllerGetDashboard();
+
+    console.log(data?.data);
 
     const { totalEmpresas, totalChoferes, totalVehiculos, topEmpresas, proximosViajes, estadisticasRecientes } = data?.data || {};
     const navigate = useNavigate();
@@ -60,20 +62,17 @@ export default function Dashboard() {
                             title="Próximos viajes"
                             description="Vista previa de los próximos viajes"
                             icon={<MapPinned className={`size-7 block`} color="#E65F2B"/>} 
-                            list={proximosViajes}
+                            list={proximosViajes ? (proximosViajes as unknown as ViajeDto[]) : undefined}
                             onClick={() => navigate("/trips/distribution")}
                         />
                     </Grid>
 
-                    <Grid item xs={12}  lg={6} >
-                        {topEmpresas && topEmpresas.length === 0 ? (
-                            <div className="flex items-center justify-center h-full">
-                                <p className="text-gray-500">No hay datos disponibles para mostrar.</p>
-                            </div>
-                        ):(
+                    
+                    {topEmpresas && topEmpresas.length !== 0 && (
+                        <Grid item xs={12}  lg={6} >
                             <TopEmpresasChart topEmpresas={topEmpresas ?? []} />
-                        )}
-                    </Grid>
+                        </Grid>
+                    )}
                 </Grid>
             </div>
         </>      

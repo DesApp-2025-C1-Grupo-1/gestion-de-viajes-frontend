@@ -106,8 +106,8 @@ export default function DepositPage() {
                                 { label: "Ciudad", value:   deposit.direccion?.ciudad },
                                 { label: "Tipo", value:     deposit.tipo.charAt(0).toUpperCase() + deposit.tipo.slice(1) },
                                 { label: "Horario", value:  deposit.horario_entrada + " - " + deposit.horario_salida },
-                                { label: "Email", value: deposit.contacto.email, isLong: true },
                                 { label: "Teléfono", value: formatTelefono(deposit.contacto.telefono) },
+                                { label: "Email", value: deposit.contacto.email, extend: true},
                             ]}
                             onDelete={() => handleOpenDialog(deposit)}
                             onEdit={() => navigate(`/depots/edit/${deposit._id}`)}
@@ -127,7 +127,6 @@ export default function DepositPage() {
                                 <TableRow>
                                     <TableCell>Nombre</TableCell>
                                     <TableCell>Ciudad</TableCell>
-                                    <TableCell>Tipo</TableCell>
                                     <TableCell>Horario</TableCell>
                                     <TableCell>Contacto</TableCell>
                                     <TableCell>Teléfono</TableCell>
@@ -165,7 +164,6 @@ export default function DepositPage() {
                                         >
                                             <TableCell sx={{fontWeight: "bold"}}>{deposit.nombre}</TableCell>
                                             <TableCell>{deposit.direccion?.ciudad}</TableCell>
-                                            <TableCell>{deposit.tipo.charAt(0).toUpperCase() + deposit.tipo.slice(1)}</TableCell>
                                             <TableCell>{deposit.horario_entrada} - {deposit.horario_salida}</TableCell>
                                             <TableCell>{deposit.contacto?.nombre}</TableCell>
                                             <TableCell>{formatTelefono(deposit.contacto?.telefono)}</TableCell>

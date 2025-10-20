@@ -9,9 +9,10 @@ interface PaginationEntityProps {
     handleChangePage: (event: React.ChangeEvent<unknown>, value: number) => void;
     setRowsPerPage: (rows: number) => void;
     setPage: (page: number) => void;
+    totalItems?: number;
 }
 
-export default function PaginationEntity({ entity, page,totalPages, rowsPerPage, filtered, handleChangePage, setRowsPerPage, setPage }: PaginationEntityProps) {
+export default function PaginationEntity({ entity, page,totalPages, rowsPerPage, filtered, handleChangePage, setRowsPerPage, setPage, totalItems }: PaginationEntityProps) {
 
     const handleChangeRowsPerPage = (event: SelectChangeEvent<number>) => {
         setTimeout(() => {
@@ -20,11 +21,12 @@ export default function PaginationEntity({ entity, page,totalPages, rowsPerPage,
         }, 300);
     };
 
+    const maxItemsToShow = totalItems ? totalItems : filtered.length;
     
     return (
         <div className="flex flex-col gap-4 justify-between items-center  container mx-auto py-4 ">
             <p className="text-sm w-full">
-                Mostrando {Math.min((page - 1) * rowsPerPage + 1, filtered.length)}–{Math.min(page * rowsPerPage, filtered.length)} de {filtered.length} {entity}
+                Mostrando {Math.min((page - 1) * rowsPerPage + 1, maxItemsToShow)}–{Math.min(page * rowsPerPage, maxItemsToShow)} de {maxItemsToShow} {entity}
             </p>
 
             <div className="flex items-center w-full justify-between">

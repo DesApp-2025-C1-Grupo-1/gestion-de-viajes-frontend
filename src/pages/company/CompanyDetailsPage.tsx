@@ -34,27 +34,27 @@ export default function CompanyDetailsPage() {
                             icon={<Building2 color="#E65F2B" />}
                             title="Información general"
                             fields={[
-                                { label: "Razon social", value: `${companySelected.razon_social}` },
-                                { label: "Nombre comercial", value: `${companySelected.nombre_comercial}` },
-                                { label: "CUIT/RUT", value: `${companySelected.cuit}` },
+                                { label: "Razon social", value: `${companySelected.razon_social}` , isLong: true},
+                                { label: "Nombre comercial", value: `${companySelected.nombre_comercial}` , isLong: true},
+                                { label: "CUIT/RUT", value: `${companySelected.cuit}` , isLong: true},
                             ]}
                         /> 
                         <CardDetails 
                             icon={<MapPin color="#E65F2B" />}
                             title="Domicilio fiscal"
                             fields={[
-                                { label: "Calle y número", value: `${companySelected.direccion.calle} ${companySelected.direccion.numero}` },
-                                { label: "Ciudad y provincia", value: `${companySelected.direccion.ciudad}, ${companySelected.direccion.estado_provincia}` },
-                                { label: "País", value: `${companySelected.direccion.pais}` },
+                                { label: "Calle y número", value: `${companySelected.direccion.calle} ${companySelected.direccion.numero}` , isLong: true},
+                                { label: "Ciudad y provincia", value: `${companySelected.direccion.ciudad}, ${companySelected.direccion.estado_provincia}` , isLong: true},
+                                { label: "País", value: `${companySelected.direccion.pais}` , isLong: true},
                             ]}
                         />                             
                         <CardDetails 
                             icon={<Users color="#E65F2B" />}
                             title="Información de contacto"
                             fields={[
-                                { label: "Nombre", value: `${companySelected.contacto.nombre}` },
-                                { label: "Email", value: `${companySelected.contacto.email}` },
-                                { label: "Telefono", value: `${formatTelefono(companySelected.contacto.telefono)}` },
+                                { label: "Nombre", value: `${companySelected.contacto.nombre}` , isLong: true},
+                                { label: "Telefono", value: `${formatTelefono(companySelected.contacto.telefono)}` , isLong: true},
+                                { label: "Email", value: `${companySelected.contacto.email}` , isLong: true},
                             ]}
                         /> 
                     </div>

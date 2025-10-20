@@ -1,6 +1,7 @@
 import { Grid, Paper, Typography, Tooltip, Box } from "@mui/material";
 import { ReactNode } from "react";
 import { Field } from "./Field";
+import { Trapezoid } from "recharts";
 
 
 type Field = {
@@ -51,58 +52,80 @@ export default function CardDetails({ icon, fields, title, onView, onEdit }: det
                         className="w-full max-w-5xl grid gap-6 sm:grid-cols-2 items-start mx-auto"
                         
                     >
-                    {fields.map((field, index) => (
-                        <div
+                    {fields.map((field, index) => {
+                        const text = typeof field.value === "string" || typeof field.value === "number";
+
+                        return (
+                            <div
                             key={index}
-                            className="flex flex-col gap-1 justify-start items-start w-full "
-                        >
+                            className="flex flex-col gap-1 justify-start items-start w-full"
+                            style={{ minWidth: 0, maxWidth: "100%" }}
+                            >
                             <Typography
                                 variant="h6"
                                 fontWeight={600}
-                                sx={{ fontSize: "0.9rem",  }}
+                                sx={{ fontSize: "0.9rem" }}
                             >
                                 {field.label}
                             </Typography>
 
-                            {!field.isLong ? (
-                                <Box
-                                sx={{
-                                    fontSize: "0.875rem",
-                                    color: "text.secondary",
-                                
-                                }}
-                                >
-                                {field.value}
-                                </Box>
-                            ) : (
+                            {text ? (
+                                field.isLong ? (
                                 <Tooltip
-                                title={field.value}
-                                placement="bottom-start"
-                                slotProps={{
+                                    title={field.value}
+                                    placement="bottom-start"
+                                    slotProps={{
                                     popper: {
-                                    modifiers: [
+                                        modifiers: [
                                         {
-                                        name: "offset",
-                                        options: {
+                                            name: "offset",
+                                            options: {
                                             offset: [0, -14],
+                                            },
                                         },
-                                        },
-                                    ],
+                                        ],
                                     },
-                                }}
+                                    }}
                                 >
+                                    <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                    sx={{
+                                        whiteSpace: "nowrap",
+                                        overflow: "hidden",
+                                        textOverflow: "ellipsis",
+                                        display: "block",
+                                        width: "100%",
+                                        maxWidth: "100%",
+                                        fontSize: "0.875rem",
+                                    }}
+                                    >
+                                    {field.value}
+                                    </Typography>
+                                </Tooltip>
+                                ) : (
                                 <Typography
                                     variant="body2"
                                     color="text.secondary"
-                                    className="truncate"
-                    
+                                    sx={{
+                                    whiteSpace: "nowrap",
+                                    overflow: "hidden",
+                                    textOverflow: "ellipsis",
+                                    display: "block",
+                                    width: "100%",
+                                    maxWidth: "100%",
+                                    fontSize: "0.875rem",
+                                    }}
                                 >
                                     {field.value}
                                 </Typography>
-                                </Tooltip>
+                                )
+                            ) : (
+                                <Box sx={{ width: "100%" }}>{field.value}</Box>
                             )}
-                        </div>
-                    ))}
+                            </div>
+                        );
+                    })}
                     </article>
 
                 </div>

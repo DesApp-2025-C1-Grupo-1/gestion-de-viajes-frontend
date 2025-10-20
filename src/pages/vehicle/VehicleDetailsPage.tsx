@@ -36,8 +36,8 @@ export default function VehicleDetailsPage() {
                             title="Información general"
                             fields={[
                                 { label: "Patente", value: `${vehicleSelected.patente}` },
-                                { label: "Marca", value: `${vehicleSelected.marca}` },
-                                { label: "Modelo", value: `${vehicleSelected.modelo}` },
+                                { label: "Marca", value: `${vehicleSelected.marca}` , isLong: true},
+                                { label: "Modelo", value: `${vehicleSelected.modelo}` , isLong: true},
                                 { label: "Año del vehículo", value: vehicleSelected.año.toString() },
                                 
                             ]}
@@ -54,8 +54,8 @@ export default function VehicleDetailsPage() {
                             icon={<Info color="#E65F2B" />}
                             title="Recursos asignados"
                             fields={[
-                                { label: "Tipo de vehículo", value: `${vehicleSelected.tipo.nombre}` },
-                                { label: "Empresa transportista", value: `${vehicleSelected.empresa.nombre_comercial},`},
+                                { label: "Tipo de vehículo", value: `${vehicleSelected.tipo.nombre}` , isLong: true},
+                                { label: "Empresa transportista", value: `${vehicleSelected.empresa.nombre_comercial}` , isLong: true},
                             ]}
                         /> 
                     </div>

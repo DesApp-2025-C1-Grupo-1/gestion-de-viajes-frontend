@@ -33,7 +33,7 @@ export default function DriverDetailsPage() {
                             icon={<UserRound color="#E65F2B" />}
                             title="Información general"
                             fields={[
-                                { label: "Apellido y nombre", value: `${driverSelected.apellido} ${driverSelected.nombre}` },
+                                { label: "Apellido y nombre", value: `${driverSelected.apellido} ${driverSelected.nombre}` , isLong: true},
                                 { label: "Fecha de nacimiento", value: new Date(driverSelected.fecha_nacimiento).toLocaleDateString() },
                                 { label: "Documento de identidad", value: `${driverSelected.dni}` },
                             ]}
@@ -42,7 +42,7 @@ export default function DriverDetailsPage() {
                             icon={<Phone color="#E65F2B" />}
                             title="Información de contacto"
                             fields={[
-                                { label: "Email", value: `${driverSelected.email}` },
+                                { label: "Email", value: `${driverSelected.email}` , isLong: true},
                                 { label: "Telefono", value: `${formatTelefono(driverSelected.telefono)}` },
                             ]}
                         />                 
@@ -58,8 +58,8 @@ export default function DriverDetailsPage() {
                             icon={<Car color="#E65F2B" />}
                             title="Recursos asignados"
                             fields={[
-                                { label: "Vehículo", value: `${driverSelected.vehiculo.modelo} - ${driverSelected.vehiculo.patente}` },
-                                { label: "Empresa transportista", value: `${driverSelected.empresa.nombre_comercial}` },
+                                { label: "Vehículo", value: `${driverSelected.vehiculo.modelo} - ${driverSelected.vehiculo.patente}` , isLong: true},
+                                { label: "Empresa transportista", value: `${driverSelected.empresa.nombre_comercial}` , isLong: true},
                             ]}
                         />  
                     </div>

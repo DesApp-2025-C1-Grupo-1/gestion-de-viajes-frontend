@@ -36,7 +36,7 @@ export default function DepositDetailsPage() {
                             icon={<Building2 color="#E65F2B" />}
                             title="Información general"
                             fields={[
-                                { label: "Nombre", value: `${depositSelected.nombre}` },
+                                { label: "Nombre", value: `${depositSelected.nombre}` , isLong: true},
                                 { label: "Tipo de depósito", value: <Chip
                                                                         sx={{
                                                                             borderRadius: '16px',
@@ -65,7 +65,7 @@ export default function DepositDetailsPage() {
                             icon={<MapPin color="#E65F2B" />}
                             title="Dirección"
                             fields={[
-                                { label: "Calle y número", value: `${depositSelected.direccion.calle} ${depositSelected.direccion.numero}` },
+                                { label: "Calle y número", value: `${depositSelected.direccion.calle} ${depositSelected.direccion.numero}` , isLong: true},
                                 { label: "Ciudad y provincia", value: `${depositSelected.direccion.ciudad}, ${depositSelected.direccion.estado_provincia}`, isLong: true },
                                 { label: "Pais", value: `${depositSelected.direccion.pais}` },
                                 { label: "Latitud", value: `${depositSelected.lat.toLocaleString()}` },
@@ -76,9 +76,9 @@ export default function DepositDetailsPage() {
                             icon={<Users color="#E65F2B" />}
                             title="Información de contacto"
                             fields={[
-                                { label: "Nombre", value: `${depositSelected.contacto.nombre}` },
-                                { label: "Email", value: `${depositSelected.contacto.email}` },
-                                { label: "Telefono", value: `${formatTelefono(depositSelected.contacto.telefono)}` },
+                                { label: "Nombre", value: `${depositSelected.contacto.nombre}` , isLong: true},
+                                { label: "Email", value: `${depositSelected.contacto.email}` , isLong: true},
+                                { label: "Telefono", value: `${formatTelefono(depositSelected.contacto.telefono)}` , isLong: true},
                             ]}
                         /> 
                         <CardDetails 

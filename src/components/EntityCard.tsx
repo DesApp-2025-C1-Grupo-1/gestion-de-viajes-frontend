@@ -1,19 +1,14 @@
 import { Box, Button, Card, Grid, Tooltip, Typography } from "@mui/material";
 import { Edit, Eye, Trash2 } from "lucide-react";
 import { ReactNode } from "react";
+import { TripDistributionType } from "./tripsDistribution/TripDistributionType";
+import { TripType } from "./trip/TripType";
 
 type Field = {
   label: string;
   value: ReactNode;
   isLong?: boolean;
-  isMail?: boolean;
-};
-
-type Action = {
-  label: string;
-  color?: string; // color opcional para el botón
-  onClick: () => void;
-  icon?: ReactNode;
+  extend?: boolean;
 };
 
 type EntityCardProps = {
@@ -21,14 +16,13 @@ type EntityCardProps = {
   title: string;
   subtitle?: ReactNode;
   fields: Field[];
-  headerAction?: Action; // como el botón "Agenda"
-  headerEstado?: ReactNode; // para el estado
+  headerEstado?: string; // para el estado
   onView?: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
 };
 
-export default function EntityCard({ title, subtitle, icon, fields, onView, onEdit, onDelete ,headerAction, headerEstado}: EntityCardProps) {
+export default function EntityCard({ title, subtitle, icon, fields, onView, onEdit, onDelete ,headerEstado}: EntityCardProps) {
     return (
         <Card className="w-full border border-line rounded-lg overflow-hidden">
             <header className="p-5 bg-gray-100 w-full h-24 flex justify-between items-center border-b border-line">
@@ -41,32 +35,22 @@ export default function EntityCard({ title, subtitle, icon, fields, onView, onEd
                             {title}
                         </Typography>
                         {subtitle && (
-                            <Box sx={{ fontSize: '0.875rem', color: 'text.secondary' }}>
+                            <Typography sx={{ fontSize: '0.815rem', color: 'text.secondary' }}>
                                 {subtitle}
-                            </Box>   
+                            </Typography>
                         )}
                     </div>
                 </div>
-                {headerAction && (
-                    <Button
-                        variant="outlined"
-                        onClick={headerAction.onClick}
-                        startIcon={headerAction.icon}
-                        sx={{ textTransform: 'none', px: 2, borderRadius: '999px', fontSize: '0.8rem', fontWeight: 600, color: headerAction.color || 'text.primary', borderColor: headerAction.color || '#B9B9B9', backgroundColor: "white", "&:hover": { borderColor: headerAction.color || 'grey.700', backgroundColor: "white" } }}
-                    >
-                        {headerAction.label}
-                    </Button>
-                )}
                 {headerEstado && (
-                    <Box sx={{}}>
-                        {headerEstado}
+                    <Box sx={{ display: 'flex', gap: 1 , alignItems: 'center', flexDirection: 'column'}}>
+                        <TripDistributionType tipo={headerEstado} />
                     </Box>
                 )}
             </header>
             <article>
                 <Grid container spacing={2} className="p-5 pb-0">
                     {fields.map((field, index) => (
-                        <Grid item xs={field.isMail ? 12 : 6} key={index}>
+                        <Grid item xs={field.extend ? 12 : 6} key={index}>
                             <Typography variant="body2" color="text.secondary">
                                 {field.label}
                             </Typography>

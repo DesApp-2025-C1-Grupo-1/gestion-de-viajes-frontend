@@ -8,14 +8,12 @@ import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { useNotify } from "../../hooks/useNotify";
 import {  Building2, Calendar, Clock, Eye, MapPinned, User} from "lucide-react";
 import { DoubleCell } from "../../components/DoubleCell";
-import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 import EntityCard from "../../components/EntityCard";
 import PaginationEntity from "../../components/PaginationEntity";
-import { TarifaDto, viajeDistribucionControllerRemove, ViajeDistribucionDto, ViajeDistribucionDtoEstado, useViajeDistribucionControllerFindAll, EmpresaDto, VehiculoDto, ChoferDto, empresaControllerFindAll, vehiculoControllerFindAll, choferControllerFindAll, DepositoDto, depositoControllerFindAll, BuscarViajeDistribucionDto, useViajeDistribucionControllerBuscar, RemitoDto, remitosControllerGetRemitos } from '../../api/generated';
+import { viajeDistribucionControllerRemove, ViajeDistribucionDto, EmpresaDto, VehiculoDto, ChoferDto, empresaControllerFindAll, vehiculoControllerFindAll, choferControllerFindAll, DepositoDto, depositoControllerFindAll, BuscarViajeDistribucionDto, useViajeDistribucionControllerBuscar, RemitoDto, remitosControllerGetRemitos } from '../../api/generated';
 import { useTheme } from "@mui/material/styles";
 import { TripDistributionType } from "../../components/tripsDistribution/TripDistributionType";
 import DistributionFilters from "../../components/DistributionFilters";
-import { TripType } from "../../components/trip/TripType";
 
 
 export default function DistributionListPage() {
@@ -27,15 +25,12 @@ export default function DistributionListPage() {
   const [filterOpen, setFilterOpen] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState<BuscarViajeDistribucionDto>({});
 
-  const [trips, setTrips] = useState<ViajeDistribucionDto[]>([]);;
+  const [trips, setTrips] = useState<ViajeDistribucionDto[]>([]);
+  const [totalItems, setTotalItems] = useState<number>(0);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const debouncedQuery = useDebouncedValue(searchQuery, 500);
  
   const [openDialog, setOpenDialog] = useState(false);
-  const [openDetailsDialog, setOpenDetailsDialog] = useState<boolean>(false);
  
   const [viajeDistribucionSelected, setviajeDistribucionSelected] = useState<ViajeDistribucionDto>();
 
@@ -44,7 +39,6 @@ export default function DistributionListPage() {
   const [choferes, setChoferes] = useState<ChoferDto[]>([]);
   const [depositos, setDepositos] = useState<DepositoDto[]>([]);
   const [remitos, setRemitos] = useState<RemitoDto[]>([]);
-  const [tarifas, setTarifas] = useState<TarifaDto[]>([]);
   const [loadingOptions, setLoadingOptions] = useState({
       empresas: false,
       vehiculos: false,
@@ -102,18 +96,19 @@ export default function DistributionListPage() {
   const fetchTrips = useCallback(async () => {
       setIsLoading(true);
       try {
-          const res = await buscarViajes({
-              data: appliedFilters,
-              params: {
-                  page: page,
-                  limit: rowsPerPage,
-              },
-          });
-          const responseData = res.data
+            const res = await buscarViajes({
+                data: appliedFilters,
+                params: {
+                    page: page,
+                    limit: rowsPerPage,
+                },
+            });
+            const responseData = res.data
 
-          setTrips(responseData.data); // Ajustá si hay paginación en backend
-          const totalPages = Math.ceil((responseData.total ?? 0) / rowsPerPage)
-          setTotalPages(totalPages);
+            setTrips(responseData.data); // Ajustá si hay paginación en backend
+            setTotalItems(responseData.total ?? 0);
+            const totalPages = Math.ceil((responseData.total ?? 0) / rowsPerPage)
+            setTotalPages(totalPages);
       } catch (err) {
           notify("error", "No se pudieron cargar los viajes.");
       } finally {
@@ -131,17 +126,11 @@ export default function DistributionListPage() {
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
- 
-  const handleOpenDialog = (tripDistribution : ViajeDistribucionDto) => {
-    setOpenDialog(true);
-    setviajeDistribucionSelected(tripDistribution);
-    } ;
- 
-  const handleOpenDetails = (tripDistribution: ViajeDistribucionDto) => {
-      setOpenDetailsDialog(true);
+
+  const handleOpenDialog = (tripDistribution: ViajeDistribucionDto) => {
+      setOpenDialog(true);
       setviajeDistribucionSelected(tripDistribution);
   };
-
 
   const handleApplyFilters = useCallback((newFilters: BuscarViajeDistribucionDto) => {
       setAppliedFilters(newFilters)
@@ -164,52 +153,51 @@ export default function DistributionListPage() {
       }
   };
 
-
   const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
 
   return(
     <>
-      <SectionHeader
-        title="Viajes de distribución"
-        description="Gestione y planifique viajes de distribución asociando remitos, costos y recursos de transporte."
-        buttonText="Nuevo viaje"
-        onAdd={() => navigate('/trips/distribution/form')}
-      /> 
+        <SectionHeader
+            title="Viajes de distribución"
+            description="Gestione y planifique viajes de distribución asociando remitos, costos y recursos de transporte."
+            buttonText="Nuevo viaje"
+            onAdd={() => navigate('/trips/distribution/form')}
+        /> 
 
-      <div className="flex justify-around">
-        <DistributionFilters 
-          filterOpen={filterOpen} 
-          setFilterOpen={setFilterOpen} 
-          onApply={handleApplyFilters}
-          empresas={empresas}
-          vehiculos={vehiculos}
-          choferes={choferes}
-          depositos={depositos}
-          remitos={remitos}
-          loadingOptions={loadingOptions}
-        />
-      </div>
+        <div className="flex justify-around">
+            <DistributionFilters 
+            filterOpen={filterOpen} 
+            setFilterOpen={setFilterOpen} 
+            onApply={handleApplyFilters}
+            empresas={empresas}
+            vehiculos={vehiculos}
+            choferes={choferes}
+            depositos={depositos}
+            remitos={remitos}
+            loadingOptions={loadingOptions}
+            />
+        </div>
 
-      {/*tabla*/}
-      {isMobile ? (
+        {/*tabla*/}
+        {isMobile ? (
         <div className="grid gap-4  lg:grid-cols-2">
             {trips.map(tripsDistribution => (
                 <EntityCard
                     key={tripsDistribution._id}
                     title={ tripsDistribution.nro_viaje ?? (tripsDistribution as any).numeroDeViaje}
+                    subtitle={`${new Date(tripsDistribution.fecha_inicio).toLocaleDateString()} - ${new Date(tripsDistribution.fecha_inicio).toLocaleTimeString()} `}
                     icon={<MapPinned size={24}/>}
                     fields={[
-                        { label: "Itinerario", value: `${new Date(tripsDistribution.fecha_inicio).toLocaleDateString()} - ${new Date(tripsDistribution.fecha_inicio).toLocaleTimeString()}  `, isLong: true},
-                        { label: "Tipo de viaje", value: <TripType tipo={tripsDistribution.tipo_viaje} />},
-                        { label: "Deposito de origen", value: `${tripsDistribution.origen.nombre}`, isLong: true},
                         { label: "Transportista", value: `${tripsDistribution.transportista.nombre_comercial}`},
+                        { label: "Chofer", value: tripsDistribution.chofer.nombre + ", " + tripsDistribution.chofer.apellido, isLong: true },
+                        { label: "Deposito de origen", value: `${tripsDistribution.origen.nombre}`, extend: true },
                     ]}
                     onDelete={() => handleOpenDialog(tripsDistribution)}
                     onEdit={() => navigate(`/trips/distribution/edit/${tripsDistribution._id}`)}  
                     onView={() => navigate(`/trips/distribution/details/${tripsDistribution._id}`)}  
-                    headerEstado={ <TripDistributionType tipo={tripsDistribution.estado} />}      
+                    headerEstado={ tripsDistribution.estado}   
                 />
             ))}
         </div>
@@ -225,7 +213,6 @@ export default function DistributionListPage() {
                                     <TableCell>Número</TableCell>
                                     <TableCell>Itinerario</TableCell>
                                     <TableCell>Deposito de Origen</TableCell>
-                                    <TableCell align="center" sx={{verticalAlign: 'middle',textAlign: 'center'}}>Tipo de viaje</TableCell>
                                     <TableCell>Transportista</TableCell>
                                     <TableCell align="center" sx={{verticalAlign: 'middle',textAlign: 'center'}}>Estado actual</TableCell>
                                     <TableCell align="center" sx={{width: 72}}>Acciones</TableCell> 
@@ -251,7 +238,7 @@ export default function DistributionListPage() {
                                     trips.map((tripDistribucion) => (
                                         <TableRow key={tripDistribucion._id} className="hover:bg-gray-50 overflow-hidden">
                                             <TableCell sx={{fontWeight: "bold", maxWidth: 150}} className="truncate">{ tripDistribucion.nro_viaje ?? (tripDistribucion as any).numeroDeViaje}</TableCell>
-                                            <TableCell sx={{minWidth: 150}} >
+                                            <TableCell sx={{minWidth: 130}} >
                                                 <DoubleCell 
                                                     primarySection={`${new Date(tripDistribucion.fecha_inicio).toLocaleDateString()}`} 
                                                     secondarySection={`${new Date(tripDistribucion.fecha_inicio).toLocaleTimeString()}`}
@@ -260,7 +247,6 @@ export default function DistributionListPage() {
                                                 />
                                             </TableCell>
                                             <TableCell>{`${tripDistribucion.origen.nombre}`}</TableCell>
-                                            <TableCell align="center"><TripType tipo={tripDistribucion.tipo_viaje}/></TableCell>
                                             <TableCell sx={{minWidth: 150}} >
                                                 <DoubleCell 
                                                     primarySection={`${tripDistribucion.transportista.nombre_comercial}`} 
@@ -289,27 +275,28 @@ export default function DistributionListPage() {
                 </div>
             )}
 
-            <PaginationEntity
-                entity="viajes"
-                page={page}
-                totalPages={totalPages}
-                rowsPerPage={rowsPerPage}
-                filtered={trips}
-                handleChangePage={handleChangePage}
-                setRowsPerPage={setRowsPerPage}
-                setPage={setPage}
-            />
+        <PaginationEntity
+            entity="viajes"
+            page={page}
+            totalPages={totalPages}
+            rowsPerPage={rowsPerPage}
+            filtered={trips}
+            handleChangePage={handleChangePage}
+            setRowsPerPage={setRowsPerPage}
+            setPage={setPage}
+            totalItems={totalItems}
+        />
 
-            {viajeDistribucionSelected && (
-                <ConfirmDialog
-                    open= {openDialog}
-                    genre="el"
-                    onClose={() => setOpenDialog(false)}
-                    title="viajes"
-                    entityName={viajeDistribucionSelected._id}
-                    onConfirm={() => handleDelete(viajeDistribucionSelected?._id)}
-                />
-            )}
+        {viajeDistribucionSelected && (
+            <ConfirmDialog
+                open= {openDialog}
+                genre="el"
+                onClose={() => setOpenDialog(false)}
+                title="viajes"
+                entityName={viajeDistribucionSelected._id}
+                onConfirm={() => handleDelete(viajeDistribucionSelected?._id)}
+            />
+        )}
 
     </>
   );

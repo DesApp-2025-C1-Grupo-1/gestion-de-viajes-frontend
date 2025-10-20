@@ -88,7 +88,7 @@ export default function CompanyPage(){
                             fields={[
                                 { label: "CUIT/RUT", value: company.cuit },
                                 { label: 'Ciudad', value: company.direccion?.ciudad },
-                                { label: "Contacto", value: company.contacto.email, isLong: true, isMail: true},
+                                { label: "Contacto", value: company.contacto.email, extend: true},
                             ]}
                             onDelete={() => handleOpenDialog(company)}
                             onEdit={() => navigate(`/companies/edit/${company._id}`)}   

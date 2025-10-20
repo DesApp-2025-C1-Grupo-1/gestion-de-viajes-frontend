@@ -107,7 +107,7 @@ export default function DepositPage() {
                                 { label: "Tipo", value:     deposit.tipo.charAt(0).toUpperCase() + deposit.tipo.slice(1) },
                                 { label: "Horario", value:  deposit.horario_entrada + " - " + deposit.horario_salida },
                                 { label: "Teléfono", value: formatTelefono(deposit.contacto.telefono) },
-                                { label: "Email", value: deposit.contacto.email, isLong: true, isMail: true},
+                                { label: "Email", value: deposit.contacto.email, extend: true},
                             ]}
                             onDelete={() => handleOpenDialog(deposit)}
                             onEdit={() => navigate(`/depots/edit/${deposit._id}`)}

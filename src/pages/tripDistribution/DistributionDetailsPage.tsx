@@ -5,10 +5,10 @@ import { Building2, ClipboardMinus, MapPinned, Route, Ticket } from "lucide-reac
 import { useNavigate, useParams } from 'react-router-dom';
 import CardDetails from "../../components/detailts/Details";
 import { TripType } from "../../components/trip/TripType";
-import { useViajeDistribucionControllerFindOne} from '../../api/generated';
+import { useRemitosControllerGetRemitosByIds, useViajeDistribucionControllerFindOne} from '../../api/generated';
 import CardRemitosDetails from "../../components/tripsDistribution/RemitosDetails";
-import { useRemitosDetails } from "../../hooks/tripDistribution/useRemitosDetails";
 import { useTarifaDetails } from "../../hooks/tripDistribution/useTarifasDetails";
+import { useEffect } from "react";
 
 
 export default function DistributionDetailsPage() {
@@ -26,16 +26,26 @@ export default function DistributionDetailsPage() {
         },
     });
 
-    const { remitos, isLoading: isLoadingRemito } = useRemitosDetails(tripSelected);
+    const remitosMutation = useRemitosControllerGetRemitosByIds();
     const { tarifa, isLoading: isLoadingTarifa } = useTarifaDetails(tripSelected);
 
-    if (isLoading || !tripSelected || isLoadingRemito || isLoadingTarifa) {
+    useEffect(() => {
+        if (tripSelected?.remito_ids?.length) {
+            remitosMutation.mutate({ data: { ids: tripSelected.remito_ids } });
+        }
+    }, [tripSelected]);
+
+    if (isLoading || !tripSelected || remitosMutation.isPending || isLoadingTarifa) {
         return <CircularProgress />;
     }
 
     if (isError) {
         return <p>No se encontró el viaje con ID: {id}</p>;
     }
+
+    const remitos = Array.isArray(remitosMutation.data?.data)
+    ? remitosMutation.data.data
+    : [];
 
     return (
         <>

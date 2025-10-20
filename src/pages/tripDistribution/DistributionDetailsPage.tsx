@@ -1,59 +1,22 @@
 import { TripDistributionType } from "../../components/tripsDistribution/TripDistributionType";
 import { SectionHeader } from "../../components/SectionHeader";
-import { Button, CircularProgress, DialogActions, Paper, Table, TableCell, TableHead, TableRow} from "@mui/material";
+import { Button, CircularProgress, DialogActions, Paper, Table, TableCell, TableHead, TableRow, SxProps, Typography } from '@mui/material';
 import { Building2, ClipboardMinus, MapPinned, Route, Ticket } from "lucide-react";
 import { useNavigate, useParams } from 'react-router-dom';
 import CardDetails from "../../components/detailts/Details";
 import { TripType } from "../../components/trip/TripType";
-import { useViajeDistribucionControllerFindOne, RemitoDto, useRemitosControllerGetRemitos, useTarifasControllerListarZonas, useTarifasControllerTarifasFiltradas, TarifaDto, ZonaDto, useRemitosControllerGetRemitosByIds, remitosControllerGetRemitosByIds, ViajeDistribucionDto} from '../../api/generated';
+import { useViajeDistribucionControllerFindOne} from '../../api/generated';
 import CardRemitosDetails from "../../components/tripsDistribution/RemitosDetails";
+import { useRemitosDetails } from "../../hooks/tripDistribution/useRemitosDetails";
+import { useTarifaDetails } from "../../hooks/tripDistribution/useTarifasDetails";
 
-import { useEffect, useMemo, useState } from "react";
-import { useRemitosFromTrip } from "../../hooks/tripDistribution/useRemitosDetails";
-//import { useTarifaMockDesdeViaje } from "../../hooks/tripDistribution/useDistributionDetails";
-
-const tarifasMock: TarifaDto[] = [
-  { 
-    id: 1,
-    nombre: "Tarifa Estándar",
-    valorBase: 1000,
-    esVigente: true,
-    transportistaNombre: "Transporte Rápido",
-    tipoVehiculoNombre: "Camión Semi",
-    zonaNombre: "Zona Norte",
-    tipoCargaNombre: "General",
-    transportistaId: "683f7e7e4904b1a84fc05250",
-    tipoVehiculoId: "6845d29a9d776351c1752411",
-    zonaId: 46,
-    tipoCargaId: 7,
-    total: 1200,
-    adicionales: [
-      {
-        id: 1,
-        nombre: "Peaje",
-        costoDefault: 100,
-        descripcion: "Costo de peajes en la ruta",
-        activo: true,
-        esGlobal: true,
-        costoEspecifico: 100
-      }
-    ]
-  }
-];
-
-const fetchTarifasPorZona = async (zonaId: number, transportistaId: string, tipoVehiculoId: string): Promise<TarifaDto[]> => {
-  return tarifasMock.filter(t => 
-    t.zonaId === zonaId && 
-    t.esVigente === true
-  );
-};
 
 export default function DistributionDetailsPage() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
 
     const {
-        data: tripSelectedRaw,
+        data: tripSelected,
         isLoading,
         isError,
     } = useViajeDistribucionControllerFindOne(id!, {
@@ -63,24 +26,16 @@ export default function DistributionDetailsPage() {
         },
     });
 
-    const [tripSelected, setTripSelected] = useState<ViajeDistribucionDto | null>(null);
+    const { remitos, isLoading: isLoadingRemito } = useRemitosDetails(tripSelected);
+    const { tarifa, isLoading: isLoadingTarifa } = useTarifaDetails(tripSelected);
 
-    useEffect(() => {
-        if (tripSelectedRaw) {
-        setTripSelected(tripSelectedRaw);
-        }
-    }, [tripSelectedRaw]);
+    if (isLoading || !tripSelected || isLoadingRemito || isLoadingTarifa) {
+        return <CircularProgress />;
+    }
 
-    const { remitos, isLoading: isLoadingRemito } = useRemitosFromTrip(tripSelected ?? undefined);
-
-    if (isLoading || !tripSelected) return <CircularProgress />;
-    if (isError) return <p>No se encontró el viaje con ID: {id}</p>;
-
-    const tarifaAsignada = tarifasMock.find(t => t.id === tripSelected.tarifa_id);
-
-
-    //console.log(tripSelected)
-    //console.log(remitos)
+    if (isError) {
+        return <p>No se encontró el viaje con ID: {id}</p>;
+    }
 
     return (
         <>
@@ -96,7 +51,7 @@ export default function DistributionDetailsPage() {
                             icon={<MapPinned color="#E65F2B" />}
                             title="Información General"
                             fields={[
-                                { label: "Número de viaje", value: `${tripSelected.numeroDeViaje}` },
+                                { label: "Número de viaje", value: `${tripSelected.nro_viaje}` },
                                 { label: "Estado actual", value: <TripDistributionType tipo={tripSelected.estado} /> },
                                 { label: "Kilómetros", value: `${tripSelected.kilometros}` },
                                 { label: "Tipo de viaje", value: <TripType tipo={tripSelected.tipo_viaje} /> },
@@ -129,18 +84,30 @@ export default function DistributionDetailsPage() {
                             title="Remitos"
                             remitos={remitos}
                         />
-                        {tripSelected.tarifa_id !== undefined && tarifaAsignada && (
-                            <CardDetails 
+                        {tripSelected.tipo_viaje === "nacional" && (
+                            isLoadingTarifa ? (
+                                <CircularProgress />
+                            ) : tarifa ? (
+                                <CardDetails
                                 icon={<Ticket color="#E65F2B" />}
-                                title="Tarifas"
+                                title="Tarifa asociada"
                                 fields={[
-                                { label: "Nombre", value: tarifaAsignada.nombre },
-                                { label: "Valor base", value: `$ ${tarifaAsignada.valorBase}` },
-                                { label: "Precio total", value: `$ ${tarifaAsignada.total}` },
-                                { label: "Zona", value: tarifaAsignada.zonaNombre },
-                                { label: "Tipo de carga", value: tarifaAsignada.tipoCargaNombre },
+                                    { label: "Nombre", value: tarifa.nombreTarifa },
+                                    { label: "Valor base", value: `$ ${tarifa.valorBase}` },
+                                    { label: "Precio total", value: `$ ${tarifa.total}` },
+                                    { label: "Zona", value: tarifa.zonaNombre },
+                                    { label: "Tipo de carga", value: tarifa.tipoCargaNombre },
                                 ]}
-                            />
+                                />
+                            ) : (
+                                <CardDetails 
+                                icon={<Ticket color="#E65F2B" />}
+                                title="Tarifa asociada"
+                                fields={[
+                                   { label: "", value: "No se encontró la tarifa asociada." }
+                                ]}
+                                />
+                            )
                         )}
                     </div>
                 </div>

@@ -1,35 +1,29 @@
-import { useEffect, useState } from "react";
-import { RemitoDto, ViajeDistribucionDto, remitosControllerGetRemitosByIds } from "../../api/generated";
-import { useNotify } from "../useNotify";
-import axios from "axios";
+import { useEffect } from "react";
+import { useRemitosControllerGetRemitosByIds } from "../../api/generated";
+import { ViajeDistribucionDto } from "../../api/generated";
 
-export function useRemitosFromTrip(trip: ViajeDistribucionDto | undefined) {
-  const notify = useNotify();
-  const [remitos, setRemitos] = useState<RemitoDto[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+export function useRemitosDetails(trip?: ViajeDistribucionDto) {
+
+  const remitoIds = trip?.remito_ids;
+
+  const mutation = useRemitosControllerGetRemitosByIds();
 
   useEffect(() => {
-    if (!trip?.remito_ids?.length) return;
+    if (remitoIds?.length) {
+      mutation.mutate(
+        { data: { ids: remitoIds } },
+        {
+          onError: () => {
+            console.error("Error al obtener los remitos asociados al viaje.");
+          },
+        }
+      );
+    }
+  }, [remitoIds]);
 
-    const fetchRemitos = async () => {
-      setIsLoading(true);
-      try {
-        const response = await axios.post("/remito/by-id", { ids: trip.remito_ids });
-        const remitosObtenidos = Array.isArray(response.data)
-          ? response.data
-          : response.data?.data ?? [];
-
-        setRemitos(remitosObtenidos);
-      } catch (error: any) {
-        console.error("Error al obtener los remitos asociados al viaje.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchRemitos();
-  }, [trip?.remito_ids]);
-
-  return { remitos, isLoading };
+  return {
+    remitos: Array.isArray(mutation.data?.data) ? mutation.data.data : [],
+    isLoading: mutation.isPending,
+    isError: mutation.isError,
+  };
 }
-

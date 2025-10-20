@@ -4767,13 +4767,13 @@ export const tarifasControllerGetTarifaById = (
     
     
     return axios.get(
-      `/tarifas/tarifas/${id}`,options
+      `/tarifas/${id}`,options
     );
   }
 
 
 export const getTarifasControllerGetTarifaByIdQueryKey = (id: number,) => {
-    return [`/tarifas/tarifas/${id}`] as const;
+    return [`/tarifas/${id}`] as const;
     }
 
     

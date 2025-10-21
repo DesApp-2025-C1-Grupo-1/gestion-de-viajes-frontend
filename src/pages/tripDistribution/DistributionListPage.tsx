@@ -222,7 +222,7 @@ export default function DistributionListPage() {
                                 {isLoading ? (
                                     <TableRow key="loading">
                                         <TableCell colSpan={7} >
-                                            <LoadingState title="viajesDistribucion"/>
+                                            <LoadingState title="viajes de Distribucion"/>
                                         </TableCell>
                                     </TableRow>
                                 ) : trips.length === 0 ? (

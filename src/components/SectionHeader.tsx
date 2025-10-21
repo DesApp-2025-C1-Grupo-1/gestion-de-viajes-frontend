@@ -4,7 +4,7 @@ import { useOutletContext } from "react-router-dom";
 
 interface SectionHeaderProps {
   title: string;
-  description: string;
+  description?: string;
   buttonText?: string;
   onAdd?: () => void;
 }
@@ -38,8 +38,8 @@ export const SectionHeader = ({
             </button>
             <h1 className="text-2xl font-semibold">{title}</h1>
           </div>
-          
-          <p className="font-medium text-sm">{description}</p>
+
+          {description && <p className="font-medium text-sm">{description}</p>}
         </div>
       </div>
       {renderButton &&

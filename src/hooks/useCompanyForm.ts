@@ -1,14 +1,16 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useNotify } from "./useNotify";
-import { useEmpresaControllerFindOne, empresaControllerCreate, empresaControllerUpdate, CreateEmpresaDto, UpdateEmpresaDto, useEmpresaControllerFindAll} from "../api/generated";
+import { useEmpresaControllerFindOne, empresaControllerCreate, empresaControllerUpdate, CreateEmpresaDto, UpdateEmpresaDto} from "../api/generated";
 import { useForm } from "react-hook-form";
 import { CreateEmpresaSchema, UpdateEmpresaSchema } from "../api/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const useCompanyForm = (id?: string) => {
     const navigate = useNavigate();
     const isEditing = !!id;
+    const queryClient = useQueryClient();
     
     const {
         register,
@@ -62,6 +64,7 @@ export const useCompanyForm = (id?: string) => {
         try {
             await empresaControllerCreate(formData as CreateEmpresaDto);
             notify("create");
+            await queryClient.invalidateQueries({ queryKey: ['/empresa'] });
             navigate("/companies");
             } catch (e) {
             const error = e as { response?: { data?: { message?: string } } };
@@ -77,6 +80,7 @@ export const useCompanyForm = (id?: string) => {
             
             await empresaControllerUpdate(id!, dataToUpdate as UpdateEmpresaDto);
             notify("update");
+            await queryClient.invalidateQueries({ queryKey: ['/empresa'] });
             navigate("/companies");
             } catch (e) {
             const error = e as { response?: { data?: { message?: string } } };

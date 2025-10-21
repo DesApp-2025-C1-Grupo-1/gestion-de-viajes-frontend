@@ -48,7 +48,7 @@ export default function CompanyFormPage() {
 
                     <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 1 }}>Datos básicos</Typography>
                     <Grid container spacing={3} mb={4}>
-                        <Grid item xs={12} sm={6}>
+                        <Grid item xs={12} md={6}>
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:0.5  }}>Razón social</Typography>
                             <TextField
                                 id="razon_social" 
@@ -61,7 +61,7 @@ export default function CompanyFormPage() {
                                 disabled={isLoading}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={6}>
+                        <Grid item xs={12} md={6}>
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:0.5  }}>Nombre comercial</Typography>
                             <TextField
                                 id="nombre_comercial" 
@@ -77,7 +77,7 @@ export default function CompanyFormPage() {
                     </Grid>
 
                     <Grid container spacing={3} mb={4}>
-                        <Grid item xs={12} sm={6}>
+                        <Grid item xs={12} md={6}>
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:0.5 }}>CUIT/RUT</Typography>
                             <TextField
                                 id="cuit" 

@@ -6,9 +6,11 @@ import { useDistributionFormBase } from "./useDistributionFormBase";
 import { useDistributionAuxData } from "./useDistributionAuxData";
 import { handleApiError, validateDriverVehicleCompatibility } from "./utils";
 import { CreateViajeDistribucionSchema } from "../../api/schemas/viajeDistribucion.schema";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const useCreateDistributionForm = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { notify } = useNotify("Viaje");
   
   // Form base sin lógica de edición
@@ -62,6 +64,7 @@ export const useCreateDistributionForm = () => {
       
       await viajeDistribucionControllerCreate(payload);
       notify("create");
+      queryClient.invalidateQueries({ queryKey: ['/viaje-distribucion'] });
       navigate("/trips/distribution");
     } catch (e) {
       handleApiError(e, notify);

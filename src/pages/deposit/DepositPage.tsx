@@ -19,7 +19,7 @@ import PaginationEntity from "../../components/PaginationEntity";
 
 
 export default function DepositPage() {
-    const {notify} = useNotify("Depósitos");
+    const {notify} = useNotify("Depósito");
     const {data: deposits, isLoading, refetch} = useDepositoControllerFindAll();
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);

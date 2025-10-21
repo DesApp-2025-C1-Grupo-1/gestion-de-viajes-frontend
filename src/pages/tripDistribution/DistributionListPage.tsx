@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SectionHeader } from "../../components/SectionHeader";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery} from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useMediaQuery} from "@mui/material";
 import LoadingState from "../../components/LoadingState";
 import MenuItem from "../../components/buttons/MenuItem";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
@@ -18,12 +18,16 @@ import DistributionFilters from "../../components/DistributionFilters";
 
 export default function DistributionListPage() {
   const navigate = useNavigate();
+  const hoy = new Date();
+  const haceUnMes = new Date();
+  haceUnMes.setMonth(hoy.getMonth() - 1);
+  haceUnMes.setHours(0, 0, 0, 0);
   
-  const {notify} = useNotify("Viajes");
+  const {notify} = useNotify("Viaje");
   const [rowsPerPage, setRowsPerPage] = useState<number>(5);
   const [page, setPage] = useState<number>(1);
   const [filterOpen, setFilterOpen] = useState(false);
-  const [appliedFilters, setAppliedFilters] = useState<BuscarViajeDistribucionDto>({});
+  const [appliedFilters, setAppliedFilters] = useState<BuscarViajeDistribucionDto>({fecha_desde: haceUnMes.toISOString()});
 
   const [trips, setTrips] = useState<ViajeDistribucionDto[]>([]);
   const [totalItems, setTotalItems] = useState<number>(0);
@@ -136,7 +140,6 @@ export default function DistributionListPage() {
       setAppliedFilters(newFilters)
       setPage(1);
   },[]);
-
 
   const handleDelete = async (id: string) => {
       try {
@@ -292,8 +295,11 @@ export default function DistributionListPage() {
                 open= {openDialog}
                 genre="el"
                 onClose={() => setOpenDialog(false)}
-                title="viajes"
-                entityName={viajeDistribucionSelected._id}
+                title="viaje"
+                entityName={ viajeDistribucionSelected.nro_viaje ?? (viajeDistribucionSelected as any).numeroDeViaje}
+                content={
+                    <Typography variant="body2">Al eliminar este viaje, los documentos que no se entregaron volverán a estar disponibles para asignar a otro viaje.</Typography>
+                 }
                 onConfirm={() => handleDelete(viajeDistribucionSelected?._id)}
             />
         )}

@@ -3,7 +3,7 @@ import { BuscarViajeDistribucionDto, BuscarViajeDto, ChoferDto, DepositoDto, Emp
 import { Stack, Button, Chip, Collapse, Paper, Typography, TextField, Select, MenuItem,Box, Grid  } from "@mui/material";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { ListFilter } from "lucide-react";
+import { Calendar, ListFilter } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface TripFiltersProps {
@@ -26,12 +26,17 @@ interface TripFiltersProps {
     };
 }
 
+const hoy = new Date();
+const haceUnMes = new Date();
+haceUnMes.setMonth(hoy.getMonth() - 1);
+haceUnMes.setHours(0, 0, 0, 0)
+
 export default function DistributionFilters({
   filterOpen,
   setFilterOpen,
   onApply,
   initialFilters = {
-    fecha_desde: undefined,
+    fecha_desde: haceUnMes.toISOString(),
     fecha_hasta: undefined,
     _id: "",
     transportista: "",
@@ -220,217 +225,219 @@ export default function DistributionFilters({
           )}
 
             <Collapse in={filterOpen} timeout="auto" unmountOnExit>
-                <Box sx={{ mt: 2 }}>
-                    <Paper elevation={3} sx={{ p: 2, backgroundColor: "white", borderRadius: "8px", boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "0.5px solid #c7c7c7" }}>
-                        <Grid container spacing={4} sx={{ color: "#5A5A65" }}>
+              <Box sx={{ mt: 2 }}>
+                <Paper elevation={3} sx={{ p: 2, backgroundColor: "white", borderRadius: "8px", boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "0.5px solid #c7c7c7" }}>
+                  <Grid container spacing={4} sx={{ color: "#5A5A65" }}>
 
-                          <Grid item xs={12} sm={6} lg={4}>
-                            <Typography variant="subtitle2">Rango de fechas</Typography>
-                            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                              <Box display="flex" justifyContent="space-between" gap={2} mt={1}>
-                                <DatePicker
-                                  slotProps={{
-                                    textField: {
-                                      fullWidth: true,
-                                      className: "inside-paper",
-                                      placeholder: "Desde",
-                                    },
-                                  }}
-                                  format="dd/MM/yyyy"
-                                  value={
-                                    localFilters.fecha_desde
-                                      ? new Date(localFilters.fecha_desde)
-                                      : null
-                                  }
-                                  onChange={(value) => handleChange("fecha_desde", value)}
-                                />
-                                <DatePicker
-                                  slotProps={{
-                                    textField: {
-                                      fullWidth: true,
-                                      className: "inside-paper",
-                                      placeholder: "Hasta",
-                                    },
-                                  }}
-                                  format="dd/MM/yyyy"
-                                  value={
-                                    localFilters.fecha_hasta
-                                      ? new Date(localFilters.fecha_hasta)
-                                      : null
-                                  }
-                                  onChange={(value) => handleChange("fecha_hasta", value)}
-                                />
-                              </Box>
-                            </LocalizationProvider>
-                          </Grid>
-
-                            <Grid item xs={12} sm={6} lg={4}>
-                                <Typography variant="subtitle2">Número de viaje</Typography>
-                                <TextField
-                                    fullWidth
-                                    className="inside-paper"
-                                    placeholder="Buscar por ID de viaje"
-                                    sx={{ mt: 1 }}
-                                    value={localFilters._id}
-                                    onChange={(e) => handleChange('_id', e.target.value)}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12} sm={6} lg={4}>
-                                <Typography variant="subtitle2">Transportista</Typography>
-                                <Select
-                                    fullWidth
-                                    value={localFilters.transportista}
-                                    onChange={(e) => handleChange('transportista', e.target.value)}
-                                    displayEmpty
-                                    sx={{ backgroundColor: "white", "& .MuiSelect-select": { padding: "10px 14px" }, "& .MuiOutlinedInput-notchedOutline": { borderColor: "#c7c7c7" }, "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#5A5A65" }, mt: 1 }}
-                                >
-                                    <MenuItem value="" disabled>{loadingOptions.empresas ? "Cargando..." : "Seleccionar transportista"}</MenuItem>
-                                    {empresas.map(emp => (<MenuItem key={emp._id} value={emp._id}>{emp.nombre_comercial}</MenuItem>))}
-                                </Select>
-                            </Grid>
-
-                            <Grid item xs={12} sm={6} lg={4}>
-                                <Typography variant="subtitle2">Vehículo</Typography>
-                                <Select
-                                    fullWidth
-                                    value={localFilters.vehiculo}
-                                    onChange={(e) => handleChange('vehiculo', e.target.value)}
-                                    displayEmpty
-                                    sx={{ backgroundColor: "white", "& .MuiSelect-select": { padding: "10px 14px" }, "& .MuiOutlinedInput-notchedOutline": { borderColor: "#c7c7c7" }, "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#5A5A65" }, mt: 1 }}
-                                >
-                                    <MenuItem value="" disabled>{loadingOptions.vehiculos ? "Cargando..." : "Seleccionar vehículo"}</MenuItem>
-                                    {vehiculos.map(veh => (<MenuItem key={veh._id} value={veh._id}>{veh.modelo} - {veh.patente}</MenuItem>))}
-                                </Select>
-                            </Grid>
-
-                            <Grid item xs={12} sm={6} lg={4}>
-                                <Typography variant="subtitle2">Chofer</Typography>
-                                <Select
-                                    fullWidth
-                                    value={localFilters.chofer}
-                                    onChange={(e) => handleChange('chofer', e.target.value)}
-                                    displayEmpty
-                                    sx={{ backgroundColor: "white", "& .MuiSelect-select": { padding: "10px 14px" }, "& .MuiOutlinedInput-notchedOutline": { borderColor: "#c7c7c7" }, "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#5A5A65" }, mt: 1 }}
-                                >
-                                    <MenuItem value="" disabled>{loadingOptions.choferes ? "Cargando..." : "Seleccionar chofer"}</MenuItem>
-                                    {choferes.map(c => (<MenuItem key={c._id} value={c._id}>{c.nombre} {c.apellido}</MenuItem>))}
-                                </Select>
-                            </Grid>
-
-                            <Grid item xs={12} sm={6} lg={4}>
-                                <Typography variant="subtitle2">Depósito de origen</Typography>
-                                <Select
-                                    fullWidth
-                                    value={localFilters.origen}
-                                    onChange={(e) => handleChange('origen', e.target.value)}
-                                    displayEmpty
-                                    sx={{ backgroundColor: "white", "& .MuiSelect-select": { padding: "10px 14px" }, "& .MuiOutlinedInput-notchedOutline": { borderColor: "#c7c7c7" }, "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#5A5A65" }, mt: 1 }}
-                                >
-                                    <MenuItem value="" disabled>{loadingOptions.depositos ? "Cargando..." : "Seleccionar depósito"}</MenuItem>
-                                    {depositos.map(d => (<MenuItem key={d._id} value={d._id}>{d.nombre}</MenuItem>))}
-                                </Select>
-                            </Grid>
-
-                            <Grid item xs={12} sm={6} lg={4}>
-                                <Typography variant="subtitle2">Tipo de viaje</Typography>
-                                <Grid container sx={{ mt: 1 }} columnSpacing={2}>
-                                    <Grid item xs={6}>
-                                        <Button
-                                            variant="outlined"
-                                            fullWidth
-                                            sx={{
-                                                borderRadius: "6px", padding: "10px 14px", textTransform: "none",
-                                                backgroundColor: localFilters.tipo === 'nacional' ? '#C94715' : 'white',
-                                                color: localFilters.tipo === 'nacional' ? 'white' : '#5A5A65',
-                                                "&:hover": { backgroundColor: localFilters.tipo === 'nacional' ? '#C94715' : '#f5f5f5', boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)" }
-                                            }}
-                                            onClick={() => handleChange('tipo', localFilters.tipo === 'nacional' ? undefined : 'nacional')}
-                                        >Nacional</Button>
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <Button
-                                            variant="outlined"
-                                            fullWidth
-                                            sx={{
-                                                borderRadius: "6px", padding: "10px 14px", textTransform: "none",
-                                                backgroundColor: localFilters.tipo === 'internacional' ? '#C94715' : 'white',
-                                                color: localFilters.tipo === 'internacional' ? 'white' : '#5A5A65',
-                                                "&:hover": { backgroundColor: localFilters.tipo === 'internacional' ? '#C94715' : '#f5f5f5', boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)" }
-                                            }}
-                                            onClick={() => handleChange('tipo', localFilters.tipo === 'internacional' ? undefined : 'internacional')}
-                                        >Internacional</Button>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-
-                            <Grid item xs={12} sm={6} lg={4}>
-                                <Typography variant="subtitle2">Remito</Typography>
-                                 <Select
-                                    fullWidth
-                                    multiple
-                                    value={localFilters.remito || []}
-                                    onChange={(e) => {
-                                      const value = e.target.value as string[];
-                                      const ids = value.map((v) => Number(v));
-                                      handleChange("remito", ids);
-                                    }}
-                                    displayEmpty
-                                    renderValue={(selected) => {
-                                      if (loadingOptions.remitos) return "Cargando...";
-                                      if (!selected || selected.length === 0) return "Seleccionar remitos";
-
-                                      // Mostrar numeroAsignado en el chip
-                                      return selected
-                                        .map((id) => remitos.find((r) => r.id === Number(id))?.numeroAsignado || id)
-                                        .join(", ");
-                                    }}
-                                    sx={{
-                                      backgroundColor: "white",
-                                      "& .MuiSelect-select": { padding: "10px 14px" },
-                                      "& .MuiOutlinedInput-notchedOutline": { borderColor: "#c7c7c7" },
-                                      "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#5A5A65" },
-                                      mt: 1,
-                                    }}
-                                  >
-                                    {loadingOptions.remitos ? (
-                                      <MenuItem disabled>Cargando...</MenuItem>
-                                    ) : (
-                                      remitos.map((rem) => (
-                                        <MenuItem key={rem.id} value={rem.id}>
-                                          {rem.numeroAsignado}
-                                        </MenuItem>
-                                      ))
-                                    )}
-                                  </Select>
-                            </Grid>
-
-                            <Grid item xs={12} sm={6} lg={4}>
-                                <Typography variant="subtitle2">Tarifa</Typography>
-                                <TextField
-                                    fullWidth
-                                    className="inside-paper"
-                                    placeholder="Número de tarifa"
-                                    type="number"
-                                    value={localFilters.tarifa || ''}
-                                    onChange={(e) => handleChange('tarifa', Number(e.target.value))}
-                                    sx={{ mt: 1 }}
-                                />
-                            </Grid>
-                        </Grid>
-
-                        <Box display="flex" justifyContent="flex-end" gap={2} mt={2} sx={{ flexDirection: { xs: "column", sm: "row" } }}>
-                            <Button variant="outlined" color="primary" sx={{ borderRadius: "6px", padding: "10px 20px" }}
-                                onClick={handleClear}
-                                disabled={Object.values(localFilters).every(value => !value || (Array.isArray(value) && value.length === 0))}
-                            >Limpiar filtros</Button>
-                            <Button variant="contained" color="primary" sx={{ borderRadius: "6px", padding: "10px 20px", boxShadow: "none", "&:hover": { boxShadow: "none", backgroundColor: "#C94715" } }}
-                                onClick={handleApply}
-                                disabled={Object.values(localFilters).every(value => !value || (Array.isArray(value) && value.length === 0))}
-                            >Aplicar filtros</Button>
+                    <Grid item xs={12} md={6} lg={4}>
+                      <Typography variant="subtitle2">Rango de fechas</Typography>
+                      <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <Box display="flex" justifyContent="space-between" sx={{ gap: { xs:1,sm: 4, md: 1} }} mt={1}>
+                          <DatePicker
+                            slotProps={{
+                              textField: {
+                                fullWidth: true,
+                                className: "inside-paper",
+                                placeholder: "Desde",
+                              },
+                            }}
+                            format="dd/MM/yyyy"
+                            value={
+                              localFilters.fecha_desde
+                                ? new Date(localFilters.fecha_desde)
+                                : null
+                            }
+                            onChange={(value) => handleChange("fecha_desde", value)}
+                            sx={{ flex: 1 }}
+                          />
+                          <DatePicker
+                            slotProps={{
+                              textField: {
+                                fullWidth: true,
+                                className: "inside-paper",
+                                placeholder: "Hasta",
+                              },
+                            }}
+                            format="dd/MM/yyyy"
+                            value={
+                              localFilters.fecha_hasta
+                                ? new Date(localFilters.fecha_hasta)
+                                : null
+                            }
+                            onChange={(value) => handleChange("fecha_hasta", value)}
+                            sx={{ flex: 1 }}
+                          />
                         </Box>
-                    </Paper>
-                </Box>
+                      </LocalizationProvider>
+                    </Grid>
+
+                      <Grid item xs={12} sm={6} lg={4}>
+                          <Typography variant="subtitle2">Número de viaje</Typography>
+                          <TextField
+                              fullWidth
+                              className="inside-paper"
+                              placeholder="Buscar por ID de viaje"
+                              sx={{ mt: 1 }}
+                              value={localFilters._id}
+                              onChange={(e) => handleChange('_id', e.target.value)}
+                          />
+                      </Grid>
+
+                      <Grid item xs={12} sm={6} lg={4}>
+                          <Typography variant="subtitle2">Transportista</Typography>
+                          <Select
+                              fullWidth
+                              value={localFilters.transportista}
+                              onChange={(e) => handleChange('transportista', e.target.value)}
+                              displayEmpty
+                              sx={{ backgroundColor: "white", "& .MuiSelect-select": { padding: "10px 14px" }, "& .MuiOutlinedInput-notchedOutline": { borderColor: "#c7c7c7" }, "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#5A5A65" }, mt: 1 }}
+                          >
+                              <MenuItem value="" disabled>{loadingOptions.empresas ? "Cargando..." : "Seleccionar transportista"}</MenuItem>
+                              {empresas.map(emp => (<MenuItem key={emp._id} value={emp._id}>{emp.nombre_comercial}</MenuItem>))}
+                          </Select>
+                      </Grid>
+
+                      <Grid item xs={12} sm={6} lg={4}>
+                          <Typography variant="subtitle2">Vehículo</Typography>
+                          <Select
+                              fullWidth
+                              value={localFilters.vehiculo}
+                              onChange={(e) => handleChange('vehiculo', e.target.value)}
+                              displayEmpty
+                              sx={{ backgroundColor: "white", "& .MuiSelect-select": { padding: "10px 14px" }, "& .MuiOutlinedInput-notchedOutline": { borderColor: "#c7c7c7" }, "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#5A5A65" }, mt: 1 }}
+                          >
+                              <MenuItem value="" disabled>{loadingOptions.vehiculos ? "Cargando..." : "Seleccionar vehículo"}</MenuItem>
+                              {vehiculos.map(veh => (<MenuItem key={veh._id} value={veh._id}>{veh.modelo} - {veh.patente}</MenuItem>))}
+                          </Select>
+                      </Grid>
+
+                      <Grid item xs={12} sm={6} lg={4}>
+                          <Typography variant="subtitle2">Chofer</Typography>
+                          <Select
+                              fullWidth
+                              value={localFilters.chofer}
+                              onChange={(e) => handleChange('chofer', e.target.value)}
+                              displayEmpty
+                              sx={{ backgroundColor: "white", "& .MuiSelect-select": { padding: "10px 14px" }, "& .MuiOutlinedInput-notchedOutline": { borderColor: "#c7c7c7" }, "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#5A5A65" }, mt: 1 }}
+                          >
+                              <MenuItem value="" disabled>{loadingOptions.choferes ? "Cargando..." : "Seleccionar chofer"}</MenuItem>
+                              {choferes.map(c => (<MenuItem key={c._id} value={c._id}>{c.nombre} {c.apellido}</MenuItem>))}
+                          </Select>
+                      </Grid>
+
+                      <Grid item xs={12} sm={6} lg={4}>
+                          <Typography variant="subtitle2">Depósito de origen</Typography>
+                          <Select
+                              fullWidth
+                              value={localFilters.origen}
+                              onChange={(e) => handleChange('origen', e.target.value)}
+                              displayEmpty
+                              sx={{ backgroundColor: "white", "& .MuiSelect-select": { padding: "10px 14px" }, "& .MuiOutlinedInput-notchedOutline": { borderColor: "#c7c7c7" }, "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#5A5A65" }, mt: 1 }}
+                          >
+                              <MenuItem value="" disabled>{loadingOptions.depositos ? "Cargando..." : "Seleccionar depósito"}</MenuItem>
+                              {depositos.map(d => (<MenuItem key={d._id} value={d._id}>{d.nombre}</MenuItem>))}
+                          </Select>
+                      </Grid>
+
+                      <Grid item xs={12} sm={6} lg={4}>
+                          <Typography variant="subtitle2">Tipo de viaje</Typography>
+                          <Grid container sx={{ mt: 1 }} columnSpacing={1}>
+                              <Grid item xs={6}>
+                                  <Button
+                                      variant="outlined"
+                                      fullWidth
+                                      sx={{
+                                          borderRadius: "6px", padding: "10px 14px", textTransform: "none",
+                                          backgroundColor: localFilters.tipo === 'nacional' ? '#C94715' : 'white',
+                                          color: localFilters.tipo === 'nacional' ? 'white' : '#5A5A65',
+                                          "&:hover": { backgroundColor: localFilters.tipo === 'nacional' ? '#C94715' : '#f5f5f5', boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)" }
+                                      }}
+                                      onClick={() => handleChange('tipo', localFilters.tipo === 'nacional' ? undefined : 'nacional')}
+                                  >Nacional</Button>
+                              </Grid>
+                              <Grid item xs={6}>
+                                  <Button
+                                      variant="outlined"
+                                      fullWidth
+                                      sx={{
+                                          borderRadius: "6px", padding: "10px 14px", textTransform: "none",
+                                          backgroundColor: localFilters.tipo === 'internacional' ? '#C94715' : 'white',
+                                          color: localFilters.tipo === 'internacional' ? 'white' : '#5A5A65',
+                                          "&:hover": { backgroundColor: localFilters.tipo === 'internacional' ? '#C94715' : '#f5f5f5', boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)" }
+                                      }}
+                                      onClick={() => handleChange('tipo', localFilters.tipo === 'internacional' ? undefined : 'internacional')}
+                                  >Internacional</Button>
+                              </Grid>
+                          </Grid>
+                      </Grid>
+
+                      <Grid item xs={12} sm={6} lg={4}>
+                          <Typography variant="subtitle2">Remito</Typography>
+                            <Select
+                              fullWidth
+                              multiple
+                              value={localFilters.remito || []}
+                              onChange={(e) => {
+                                const value = e.target.value as string[];
+                                const ids = value.map((v) => Number(v));
+                                handleChange("remito", ids);
+                              }}
+                              displayEmpty
+                              renderValue={(selected) => {
+                                if (loadingOptions.remitos) return "Cargando...";
+                                if (!selected || selected.length === 0) return "Seleccionar remitos";
+
+                                // Mostrar numeroAsignado en el chip
+                                return selected
+                                  .map((id) => remitos.find((r) => r.id === Number(id))?.numeroAsignado || id)
+                                  .join(", ");
+                              }}
+                              sx={{
+                                backgroundColor: "white",
+                                "& .MuiSelect-select": { padding: "10px 14px" },
+                                "& .MuiOutlinedInput-notchedOutline": { borderColor: "#c7c7c7" },
+                                "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#5A5A65" },
+                                mt: 1,
+                              }}
+                            >
+                              {loadingOptions.remitos ? (
+                                <MenuItem disabled>Cargando...</MenuItem>
+                              ) : (
+                                remitos.map((rem) => (
+                                  <MenuItem key={rem.id} value={rem.id}>
+                                    {rem.numeroAsignado}
+                                  </MenuItem>
+                                ))
+                              )}
+                            </Select>
+                      </Grid>
+
+                      <Grid item xs={12} sm={6} lg={4}>
+                          <Typography variant="subtitle2">Tarifa</Typography>
+                          <TextField
+                              fullWidth
+                              className="inside-paper"
+                              placeholder="Número de tarifa"
+                              type="number"
+                              value={localFilters.tarifa || ''}
+                              onChange={(e) => handleChange('tarifa', Number(e.target.value))}
+                              sx={{ mt: 1 }}
+                          />
+                      </Grid>
+                  </Grid>
+
+                  <Box display="flex" justifyContent="flex-end" gap={2} mt={2} sx={{ flexDirection: { xs: "column", sm: "row" } }}>
+                    <Button variant="outlined" color="primary" sx={{ borderRadius: "6px", padding: "10px 20px" }}
+                      onClick={handleClear}
+                      disabled={Object.values(localFilters).every(value => !value || (Array.isArray(value) && value.length === 0))}
+                    >Limpiar filtros</Button>
+                    <Button variant="contained" color="primary" sx={{ borderRadius: "6px", padding: "10px 20px", boxShadow: "none", "&:hover": { boxShadow: "none", backgroundColor: "#C94715" } }}
+                      onClick={handleApply}
+                      disabled={Object.values(localFilters).every(value => !value || (Array.isArray(value) && value.length === 0))}
+                    >Aplicar filtros</Button>
+                  </Box>
+                </Paper>
+              </Box>
             </Collapse>
         </Box>
     )

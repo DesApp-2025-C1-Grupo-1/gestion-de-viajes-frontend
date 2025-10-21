@@ -31,9 +31,7 @@ export default function Dashboard() {
         const fetchTarifas = async () => {
         try {
             const { data } = await axios.get("https://tarifas-de-costos-acme-backend.onrender.com/api/tarifas");
-            // Ejemplo: la API devuelve el objeto como el que me mostraste
-            const rawData = data;
-            setCantTarifas(rawData.length);
+            setCantTarifas(data.length);
             
         } catch (error) {
             console.error("Error al obtener zonas:", error);
@@ -49,11 +47,9 @@ export default function Dashboard() {
         const fetchZonas = async () => {
         try {
             const { data } = await axios.get("https://tarifas-de-costos-acme-backend.onrender.com/api/zonas/comparativa-costos");
-            // Ejemplo: la API devuelve el objeto como el que me mostraste
-            const rawData = data;
 
             // Transformar el objeto en array filtrando las zonas sin tarifas
-            const transformado = Object.entries(rawData)
+            const transformado = Object.entries(data)
             .filter(([_, value]) => value !== "No hay tarifas")
             .map(([nombre, value]: [string, any]) => ({
                 nombre,

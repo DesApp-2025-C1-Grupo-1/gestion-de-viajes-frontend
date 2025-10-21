@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from "react";
 import { Building2, Clock, MapPin, Route, Users } from "lucide-react";
 import { formatTelefono } from "../../lib/formatters";
-import { useDepositoControllerFindOne, DepositoDto } from "../../api/generated";
+import { useDepositoControllerFindOne} from "../../api/generated";
 
 export default function DepositDetailsPage() {
     const { id } = useParams<{ id: string }>();

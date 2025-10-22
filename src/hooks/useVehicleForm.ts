@@ -5,11 +5,14 @@ import {useVehiculoControllerFindOne, vehiculoControllerCreate, vehiculoControll
 import { useForm } from "react-hook-form";
 import { CreateVehiculoSchema, UpdateVehiculoSchema } from "../api/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 
 
 export const useVehicleForm = (id?: string) => {
   const navigate = useNavigate();
   const isEditing = !!id;
+  const queryClient = useQueryClient();
+
   const {
     register,
     control,
@@ -65,7 +68,10 @@ export const useVehicleForm = (id?: string) => {
     try {
       await vehiculoControllerCreate(formData as CreateVehiculoDto);
       notify("create");
-      navigate("/vehicles");
+
+      await queryClient.invalidateQueries({ queryKey: ['/vehiculo'] });
+
+      navigate("/vehicles", { replace: true });
     } catch (e) {
       const error = e as { response?: { data?: { message?: string } } };
       if (error.response?.data?.message) {
@@ -80,7 +86,8 @@ export const useVehicleForm = (id?: string) => {
       
       await vehiculoControllerUpdate(id!, dataToUpdate as UpdateVehiculoDto);
       notify("update");
-      navigate("/vehicles");
+      await queryClient.invalidateQueries({ queryKey: ['/vehiculo'] });
+      navigate("/vehicles", { replace: true });
     } catch (e) {
       const error = e as { response?: { data?: { message?: string } } };
       if (error.response?.data?.message) {

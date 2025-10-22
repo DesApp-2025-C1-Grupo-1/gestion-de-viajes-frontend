@@ -152,7 +152,7 @@ export default function VehicleFormPage() {
                     <Typography variant="h6" sx={{color: "#5A5A65" , fontWeight: 550 , fontSize: "1.4rem", mb:2}}>Asignar recursos</Typography>
 
                     <Grid container spacing={3} mb={4} > 
-                        <Grid item xs={12} sm={6}> 
+                        <Grid item xs={12} md={6}> 
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Empresa Transportista</Typography>
                             <Controller
                             control={control}
@@ -182,7 +182,7 @@ export default function VehicleFormPage() {
                                 {formErrors.empresa?.message}
                             </FormHelperText>
                         </Grid>
-                        <Grid item xs={12} sm={6}> 
+                        <Grid item xs={12} md={6}> 
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Tipo de vehículo a utilizar</Typography>
                             <Controller
                                 control={control}

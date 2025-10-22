@@ -93,7 +93,7 @@ export default function DriverPage(){
                                 { label: "Licencia", value: `${driver.licencia} - ${driver.tipo_licencia}` },
                                 { label: "Teléfono", value: formatTelefono(driver.telefono) },
                                 { label: "Empresa", value: driver.empresa.nombre_comercial },
-                                { label: "Vehículo", value: driver.vehiculo?.modelo },
+                                { label: "Vehículo", value:  `${driver.vehiculo.marca} - ${driver.vehiculo.patente}` },
                             ]}
                             onDelete={() => handleOpenDialog(driver)}
                             onEdit={() => navigate(`/drivers/edit/${driver._id}`)}

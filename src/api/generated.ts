@@ -953,7 +953,7 @@ export interface DashboardDistribucionResponseDto {
   /** Viajes actualmente en camino */
   viajesEnCamino: number;
   /** Viajes recientes realizados en la última semana */
-  viajesRecientes: ViajeDistribucionDto[];
+  viajesRecientes: number;
   /** Top empresas con más viajes realizados */
   topEmpresas: EmpresaViajesDistribucionDto[];
   /** Comparativa de costos por zona */
@@ -962,6 +962,10 @@ export interface DashboardDistribucionResponseDto {
   remitos: number;
   /** Cantidad total de tarifas */
   cantidadTarifas: number;
+  /** Lista de remitos próximos a preparar */
+  remitosProximos: RemitoDto[];
+  /** Cantidad de remitos recientes realizados en la última semana */
+  cantidadRemitosRecientes: number;
 }
 
 export type ViajeControllerFindAllParams = {

@@ -5,11 +5,13 @@ import { CreateDepositoDto, depositoControllerCreate, depositoControllerUpdate, 
 import { useForm } from "react-hook-form";
 import { CreateDepositoSchema, UpdateDepositoSchema } from "../../api/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 
 
 export const useDepositForm = (id? : string) => {
     const navigate = useNavigate();
     const {notify} = useNotify("Depósito", "male");
+    const queryClient = useQueryClient();
     const isEditing = !!(id);
     const {
         register,
@@ -99,6 +101,7 @@ export const useDepositForm = (id? : string) => {
 
             await depositoControllerCreate(depositData as CreateDepositoDto);
             notify("create");
+            await queryClient.invalidateQueries({ queryKey: ['/deposito'] });
             navigate("/depots");
         } catch (e) {
           const error = e as { response?: { data?: { message?: string } } };
@@ -127,6 +130,7 @@ export const useDepositForm = (id? : string) => {
           };
           await depositoControllerUpdate(id!, dataToUpdate);
           notify("update");
+          await queryClient.invalidateQueries({ queryKey: ['/deposito'] });
           navigate("/depots");
         } catch (e) {
           const error = e as { response?: { data?: { message?: string } } };

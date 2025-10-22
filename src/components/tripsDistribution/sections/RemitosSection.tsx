@@ -60,8 +60,10 @@ export default function RemitosSection() {
   // Efecto simplificado
   useEffect(() => {
     const nuevoTipoViaje = tieneRemitosInternacionales ? "internacional" : "nacional";
+    console.log("Ajustando tipo de viaje a:", nuevoTipoViaje);
     setValue("tipo_viaje", nuevoTipoViaje);
   }, [tieneRemitosInternacionales, setValue]);
+
 
   return (
     <>

@@ -87,7 +87,7 @@ export default function ResourcesSection() {
                   </MenuItem>
                   {form.filteredChoferes?.map((chofer: any) => (
                     <MenuItem key={chofer._id} value={chofer._id}>
-                      {chofer.nombre}
+                      {chofer.nombre} {chofer.apellido}
                     </MenuItem>
                   ))}
                 </Select>

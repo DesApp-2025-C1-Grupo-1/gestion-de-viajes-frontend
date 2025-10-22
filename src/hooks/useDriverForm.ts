@@ -7,12 +7,14 @@ import { zodResolver } from "@hookform/resolvers/zod";;
 import { CreateChoferSchema, UpdateChoferSchema, createChoferSchema} from '../api/schemas/chofer.schema';
 import { tipoLicenciaSchema } from "../api/schemas/enums/tipoLicencia.schema";
 import { isValidateLicense } from "../services/validateLicense";
+import { useQueryClient } from "@tanstack/react-query";
 
 
 
 export const useDriverForm = (id?: string) => {
   const navigate = useNavigate();
   const isEditing = !!id;
+  const queryClient =  useQueryClient();
   const licenciasValidas = Object.values(tipoLicenciaSchema.enum);
   const [filteredVehicles, setFilteredVehicles] = useState<VehiculoDto[]>([]);
 
@@ -139,6 +141,7 @@ export const useDriverForm = (id?: string) => {
 
       await choferControllerUpdate(id!, dataToUpdate as UpdateChoferDto);
       notify("update");
+      await queryClient.invalidateQueries({ queryKey: ['/chofer'] });
       navigate("/drivers");
     } catch(e) {
       const error = e as {response?: {data?: {message?: string}}};
@@ -163,6 +166,7 @@ export const useDriverForm = (id?: string) => {
 
       await choferControllerCreate(payload);
       notify("create");
+      await queryClient.invalidateQueries({ queryKey: ['/chofer'] });
       navigate("/drivers");
     } catch(e) {
       const error = e as {response?: {data?: {message?: string}}};

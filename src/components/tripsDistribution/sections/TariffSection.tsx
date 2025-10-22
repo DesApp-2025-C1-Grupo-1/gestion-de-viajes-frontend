@@ -69,6 +69,10 @@ export default function TariffSection() {
 
     const tipoViajeActual = safeTripData.tipo_viaje || tipoViaje || 'nacional';
 
+    if(tipoViaje !== safeTripData.tipo_viaje) {
+      return tipoViaje === 'internacional';
+    }
+
     return tipoViajeActual === 'internacional';
   }, [tipoViaje, safeTripData.tipo_viaje]);
 

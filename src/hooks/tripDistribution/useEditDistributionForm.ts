@@ -96,6 +96,7 @@ export const useEditDistributionForm = (tripId: string) => {
       });
       reset(formData)
       notify("update");
+      queryClient.invalidateQueries({ queryKey: ['/viaje-distribucion'] });
       navigate("/trips/distribution");
     } catch (e) {
       handleApiError(e, notify);

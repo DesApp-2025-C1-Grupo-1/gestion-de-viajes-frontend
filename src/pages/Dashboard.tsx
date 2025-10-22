@@ -1,58 +1,62 @@
 import { SectionHeader } from "../components/SectionHeader";
-import { useNavigate } from "react-router-dom";
-import { UserRoundCheck, Building2, MapPinned, Car} from "lucide-react";
+import { MapPinned, DollarSign, Navigation, FileText, FileBox} from "lucide-react";
 import { InfoCard } from "../components/dashboard/InfoCard";
-
-
 import TopEmpresasChart from "../components/dashboard/Chart";
-import { useViajeControllerGetDashboard, ViajeDto } from "../api/generated";
+import { RemitoDto, ViajeDistribucionDto, useDashboardControllerGetDashboard } from "../api/generated";
 import { Grid } from "@mui/material";
+import ZonasChart from "../components/dashboard/ChartZonas";
 
 export default function Dashboard() {
-    const { data } =  useViajeControllerGetDashboard();
-
-    console.log(data?.data);
-
-    const { totalEmpresas, totalChoferes, totalVehiculos, topEmpresas, proximosViajes, estadisticasRecientes } = data?.data || {};
-    const navigate = useNavigate();
+    const { data } =  useDashboardControllerGetDashboard();
+    const { topEmpresas, 
+        proximosViajes, 
+        viajesEnCamino, 
+        viajesRecientes, 
+        comparativaCostos, 
+        remitos, 
+        cantidadTarifas, 
+        remitosProximos,
+        cantidadRemitosRecientes
+    } = data?.data || {};
 
     return (
         <>
             <SectionHeader
-                title="Logística Acme SRL"
-                description="Bienvenido al panel de administración de la aplicación."
+                title="Dashboard"
+                description="Realice un seguimiento de sus cargas y entregas logísticas diarias"
             />
-            <div className="flex flex-col px-4 py-2">   
+            <div className="flex flex-col px-2">   
                 <Grid container mb={2} spacing={2}>
-                    <Grid item xs={12} md={6} lg={4}>
+                    <Grid item xs={12} lg={4}  >
                         <InfoCard 
-                            title="Transportistas"
-                            description="empresas registradas"
-                            subDescription={estadisticasRecientes?.empresas}
-                            icon={<Building2 className={`size-7 block`} color="#E65F2B"/>} 
-                            value={totalEmpresas}
-                            onClick={() => navigate("/companies")}
+                            title="Viajes En Camino"
+                            description="viajes activos"
+                            icon={<Navigation className="size-6 block" color="#E65F2B" />} 
+                            value={viajesEnCamino}
+                            subDescription={viajesRecientes}
+                            link="/trips/distribution"
                         />
                     </Grid>
                     <Grid item xs={12} md={6} lg={4} >
                         <InfoCard 
-                            title="Choferes"
-                            description="choferes registrados"
-                            subDescription={estadisticasRecientes?.choferes}
-                            icon={<UserRoundCheck className={`size-7 block`} color="#E65F2B"/>} 
-                            value={totalChoferes}
-                            onClick={() => navigate("/drivers")}
+                            title="Tarifas de Costos"
+                            description="tarifas registradas"
+                            icon={<DollarSign className="size-6 block" color="#E65F2B" />} 
+                            value={cantidadTarifas}
+                            link="https://tarifas-de-costo.netlify.app/tarifas"
+                            external
                         />
                     </Grid>
-                    <Grid item xs={12}  lg={4} >
+                    <Grid item xs={12} md={6} lg={4} >
                         <InfoCard 
-                            title="Flota de Vehículos"
-                            description="vehículos registrados"
-                            subDescription={estadisticasRecientes?.vehiculos}
-                            icon={<Car className={`size-7 block`} color="#E65F2B"/>} 
-                        value={totalVehiculos}
-                        onClick={() => navigate("/vehicles")}
-                    />
+                            title="Remitos"
+                            description="remitos registrados"
+                            icon={<FileBox className="size-6 block" color="#E65F2B" />} 
+                            value={remitos}
+                            link="https://remitos-front.netlify.app/remitos"
+                            subDescription={cantidadRemitosRecientes}
+                            external
+                        />
                     </Grid>
                 
                 </Grid>
@@ -62,16 +66,30 @@ export default function Dashboard() {
                             title="Próximos viajes"
                             description="Vista previa de los próximos viajes"
                             icon={<MapPinned className={`size-7 block`} color="#E65F2B"/>} 
-                            list={proximosViajes ? (proximosViajes as unknown as ViajeDto[]) : undefined}
-                            onClick={() => navigate("/trips/distribution")}
+                            list={proximosViajes ? (proximosViajes as unknown as ViajeDistribucionDto[]) : undefined}
+                            link="/trips/distribution"
+                        />
+                    </Grid>
+                    <Grid item xs={12}  lg={6}>
+                        <InfoCard 
+                            title="Próximos remitos"
+                            description="Vista previa de los próximos remitos"
+                            icon={<FileText className={`size-7 block`} color="#E65F2B"/>} 
+                            listRemitos={remitosProximos ? (remitosProximos as unknown as RemitoDto[]) : undefined}
+                            link="https://remitos-front.netlify.app/remitos"
+                            external
                         />
                     </Grid>
 
-                    
                     {topEmpresas && topEmpresas.length !== 0 && (
                         <Grid item xs={12}  lg={6} >
                             <TopEmpresasChart topEmpresas={topEmpresas ?? []} />
                         </Grid>
+                    )}
+                    {comparativaCostos && comparativaCostos.length !== 0 && (
+                    <Grid item xs={12} lg={6}>
+                        <ZonasChart dataZonas={comparativaCostos} />
+                    </Grid>
                     )}
                 </Grid>
             </div>

@@ -139,7 +139,7 @@ export default function DriverFormPage(){
 
                     <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Información de Contacto</Typography>
                     <Grid container spacing={3} mb={4}>
-                        <Grid item xs={12} sm={6}>
+                        <Grid item xs={12} md={6}>
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Teléfono</Typography>
                             <Grid container spacing={2}>
                                 <Grid item xs={mostrarCodigoArea ? 3 : 4}>
@@ -213,7 +213,7 @@ export default function DriverFormPage(){
                             )}
                         </Grid>
                         
-                        <Grid item xs={12} sm={6}>
+                        <Grid item xs={12} md={6}>
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Correo electrónico</Typography>
                             <TextField
                                 id="email"
@@ -275,7 +275,7 @@ export default function DriverFormPage(){
 
                     <Typography variant="h6" sx={{ color: "#5A5A65", fontWeight: 550, fontSize: "1.4rem", mb: 2 }}>Asignar recursos</Typography>
                     <Grid container spacing={3} mb={4}>
-                        <Grid item xs={12} sm={6}> 
+                        <Grid item xs={12} md={6}> 
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Empresa Transportista</Typography>
                             <Controller
                                 control={control}
@@ -308,7 +308,7 @@ export default function DriverFormPage(){
                                 {formErrors.empresa?.message}
                             </FormHelperText>
                         </Grid>
-                        <Grid item xs={12} sm={6}> 
+                        <Grid item xs={12} md={6}> 
                             <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Vehiculo a utilizar</Typography>
                             <Controller
                                 control={control}

@@ -1,6 +1,6 @@
 import { TripDistributionType } from "../../components/tripsDistribution/TripDistributionType";
 import { SectionHeader } from "../../components/SectionHeader";
-import { Button, CircularProgress, DialogActions, Paper, Table, TableCell, TableHead, TableRow, SxProps, Typography } from '@mui/material';
+import { Button, CircularProgress, DialogActions, Paper, Table, TableCell, TableHead, TableRow, SxProps, Typography, Box } from '@mui/material';
 import { Building2, ClipboardMinus, MapPinned, Route, Ticket } from "lucide-react";
 import { useNavigate, useParams } from 'react-router-dom';
 import CardDetails from "../../components/detailts/Details";
@@ -10,6 +10,7 @@ import CardRemitosDetails from "../../components/tripsDistribution/RemitosDetail
 import { useTarifaDetails } from "../../hooks/tripDistribution/useTarifasDetails";
 import { useEffect } from "react";
 import LoadingState from "../../components/LoadingState";
+import { TripStateDetails } from "../../components/tripsDistribution/TripStateDetails";
 
 export default function DistributionDetailsPage() {
     const { id } = useParams<{ id: string }>();
@@ -124,11 +125,21 @@ export default function DistributionDetailsPage() {
                                     />
                                 )
                             )}
-                        </div>
-                    )}
-        
-                    
+
+                            <Box sx={{ mb: 4,  bgcolor: 'background.default', borderRadius: 2 }}>
+                                <TripStateDetails 
+                                    viajeId={tripSelected._id}
+                                    initialState={tripSelected.estado}
+                                    initialKm={tripSelected.kilometros}
+                                />
+
+
+                            </Box>
+                        </div>             
+                    )}                  
                 </div>
+
+                
                   
             </Paper>   
             <DialogActions sx={{paddingTop:4}}>

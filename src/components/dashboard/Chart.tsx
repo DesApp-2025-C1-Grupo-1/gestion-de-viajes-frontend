@@ -15,7 +15,7 @@ export default function TopEmpresasChart ({ topEmpresas }: TopEmpresasChartProps
         <Box display="flex" alignItems="center" gap={2} padding={3}> 
             <Building2 className={`size-7 block`} color="#E65F2B"/> 
             <Typography variant="subtitle1" sx={{ color: "#5A5A65", fontWeight: "bold" }}>
-                Top 3 empresas con más viajes
+                Empresas con más viajes asignados
             </Typography>
         </Box>
         <Box sx={{ height: '100%',minHeight:'256px', px: 3, pb: 2, '& *:focus': {outline: 'none'} }}>

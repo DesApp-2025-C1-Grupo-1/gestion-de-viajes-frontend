@@ -2,9 +2,10 @@ import { Box, Card, Typography, useTheme } from "@mui/material";
 import axios from "axios";
 import { Map } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { ComparativaCostoDto } from "../../api/generated";
 
 interface ZonasChartProps {
-    dataZonas: any[];
+    dataZonas: ComparativaCostoDto[];
 }
 
 export default function ZonasChart ({dataZonas}: ZonasChartProps) {
@@ -31,10 +32,10 @@ export default function ZonasChart ({dataZonas}: ZonasChartProps) {
                             boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.1)",
                         }}
                         labelFormatter={(value) => `Zona: ${value}`}
-                        formatter={(value, name) => [value, name === 'promedio' ? 'Costo Promedio' : name === 'maximo' ? 'Costo Máximo' : '']}
+                        formatter={(value, name) => [value, name === 'average' ? 'Costo Promedio' : name === 'max' ? 'Costo Máximo' : '']}
                     />
-                    <Bar dataKey="promedio" fill="#00A86B" />
-                    <Bar dataKey="maximo" fill="#e65f2b" />
+                    <Bar dataKey="average" fill="#00A86B" />
+                    <Bar dataKey="max" fill="#e65f2b" />
                 </BarChart>
             </ResponsiveContainer>
         </Card>

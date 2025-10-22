@@ -929,6 +929,45 @@ export interface ZonaDto {
   nombre: string;
 }
 
+export interface EmpresaViajesDistribucionDto {
+  /** ID de la empresa */
+  empresaId: string;
+  /** Nombre de la empresa */
+  nombre: string;
+  /** Cantidad total de viajes realizados por la empresa */
+  cantidadViajes: number;
+}
+
+export interface ComparativaCostoDto {
+  /** Nombre de la zona */
+  nombre: string;
+  /** Promedio de tarifas de la zona */
+  average: number;
+  /** Valor máximo de tarifas de la zona */
+  max: number;
+}
+
+export interface DashboardDistribucionResponseDto {
+  /** Próximos viajes de distribución programados (limitado a 5) */
+  proximosViajes: ViajeDistribucionDto[];
+  /** Viajes actualmente en camino */
+  viajesEnCamino: number;
+  /** Viajes recientes realizados en la última semana */
+  viajesRecientes: number;
+  /** Top empresas con más viajes realizados */
+  topEmpresas: EmpresaViajesDistribucionDto[];
+  /** Comparativa de costos por zona */
+  comparativaCostos: ComparativaCostoDto[];
+  /** Lista de remitos (sin filtros) */
+  remitos: number;
+  /** Cantidad total de tarifas */
+  cantidadTarifas: number;
+  /** Lista de remitos próximos a preparar */
+  remitosProximos: RemitoDto[];
+  /** Cantidad de remitos recientes realizados en la última semana */
+  cantidadRemitosRecientes: number;
+}
+
 export type ViajeControllerFindAllParams = {
 /**
  * Número de página para la paginación
@@ -4759,6 +4798,178 @@ export function useTarifasControllerTarifasFiltradas<TData = Awaited<ReturnType<
 
 
 /**
+ * @summary Obtener cantidad total de tarifas
+ */
+export const tarifasControllerObtenerCantidadTarifas = (
+     options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<unknown>> => {
+    
+    
+    return axios.get(
+      `/tarifas/cantidad`,options
+    );
+  }
+
+
+export const getTarifasControllerObtenerCantidadTarifasQueryKey = () => {
+    return [`/tarifas/cantidad`] as const;
+    }
+
+    
+export const getTarifasControllerObtenerCantidadTarifasQueryOptions = <TData = Awaited<ReturnType<typeof tarifasControllerObtenerCantidadTarifas>>, TError = AxiosError<void>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof tarifasControllerObtenerCantidadTarifas>>, TError, TData>>, axios?: AxiosRequestConfig}
+) => {
+
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getTarifasControllerObtenerCantidadTarifasQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof tarifasControllerObtenerCantidadTarifas>>> = ({ signal }) => tarifasControllerObtenerCantidadTarifas({ signal, ...axiosOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof tarifasControllerObtenerCantidadTarifas>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type TarifasControllerObtenerCantidadTarifasQueryResult = NonNullable<Awaited<ReturnType<typeof tarifasControllerObtenerCantidadTarifas>>>
+export type TarifasControllerObtenerCantidadTarifasQueryError = AxiosError<void>
+
+
+export function useTarifasControllerObtenerCantidadTarifas<TData = Awaited<ReturnType<typeof tarifasControllerObtenerCantidadTarifas>>, TError = AxiosError<void>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof tarifasControllerObtenerCantidadTarifas>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof tarifasControllerObtenerCantidadTarifas>>,
+          TError,
+          Awaited<ReturnType<typeof tarifasControllerObtenerCantidadTarifas>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useTarifasControllerObtenerCantidadTarifas<TData = Awaited<ReturnType<typeof tarifasControllerObtenerCantidadTarifas>>, TError = AxiosError<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof tarifasControllerObtenerCantidadTarifas>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof tarifasControllerObtenerCantidadTarifas>>,
+          TError,
+          Awaited<ReturnType<typeof tarifasControllerObtenerCantidadTarifas>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useTarifasControllerObtenerCantidadTarifas<TData = Awaited<ReturnType<typeof tarifasControllerObtenerCantidadTarifas>>, TError = AxiosError<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof tarifasControllerObtenerCantidadTarifas>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Obtener cantidad total de tarifas
+ */
+
+export function useTarifasControllerObtenerCantidadTarifas<TData = Awaited<ReturnType<typeof tarifasControllerObtenerCantidadTarifas>>, TError = AxiosError<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof tarifasControllerObtenerCantidadTarifas>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getTarifasControllerObtenerCantidadTarifasQueryOptions(options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * @summary Obtener comparativa de costos por zona
+ */
+export const tarifasControllerObtenerComparativaCostos = (
+     options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<unknown>> => {
+    
+    
+    return axios.get(
+      `/tarifas/comparativa-costos`,options
+    );
+  }
+
+
+export const getTarifasControllerObtenerComparativaCostosQueryKey = () => {
+    return [`/tarifas/comparativa-costos`] as const;
+    }
+
+    
+export const getTarifasControllerObtenerComparativaCostosQueryOptions = <TData = Awaited<ReturnType<typeof tarifasControllerObtenerComparativaCostos>>, TError = AxiosError<void>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof tarifasControllerObtenerComparativaCostos>>, TError, TData>>, axios?: AxiosRequestConfig}
+) => {
+
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getTarifasControllerObtenerComparativaCostosQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof tarifasControllerObtenerComparativaCostos>>> = ({ signal }) => tarifasControllerObtenerComparativaCostos({ signal, ...axiosOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof tarifasControllerObtenerComparativaCostos>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type TarifasControllerObtenerComparativaCostosQueryResult = NonNullable<Awaited<ReturnType<typeof tarifasControllerObtenerComparativaCostos>>>
+export type TarifasControllerObtenerComparativaCostosQueryError = AxiosError<void>
+
+
+export function useTarifasControllerObtenerComparativaCostos<TData = Awaited<ReturnType<typeof tarifasControllerObtenerComparativaCostos>>, TError = AxiosError<void>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof tarifasControllerObtenerComparativaCostos>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof tarifasControllerObtenerComparativaCostos>>,
+          TError,
+          Awaited<ReturnType<typeof tarifasControllerObtenerComparativaCostos>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useTarifasControllerObtenerComparativaCostos<TData = Awaited<ReturnType<typeof tarifasControllerObtenerComparativaCostos>>, TError = AxiosError<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof tarifasControllerObtenerComparativaCostos>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof tarifasControllerObtenerComparativaCostos>>,
+          TError,
+          Awaited<ReturnType<typeof tarifasControllerObtenerComparativaCostos>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useTarifasControllerObtenerComparativaCostos<TData = Awaited<ReturnType<typeof tarifasControllerObtenerComparativaCostos>>, TError = AxiosError<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof tarifasControllerObtenerComparativaCostos>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Obtener comparativa de costos por zona
+ */
+
+export function useTarifasControllerObtenerComparativaCostos<TData = Awaited<ReturnType<typeof tarifasControllerObtenerComparativaCostos>>, TError = AxiosError<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof tarifasControllerObtenerComparativaCostos>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getTarifasControllerObtenerComparativaCostosQueryOptions(options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
  * @summary Obtener tarifa por ID
  */
 export const tarifasControllerGetTarifaById = (
@@ -4833,6 +5044,92 @@ export function useTarifasControllerGetTarifaById<TData = Awaited<ReturnType<typ
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getTarifasControllerGetTarifaByIdQueryOptions(id,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * @summary Obtener datos del dashboard
+ */
+export const dashboardControllerGetDashboard = (
+     options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<DashboardDistribucionResponseDto>> => {
+    
+    
+    return axios.get(
+      `/dashboard`,options
+    );
+  }
+
+
+export const getDashboardControllerGetDashboardQueryKey = () => {
+    return [`/dashboard`] as const;
+    }
+
+    
+export const getDashboardControllerGetDashboardQueryOptions = <TData = Awaited<ReturnType<typeof dashboardControllerGetDashboard>>, TError = AxiosError<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof dashboardControllerGetDashboard>>, TError, TData>>, axios?: AxiosRequestConfig}
+) => {
+
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getDashboardControllerGetDashboardQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof dashboardControllerGetDashboard>>> = ({ signal }) => dashboardControllerGetDashboard({ signal, ...axiosOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof dashboardControllerGetDashboard>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type DashboardControllerGetDashboardQueryResult = NonNullable<Awaited<ReturnType<typeof dashboardControllerGetDashboard>>>
+export type DashboardControllerGetDashboardQueryError = AxiosError<unknown>
+
+
+export function useDashboardControllerGetDashboard<TData = Awaited<ReturnType<typeof dashboardControllerGetDashboard>>, TError = AxiosError<unknown>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof dashboardControllerGetDashboard>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof dashboardControllerGetDashboard>>,
+          TError,
+          Awaited<ReturnType<typeof dashboardControllerGetDashboard>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useDashboardControllerGetDashboard<TData = Awaited<ReturnType<typeof dashboardControllerGetDashboard>>, TError = AxiosError<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof dashboardControllerGetDashboard>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof dashboardControllerGetDashboard>>,
+          TError,
+          Awaited<ReturnType<typeof dashboardControllerGetDashboard>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useDashboardControllerGetDashboard<TData = Awaited<ReturnType<typeof dashboardControllerGetDashboard>>, TError = AxiosError<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof dashboardControllerGetDashboard>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Obtener datos del dashboard
+ */
+
+export function useDashboardControllerGetDashboard<TData = Awaited<ReturnType<typeof dashboardControllerGetDashboard>>, TError = AxiosError<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof dashboardControllerGetDashboard>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getDashboardControllerGetDashboardQueryOptions(options)
 
   const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

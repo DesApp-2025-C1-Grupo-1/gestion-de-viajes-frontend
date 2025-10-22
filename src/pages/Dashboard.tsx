@@ -2,80 +2,22 @@ import { SectionHeader } from "../components/SectionHeader";
 import { MapPinned, DollarSign, Navigation, FileText, FileBox} from "lucide-react";
 import { InfoCard } from "../components/dashboard/InfoCard";
 import TopEmpresasChart from "../components/dashboard/Chart";
-import { useRemitosControllerGetRemitos, useViajeControllerGetDashboard, RemitoDto, ViajeDistribucionDto } from "../api/generated";
+import { RemitoDto, ViajeDistribucionDto, useDashboardControllerGetDashboard } from "../api/generated";
 import { Grid } from "@mui/material";
 import ZonasChart from "../components/dashboard/ChartZonas";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { LoadingOverlay } from "../components/LoadginOverlay";
 
 export default function Dashboard() {
-    const { data } =  useViajeControllerGetDashboard();
-    const [cantTarifas, setCantTarifas] = useState<number>(0);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [dataZonas, setDataZonas] = useState<any[]>([]);
-
-    const { totalEmpresas, topEmpresas, proximosViajes, estadisticasRecientes } = data?.data || {};
-
-    const { data: remitosDisponiblesData } = useRemitosControllerGetRemitos();
-    
-    const remitosExtraidos = remitosDisponiblesData?.data?.data || [];
-
-    const remitosDisponibles = remitosExtraidos.filter((remito) => {
-        return remito.estado?.nombre === "En preparación";
-    });
-
-    const totalRemitos = remitosDisponiblesData?.data?.totalItems || 0;
-
-    useEffect(() => {
-        const fetchTarifas = async () => {
-        try {
-            const { data } = await axios.get("https://tarifas-de-costos-acme-backend.onrender.com/api/tarifas");
-            setCantTarifas(data.length);
-            
-        } catch (error) {
-            console.error("Error al obtener zonas:", error);
-        } finally {
-            setLoading(false);
-        }
-        };
-
-        fetchTarifas();
-    }, []);
-
-    useEffect(() => {
-        const fetchZonas = async () => {
-        try {
-            const { data } = await axios.get("https://tarifas-de-costos-acme-backend.onrender.com/api/zonas/comparativa-costos");
-
-            // Transformar el objeto en array filtrando las zonas sin tarifas
-            const transformado = Object.entries(data)
-            .filter(([_, value]) => value !== "No hay tarifas")
-            .map(([nombre, value]: [string, any]) => ({
-                nombre,
-                promedio: value.average.toFixed(2),
-                minimo: value.min,
-                maximo: value.max,
-                tarifas: value.count,
-            }));
-
-            // Ordenar de mayor a menor por promedio
-            const ordenado = transformado.sort((a, b) => b.promedio - a.promedio);
-
-            const ordenadoFiltrado = ordenado.slice(0, 5); // Top 5 zonas con más costo
-
-            setDataZonas(ordenadoFiltrado);
-        } catch (error) {
-            console.error("Error al obtener zonas:", error);
-        } finally {
-            setLoading(false);
-        }
-        };
-
-        fetchZonas();
-    }, []);
-
-    if(loading){ return <LoadingOverlay active={loading}/>;}
+    const { data } =  useDashboardControllerGetDashboard();
+    const { topEmpresas, 
+        proximosViajes, 
+        viajesEnCamino, 
+        viajesRecientes, 
+        comparativaCostos, 
+        remitos, 
+        cantidadTarifas, 
+        remitosProximos,
+        cantidadRemitosRecientes
+    } = data?.data || {};
 
     return (
         <>
@@ -90,8 +32,8 @@ export default function Dashboard() {
                             title="Viajes En Camino"
                             description="viajes activos"
                             icon={<Navigation className="size-6 block" color="#E65F2B" />} 
-                            value={totalEmpresas}
-
+                            value={viajesEnCamino}
+                            subDescription={viajesRecientes}
                             link="/trips/distribution"
                         />
                     </Grid>
@@ -100,7 +42,7 @@ export default function Dashboard() {
                             title="Tarifas de Costos"
                             description="tarifas registradas"
                             icon={<DollarSign className="size-6 block" color="#E65F2B" />} 
-                            value={cantTarifas}
+                            value={cantidadTarifas}
                             link="https://tarifas-de-costo.netlify.app/tarifas"
                             external
                         />
@@ -110,8 +52,9 @@ export default function Dashboard() {
                             title="Remitos"
                             description="remitos registrados"
                             icon={<FileBox className="size-6 block" color="#E65F2B" />} 
-                            value={totalRemitos}
+                            value={remitos}
                             link="https://remitos-front.netlify.app/remitos"
+                            subDescription={cantidadRemitosRecientes}
                             external
                         />
                     </Grid>
@@ -132,7 +75,7 @@ export default function Dashboard() {
                             title="Próximos remitos"
                             description="Vista previa de los próximos remitos"
                             icon={<FileText className={`size-7 block`} color="#E65F2B"/>} 
-                            listRemitos={remitosDisponibles  ? (remitosDisponibles as unknown as RemitoDto[]) : undefined}
+                            listRemitos={remitosProximos ? (remitosProximos as unknown as RemitoDto[]) : undefined}
                             link="https://remitos-front.netlify.app/remitos"
                             external
                         />
@@ -143,11 +86,11 @@ export default function Dashboard() {
                             <TopEmpresasChart topEmpresas={topEmpresas ?? []} />
                         </Grid>
                     )}
-
+                    {comparativaCostos && comparativaCostos.length !== 0 && (
                     <Grid item xs={12} lg={6}>
-                        <ZonasChart dataZonas={dataZonas} />
+                        <ZonasChart dataZonas={comparativaCostos} />
                     </Grid>
-
+                    )}
                 </Grid>
             </div>
         </>      

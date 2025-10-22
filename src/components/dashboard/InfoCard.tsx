@@ -86,8 +86,7 @@ export const InfoCard = ({
                             </Typography>
                         )}
                     </Box>
-                </Box>
-                
+                </Box> 
             )}
 
             {/* Listado de viajes */}
@@ -108,7 +107,7 @@ export const InfoCard = ({
                         {list.slice(0, 3).map(trip => (
                         <ListItem key={trip._id} sx={{ justifyContent: "space-between" }}>
                             <Box>
-                            <Typography sx={{ color: "#5A5A65", fontWeight: 450 }}>{trip.nro_viaje}</Typography>
+                            <Typography sx={{ color: "#5A5A65", fontWeight: 450 }}>{ trip.nro_viaje ?? (trip as any).numeroDeViaje}</Typography>
                             <Typography variant="caption" color="text.secondary">
                                 Inicio: {new Date(trip.fecha_inicio).toLocaleDateString()}
                             </Typography>

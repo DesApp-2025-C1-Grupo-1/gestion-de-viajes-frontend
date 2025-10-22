@@ -297,9 +297,9 @@ export default function DraggableRemitosGrid({
                 >
                   <RemitoCard
                     rem={remito}
-                    selectedRemitos={[]}
+                    selectedRemitos={remitoIds}
                     onRemitoToggle={() => restaurarRemito(remito)}
-                    showCheckbox={false}
+                    showCheckbox={true}
                     compactMode={true}
                   />
                 </Box>

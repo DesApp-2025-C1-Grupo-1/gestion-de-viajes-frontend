@@ -691,6 +691,8 @@ export interface BuscarViajeDistribucionDto {
   remito?: string[];
   /** Id de la tarifa */
   tarifa?: number;
+  /** Estado del viaje */
+  estado?: string;
 }
 
 export interface CreateDepositoDto {

@@ -10,7 +10,6 @@ import CardRemitosDetails from "../../components/tripsDistribution/RemitosDetail
 import { useTarifaDetails } from "../../hooks/tripDistribution/useTarifasDetails";
 import { useEffect } from "react";
 import LoadingState from "../../components/LoadingState";
-import { TripStateDetails } from "../../components/tripsDistribution/TripStateDetails";
 
 export default function DistributionDetailsPage() {
     const { id } = useParams<{ id: string }>();
@@ -45,6 +44,8 @@ export default function DistributionDetailsPage() {
     const remitos = Array.isArray(remitosMutation.data?.data)
     ? remitosMutation.data.data
     : [];
+
+    console.log(tripSelected)
 
     return (
         <>
@@ -97,6 +98,7 @@ export default function DistributionDetailsPage() {
                                 icon={<ClipboardMinus color="#E65F2B" />}
                                 title="Remitos"
                                 remitos={remitos}
+                                estadoViaje={tripSelected.estado}
                             />
                             {tripSelected.tipo_viaje === "nacional" && (
                                 isLoadingTarifa ? (
@@ -126,15 +128,6 @@ export default function DistributionDetailsPage() {
                                 )
                             )}
 
-                            <Box sx={{ mb: 4,  bgcolor: 'background.default', borderRadius: 2 }}>
-                                <TripStateDetails 
-                                    viajeId={tripSelected._id}
-                                    initialState={tripSelected.estado}
-                                    initialKm={tripSelected.kilometros}
-                                />
-
-
-                            </Box>
                         </div>             
                     )}                  
                 </div>

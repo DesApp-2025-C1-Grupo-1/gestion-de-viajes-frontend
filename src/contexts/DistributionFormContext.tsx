@@ -1,7 +1,7 @@
 // contexts/DistributionFormContext.tsx
 import { createContext, useContext } from 'react';
 import { Localidad, Provincia } from '../hooks/useGeoref';
-import { ViajeDistribucionDto } from '../api/generated';
+import { RemitoDto, ViajeDistribucionDto } from '../api/generated';
 
 export interface DistributionFormContextType {
   form: any;
@@ -16,6 +16,8 @@ export interface DistributionFormContextType {
   setSelectedPais: (pais: string) => void;
   setSelectedProvincia: (provincia: Provincia | null) => void;
   setSelectedLocalidad: (localidad: Localidad | null) => void;
+  setRemitosCompletos: (completos: RemitoDto[]) => void;
+  remitosCompletos: RemitoDto[];
 }
 
 export const DistributionFormContext = createContext<DistributionFormContextType | null>(null);
@@ -62,4 +64,12 @@ export const useLocationData = () => {
     setSelectedProvincia: context.setSelectedProvincia,
     setSelectedLocalidad: context.setSelectedLocalidad,
   };
+}
+
+export const useRemitosCompletos = () => {
+  const context = useDistributionFormContext();
+  return {
+    remitosCompletos: context.remitosCompletos,
+    setRemitosCompletos: context.setRemitosCompletos
+  }
 }

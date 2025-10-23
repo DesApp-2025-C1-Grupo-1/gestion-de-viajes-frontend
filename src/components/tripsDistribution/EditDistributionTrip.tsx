@@ -51,17 +51,6 @@ export default function EditDistributionForm({ tripId }: EditDistributionFormPro
         boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", 
         border: "1px solid #C7C7C7" 
       }}>
-        {/* Progreso de estados - Solo en edición */}
-        <Box sx={{ mb: 4,  bgcolor: 'background.default', borderRadius: 2 }}>
-          <TripStateFlow
-            setValue={form.form.setValue}
-            control={form.form.control}
-            initialState={form.tripData.estado}
-            initialKm={form.tripData.kilometros}
-            register={form.form.register}
-            error={form.form.formState.errors}
-          />
-        </Box>
  
         <DistributionForm 
           form={form}

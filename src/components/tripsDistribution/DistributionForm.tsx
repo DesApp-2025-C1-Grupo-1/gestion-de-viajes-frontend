@@ -7,8 +7,11 @@ import ResourcesSection from "./sections/ResourcesSection";
 import TariffSection from "./sections/TariffSection";
 import TripDataSection from "./sections/TripDataSection";
 import { Localidad, Provincia } from "../../hooks/useGeoref";
-import { ViajeDistribucionDto, ViajeDistribucionDtoEstado } from "../../api/generated";
+import { RemitoDto, ViajeDistribucionDto, ViajeDistribucionDtoEstado } from "../../api/generated";
 import { useWatch } from "react-hook-form";
+import React from "react";
+import { Box } from "@mui/material";
+import { TripStateFlow } from "./TripStateFlow";
 
 interface DistributionFormProps {
   form: any;
@@ -23,6 +26,7 @@ export function DistributionForm({ form, isEditing, tripData }: DistributionForm
   const [selectedPais, setSelectedPais] = useState<string>("");
   const [selectedProvincia, setSelectedProvincia] = useState<Provincia | null>(null);
   const [selectedLocalidad, setSelectedLocalidad] = useState<Localidad | null>(null);
+  const [remitosCompletos, setRemitosCompletos] = useState<RemitoDto[]>([]);
 
   const contextValue = {
     form,
@@ -35,6 +39,8 @@ export function DistributionForm({ form, isEditing, tripData }: DistributionForm
     setSelectedProvincia,
     selectedLocalidad,
     setSelectedLocalidad,
+    setRemitosCompletos: setRemitosCompletos,
+    remitosCompletos: remitosCompletos
   };
   
   const handleFormSubmit = async (e: React.FormEvent) => {
@@ -44,6 +50,19 @@ export function DistributionForm({ form, isEditing, tripData }: DistributionForm
 
   return (
     <DistributionFormContext.Provider value={contextValue}>
+      {isEditing && (
+        <Box sx={{ mb: 4,  bgcolor: 'background.default', borderRadius: 2 }}>
+          <TripStateFlow
+            setValue={form.form.setValue}
+            control={form.form.control}
+            initialState={form.tripData.estado}
+            initialKm={form.tripData.kilometros}
+            register={form.form.register}
+            error={form.form.formState.errors}
+          />
+        </Box>
+      )}
+
       <form 
         onSubmit={handleFormSubmit} 
         className="w-full max-w-[800px] mx-auto"

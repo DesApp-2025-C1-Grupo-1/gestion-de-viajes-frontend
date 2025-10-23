@@ -28,7 +28,7 @@ const depositoSelectButtonStyle = {
 };
 
 export default function RemitosSection() {
-  const { form, permissions, tripData} = useDistributionFormContext();
+  const { form, permissions, tripData, setRemitosCompletos } = useDistributionFormContext();
   const{ selectedPais, selectedProvincia, selectedLocalidad, setSelectedPais, setSelectedProvincia, setSelectedLocalidad } = useLocationData();
   const { control,setValue, formState: { errors } } = form.form;
   const [remitosModalOpen, setRemitosModalOpen] = useState(false);
@@ -60,10 +60,12 @@ export default function RemitosSection() {
   // Efecto simplificado
   useEffect(() => {
     const nuevoTipoViaje = tieneRemitosInternacionales ? "internacional" : "nacional";
-    console.log("Ajustando tipo de viaje a:", nuevoTipoViaje);
     setValue("tipo_viaje", nuevoTipoViaje);
   }, [tieneRemitosInternacionales, setValue]);
 
+  useEffect(() => {
+    setRemitosCompletos(remitosCompletos);
+  }, [remitosCompletos, setRemitosCompletos]);
 
   return (
     <>

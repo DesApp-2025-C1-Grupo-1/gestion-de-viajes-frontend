@@ -7,7 +7,7 @@ import { Grid } from "@mui/material";
 import ZonasChart from "../components/dashboard/ChartZonas";
 
 export default function Dashboard() {
-    const { data } =  useDashboardControllerGetDashboard();
+    const { data, isLoading} =  useDashboardControllerGetDashboard();
     const { topEmpresas, 
         proximosViajes, 
         viajesEnCamino, 
@@ -25,7 +25,7 @@ export default function Dashboard() {
                 title="Dashboard"
                 description="Realice un seguimiento de sus cargas y entregas logísticas diarias"
             />
-            <div className="flex flex-col px-2">   
+            <div className="flex flex-col px-0 md:px-2">   
                 <Grid container mb={2} spacing={2}>
                     <Grid item xs={12} lg={4}  >
                         <InfoCard 
@@ -35,6 +35,7 @@ export default function Dashboard() {
                             value={viajesEnCamino}
                             subDescription={viajesRecientes}
                             link="/trips/distribution"
+                            loading={isLoading}
                         />
                     </Grid>
                     <Grid item xs={12} md={6} lg={4} >
@@ -45,6 +46,7 @@ export default function Dashboard() {
                             value={cantidadTarifas}
                             link="https://tarifas-de-costo.netlify.app/tarifas"
                             external
+                            loading={isLoading}
                         />
                     </Grid>
                     <Grid item xs={12} md={6} lg={4} >
@@ -56,6 +58,7 @@ export default function Dashboard() {
                             link="https://remitos-front.netlify.app/remitos"
                             subDescription={cantidadRemitosRecientes}
                             external
+                            loading={isLoading}
                         />
                     </Grid>
                 
@@ -64,33 +67,38 @@ export default function Dashboard() {
                     <Grid item xs={12}  lg={6}>
                         <InfoCard 
                             title="Próximos viajes"
-                            description="Vista previa de los próximos viajes"
                             icon={<MapPinned className={`size-7 block`} color="#E65F2B"/>} 
                             list={proximosViajes ? (proximosViajes as unknown as ViajeDistribucionDto[]) : undefined}
                             link="/trips/distribution"
+                            loading={isLoading}
+                            isList
                         />
                     </Grid>
                     <Grid item xs={12}  lg={6}>
                         <InfoCard 
                             title="Próximos remitos"
-                            description="Vista previa de los próximos remitos"
                             icon={<FileText className={`size-7 block`} color="#E65F2B"/>} 
                             listRemitos={remitosProximos ? (remitosProximos as unknown as RemitoDto[]) : undefined}
                             link="https://remitos-front.netlify.app/remitos"
                             external
+                            loading={isLoading}
+                            isList
                         />
                     </Grid>
 
-                    {topEmpresas && topEmpresas.length !== 0 && (
-                        <Grid item xs={12}  lg={6} >
-                            <TopEmpresasChart topEmpresas={topEmpresas ?? []} />
-                        </Grid>
-                    )}
-                    {comparativaCostos && comparativaCostos.length !== 0 && (
-                    <Grid item xs={12} lg={6}>
-                        <ZonasChart dataZonas={comparativaCostos} />
+
+                    <Grid item xs={12}  lg={6} >
+                        <TopEmpresasChart 
+                            topEmpresas={topEmpresas ?? []} 
+                            loading={isLoading}
+                        />
                     </Grid>
-                    )}
+                    <Grid item xs={12} lg={6}>
+                        <ZonasChart 
+                            dataZonas={comparativaCostos ?? []} 
+                            loading={isLoading}    
+                        />
+                    </Grid>
                 </Grid>
             </div>
         </>      

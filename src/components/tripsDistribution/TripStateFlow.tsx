@@ -1,8 +1,9 @@
-import { Box, Typography, Step, StepLabel, Stepper, Button, Paper, Chip, Stack, Dialog, TextField } from '@mui/material';
-import { Truck, Package, CheckCircle, CheckSquare, Check } from 'lucide-react';
+import { Box, Typography, Step, StepLabel, Stepper, Button, Paper, Chip, Stack, Dialog, TextField, Alert, DialogContent } from '@mui/material';
+import { Truck, Package, CheckCircle, CheckSquare, Check, Ban, CircleAlert, OctagonX } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { ViajeDistribucionDtoEstado } from '../../api/generated';
 import { useWatch } from 'react-hook-form';
+import { useDistributionFormContext } from '../../contexts/DistributionFormContext';
 
 interface TripStateFlowProps {
   setValue: any;
@@ -22,8 +23,11 @@ const states = [
 
 export function TripStateFlow({ setValue, control, initialState, register, error, initialKm }: TripStateFlowProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
-
+  const [permission, setPermission] = useState(true);
   const initialKmRef = useRef<number | null>(initialKm ?? null);
+
+  const {remitosCompletos} = useDistributionFormContext();
+
   useEffect(() => {
     // si cambia initialKilometros (cuando llega el fetch), lo actualizamos una vez
     if (typeof initialKm === 'number') initialKmRef.current = initialKm;
@@ -44,10 +48,25 @@ export function TripStateFlow({ setValue, control, initialState, register, error
   const kmInicial = initialKmRef.current ?? 0;
 
   const handleStateChange = async (nuevoEstado: ViajeDistribucionDtoEstado) => {
-    setDialogOpen(false);
+
+    // Validación para "fin de viaje"
+    if (nuevoEstado === 'fin de viaje') {
+      const remitosEnCamino = remitosCompletos.filter(r =>{ 
+          r.estadoId !== 5 && r.estadoId !== 6 // 5: ENTREGADO, 6: NO ENTREGADO
+
+          return r;
+      });
+
+      if (remitosEnCamino.length > 0) {
+        setPermission(false);
+        return;
+      }
+
+      setPermission(true);
+    }
 
     setValue('estado', nuevoEstado);
-    
+    setDialogOpen(false);
   };
 
   const kmValid = !needsFinalKm || (!isNaN(kmFinal) && kmFinal > Number(kmInicial));
@@ -94,12 +113,6 @@ export function TripStateFlow({ setValue, control, initialState, register, error
           sx={{ mt: 1, fontWeight: 'bold' }}
         /> */}
       </Box>
-      {/* Header con icono + estado */}
-      {/* <Stack direction="row" spacing={2} alignItems="center" justifyContent="center" sx={{ mb: 2 }}>
-        <Typography variant="h6" fontWeight="bold">
-          {states[currentIndex].label}
-        </Typography>
-      </Stack> */}
       {/* Stepper */}
       <Stepper activeStep={currentIndex} alternativeLabel>
         {states.map((state, index) => {
@@ -165,59 +178,161 @@ export function TripStateFlow({ setValue, control, initialState, register, error
       </Box>
 
       <Dialog
-          open={dialogOpen}
-          onClose={() => setDialogOpen(false)}
-          maxWidth="sm"
-          fullWidth
-        >
-          <Box sx={{ p: 3 }}>
-            <Typography variant="h6" gutterBottom>
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        fullWidth
+        maxWidth="sm"
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            m: 2,
+            maxHeight: 'calc(100vh - 4rem)',
+          }
+        }}
+      >
+        <DialogContent sx={{ p: { xs: 3, sm: 4 }, pb: { xs: 2, sm: 3 } }}>
+          <Box sx={{textAlign: "center", mb: 3}}>
+            <Typography variant="h6" fontWeight={700} sx={{fontSize: { xs: '1.125rem', sm: '1.25rem' }, mb: 1}}>
               Confirmar cambio de estado
             </Typography>
           </Box>
-          <Box sx={{ px: 3, pb: 2 }}>
-            <Typography variant="body1" gutterBottom>
-              ¿Estás seguro que deseas cambiar el estado a "{nextState?.label}"?
-            </Typography>
-          </Box>
+          <Typography variant="body2" mb={3} sx={{ fontSize: { xs: '0.875rem', sm: '0.95rem' },
+          lineHeight: 1.6, textAlign: 'center' }}>
+            ¿Estás seguro que deseas cambiar el estado a{" "}
+            <Box 
+              component="span" 
+              sx={{ 
+                fontWeight: 600, 
+                color: 'primary.main',
+                display: 'inline-block',
+              }}
+            >
+              "{nextState?.label}"
+            </Box>?
+          </Typography>
+
           {needsFinalKm && (
-            <Box sx={{ px: 3, pb: 2 }}>
-              <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb: 1 }}>
-                Kilómetros del camión al finalizar el viaje:
+            <Box 
+              sx={{
+                mb: 3,
+                bgcolor: 'grey.50',
+                borderRadius: 2,
+              }}
+            >
+              <Typography variant='body2' fontWeight={600} sx={{mb: 1.5, fontSize: "0.875rem"}}>
+                Kilómetros finales del camión:
               </Typography>
               <TextField
                 id="kilometros"
                 type="number"
                 placeholder="Ingresar km finales"
-                {...register("kilometros", {
-                  valueAsNumber: true
-                  // podés dejar validación adicional aquí, pero controlamos visualmente abajo
-                })}
-                inputProps={{ "aria-label": "Kilómetros del camión", step: "0.01", min: "0.01" }}
+                {...register("kilometros", {valueAsNumber: true})}
+                inputProps={{ "aria-label": "Kilómetros del camión", step: "1", min: "1" }}
                 fullWidth
+                autoFocus
+                InputProps={{
+                  sx: {
+                    bgcolor: 'white',
+                    '& input': {
+                      fontSize: { xs: '1rem', sm: '0.95rem' },
+                      py: 1.5,
+                    }
+                  }
+                }}
                 error={Boolean(error?.kilometros) || Boolean(kmErrorMessage)}
                 helperText={error?.kilometros?.message ?? kmErrorMessage}
                 defaultValue={initialKmRef.current ?? ''}
               />
             </Box>
           )}
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', px: 3, pb: 3 }}>
-            <Button onClick={() => setDialogOpen(false)} sx={{ mr: 2 }}>
-              Cancelar
-            </Button>
-            <Button
+
+          {!permission && (
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1.5,
+                bgcolor: "#FEF2F2",
+                border: '1px solid #FEE2E2',
+                borderRadius: 1,
+                p: 2,
+                mb: 1,
+              }}
+            >
+              <Box
+                sx={{
+                  width: 20,
+                  height: 20,
+                  borderRadius: '50%',
+                  bgcolor: 'error.main',
+                  flexShrink: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  mt: 0.25,
+                }}
+              >
+                <Typography sx={{ color: 'white', fontSize: '0.75rem', fontWeight: 700 }}>!</Typography>
+              </Box>
+              <Typography variant="body2" sx={{ fontWeight: 500, fontSize: { xs: '0.875rem', sm: '0.95rem' }, lineHeight: 1.5, color: "#991b1b" }}>
+                Existen remitos pendientes de entrega.
+              </Typography>
+            </Box>
+          )}
+        </DialogContent>
+
+        {/* Botones de acción */}
+        <Box
+          sx={{ display: 'flex', flexDirection: {xs: "column-reverse", sm: "row"}, gap: 1.5, justifyContent: { xs: 'center', sm: 'flex-end' },
+              px: { xs: 3, sm: 4 },
+          pb: { xs: 3, sm: 4 },
+          pt: 0,
+          }}
+        >
+          <Button 
+            onClick={() => setDialogOpen(false)} 
+            fullWidth
+            size='large'
+            variant="outlined"
+            sx={{ 
+              textTransform: "none",
+              fontWeight: 600,
+              borderWidth: 2,
+              boxShadow: 0,
+              '&:hover': {
+                borderWidth: 2,
+              },
+              py: { xs: 1.5, sm: 1 },
+              width: { xs: '100%', sm: 'auto' },
+            }}
+          >
+            Cancelar
+          </Button>
+          <Button
             onClick={async () => {
               // opcional: trigger validation si querés utilizar react-hook-form validation
               // await trigger('kilometros'); // si tenés access a trigger
               if (nextState) handleStateChange(nextState.value as ViajeDistribucionDtoEstado);
             }}
+            fullWidth
+            size='large'
             variant="contained"
+            sx={{ 
+              textTransform: "none",
+              fontWeight: 600,
+              boxShadow: 0,
+              py: { xs: 1.5, sm: 1.25 },
+              '&:hover': {
+                boxShadow: 4,
+              },
+              width: { xs: '100%', sm: 'auto' },
+            }}
             disabled={!kmValid} // deshabilita si es fin de viaje y los km no son válidos
           >
             Confirmar
           </Button>
-          </Box>
-        </Dialog>
+        </Box>
+      </Dialog>
     </Paper>
   );
 }

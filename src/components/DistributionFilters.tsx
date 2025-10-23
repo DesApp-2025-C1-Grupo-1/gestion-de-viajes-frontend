@@ -31,6 +31,8 @@ const haceUnMes = new Date();
 haceUnMes.setMonth(hoy.getMonth() - 1);
 haceUnMes.setHours(0, 0, 0, 0)
 
+const estados = ["iniciado", "inicio de carga", "fin de carga", "fin de viaje"];
+
 export default function DistributionFilters({
   filterOpen,
   setFilterOpen,
@@ -46,6 +48,7 @@ export default function DistributionFilters({
     origen: "",
     remito: [],
     tarifa: undefined,
+    estado: "",
   },
   empresas,
   vehiculos,
@@ -105,6 +108,7 @@ export default function DistributionFilters({
       origen: "",
       remito: [],
       tarifa: undefined,
+      estado: "",
     };
     setLocalFilters(empty);
     setAppliedFilters(empty);
@@ -167,6 +171,8 @@ export default function DistributionFilters({
           .join(", ")}`;
       case "tarifa":
         return `Tarifa: ${value}`;
+      case "estado":
+        return `Estado: ${value}`;
       default:
         return `${key}: ${value}`;
     }
@@ -322,6 +328,20 @@ export default function DistributionFilters({
                           >
                               <MenuItem value="" disabled>{loadingOptions.choferes ? "Cargando..." : "Seleccionar chofer"}</MenuItem>
                               {choferes.map(c => (<MenuItem key={c._id} value={c._id}>{c.nombre} {c.apellido}</MenuItem>))}
+                          </Select>
+                      </Grid>
+
+                       <Grid item xs={12} sm={6} lg={4}>
+                          <Typography variant="subtitle2">Estado de viaje</Typography>
+                          <Select
+                              fullWidth
+                              value={localFilters.estado}
+                              onChange={(e) => handleChange('estado', e.target.value)}
+                              displayEmpty
+                              sx={{ backgroundColor: "white", "& .MuiSelect-select": { padding: "10px 14px" }, "& .MuiOutlinedInput-notchedOutline": { borderColor: "#c7c7c7" }, "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#5A5A65" }, mt: 1 }}
+                          >
+                              <MenuItem value="" disabled>{loadingOptions.choferes ? "Cargando..." : "Seleccionar estado"}</MenuItem>
+                              {estados.map((estado,index) => (<MenuItem key={index} value={estado}>{estado[0].toUpperCase() + estado.slice(1)}</MenuItem>))}
                           </Select>
                       </Grid>
 

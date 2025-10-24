@@ -66,7 +66,7 @@ export default function DistributionDetailsPage() {
                                 icon={<MapPinned color="#E65F2B" />}
                                 title="Información General"
                                 fields={[
-                                    { label: "Número de viaje", value: `${tripSelected.nro_viaje}` },
+                                    { label: "Número de viaje", value: `${ tripSelected.nro_viaje ?? (tripSelected as any).numeroDeViaje}` },
                                     { label: "Estado actual", value: <TripDistributionType tipo={tripSelected.estado} /> },
                                     { label: "Kilómetros", value: `${tripSelected.kilometros}` },
                                     { label: "Tipo de viaje", value: <TripType tipo={tripSelected.tipo_viaje} /> },

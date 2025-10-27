@@ -40,7 +40,6 @@ export default function EditDistributionForm({ tripId }: EditDistributionFormPro
     <>
       <SectionHeader 
         title="Editar Viaje de Distribución"
-        description="Actualizá los datos del viaje de distribución registrado."
       />
       
       <Paper sx={{ 

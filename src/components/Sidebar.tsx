@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DropdownMenu from "./DropdownMenu";
 import { sidebarMenus } from "../lib/sidebarMenus";
-import { Tooltip } from "@mui/material";
+import { Box, Button, Stack, Tooltip} from "@mui/material";
 
 
 interface SidebarProps {
@@ -13,14 +13,11 @@ interface SidebarProps {
 
 export default function Sidebar({isVisible, setIsVisible}: SidebarProps) {
   const navigate = useNavigate();
-  const [isCollapsed, setIsCollapsed] = useState(true);
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const [openSection, setOpenSection] = useState<string | null>(null);
 
   const toggleSidebar = () => {
-    setIsTransitioning(true);
     setIsCollapsed(prev => !prev);
-    setTimeout(() => setIsTransitioning(false), 300);
   };
 
   const menuItems = [
@@ -30,15 +27,15 @@ export default function Sidebar({isVisible, setIsVisible}: SidebarProps) {
     { key: "costos", src: Coins, title: "Gestión de Costos" },
   ];
 
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1200);
   
   useEffect(() => {
     const handleResize = () => {
-      const mobile = window.innerWidth < 768;
-      setIsMobile(mobile);
-  
+      const mobileWidth = window.innerWidth < 1200;
+      setIsMobile(mobileWidth);
+
       // Si pasás a mobile, expandí el sidebar
-      if (mobile) {
+      if (mobileWidth) {
         setIsCollapsed(false);
       }
     };
@@ -65,37 +62,74 @@ export default function Sidebar({isVisible, setIsVisible}: SidebarProps) {
     } else {
       window.location.href = "https://gestion-de-viajes.vercel.app/";
     }
+    selectOption()
   };
 
+  console.log("Sidebar render - isVisible:", isVisible, "isCollapsed:", isCollapsed, "isMobile:", isMobile);
+
   return (
-    <aside 
-      className={`
-        fixed top-0 left-0 h-full bg-white border-r border-gray-200 shadow-md z-40
-        flex flex-col 
-        ${isVisible ? 'translate-x-0' : '-translate-x-full'} 
-        md:translate-x-0 md:relative 
-        ${isCollapsed ? 'w-18' : 'w-60'} transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]
-      `}
-    >
+    
+      <Box
+      component="aside"
+      sx={{
+        position: { xs: "fixed", lg: "relative" },
+        top: 0,
+        left: 0,
+        height: "100%",
+        backgroundColor: "white",
+        borderRight: "1px solid #e5e7eb",
+        boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+        zIndex: 40,
+        display: "flex",
+        flexDirection: "column",
+        width: isCollapsed ? 72 : 240,
+        transform: isVisible ? "translateX(0)" : (isMobile ? "translateX(-100%)" : "translateX(0)"),
+        transition: "transform 0.3s ease-in-out, width 0.3s ease-in-out",
+      }}>
         {/* Encabezado */}
-        <div 
-          className="flex items-center px-2 border-b border-gray-100 relative" 
+        <Box 
           onClick={handleLogoClick}
-          style={{ cursor: 'pointer' }}
+          sx={{
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            px: "8px",
+            borderBottom: "1px solid #f3f4f6",
+            position: "relative",
+          }}  
           aria-label="Ir a la página de inicio"
         >
           <Tooltip title={isCollapsed ? "Ir a la página de inicio" : ""} placement="right" arrow>
             <img 
               src={isCollapsed ? "/logo_chico.png" : "/logo.jpg"}
-              alt="Gestión de viajes logo con camión naranja sobre fondo blanco, transmite profesionalismo y confianza"  
-              className={`min-h-12 my-3 mx-auto transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] w-full`} 
+              alt="Gestión de viajes logo con camión naranja sobre fondo blanco, transmite profesionalismo y confianza"
+              style={{
+                minHeight: "48px",
+                margin: "12px auto",
+                width: "100%",
+                transition: "all 0.3s ease-in-out",
+              }}
             />
           </Tooltip>
-        </div>
+        </Box>
 
         {/* Menú */}
-        <nav className="flex-1 overflow-y-auto py-3 px-0 min-h-0"> {/* Cambiado px-2 a px-0 */}
-            <div className="flex flex-col gap-1 p-1 items-center"> {/* Añadido items-center */}
+        <Box
+          component="nav"
+          sx={{
+            flex: 1,
+            overflowY: "auto",
+            py: 3,
+            px: 0,
+            minHeight: 0,
+          }}
+        >
+          <Stack
+            direction="column"
+            gap={1}
+            p={1}
+            alignItems="center"
+          >
               {menuItems.map((item, index) => (
                 <DropdownMenu
                   key={index}
@@ -108,29 +142,47 @@ export default function Sidebar({isVisible, setIsVisible}: SidebarProps) {
                   onToggle={() => setOpenSection(prev => prev === item.title ? null : item.title)}
                 />
               ))}
-            </div>
-        </nav>
+            </Stack>
+        </Box>
 
         {/* Botón de cerrar */}
         {!isMobile && (
-          <button
+          <Button
             onClick={toggleSidebar}
             aria-label={isCollapsed ? "Expandir menú" : "Contraer menú"}
-            className={`
-              absolute top-7  -right-3 bg-white p-1 rounded-full border border-gray-300
-              hover:bg-gray-100 transition-all shadow-sm z-10
-              ${isVisible ? 'hidden' : 'hidden md:block'}
-            `}
+            sx={{
+              position: "absolute",
+              top: "28px",
+              right: "-12px",
+              zIndex: 10,
+              backgroundColor: "white",
+              padding: "4px",
+              borderRadius: "50%",
+              width: "max-content",
+              border: "1px solid #d1d5db",
+              minWidth: "1px",
+              color: "#6b7280",
+              boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+              "&:hover": {
+                backgroundColor: "#f3f4f6",
+              },
+              transition: "background-color 0.2s ease-in-out, outline 0.2s ease-in-out",
+              display: isVisible ? 'none' : {xs: "none", lg: "flex"},
+              alignItems: "center",
+              justifyContent: "center",
+              "&.MuiTouchRipple-root": {
+                backgroundColor: "#f3f4f6",
+                borderRadius: "50%",
+              }
+            }}
           >
             {isCollapsed ? (
-                <ChevronRight className="size-4 text-gray-600" />
+                <ChevronRight style={{width: "16px", height: "16px", color: "#4a5565"}} />
             ) : (
-                <ChevronLeft className="size-4 text-gray-600" />
+                <ChevronLeft style={{width: "16px", height: "16px", color: "#4a5565"}} />
             )}
-          </button>
+          </Button>
         )}
-
-
-    </aside>
+    </Box>
   );
 }

@@ -3,6 +3,7 @@ import { Edit, Eye, Trash2 } from "lucide-react";
 import { ReactNode } from "react";
 import { TripDistributionType } from "./tripsDistribution/TripDistributionType";
 import { TripType } from "./trip/TripType";
+import LicenseValidate from "./vehicle/type-vehicle/LicenseValidate";
 
 type Field = {
   label: string;
@@ -20,9 +21,10 @@ type EntityCardProps = {
   onView?: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
+    licenseType?: string;
 };
 
-export default function EntityCard({ title, subtitle, icon, fields, onView, onEdit, onDelete ,headerEstado}: EntityCardProps) {
+export default function EntityCard({ title, subtitle, icon, fields, onView, onEdit, onDelete ,headerEstado, licenseType}: EntityCardProps) {
     return (
         <Card className="w-full border border-line rounded-lg overflow-hidden">
             <header className="p-5 bg-gray-100 w-full h-24 flex justify-between items-center border-b border-line">
@@ -46,6 +48,11 @@ export default function EntityCard({ title, subtitle, icon, fields, onView, onEd
                         <TripDistributionType tipo={headerEstado} />
                     </Box>
                 )}
+                {licenseType && (
+                    <Box sx={{ display: 'flex', gap: 1 , alignItems: 'center', flexDirection: 'column'}}>
+                        <LicenseValidate licenseType={licenseType} />
+                    </Box>
+                )}
             </header>
             <article>
                 <Grid container spacing={2} className="p-5 pb-0">
@@ -58,8 +65,7 @@ export default function EntityCard({ title, subtitle, icon, fields, onView, onEd
                                 <Typography
                                     variant="h6" 
                                     fontWeight={600} 
-                                    sx={{ fontSize: '0.90rem'}}
-                                    className="truncate"
+                                    sx={{ fontSize: '0.90rem', textOverflow: licenseType ? '' : 'ellipsis', overflow: 'hidden', whiteSpace: licenseType ? '' : 'nowrap' }}
                                 >
                                     {field.value}
                                 </Typography>

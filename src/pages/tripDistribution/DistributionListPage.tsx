@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SectionHeader } from "../../components/SectionHeader";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useMediaQuery} from "@mui/material";
+import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useMediaQuery} from "@mui/material";
 import LoadingState from "../../components/LoadingState";
 import MenuItem from "../../components/buttons/MenuItem";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
@@ -24,10 +24,14 @@ export default function DistributionListPage() {
   haceUnMes.setHours(0, 0, 0, 0);
   
   const {notify} = useNotify("Viaje");
-  const [rowsPerPage, setRowsPerPage] = useState<number>(5);
   const [page, setPage] = useState<number>(1);
   const [filterOpen, setFilterOpen] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState<BuscarViajeDistribucionDto>({fecha_desde: haceUnMes.toISOString()});
+    const theme = useTheme();
+    const isTablet = useMediaQuery(theme.breakpoints.between('md', 'lg'));
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const defaultRows = isMobile ? 5 : isTablet ? 8 : 5;
+    const [rowsPerPage, setRowsPerPage] = useState<number>(defaultRows);
 
   const [trips, setTrips] = useState<ViajeDistribucionDto[]>([]);
   const [totalItems, setTotalItems] = useState<number>(0);
@@ -128,9 +132,6 @@ export default function DistributionListPage() {
       return () => clearTimeout(timer);
   }, [fetchTrips, page]);
 
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
-
   const handleOpenDialog = (tripDistribution: ViajeDistribucionDto) => {
       setOpenDialog(true);
       setviajeDistribucionSelected(tripDistribution);
@@ -164,7 +165,6 @@ export default function DistributionListPage() {
     <>
         <SectionHeader
             title="Viajes de distribución"
-            description="Gestione y planifique viajes de distribución asociando remitos, costos y recursos de transporte."
             buttonText="Nuevo viaje"
             onAdd={() => navigate('/trips/distribution/form')}
         /> 
@@ -184,9 +184,9 @@ export default function DistributionListPage() {
         </div>
 
         {/*tabla*/}
-        {isMobile ? (
+        {isMobile || isTablet ? (
         <div className="grid gap-4  lg:grid-cols-2">
-            {trips.map(tripsDistribution => (
+            {trips.length > 0 ? trips.map(tripsDistribution => (
                 <EntityCard
                     key={tripsDistribution._id}
                     title={ tripsDistribution.nro_viaje ?? (tripsDistribution as any).numeroDeViaje}
@@ -202,15 +202,16 @@ export default function DistributionListPage() {
                     onView={() => navigate(`/trips/distribution/details/${tripsDistribution._id}`)}  
                     headerEstado={ tripsDistribution.estado}   
                 />
-            ))}
+            )):(
+                <div className="text-center text-gray-500 py-10">
+                    No se encontraron viajes en distribución.
+                </div>
+            )}
         </div>
             ):(          
-                <div className="bg-white rounded-lg" style={{
-                    boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
-                    border: "0.5px solid #C7C7C7",
-                }}>
-                    <TableContainer className=" text-sm rounded-lg">
-                        <Table aria-label="simple table">
+                <Box>
+                    <TableContainer component={Paper}>
+                        <Table aria-label="tabla de viajes de distribución">
                             <TableHead>
                                 <TableRow>
                                     <TableCell>Número</TableCell>
@@ -229,7 +230,7 @@ export default function DistributionListPage() {
                                         </TableCell>
                                     </TableRow>
                                 ) : trips.length === 0 ? (
-                                    <TableRow key="no-trips">
+                                    <TableRow key="no-trips" hover>
                                         <TableCell
                                             colSpan={6}
                                             sx={{textAlign: "center", paddingY: "26px",}}
@@ -239,7 +240,7 @@ export default function DistributionListPage() {
                                     </TableRow>
                                 ):(
                                     trips.map((tripDistribucion) => (
-                                        <TableRow key={tripDistribucion._id} className="hover:bg-gray-50 overflow-hidden">
+                                        <TableRow key={tripDistribucion._id} hover>
                                             <TableCell sx={{fontWeight: "bold", maxWidth: 150}} className="truncate">{ tripDistribucion.nro_viaje ?? (tripDistribucion as any).numeroDeViaje}</TableCell>
                                             <TableCell sx={{minWidth: 130}} >
                                                 <DoubleCell 
@@ -275,7 +276,7 @@ export default function DistributionListPage() {
                             </TableBody>
                         </Table>
                     </TableContainer>
-                </div>
+                </Box>
             )}
 
         <PaginationEntity

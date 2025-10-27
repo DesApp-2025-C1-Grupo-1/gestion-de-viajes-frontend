@@ -1,10 +1,10 @@
 import { Menu } from "lucide-react";
 import ButtonAdd from "./buttons/ButtonAdd";
 import { useOutletContext } from "react-router-dom";
+import { Box, Button, Typography } from "@mui/material";
 
 interface SectionHeaderProps {
   title: string;
-  description?: string;
   buttonText?: string;
   onAdd?: () => void;
 }
@@ -15,7 +15,6 @@ interface OutletContext {
 
 export const SectionHeader = ({
   title,
-  description,
   buttonText,
   onAdd
 }: SectionHeaderProps) => {
@@ -23,33 +22,50 @@ export const SectionHeader = ({
   const renderButton = buttonText?.trim() !== "" && onAdd;
 
   return (
-    <section className="flex flex-col gap-4 sm:flex-row items-center justify-between md:pt-2 pb-3 sm:pb-5">
-       
-      <div className="flex items-center gap-2 w-full">
+    <Box sx={{
+      display: "flex",
+      flexDirection: { xs: "column", sm: "row" },
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: 2,
+      py: 1,
+      pb: 3,
+      width: "100%",
+    }}
+    >
+      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", gap: 2 , width: "100%"}}>
         {/* Botón hamburguesa solo en mobile */}
-        
-        <div className="flex flex-col items-start gap-2 w-full md:ml-2"> 
-          <div className="flex gap-3 items-center">
-            <button
-              onClick={toggleSidebar}
-              className="text-gray-600 border border-gray-400 bg-[#F6F7FB] rounded-md p-1  md:hidden"
-            >
-              <Menu className="size-6" />
-            </button>
-            <h1 className="text-2xl font-semibold">{title}</h1>
-          </div>
 
-          {description && <p className="font-medium text-sm">{description}</p>}
-        </div>
-      </div>
+        <Box sx={{ display: "flex", gap: 2, alignItems: "center", justifyContent: "flex-start"}}>
+          <Button
+            onClick={toggleSidebar}
+            aria-label="Abrir menú lateral"
+            sx={{
+              color: "#4a5565",
+              border: "1px solid #99a1af",
+              backgroundColor: "#F6F7FB",
+              borderRadius: "4px",
+              padding: "4px",
+              minWidth: "auto",
+              "&:hover": { backgroundColor: "#e2e8f0" },
+              transition: "background-color 0.2s ease-in-out, outline 0.2s ease-in-out",
+              display: { lg: "none" },
+            }}
+          >
+            <Menu className="size-6" />
+          </Button>
+          <Typography variant="h5" fontWeight={700} sx={{}}>{title}</Typography>
+        </Box>
+      </Box>
       {renderButton &&
-        <ButtonAdd
-          title={buttonText as string}
-          onClick={onAdd}
-          aria-label={`Añadir nuevo ${title.toLowerCase()}`}
-        />
+        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", width: "100%"}}>
+          <ButtonAdd
+            title={buttonText as string}
+            onClick={onAdd}
+            aria-label={`Añadir nuevo ${title.toLowerCase()}`}
+          />
+        </Box>
       }
-      
-    </section>
+    </Box>
   );
 };

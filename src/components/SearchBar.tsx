@@ -11,7 +11,7 @@ interface SearchBarProps {
 export default function SearchBar({searchQuery, setSearchQuery, children, placeholder}: SearchBarProps) {
 
     return(
-        <div className="flex flex-col sm:flex-row justify-between gap-2 mb-5">
+        <div className="flex flex-col sm:flex-row justify-between mb-5">
             <TextField
                 id="search"
                 name="search"
@@ -23,15 +23,19 @@ export default function SearchBar({searchQuery, setSearchQuery, children, placeh
                 InputProps={{
                     startAdornment: (
                     <InputAdornment position="start">
-                        <SearchIcon className="size-4"/>
+                        <SearchIcon className="size-5"/>
                     </InputAdornment>
                     ),
                     style: {
-                        fontSize: "0.82rem", 
-                        height: 40
+                        fontSize: "0.9rem",
+                        padding: "5px 12px",
+                        borderRadius: 8,
                     },
                 }}
-                className="w-full sm:w-full sm:max-w-80 "
+                sx={{
+                    width: {xs:"100%", md: "350px"},
+                    
+                }}
             />
             {children}
         </div>

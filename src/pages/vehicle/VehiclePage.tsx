@@ -1,4 +1,4 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery, useTheme } from "@mui/material";
 import { SectionHeader } from "../../components/SectionHeader";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -19,13 +19,15 @@ export default function VehiclePage() {
     const {data, isLoading, refetch} = useVehiculoControllerFindAll()
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);
-    const [rowsPerPage, setRowsPerPage] = useState<number>(5);
     const [openDialog, setOpenDialog] = useState(false);
     const [vehicleSelected, setVehicleSelected] = useState<VehiculoDto>();
     const vehicles = data?.data || [];
     const debouncedQuery = useDebouncedValue(searchQuery, 500);
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down("lg")); // <1280px
+    const isTablet = useMediaQuery(theme.breakpoints.between('md', 'lg'));
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const defaultRows = isMobile ? 5 : isTablet ? 8 : 5;
+    const [rowsPerPage, setRowsPerPage] = useState<number>(defaultRows);
 
     const handleOpenDialog = (vehicle : VehiculoDto) => {
         setOpenDialog(true);
@@ -69,7 +71,6 @@ export default function VehiclePage() {
             <div>
                 <SectionHeader 
                     title="Flota de vehículos"
-                    description="Registre y gestione los vehículos asignados a las empresas transportistas."
                     buttonText="Nuevo vehículo"
                     onAdd={() => navigate("/vehicles/form")}
                 />
@@ -78,9 +79,9 @@ export default function VehiclePage() {
                 <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} placeholder="Buscar vehículo por modelo o patente" />
             </div>
 
-            {isMobile ? (
+            {isTablet || isMobile ? (
                 <div className="grid gap-4  lg:grid-cols-2">
-                    {paginated.map(vehicle => (
+                    {paginated.length > 0 ? paginated.map(vehicle => (
                         <EntityCard
                             key={vehicle._id}
                             title={vehicle.patente}
@@ -96,21 +97,16 @@ export default function VehiclePage() {
                             onEdit={() => navigate(`/vehicles/edit/${vehicle._id}`)}
                             onView={() => navigate(`/vehicles/details/${vehicle._id}`)}
                         />
-                    ))}
+                    )) : (
+                        <div className="text-center text-gray-500 py-10">
+                            No se encontraron vehículos con el modelo o patente buscado.
+                        </div>
+                    )}
                 </div>
             ) : (
-                <div 
-                    className="bg-white rounded-lg "
-                    style={{
-                        boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
-                        border: "0.5px solid #C7C7C7",
-                    }}
-                >         
-                    <TableContainer className="text-sm rounded-lg">
-                        <Table 
-                            aria-label="simple table"
-                            
-                        >
+                <Box>         
+                    <TableContainer component={Paper}>
+                        <Table aria-label="tabla de vehículos">
                             <TableHead >
                                 <TableRow>
                                     <TableCell>Patente</TableCell>
@@ -147,10 +143,7 @@ export default function VehiclePage() {
                                     </TableRow>
                                 ) : (
                                     paginated.map((vehicle) => (
-                                        <TableRow 
-                                            key={vehicle._id} 
-                                            className="hover:bg-gray-50 overflow-hidden"
-                                        >
+                                        <TableRow key={vehicle._id} hover>
                                             <TableCell sx={{fontWeight: "bold"}}>{vehicle.patente}</TableCell>
                                             <TableCell>{vehicle.modelo}</TableCell>
                                             <TableCell>{vehicle.año}</TableCell>
@@ -177,7 +170,7 @@ export default function VehiclePage() {
                             </TableBody>
                         </Table>
                     </TableContainer>
-                </div>
+                </Box>
             )}
             
 

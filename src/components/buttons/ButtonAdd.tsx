@@ -1,4 +1,4 @@
-import { Button, SxProps } from "@mui/material";
+import { Button, SxProps, Typography } from "@mui/material";
 import { Plus } from "lucide-react";
 
 interface ButtonAddProps {
@@ -22,11 +22,11 @@ export default function ButtonAdd({ title, onClick , sx}: ButtonAddProps) {
                 boxShadow: "none",
                 borderRadius: "8px",
                 padding: "8px 16px",
-                ...sx
+                ...sx,
+                width: { xs: "100%", sm: "max-content" },
             }}
-            className="w-full sm:max-w-max"
         >
-            {title}
+             {title}
         </Button>
     )
     

@@ -7,15 +7,15 @@ interface MenuItemProps{
     handleOpenDialog:() => void;
     id:string;
     children?: React.ReactNode;
-    childrenAdicional?: React.ReactNode;
     handleOpenDetails?: () => void;
     handleOpenAdicional?: () => void;
     titleItem?: string;
     titleItemAdicional?: string;
     module?:string;
+    handleEditModal?: () => void;
 }
 
-export default function MenuItem({handleOpenDialog, id, children, childrenAdicional, handleOpenDetails, handleOpenAdicional, titleItemAdicional, titleItem = "Detalles", module}: MenuItemProps){
+export default function MenuItem({handleOpenDialog, id, children, handleOpenDetails, handleEditModal, handleOpenAdicional, titleItemAdicional, titleItem = "Detalles", module}: MenuItemProps){
     const navigate = useNavigate();
     const location = useLocation();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -68,8 +68,10 @@ export default function MenuItem({handleOpenDialog, id, children, childrenAdicio
                 <List dense disablePadding>
                     <ListItemButton
                         onClick={() => {
-                        navigate(`/${resolvedModule}/edit/${id ?? ""}`);
-                        handleClose();
+                            {handleEditModal ? handleEditModal() :
+                                navigate(`/${resolvedModule}/edit/${id ?? ""}`);
+                            }
+                            handleClose();
                         }}
                         sx={{ gap: 1, px: 2 }}
                     >

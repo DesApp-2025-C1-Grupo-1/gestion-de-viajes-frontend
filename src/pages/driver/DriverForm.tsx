@@ -54,7 +54,6 @@ export default function DriverFormPage(){
         <>
             <SectionHeader
                 title={isEditing ? "Editar chofer" : "Registrar chofer"}
-                description={isEditing ? "Actualizá los datos del chofer registrado." : "Completá el formulario para dar de alta un chofer."}
             />
             
             <Paper sx={{ padding:4, mx:'auto', width:"100%", borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "0.5px solid #C7C7C7"}} >

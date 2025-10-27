@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { MenuItem, Pagination, Select, SelectChangeEvent, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery, useTheme } from "@mui/material";
 import MenuItemDialog from "../../components/buttons/MenuItem";
 import { SectionHeader } from "../../components/SectionHeader";
 import { useNavigate } from "react-router-dom";
@@ -24,9 +24,11 @@ export default function CompanyPage(){
     const empresas = data?.data || [];
     const debouncedQuery = useDebouncedValue(searchQuery, 500);
 
-    const [rowsPerPage, setRowsPerPage] = useState<number>(5);
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down("lg")); 
+    const isTablet = useMediaQuery(theme.breakpoints.between('md', 'lg'));
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const defaultRows = isMobile ? 5 : isTablet ? 8 : 5;
+    const [rowsPerPage, setRowsPerPage] = useState<number>(defaultRows);
 
     const handleOpenDialog = (company: EmpresaDto) => {
         setOpenDialog(true);
@@ -66,20 +68,18 @@ export default function CompanyPage(){
 
     return(
         <>
-            <div> 
-                <SectionHeader
-                    title="Empresas transportistas"
-                    description="Gestione las empresas habilitadas para operar en el sistema logístico."
-                    buttonText="Nueva empresa"
-                    onAdd={() => navigate("/company/create")}
-                /> 
-                <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} placeholder="Buscar por nombre"></SearchBar>
-            </div>
+            <SectionHeader
+                title="Empresas transportistas"
+                buttonText="Nueva empresa"
+                onAdd={() => navigate("/company/create")}
+            /> 
+            <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} placeholder="Buscar por nombre"/>
+
             {/*tabla*/}
 
-            {isMobile ? (
+            {isMobile || isTablet ? (
                 <div className="grid gap-4  lg:grid-cols-2">
-                    {paginated.map(company => (
+                    {paginated.length > 0 ? paginated.map(company => (
                         <EntityCard
                             key={company._id}
                             title={company.nombre_comercial}
@@ -94,27 +94,26 @@ export default function CompanyPage(){
                             onEdit={() => navigate(`/companies/edit/${company._id}`)}   
                             onView={() => navigate(`/companies/details/${company._id}`)}         
                         />
-                    ))}
+                    )):(
+                        <div className="text-center text-gray-500 py-10">
+                            No se encontraron empresas con el nombre buscado.
+                        </div>
+                    )}
                 </div>
             ):(           
-                <div className="bg-white rounded-lg" style={{
-                    boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
-                    border: "0.5px solid #C7C7C7",
-                }}>
-
-                    <TableContainer className=" text-sm rounded-lg">
-                        <Table aria-label="simple table">
+                <Box >
+                    <TableContainer component={Paper}>
+                        <Table aria-label="tabla de empresas">
                             <TableHead >
-                                
-                                <TableRow>
+                                <TableRow >
                                     <TableCell>Razón social</TableCell>
                                     <TableCell>CUIT/RUT</TableCell>
-                                    <TableCell sx={{minWidth: 200}}>Domicilio fiscal</TableCell>
+                                    <TableCell sx={{ minWidth: 200 }}>Domicilio fiscal</TableCell>
                                     <TableCell>Contacto</TableCell>
-                                    <TableCell align="center" sx={{width: 72}}>Acciones</TableCell>
+                                    <TableCell sx={{ width: 72 }}>Acciones</TableCell>
                                 </TableRow>
                             </TableHead>
-                            <TableBody>
+                            <TableBody >
                                 {isLoading ? (
                                     <TableRow key="loading">
                                         <TableCell colSpan={7} >
@@ -122,7 +121,7 @@ export default function CompanyPage(){
                                         </TableCell>
                                     </TableRow>
                                 ) : paginated.length === 0 ? (
-                                    <TableRow key="no-companies">
+                                    <TableRow key="no-companies" hover>
                                         <TableCell 
                                             colSpan={6} 
                                             sx={{textAlign: "center", paddingY: "26px",}}
@@ -132,16 +131,16 @@ export default function CompanyPage(){
                                     </TableRow>
                                 ):(
                                     paginated.map((company) => (
-                                        <TableRow key={company._id} className="hover:bg-gray-50 overflow-hidden">
+                                        <TableRow key={company._id} hover >
                                             <TableCell sx={{fontWeight: "bold"}}>{company.razon_social}</TableCell>
                                             <TableCell>{company.cuit}</TableCell>
                                             <TableCell>{`${company.direccion?.ciudad}, ${company.direccion?.calle} ${company.direccion?.numero}`}</TableCell>
                                             <TableCell>{company.contacto?.email}</TableCell>
-                                            <TableCell sx={{ verticalAlign: "middle"}}>
+                                            <TableCell sx={{ verticalAlign: "middle" }} >
                                                 <MenuItemDialog  
-                                                        handleOpenDialog={() => handleOpenDialog(company)}
-                                                        handleOpenDetails={() => navigate(`/companies/details/${company._id}`)}
-                                                        id={company._id}                                                      
+                                                    handleOpenDialog={() => handleOpenDialog(company)}
+                                                    handleOpenDetails={() => navigate(`/companies/details/${company._id}`)}
+                                                    id={company._id}         
                                                 >
                                                     <Eye className="text-gray-500 hover:text-gray-700 size-4" />
                                                 </MenuItemDialog>
@@ -152,7 +151,7 @@ export default function CompanyPage(){
                             </TableBody>
                         </Table>
                     </TableContainer>
-                </div>
+                </Box>
             )}
 
             <PaginationEntity

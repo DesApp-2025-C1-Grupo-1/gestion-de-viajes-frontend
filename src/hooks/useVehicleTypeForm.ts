@@ -4,6 +4,7 @@ import {
   tipoVehiculoControllerCreate,
   tipoVehiculoControllerRemove,
   tipoVehiculoControllerUpdate,
+  TipoVehiculoDto,
   useTipoVehiculoControllerFindAll
 } from "../api/generated";
 import { CreateTipoVehiculoForm, TipoVehiculoForm, UpdateTipoVehiculoForm } from "../api/schemas";
@@ -12,14 +13,15 @@ export const useTipoVehiculo = () => {
   const { notify } = useNotify("Tipo de vehículo", "male");
   const { data, isLoading, refetch } = useTipoVehiculoControllerFindAll();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [currentItem, setCurrentItem] = useState<TipoVehiculoForm | null>(null);
-  const [itemToDelete, setItemToDelete] = useState<TipoVehiculoForm | null>(null);
+  const [currentItem, setCurrentItem] = useState<TipoVehiculoDto | null>(null);
+  const [itemToDelete, setItemToDelete] = useState<TipoVehiculoDto | null>(null);
 
   const tiposVehiculo = data?.data || [];
 
   const openDialog = useCallback((item?: TipoVehiculoForm) => {
     setCurrentItem(item || null);
     setIsDialogOpen(true);
+    console.log("hola")
   }, []);
 
   const closeDialog = useCallback(() => {
@@ -90,6 +92,7 @@ export const useTipoVehiculo = () => {
     handleCreate,
     handleUpdate,
     handleDelete,
+    setCurrentItem,
     setItemToDelete
   };
 };

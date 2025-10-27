@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogTitle, TextField, DialogActions, Button, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { Dialog, DialogContent, DialogTitle, TextField, DialogActions, Button, FormControl, InputLabel, MenuItem, Select, Grid, Typography } from "@mui/material";
 import { TipoVehiculoDto } from "../../../api/generated";
 import { useForm } from "react-hook-form";
 import { CreateTipoVehiculoForm, createTipoVehiculoSchema, tipoVehiculoSchema } from "../../../api/schemas";
@@ -51,60 +51,64 @@ export const VehicleTypeDialog = ({ open, onClose, onSubmit, editingType }: Vehi
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth sx={{ "& .MuiDialog-paper": { borderRadius: "0.5rem", padding: "12px 8px "} }}>
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth sx={{ "& .MuiDialog-paper": { borderRadius: "0.5rem"}}}>
       <form onSubmit={handleSubmit(handleFormSubmit)}>
-        <DialogTitle sx={{ color: "#5A5A65" , fontWeight: 600 , fontSize: "1.4rem"}}>
+        <DialogTitle sx={{ color: "#5A5A65" , fontWeight: 600 , fontSize: "1.4rem", width: "100%"}}>
           {editingType ? "Editar Tipo de Vehículo" : "Nuevo Tipo de Vehículo"}
         </DialogTitle>
-        <DialogContent sx={{ gap: 2, display: "flex", flexDirection: "column" }}>
-          <TextField
-            id="nombre"
-            label="Nombre"
-            {...register("nombre")}
-            error={!!errors.nombre}
-            helperText={errors.nombre?.message}
-            placeholder="Ej: Camión Articulado"
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            InputProps={{
-              style: { height: "55px" },
-            }}
-          />
-          <TextField
-            id="descripcion"
-            label="Descripción"
-            {...register("descripcion")}
-            error={!!errors.descripcion}
-            helperText={errors.descripcion?.message}
-            placeholder="Descripción del tipo de vehículo"
-            fullWidth
-            multiline
-            rows={3}
-            margin="normal"
-            variant="outlined"
-            InputProps={{
-              style: { height: "100px"},
-            }}
-          />
-
-          <TextField
-            select
-            label="Licencia base"
-            {...register("licencia_permitida")}
-            value={watch("licencia_permitida")} 
-            error={!!errors.licencia_permitida}
-            helperText={errors.licencia_permitida?.message}
-          >
-            {tipoLicenciaSchema.options.map((lic) => (
-              <MenuItem key={lic} value={lic}>
-                {lic}
-              </MenuItem>
-            ))}
-          </TextField>
-        
+        <DialogContent sx={{ gap: 2, display: "flex", flexDirection: "column", mt:2 }}>
+          <Grid container spacing={2}> 
+            <Grid item xs={12} > 
+              <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Nombre</Typography>
+              <TextField
+                id="nombre"
+                {...register("nombre")}
+                error={!!errors.nombre}
+                helperText={errors.nombre?.message}
+                placeholder="Ej: Camión Articulado"
+                fullWidth
+                className="inside-paper"
+              />
+            </Grid>
+            <Grid item xs={12} > 
+              <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Descripción</Typography>
+              <TextField
+                id="descripcion"
+                {...register("descripcion")}
+                error={!!errors.descripcion}
+                helperText={errors.descripcion?.message}
+                placeholder="Descripción del tipo de vehículo"
+                fullWidth
+                className="inside-paper"
+                multiline
+                rows={3}
+                variant="outlined"
+                InputProps={{
+                  style: { height: "100px"},
+                }}
+              />
+            </Grid> 
+            <Grid item xs={12} > 
+              <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb:1}}>Licencia base</Typography>
+              <TextField
+                select
+                {...register("licencia_permitida")}
+                value={watch("licencia_permitida")} 
+                error={!!errors.licencia_permitida}
+                fullWidth
+                className="inside-paper"
+                helperText={errors.licencia_permitida?.message}
+              >
+                {tipoLicenciaSchema.options.map((lic) => (
+                  <MenuItem key={lic} value={lic}>
+                    {lic}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+          </Grid>
         </DialogContent>
-        <DialogActions>
+        <DialogActions sx={{px: 3, pb: 2}}>
           <Button onClick={onClose} variant="outlined">
             Cancelar
           </Button>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import SearchBar from "../../components/SearchBar";
 import { SectionHeader } from "../../components/SectionHeader";
-import { Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery} from "@mui/material";
+import { Box, Pagination, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery} from "@mui/material";
 import LoadingState from "../../components/LoadingState";
 import MenuItem from "../../components/buttons/MenuItem";
 import { useNavigate } from "react-router-dom";
@@ -23,21 +23,17 @@ export default function DepositPage() {
     const {data: deposits, isLoading, refetch} = useDepositoControllerFindAll();
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);
-    const [rowsPerPage, setRowsPerPage] = useState<number>(5);
     const [openDialog, setOpenDialog] = useState<boolean>(false);
-    const [openDetailsDialog, setOpenDetailsDialog] = useState<boolean>(false);
     const [depositSelected, setDepositSelected] = useState<DepositoDto>();
     const debouncedQuery = useDebouncedValue(searchQuery, 500);
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down("lg")); // <1280px
+    const isTablet = useMediaQuery(theme.breakpoints.between('md', 'lg'));
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const defaultRows = isMobile ? 5 : isTablet ? 8 : 5;
+    const [rowsPerPage, setRowsPerPage] = useState<number>(defaultRows);
 
     const handleOpenDialog = (deposit : DepositoDto) => {
         setOpenDialog(true);
-        setDepositSelected(deposit);
-    };
-
-    const handleOpenDetails = (deposit: DepositoDto) => {
-        setOpenDetailsDialog(true);
         setDepositSelected(deposit);
     };
 
@@ -81,7 +77,6 @@ export default function DepositPage() {
             <div>
                 <SectionHeader 
                     title="Red de depósitos"
-                    description="Administre la red de depósitos del sistema logístico."
                     buttonText="Nuevo depósito"
                     onAdd={() => navigate("/depots/form")}
                 />
@@ -94,9 +89,9 @@ export default function DepositPage() {
             </div>
 
             {/*tabla*/}
-            {isMobile ? (
+            {isMobile || isTablet ? (
                 <div className="grid gap-4  lg:grid-cols-2">
-                    {paginated.map(deposit => (
+                    {paginated.length > 0 ? paginated.map(deposit => (
                         <EntityCard
                             key={deposit._id}
                             title={`${deposit.nombre}`}
@@ -113,22 +108,21 @@ export default function DepositPage() {
                             onEdit={() => navigate(`/depots/edit/${deposit._id}`)}
                             onView={() => navigate(`/depots/details/${deposit._id}`)}
                         />
-                    ))}
+                    )):(
+                        <div className="text-center text-gray-500 py-10">
+                            No se encontraron depósitos con el nombre buscado.
+                        </div>
+                    )}
                 </div>
             ) : (
-                <div className="bg-white rounded-lg" style={{
-                    boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
-                    border: "0.5px solid #C7C7C7",
-                }}
-                >
-                    <TableContainer className="h-full text-sm rounded-lg">
-                        <Table aria-label="simple table">
+                <Box>
+                    <TableContainer component={Paper}>
+                        <Table aria-label="tabla de depósitos">
                             <TableHead>
                                 <TableRow>
                                     <TableCell>Nombre</TableCell>
                                     <TableCell>Ciudad</TableCell>
                                     <TableCell>Horario</TableCell>
-                                    <TableCell>Contacto</TableCell>
                                     <TableCell>Teléfono</TableCell>
                                     <TableCell align="center" sx={{width:72}}>Acciones</TableCell>
                                 </TableRow>
@@ -145,6 +139,7 @@ export default function DepositPage() {
                                 ) : paginated.length === 0 ? (
                                     <TableRow
                                         key="no-deposits" 
+                                        hover
                                     >
                                         <TableCell 
                                             colSpan={7} 
@@ -158,14 +153,10 @@ export default function DepositPage() {
                                     </TableRow>
                                 ) : (
                                     paginated.map((deposit) => (
-                                        <TableRow 
-                                            key={deposit._id} 
-                                            className="hover:bg-gray-50 overflow-hidden"
-                                        >
+                                        <TableRow key={deposit._id} hover>
                                             <TableCell sx={{fontWeight: "bold"}}>{deposit.nombre}</TableCell>
                                             <TableCell>{deposit.direccion?.ciudad}</TableCell>
                                             <TableCell>{deposit.horario_entrada} - {deposit.horario_salida}</TableCell>
-                                            <TableCell>{deposit.contacto?.nombre}</TableCell>
                                             <TableCell>{formatTelefono(deposit.contacto?.telefono)}</TableCell>
                                             <TableCell sx={{ verticalAlign: "middle"}}>
                                                 <MenuItem  handleOpenDialog={() => handleOpenDialog(deposit)}
@@ -184,7 +175,7 @@ export default function DepositPage() {
                             </TableBody>
                         </Table>
                     </TableContainer>
-                </div>
+                </Box>
             )}
 
             {/* Paginación */}

@@ -10,7 +10,7 @@ import {  Building2, Calendar, Clock, Eye, MapPinned, User} from "lucide-react";
 import { DoubleCell } from "../../components/DoubleCell";
 import EntityCard from "../../components/EntityCard";
 import PaginationEntity from "../../components/PaginationEntity";
-import { viajeDistribucionControllerRemove, ViajeDistribucionDto, EmpresaDto, VehiculoDto, ChoferDto, empresaControllerFindAll, vehiculoControllerFindAll, choferControllerFindAll, DepositoDto, depositoControllerFindAll, BuscarViajeDistribucionDto, useViajeDistribucionControllerBuscar, RemitoDto, remitosControllerGetRemitos } from '../../api/generated';
+import { viajeDistribucionControllerRemove, ViajeDistribucionDto, EmpresaDto, VehiculoDto, ChoferDto, empresaControllerFindAll, vehiculoControllerFindAll, choferControllerFindAll, DepositoDto, depositoControllerFindAll, BuscarViajeDistribucionDto, useViajeDistribucionControllerBuscar, RemitoDto, remitosControllerGetRemitos, TarifaDto, tarifasControllerGetTarifas } from '../../api/generated';
 import { useTheme } from "@mui/material/styles";
 import { TripDistributionType } from "../../components/tripsDistribution/TripDistributionType";
 import DistributionFilters from "../../components/DistributionFilters";
@@ -47,6 +47,7 @@ export default function DistributionListPage() {
   const [choferes, setChoferes] = useState<ChoferDto[]>([]);
   const [depositos, setDepositos] = useState<DepositoDto[]>([]);
   const [remitos, setRemitos] = useState<RemitoDto[]>([]);
+  const [tarifas, setTarifas] = useState<TarifaDto[]>([]);
   const [loadingOptions, setLoadingOptions] = useState({
       empresas: false,
       vehiculos: false,
@@ -78,6 +79,11 @@ export default function DistributionListPage() {
           setLoadingOptions(prev => ({...prev, remitos: true}));
           const resRemitos = await remitosControllerGetRemitos();
           setRemitos(resRemitos.data.data);
+
+          setLoadingOptions(prev => ({...prev, tarifas: true}));
+          const resTarifas = await tarifasControllerGetTarifas();
+          setTarifas(resTarifas.data);
+          console.log("Tarifas cargadas:", resTarifas.data);
 
       } catch (error) {
           notify("error", "Error al cargar opciones de filtros");
@@ -171,113 +177,114 @@ export default function DistributionListPage() {
 
         <div className="flex justify-around">
             <DistributionFilters 
-            filterOpen={filterOpen} 
-            setFilterOpen={setFilterOpen} 
-            onApply={handleApplyFilters}
-            empresas={empresas}
-            vehiculos={vehiculos}
-            choferes={choferes}
-            depositos={depositos}
-            remitos={remitos}
-            loadingOptions={loadingOptions}
+                filterOpen={filterOpen} 
+                setFilterOpen={setFilterOpen} 
+                onApply={handleApplyFilters}
+                empresas={empresas}
+                vehiculos={vehiculos}
+                choferes={choferes}
+                depositos={depositos}
+                remitos={remitos}
+                tarifas={tarifas}
+                loadingOptions={loadingOptions}
             />
         </div>
 
         {/*tabla*/}
         {isMobile || isTablet ? (
-        <div className="grid gap-4  lg:grid-cols-2">
-            {trips.length > 0 ? trips.map(tripsDistribution => (
-                <EntityCard
-                    key={tripsDistribution._id}
-                    title={ tripsDistribution.nro_viaje ?? (tripsDistribution as any).numeroDeViaje}
-                    subtitle={`${new Date(tripsDistribution.fecha_inicio).toLocaleDateString()} - ${new Date(tripsDistribution.fecha_inicio).toLocaleTimeString()} `}
-                    icon={<MapPinned size={24}/>}
-                    fields={[
-                        { label: "Transportista", value: `${tripsDistribution.transportista.nombre_comercial}`},
-                        { label: "Chofer", value: tripsDistribution.chofer.nombre + ", " + tripsDistribution.chofer.apellido, isLong: true },
-                        { label: "Deposito de origen", value: `${tripsDistribution.origen.nombre}`, extend: true },
-                    ]}
-                    onDelete={() => handleOpenDialog(tripsDistribution)}
-                    onEdit={() => navigate(`/trips/distribution/edit/${tripsDistribution._id}`)}  
-                    onView={() => navigate(`/trips/distribution/details/${tripsDistribution._id}`)}  
-                    headerEstado={ tripsDistribution.estado}   
-                />
-            )):(
-                <div className="text-center text-gray-500 py-10">
-                    No se encontraron viajes en distribución.
-                </div>
-            )}
-        </div>
-            ):(          
-                <Box>
-                    <TableContainer component={Paper}>
-                        <Table aria-label="tabla de viajes de distribución">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>Número</TableCell>
-                                    <TableCell>Itinerario</TableCell>
-                                    <TableCell>Deposito de Origen</TableCell>
-                                    <TableCell>Transportista</TableCell>
-                                    <TableCell align="center" sx={{verticalAlign: 'middle',textAlign: 'center'}}>Estado actual</TableCell>
-                                    <TableCell align="center" sx={{width: 72}}>Acciones</TableCell> 
+            <div className="grid gap-4  lg:grid-cols-2">
+                {trips.length > 0 ? trips.map(tripsDistribution => (
+                    <EntityCard
+                        key={tripsDistribution._id}
+                        title={ tripsDistribution.nro_viaje ?? (tripsDistribution as any).numeroDeViaje}
+                        subtitle={`${new Date(tripsDistribution.fecha_inicio).toLocaleDateString()} - ${new Date(tripsDistribution.fecha_inicio).toLocaleTimeString()} `}
+                        icon={<MapPinned size={24}/>}
+                        fields={[
+                            { label: "Transportista", value: `${tripsDistribution.transportista.nombre_comercial}`},
+                            { label: "Chofer", value: tripsDistribution.chofer.nombre + ", " + tripsDistribution.chofer.apellido, isLong: true },
+                            { label: "Deposito de origen", value: `${tripsDistribution.origen.nombre}`, extend: true },
+                        ]}
+                        onDelete={() => handleOpenDialog(tripsDistribution)}
+                        onEdit={() => navigate(`/trips/distribution/edit/${tripsDistribution._id}`)}  
+                        onView={() => navigate(`/trips/distribution/details/${tripsDistribution._id}`)}  
+                        headerEstado={ tripsDistribution.estado}   
+                    />
+                )):(
+                    <div className="text-center text-gray-500 py-10">
+                        No se encontraron viajes en distribución.
+                    </div>
+                )}
+            </div>
+        ):(          
+            <Box>
+                <TableContainer component={Paper}>
+                    <Table aria-label="tabla de viajes de distribución">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Número</TableCell>
+                                <TableCell>Itinerario</TableCell>
+                                <TableCell>Deposito de Origen</TableCell>
+                                <TableCell>Transportista</TableCell>
+                                <TableCell align="center" sx={{verticalAlign: 'middle',textAlign: 'center'}}>Estado actual</TableCell>
+                                <TableCell align="center" sx={{width: 72}}>Acciones</TableCell> 
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {isLoading ? (
+                                <TableRow key="loading">
+                                    <TableCell colSpan={7} >
+                                        <LoadingState title="viajes de distribución"/>
+                                    </TableCell>
                                 </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {isLoading ? (
-                                    <TableRow key="loading">
-                                        <TableCell colSpan={7} >
-                                            <LoadingState title="viajes de distribución"/>
+                            ) : trips.length === 0 ? (
+                                <TableRow key="no-trips" hover>
+                                    <TableCell
+                                        colSpan={6}
+                                        sx={{textAlign: "center", paddingY: "26px",}}
+                                    >
+                                        No se encontraron viajes en distribución
+                                    </TableCell>
+                                </TableRow>
+                            ):(
+                                trips.map((tripDistribucion) => (
+                                    <TableRow key={tripDistribucion._id} hover>
+                                        <TableCell sx={{fontWeight: "bold", maxWidth: 150}} className="truncate">{ tripDistribucion.nro_viaje ?? (tripDistribucion as any).numeroDeViaje}</TableCell>
+                                        <TableCell sx={{minWidth: 130}} >
+                                            <DoubleCell 
+                                                primarySection={`${new Date(tripDistribucion.fecha_inicio).toLocaleDateString()}`} 
+                                                secondarySection={`${new Date(tripDistribucion.fecha_inicio).toLocaleTimeString()}`}
+                                                primaryIcon={<Calendar size={18} color="#AFB3B9"/>}
+                                                secondaryIcon={<Clock size={18} color="#AFB3B9"/>}
+                                            />
+                                        </TableCell>
+                                        <TableCell>{`${tripDistribucion.origen.nombre}`}</TableCell>
+                                        <TableCell sx={{minWidth: 150}} >
+                                            <DoubleCell 
+                                                primarySection={`${tripDistribucion.transportista.nombre_comercial}`} 
+                                                secondarySection={`${tripDistribucion.chofer.nombre}, ${tripDistribucion.chofer.apellido}`}
+                                                primaryIcon={<Building2 size={18} color="#AFB3B9"/>}
+                                                secondaryIcon={<User size={18} color="#AFB3B9"/>}
+                                            />
+                                        </TableCell>
+                                        <TableCell align="center"><TripDistributionType tipo={tripDistribucion.estado}/></TableCell>
+                                        <TableCell sx={{ verticalAlign: "middle"}}>
+                                            <MenuItem  
+                                                module="trips/distribution"
+                                                handleOpenDialog={() => handleOpenDialog(tripDistribucion)}
+                                                handleOpenDetails={() => navigate(`/trips/distribution/details/${tripDistribucion._id}`)}
+                                                id={tripDistribucion._id}
+                                            >
+                                                <Eye className="text-gray-500 hover:text-gray-700 size-4" />
+                                            </MenuItem>
                                         </TableCell>
                                     </TableRow>
-                                ) : trips.length === 0 ? (
-                                    <TableRow key="no-trips" hover>
-                                        <TableCell
-                                            colSpan={6}
-                                            sx={{textAlign: "center", paddingY: "26px",}}
-                                        >
-                                            No se encontraron viajes en distribución
-                                        </TableCell>
-                                    </TableRow>
-                                ):(
-                                    trips.map((tripDistribucion) => (
-                                        <TableRow key={tripDistribucion._id} hover>
-                                            <TableCell sx={{fontWeight: "bold", maxWidth: 150}} className="truncate">{ tripDistribucion.nro_viaje ?? (tripDistribucion as any).numeroDeViaje}</TableCell>
-                                            <TableCell sx={{minWidth: 130}} >
-                                                <DoubleCell 
-                                                    primarySection={`${new Date(tripDistribucion.fecha_inicio).toLocaleDateString()}`} 
-                                                    secondarySection={`${new Date(tripDistribucion.fecha_inicio).toLocaleTimeString()}`}
-                                                    primaryIcon={<Calendar size={18} color="#AFB3B9"/>}
-                                                    secondaryIcon={<Clock size={18} color="#AFB3B9"/>}
-                                                />
-                                            </TableCell>
-                                            <TableCell>{`${tripDistribucion.origen.nombre}`}</TableCell>
-                                            <TableCell sx={{minWidth: 150}} >
-                                                <DoubleCell 
-                                                    primarySection={`${tripDistribucion.transportista.nombre_comercial}`} 
-                                                    secondarySection={`${tripDistribucion.chofer.nombre}, ${tripDistribucion.chofer.apellido}`}
-                                                    primaryIcon={<Building2 size={18} color="#AFB3B9"/>}
-                                                    secondaryIcon={<User size={18} color="#AFB3B9"/>}
-                                                />
-                                            </TableCell>
-                                            <TableCell align="center"><TripDistributionType tipo={tripDistribucion.estado}/></TableCell>
-                                            <TableCell sx={{ verticalAlign: "middle"}}>
-                                                <MenuItem  
-                                                    module="trips/distribution"
-                                                    handleOpenDialog={() => handleOpenDialog(tripDistribucion)}
-                                                    handleOpenDetails={() => navigate(`/trips/distribution/details/${tripDistribucion._id}`)}
-                                                    id={tripDistribucion._id}
-                                                >
-                                                    <Eye className="text-gray-500 hover:text-gray-700 size-4" />
-                                                </MenuItem>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))
-                                )}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </Box>
-            )}
+                                ))
+                            )}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Box>
+        )}
 
         <PaginationEntity
             entity="viajes"

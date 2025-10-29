@@ -156,8 +156,11 @@ export const customMuiTheme = createTheme({
         root:{
           borderRadius:6,
           height:"48px",
-          padding: "0px 14px",
+          padding: "0px 0px",
+          "& .MuiOutlinedInput-notchedOutline": { borderColor: "#c7c7c7" },
+          "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#5A5A65" }
         },
+        
       },
     },
     MuiMenuItem:{
@@ -217,7 +220,10 @@ export const customMuiTheme = createTheme({
           "& .MuiOutlinedInput-root": {
             borderRadius: "6px",
             height: "48px",
-            padding: "0px 14px",
+            padding: "0px 0px",
+            "& .MuiOutlinedInput-notchedOutline": { borderColor: "#c7c7c7" },
+            "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#5A5A65" },
+            "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "#C94715" },
             backgroundColor: "#fff",
             fontSize: '0.900rem',
           },

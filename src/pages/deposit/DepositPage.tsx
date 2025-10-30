@@ -1,31 +1,30 @@
 import { useEffect, useState } from "react";
 import SearchBar from "../../components/SearchBar";
 import { SectionHeader } from "../../components/SectionHeader";
-import { Box, Pagination, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery} from "@mui/material";
+import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery} from "@mui/material";
 import LoadingState from "../../components/LoadingState";
 import MenuItem from "../../components/buttons/MenuItem";
 import { useNavigate } from "react-router-dom";
-import { useAutoRowsPerPage } from "../../hooks/useAutoRowsPerPage";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 import { formatTelefono } from "../../lib/formatters";
 import { useNotify } from "../../hooks/useNotify";
 import { depositoControllerRemove, DepositoDto, useDepositoControllerFindAll } from "../../api/generated";
 import { Eye, Warehouse } from "lucide-react";
-import { DetailsDeposit } from "../../components/deposit/DetailsDeposit";
 import { useTheme } from "@mui/material/styles";
 import EntityCard from "../../components/EntityCard";
 import PaginationEntity from "../../components/PaginationEntity";
-
+import FilterSection, { getNestedValue } from "../../components/FilterSection";
 
 export default function DepositPage() {
     const {notify} = useNotify("Depósito");
     const {data: deposits, isLoading, refetch} = useDepositoControllerFindAll();
-    const [searchQuery, setSearchQuery] = useState<string>("");
+    const [filterOpen, setFilterOpen] = useState<boolean>(false);
     const [page, setPage] = useState<number>(1);
     const [openDialog, setOpenDialog] = useState<boolean>(false);
     const [depositSelected, setDepositSelected] = useState<DepositoDto>();
-    const debouncedQuery = useDebouncedValue(searchQuery, 500);
+    const [filteredDeposits, setFilteredDeposits] = useState<DepositoDto[] >(deposits?.data || []); 
+    const [appliedFilters, setAppliedFilters] = useState<any>({});
     const theme = useTheme();
     const isTablet = useMediaQuery(theme.breakpoints.between('md', 'lg'));
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -52,41 +51,69 @@ export default function DepositPage() {
         }
     };
 
-
-    const filtered = deposits?.data?.filter((d) =>
-        d.nombre.toLowerCase().includes(debouncedQuery.toLowerCase()) ||
-        d.direccion?.ciudad.toLowerCase().includes(debouncedQuery.toLowerCase())
-    ) || [];
-
-    const totalPages = Math.ceil(filtered.length / rowsPerPage);
-    const paginated = filtered.slice((page - 1) * rowsPerPage, page * rowsPerPage);
+    const totalPages = Math.ceil(filteredDeposits.length / rowsPerPage);
+    const paginated = filteredDeposits.slice((page - 1) * rowsPerPage, page * rowsPerPage);
 
     const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
         setPage(value);
     };
 
-    useEffect(() => {
-        // Si el search cambia, reseteamos a página 1
-        setPage(1);
-    }, [debouncedQuery]);
-
     const navigate = useNavigate();
+
+    const formatChipLabel = (key: string, value: any) => {
+        switch (key) {
+            case "nombre":
+                return `Nombre: ${value}`;
+            case "direccion.ciudad":
+                return `Ciudad: ${value}`;
+            default:
+                return `${key}: ${value}`;
+        }
+    };
+
+    const handleApplyFilters = (filters: any) => {
+        setAppliedFilters(filters);
+        setPage(1);
+    }
+    // Filtrado dinámico según los filtros aplicados
+    useEffect(() => {
+        if (!deposits?.data) return;
+
+        let result = deposits.data;
+
+        Object.entries(appliedFilters).forEach(([key, value]) => {
+            if (!value) return;
+
+            result = result.filter((d) => {
+            const fieldValue = getNestedValue(d, key);
+            if (typeof fieldValue === "string") {
+                return fieldValue.toLowerCase().includes((value as string).toLowerCase());
+            }
+            return fieldValue === value;
+            });
+        });
+
+        setFilteredDeposits(result);
+    }, [appliedFilters, deposits]);
+
 
     return (
         <>
-            <div>
-                <SectionHeader 
-                    title="Red de depósitos"
-                    buttonText="Nuevo depósito"
-                    onAdd={() => navigate("/depots/form")}
-                />
-
-                <SearchBar 
-                    placeholder="Buscar por nombre o ciudad"
-                    searchQuery={searchQuery}
-                    setSearchQuery={setSearchQuery}
-                />
-            </div>
+            <SectionHeader 
+                title="Red de depósitos"
+                buttonText="Nuevo depósito"
+                onAdd={() => navigate("/depots/form")}
+            />
+            <FilterSection 
+                filterOpen={filterOpen}
+                setFilterOpen={setFilterOpen}
+                formatChipLabel={formatChipLabel}
+                onApply={handleApplyFilters}
+                listFilters={[
+                    { key: "nombre", label: "Nombre", type: "text" },
+                    { key: "direccion.ciudad", label: "Ciudad", type: "text" },
+                ]}
+            />
 
             {/*tabla*/}
             {isMobile || isTablet ? (
@@ -184,7 +211,7 @@ export default function DepositPage() {
                 page={page}
                 totalPages={totalPages}
                 rowsPerPage={rowsPerPage}
-                filtered={filtered}
+                filtered={filteredDeposits}
                 handleChangePage={handleChangePage}
                 setRowsPerPage={setRowsPerPage}
                 setPage={setPage}
@@ -203,14 +230,6 @@ export default function DepositPage() {
                     onConfirm={() => handleDelete(depositSelected?._id)}
                 />
             )}
-
-            {/*{depositSelected && (
-                <DetailsDeposit 
-                    depositSelected={depositSelected}
-                    setOpenDetailsDialog={setOpenDetailsDialog}
-                    openDetailsDialog={openDetailsDialog}
-                />
-            )}*/}
 
         </>
     )

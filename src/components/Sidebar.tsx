@@ -65,8 +65,6 @@ export default function Sidebar({isVisible, setIsVisible}: SidebarProps) {
     selectOption()
   };
 
-  console.log("Sidebar render - isVisible:", isVisible, "isCollapsed:", isCollapsed, "isMobile:", isMobile);
-
   return (
     
       <Box

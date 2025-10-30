@@ -2,25 +2,24 @@ import { Box, Button, Card, Grid, Tooltip, Typography } from "@mui/material";
 import { Edit, Eye, Trash2 } from "lucide-react";
 import { ReactNode } from "react";
 import { TripDistributionType } from "./tripsDistribution/TripDistributionType";
-import { TripType } from "./trip/TripType";
 import LicenseValidate from "./vehicle/type-vehicle/LicenseValidate";
 
 type Field = {
-  label: string;
-  value: ReactNode;
-  isLong?: boolean;
-  extend?: boolean;
+    label: string;
+    value: ReactNode;
+    isLong?: boolean;
+    extend?: boolean;
 };
 
 type EntityCardProps = {
-  icon: ReactNode;
-  title: string;
-  subtitle?: ReactNode;
-  fields: Field[];
-  headerEstado?: string; // para el estado
-  onView?: () => void;
-  onEdit?: () => void;
-  onDelete?: () => void;
+    icon: ReactNode;
+    title: string;
+    subtitle?: ReactNode;
+    fields: Field[];
+    headerEstado?: string; // para el estado
+    onView?: () => void;
+    onEdit?: () => void;
+    onDelete?: () => void;
     licenseType?: string;
 };
 

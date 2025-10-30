@@ -1,26 +1,23 @@
+import { Box, Chip, IconButton, Typography, Tooltip, CircularProgress, Button, Dialog, DialogTitle, DialogContent } from "@mui/material";
+import { GripVertical, CheckCircle2, XCircle, Trash2, CheckCircle, Clock, MessageCircle, Camera, Pen, Pencil, X } from "lucide-react";
+import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
 import { RemitoDto } from "../../../../api/generated";
-import { Box } from "@mui/material";
-import RemitoCard from "../../../trip/modals/RemitoCard";
-import { CSS } from '@dnd-kit/utilities';
-import { GripVertical } from "lucide-react";
-import { useDistributionFormContext } from "../../../../contexts/DistributionFormContext";
+import { SortableRemitoRowProps } from "../../../../types";
+import { useState } from "react";
+import EntregaModal from "./EntregaModal";
 
-export default function SortableRemitoItem({ 
-  rem, 
-  index, 
-  remitoIds, 
-  onToggleRemito 
-  , quitarRemito
-}: { 
-  rem: RemitoDto;
-  index: number;
-  remitoIds: number[];
-  onToggleRemito: (id: number) => void;
-  quitarRemito: (remito: RemitoDto) => void;
-}) {
-
-  const {permissions} = useDistributionFormContext();
+export default function SortableRemitoRow({
+  rem,
+  index,
+  estadoEntrega = "en camino",
+  onToggleEntrega,
+  onQuitar,
+  canDrag = true,
+  isUpdating = false,
+  remitosIdsInGrupo = [],
+}: SortableRemitoRowProps) {
+  const [showEntregaDialog, setShowEntregaDialog] = useState(false);
 
   const {
     attributes,
@@ -34,98 +31,161 @@ export default function SortableRemitoItem({
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.5 : 1,
+    opacity: isDragging ? 0.6 : 1,
   };
 
-  const handleRemitoToggle = () => {
-    if (remitoIds.includes(rem.id)) {
-      quitarRemito(rem);
-    } else {
-      onToggleRemito(rem.id); // el caso de agregar desde otros contextos
-    }
-  }
+  const isMinimallyDraggable = remitosIdsInGrupo.length > 1;
 
   return (
-    <Box
-      ref={setNodeRef}
-      style={style}
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 2,
-        p: 2,
-        border: isDragging ? '2px dashed #8648B9' : '1px solid #E0E0E0',
-        borderRadius: 2,
-        backgroundColor: isDragging ? '#F8F5FF' : 'white',
-        transition: 'all 0.2s ease',
-        position: 'relative',
-        opacity: isDragging ? 0.6 : 1,
-        '&:hover': {
-          borderColor: '#8648B9',
-          backgroundColor: '#F8F5FF'
-        },
-      }}
-    >
+    <>
+      <Box
+        ref={setNodeRef}
+        style={style}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 1.5,
+          p: 1.5,
+          borderRadius: 2,
+          border: "1px solid #E0E0E0",
+          backgroundColor: isDragging ? "#F5EBFF" : "white",
+          transition: "all 0.2s",
+          "&:hover": { 
+            borderColor: "#8648B9", 
+            backgroundColor: "#FAF7FF",
+            '& .action-buttons': {
+              opacity: 1
+            }
+          },
+        }}
+      >
+        {/* Orden + Drag handle */}
         <Box
-            sx={{
-                display: 'flex',
-                flexDirection: "column",
-                alignItems: 'center',
-                height: '100%',
-                gap: 5,
-            }}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+            minWidth: 50,
+            color: "#5A5A65",
+          }}
         >
-            {/* Número de orden */}
-            <Box
-            sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minWidth: 30,
-                height: 30,
-                backgroundColor: '#8648B9',
-                color: 'white',
-                borderRadius: '50%',
-                fontWeight: 'bold',
-                fontSize: '0.875rem',
-            }}
-            >
+          <Typography fontWeight={600} width={18}>
             {index + 1}
-            </Box>
-
-            {/* Handle de arrastre */}
+          </Typography>
+          {canDrag && (
             <Box
-                {...(permissions.canEditPositionRemitos ? attributes : {})}
-                {...(permissions.canEditPositionRemitos ? listeners : {})}
-                sx={{
-                    height: '100%',
-                    p: 0.5,
-                    border: '1px solid #CCC',
-                    borderRadius: "50%",
-                    cursor: permissions.canEditPositionRemitos ? 'grab' : 'default',
-                    color: '#666',
-                    '&:hover': {
-                    backgroundColor: '#F0F0F0',
-                    color: '#8648B9'
-                    },
-                    '&:active': {
-                      cursor: permissions.canEditPositionRemitos ? 'grabbing' : 'default'
-                    }
-                }}
+              {...(isMinimallyDraggable ? attributes : {})}
+              {...(isMinimallyDraggable ? listeners : {})}
+              sx={{
+                cursor: "grab",
+                "&:active": { cursor: isMinimallyDraggable ? "grabbing" : "not-allowed" },
+                color: "#888",
+              }}
             >
-                <GripVertical size={20} />
+              <GripVertical size={18} />
             </Box>
+          )}
         </Box>
 
-        <Box sx={{ flex: 1, minWidth: 0 }}>
-            <RemitoCard
-              rem={rem}
-              selectedRemitos={remitoIds}
-              onRemitoToggle={permissions.canEditRemitos ? handleRemitoToggle : () => {}}
-              showCheckbox={permissions.canEditRemitos}
-              compactMode={true}
-            />
+        {/* Contenido principal */}
+        <Box sx={{ flex: 1, flexWrap: "wrap" , display: "flex", alignItems: "center", justifyContent: "space-between" , width: '100%', gap: 1 }}>
+          <Box sx={{ width: 'max-content' }}>
+            <Typography fontWeight={600} fontSize="0.9rem">
+              Nº {rem.numeroAsignado}
+            </Typography>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ fontSize: "0.8rem" }}
+            >
+              {rem.destino?.provincia}, {rem.destino?.localidad}
+            </Typography>
+          </Box>
+
+          {/* Botones de acción - solo mostrar si está en camino */}
+          {estadoEntrega === "en camino" && onToggleEntrega && (
+            <Box sx={{ display: "flex", gap: 1, justifyContent: "flex-end" }}>
+{/*               <Tooltip title="Marcar como entregado">
+                <Button
+                  size="small"
+                  variant="outlined"
+                  startIcon={<Camera size={14} />}
+                  onClick={() => setShowEntregaDialog(true)}
+                  disabled={isUpdating}
+                  sx={{ 
+                    fontSize: '0.75rem',
+                    borderColor: '#2E7D32',
+                    color: '#2E7D32',
+                    '&:hover': {
+                      backgroundColor: '#2E7D32',
+                      borderColor: '#2E7D32',
+                      color: 'white'
+                    }
+                  }}
+                >
+                  Entregar
+                </Button>
+              </Tooltip>
+
+              <Tooltip title="Marcar como no entregado">
+                <Button
+                  size="small"
+                  variant="outlined"
+                  startIcon={<MessageCircle size={14} />}
+                  onClick={() => setShowNoEntregaDialog(true)}
+                  disabled={isUpdating}
+                  sx={{ 
+                    fontSize: '0.75rem',
+                    borderColor: '#C62828',
+                    color: '#C62828',
+                    '&:hover': {
+                      backgroundColor: '#C62828',
+                      borderColor: '#C62828',
+                      color: 'white'
+                    }
+                  }}
+                >
+                  No Entregar
+                </Button>
+              </Tooltip> */}
+
+              <Tooltip title="Marcar remito">
+                <IconButton 
+                  size="small" 
+                  onClick={() => setShowEntregaDialog(true)}
+                  sx={{ opacity: 0.7, transition: 'opacity 0.2s' }}
+                >
+                  <Pencil size={18} color="#888" />
+                </IconButton>
+              </Tooltip>
+            </Box>
+          )}
         </Box>
-    </Box>
+
+        {/* Botón eliminar - solo si está en camino */}
+        {estadoEntrega === "en camino" && onQuitar && (
+          <Tooltip title="Quitar remito">
+            <IconButton 
+              size="small" 
+              onClick={() => onQuitar?.(rem)}
+              sx={{ opacity: 0.7, transition: 'opacity 0.2s' }}
+            >
+              <Trash2 size={18} color="#888" />
+            </IconButton>
+          </Tooltip>
+        )}
+      </Box>
+      
+      {/* Dialogs para entrega y no entrega */}
+      <EntregaModal
+        open={showEntregaDialog}
+        onClose={() => setShowEntregaDialog(false)}
+        remito={rem}
+        isLoading={isUpdating}
+        onConfirm={() => setShowEntregaDialog(false)}
+      />
+
+    </>
   );
 }

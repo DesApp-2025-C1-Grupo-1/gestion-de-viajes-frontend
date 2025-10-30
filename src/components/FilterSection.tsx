@@ -1,4 +1,4 @@
-import { Box, Button, Chip, Collapse, Grid, Paper, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, Chip, Collapse, Grid, MenuItem, Paper, Select, Stack, TextField, Typography } from "@mui/material";
 import { Funnel, ListFilter, X } from "lucide-react";
 import { useCallback, useState } from "react";
 
@@ -7,7 +7,7 @@ interface FilterSectionProps {
     setFilterOpen: (open: boolean) => void;
     formatChipLabel: (key: string, value: any) => string;
     onApply: (filters: Record<string, any>) => void;
-    listFilters: { key: string; label: string; type: string; }[];
+    listFilters: { key: string; label: string; type: string; list?: { value: string}[] }[];
 }
 
 export function getNestedValue(obj: any, path: string): any {
@@ -114,13 +114,29 @@ export default function FilterSection({
                             {listFilters && listFilters.map((filter) => (
                                 <Grid item xs={12} md={3} key={filter.key}>
                                     <Typography variant="subtitle2" color="#666" mb={0.5}>{filter.label}</Typography>
-                                    <TextField
-                                        fullWidth
-                                        className="inside-paper"
-                                        placeholder={`Buscar por ${filter.label}`}
-                                        value={localFilters[filter.key] ?? ""}
-                                        onChange={(e) => handleChange(filter.key, e.target.value)}
-                                    />
+                                    {filter.type === "select" ? (
+                                        <Select
+                                            fullWidth
+                                            className="inside-paper"
+                                            displayEmpty
+                                            value={localFilters[filter.key] ?? ""}
+                                            onChange={(e) => handleChange(filter.key, e.target.value)}
+                                        >
+                                            <MenuItem value="">Todas</MenuItem>
+                                            {filter.list?.map(option => (
+                                                <MenuItem key={option.value} value={option.value}>{option.value}</MenuItem>
+                                            ))}
+                                        </Select>
+                                    ) : (
+                                        <TextField
+                                            fullWidth
+                                            className="inside-paper"
+                                            placeholder={`Buscar por ${filter.label}`}
+                                            value={localFilters[filter.key] ?? ""}
+                                            onChange={(e) => handleChange(filter.key, e.target.value)}
+                                            type={filter.type}
+                                        />
+                                    )}
                                 </Grid>
                             ))}
                         </Grid>

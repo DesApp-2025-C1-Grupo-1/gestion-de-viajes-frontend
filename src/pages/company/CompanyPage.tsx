@@ -13,6 +13,7 @@ import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { Building2, Eye } from "lucide-react";
 import EntityCard from "../../components/EntityCard";
 import PaginationEntity from "../../components/PaginationEntity";
+import FilterSection, { getNestedValue } from "../../components/FilterSection";
 
 export default function CompanyPage(){
     const {notify} = useNotify("Empresa", "female");
@@ -22,8 +23,9 @@ export default function CompanyPage(){
     const [openDialog, setOpenDialog] = useState(false);
     const [empresaSelected, setEmpresaSelected] = useState<EmpresaDto>();
     const empresas = data?.data || [];
-    const debouncedQuery = useDebouncedValue(searchQuery, 500);
-
+    const [filteredEmpresas, setFilteredEmpresas] = useState<EmpresaDto[]>(empresas);
+    const [filterOpen, setFilterOpen] = useState(false);
+    const [appliedFilters, setAppliedFilters] = useState<{ [key: string]: string | number }>({});
     const theme = useTheme();
     const isTablet = useMediaQuery(theme.breakpoints.between('md', 'lg'));
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -50,19 +52,54 @@ export default function CompanyPage(){
         }
     };
 
-    const filtered = empresas.filter((com) => 
-    com.nombre_comercial.toLocaleLowerCase().includes(debouncedQuery.toLocaleLowerCase())
-    );
-
-    const totalPages = Math.ceil(filtered.length / rowsPerPage);
-    const paginated = filtered.slice((page-1) * rowsPerPage, page*rowsPerPage);
+    const totalPages = Math.ceil(filteredEmpresas.length / rowsPerPage);
+    const paginated = filteredEmpresas.slice((page-1) * rowsPerPage, page*rowsPerPage);
     const handleChangePage = (event: React.ChangeEvent<unknown>, value:number) => {
         setPage(value);
     };
 
-    useEffect(() => {
+    const formatChipLabel = (key: string, value: any) => {
+        switch (key) {
+            case "nombre_comercial":
+                return `Nombre comercial: ${value}`;
+            case "cuit":
+                return `CUIT/RUT: ${value}`;
+            case "direccion.ciudad":
+                return `Ciudad: ${value}`;
+            default:
+                return `${key}: ${value}`;
+        }
+    };
+
+    const handleApplyFilters = (filters: any) => {
+        setAppliedFilters(filters);
         setPage(1);
-    }, [searchQuery]);
+    };
+    
+    // Filtrado dinámico según los filtros aplicados
+    useEffect(() => {
+        if (!empresas) return;
+
+        let result = empresas;
+
+        Object.entries(appliedFilters).forEach(([key, value]) => {
+            if (!value) return;
+
+            result = result.filter((d) => {
+            const fieldValue = getNestedValue(d, key);
+            if (typeof fieldValue === "string") {
+                return fieldValue.toLowerCase().includes((value as string).toLowerCase());
+            }
+            if (typeof fieldValue === "number") {
+                return fieldValue.toString().includes((value as number).toString());
+            }
+            return fieldValue === value;
+            });
+        });
+
+        setFilteredEmpresas(result);
+    }, [appliedFilters, empresas]);
+
 
     const navigate = useNavigate();
 
@@ -73,7 +110,17 @@ export default function CompanyPage(){
                 buttonText="Nueva empresa"
                 onAdd={() => navigate("/company/create")}
             /> 
-            <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} placeholder="Buscar por nombre"/>
+            <FilterSection
+                filterOpen={filterOpen}
+                setFilterOpen={setFilterOpen}
+                onApply={handleApplyFilters}
+                formatChipLabel={formatChipLabel}
+                listFilters={[
+                    { key: "nombre_comercial", label: "Nombre comercial", type: "text" },
+                    { key: "cuit", label: "CUIT/RUT", type: "number" },
+                    { key: "direccion.ciudad", label: "Ciudad", type: "text" },
+                ]}
+            />
 
             {/*tabla*/}
 
@@ -159,7 +206,7 @@ export default function CompanyPage(){
                 page={page}
                 totalPages={totalPages}
                 rowsPerPage={rowsPerPage}
-                filtered={filtered}
+                filtered={filteredEmpresas}
                 handleChangePage={handleChangePage}
                 setRowsPerPage={setRowsPerPage}
                 setPage={setPage}

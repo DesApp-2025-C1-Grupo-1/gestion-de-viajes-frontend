@@ -14,11 +14,11 @@ import { Eye, Truck } from "lucide-react";
 import { Box, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery, useTheme } from "@mui/material";
 import LicenseValidate from "../../components/vehicle/type-vehicle/LicenseValidate";
 import MenuItem from "../../components/buttons/MenuItem";
+import FilterSection, { getNestedValue } from "../../components/FilterSection";
+import { tipoLicenciaSchema } from "../../api/schemas/enums/tipoLicencia.schema";
 
 export default function TypeVehicle() {
-  const [searchQuery, setSearchQuery] = useState<string>("");
   const [page, setPage] = useState<number>(1);
-  const debouncedQuery = useDebouncedValue(searchQuery, 500);
   const theme = useTheme();
   const isTablet = useMediaQuery(theme.breakpoints.between('md', 'lg'));
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -37,6 +37,9 @@ export default function TypeVehicle() {
     handleDelete,
     setItemToDelete,
   } = useTipoVehiculo();
+  const [appliedFilters, setAppliedFilters] = useState<any>({});
+  const [filteredVehicles, setFilteredVehicles] = useState<TipoVehiculoDto[]>([]);
+  const [filterOpen, setFilterOpen] = useState<boolean>(false);
 
   const handleSubmit = (formData: UpdateTipoVehiculoForm | CreateTipoVehiculoForm) => {
     if (currentItem?._id) {
@@ -50,23 +53,54 @@ export default function TypeVehicle() {
         setItemToDelete(vehicleType);
     }, []);
 
-    const filtered = tiposVehiculo.filter((v) =>
-        v.nombre.toLowerCase().includes(debouncedQuery.toLowerCase())
-    );
-
-    const totalPages = Math.ceil(filtered.length / rowsPerPage);
-    const paginated = filtered.slice((page - 1) * rowsPerPage, page * rowsPerPage);
+    const totalPages = Math.ceil(filteredVehicles.length / rowsPerPage);
+    const paginated = filteredVehicles.slice((page - 1) * rowsPerPage, page * rowsPerPage);
 
     const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
         setPage(value);
     };
   
+    const formatChipLabel = (key: string, value: any) => {
+        switch (key) {
+            case "nombre":
+                return `Nombre: ${value}`;
+            case "descripcion":
+                return `Descripción: ${value}`;
+            case "licencia_permitida":
+                return `Licencia Permitida: ${value}`;
+            default:
+                return `${key}: ${value}`;
+        }
+    };
 
-    useEffect(() => {
-        // Si el search cambia, reseteamos a página 1
+    const handleApplyFilters = (filters: any) => {
+        setAppliedFilters(filters);
         setPage(1);
-    }, [searchQuery]);
+    };
+    
+    // Filtrado dinámico según los filtros aplicados
+    useEffect(() => {
+        if (!tiposVehiculo) return;
 
+        let result = tiposVehiculo;
+
+        Object.entries(appliedFilters).forEach(([key, value]) => {
+            if (!value) return;
+
+            result = result.filter((d) => {
+            const fieldValue = getNestedValue(d, key);
+            if (typeof fieldValue === "string") {
+                return fieldValue.toLowerCase().includes((value as string).toLowerCase());
+            }
+            if (typeof fieldValue === "number") {
+                return fieldValue.toString().includes((value as number).toString());
+            }
+            return fieldValue === value;
+            });
+        });
+
+        setFilteredVehicles(result);
+    }, [appliedFilters, tiposVehiculo]);
 
   return (
     <>
@@ -76,16 +110,23 @@ export default function TypeVehicle() {
         onAdd={() => openDialog()}
       />
 
-      <SearchBar
-        placeholder="Buscar por nombre"
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
+      <FilterSection
+        filterOpen={filterOpen}
+        setFilterOpen={setFilterOpen}
+        onApply={handleApplyFilters}
+        formatChipLabel={formatChipLabel}
+        listFilters={[
+          { key: "nombre", label: "Nombre", type: "text" },
+          { key: "descripcion", label: "Descripción", type: "text" },
+          { key: "licencia_permitida", label: "Licencia Permitida", type: "select", list: tipoLicenciaSchema.options.map(lic => ({ value: lic })) },
+        ]}
       />
+
       {isTablet || isMobile ? (
         <Grid>
           {isLoading ? (
             <LoadingState title="Tipos de vehículos" />
-          ) : filtered.length === 0 ? (
+          ) : filteredVehicles.length === 0 ? (
             <Box className="text-center text-gray-500 py-5">
               No se encontraron tipos de vehículos.
             </Box>
@@ -172,7 +213,7 @@ export default function TypeVehicle() {
           page={page}
           totalPages={totalPages}
           rowsPerPage={rowsPerPage}
-          filtered={filtered}
+          filtered={filteredVehicles}
           handleChangePage={handleChangePage}
           setRowsPerPage={setRowsPerPage}
           setPage={setPage}

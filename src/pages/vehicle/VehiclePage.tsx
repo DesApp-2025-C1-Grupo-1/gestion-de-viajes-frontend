@@ -12,17 +12,19 @@ import { useNotify } from "../../hooks/useNotify";
 import { Eye, Truck } from "lucide-react";
 import EntityCard from "../../components/EntityCard";
 import PaginationEntity from "../../components/PaginationEntity";
+import FilterSection, { getNestedValue } from "../../components/FilterSection";
 
 
 export default function VehiclePage() {
     const {notify} = useNotify("Vehículo");
-    const {data, isLoading, refetch} = useVehiculoControllerFindAll()
-    const [searchQuery, setSearchQuery] = useState<string>("");
+    const {data, isLoading, refetch} = useVehiculoControllerFindAll();
     const [page, setPage] = useState<number>(1);
     const [openDialog, setOpenDialog] = useState(false);
     const [vehicleSelected, setVehicleSelected] = useState<VehiculoDto>();
     const vehicles = data?.data || [];
-    const debouncedQuery = useDebouncedValue(searchQuery, 500);
+    const [appliedFilters, setAppliedFilters] = useState<any>({});
+    const [filteredVehicles, setFilteredVehicles] = useState<VehiculoDto[]>(vehicles);
+    const [filterOpen, setFilterOpen] = useState(false);
     const theme = useTheme();
     const isTablet = useMediaQuery(theme.breakpoints.between('md', 'lg'));
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -49,35 +51,82 @@ export default function VehiclePage() {
         }
     };
 
-    const filtered = vehicles.filter((v) =>
-        v.patente.toLowerCase().includes(debouncedQuery.toLowerCase()) ||
-        v.modelo.toLowerCase().includes(debouncedQuery.toLowerCase())
-    );
-    const totalPages = Math.ceil(filtered.length / rowsPerPage);
-    const paginated = filtered.slice((page - 1) * rowsPerPage, page * rowsPerPage);
+    const totalPages = Math.ceil(filteredVehicles.length / rowsPerPage);
+    const paginated = filteredVehicles.slice((page - 1) * rowsPerPage, page * rowsPerPage);
 
     const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
         setPage(value);
     };
 
-    useEffect(() => {
-        // Si el search cambia, reseteamos a página 1
+    const formatChipLabel = (key: string, value: any) => {
+        switch (key) {
+            case "patente":
+                return `Patente: ${value}`;
+            case "modelo":
+                return `Modelo: ${value}`;
+            case "año":
+                return `Año: ${value}`;
+            case "tipo.nombre":
+                return `Tipo de vehículo: ${value}`;
+            case "empresa.nombre_comercial":
+                return `Empresa: ${value}`;
+            default:
+                return `${key}: ${value}`;
+        }
+    };
+
+    const handleApplyFilters = (filters: any) => {
+        setAppliedFilters(filters);
         setPage(1);
-    }, [searchQuery]);
+    };
+    
+    // Filtrado dinámico según los filtros aplicados
+    useEffect(() => {
+        if (!vehicles) return;
+
+        let result = vehicles;
+
+        Object.entries(appliedFilters).forEach(([key, value]) => {
+            if (!value) return;
+
+            result = result.filter((d) => {
+            const fieldValue = getNestedValue(d, key);
+            if (typeof fieldValue === "string") {
+                return fieldValue.toLowerCase().includes((value as string).toLowerCase());
+            }
+            if (typeof fieldValue === "number") {
+                return fieldValue.toString().includes((value as number).toString());
+            }
+            return fieldValue === value;
+            });
+        });
+
+        setFilteredVehicles(result);
+    }, [appliedFilters, vehicles]);
 
     const navigate = useNavigate();
     return (
         <>
-            <div>
-                <SectionHeader 
-                    title="Flota de vehículos"
-                    buttonText="Nuevo vehículo"
-                    onAdd={() => navigate("/vehicles/form")}
-                />
+            <SectionHeader 
+                title="Flota de vehículos"
+                buttonText="Nuevo vehículo"
+                onAdd={() => navigate("/vehicles/form")}
+            />
 
-                {/* Buscador y boton para ir a tipo de vehiculos*/}    
-                <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} placeholder="Buscar vehículo por modelo o patente" />
-            </div>
+            {/* Buscador y boton para ir a tipo de vehiculos*/}    
+            <FilterSection
+                filterOpen={filterOpen}
+                setFilterOpen={setFilterOpen}
+                onApply={handleApplyFilters}
+                formatChipLabel={formatChipLabel}
+                listFilters={[
+                    { key: "patente", label: "Patente", type: "text" },
+                    { key: "modelo", label: "Modelo", type: "text" },
+                    { key: "año", label: "Año", type: "number" },
+                    { key: "tipo.nombre", label: "Tipo", type: "text" },
+                    { key: "empresa.nombre_comercial", label: "Empresa", type: "text" },
+                ]}
+            />
 
             {isTablet || isMobile ? (
                 <div className="grid gap-4  lg:grid-cols-2">
@@ -180,7 +229,7 @@ export default function VehiclePage() {
                 page={page}
                 totalPages={totalPages}
                 rowsPerPage={rowsPerPage}
-                filtered={filtered}
+                filtered={filteredVehicles}
                 handleChangePage={handleChangePage}
                 setRowsPerPage={setRowsPerPage}
                 setPage={setPage}

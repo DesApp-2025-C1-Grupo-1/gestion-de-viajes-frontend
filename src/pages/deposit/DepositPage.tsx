@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
-import SearchBar from "../../components/SearchBar";
 import { SectionHeader } from "../../components/SectionHeader";
 import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery} from "@mui/material";
 import LoadingState from "../../components/LoadingState";
 import MenuItem from "../../components/buttons/MenuItem";
 import { useNavigate } from "react-router-dom";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
-import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 import { formatTelefono } from "../../lib/formatters";
 import { useNotify } from "../../hooks/useNotify";
 import { depositoControllerRemove, DepositoDto, useDepositoControllerFindAll } from "../../api/generated";
@@ -18,6 +16,7 @@ import FilterSection, { getNestedValue } from "../../components/FilterSection";
 
 export default function DepositPage() {
     const {notify} = useNotify("Depósito");
+    const navigate = useNavigate();
     const {data: deposits, isLoading, refetch} = useDepositoControllerFindAll();
     const [filterOpen, setFilterOpen] = useState<boolean>(false);
     const [page, setPage] = useState<number>(1);
@@ -58,7 +57,6 @@ export default function DepositPage() {
         setPage(value);
     };
 
-    const navigate = useNavigate();
 
     const formatChipLabel = (key: string, value: any) => {
         switch (key) {

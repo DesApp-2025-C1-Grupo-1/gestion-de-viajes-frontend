@@ -15,18 +15,20 @@ import { formatTelefono } from "../../lib/formatters";
 import EntityCard from "../../components/EntityCard";
 import { DriverDetailsDialog } from "../../components/driver/DriverDetailsDialog";
 import PaginationEntity from "../../components/PaginationEntity";
+import FilterSection, { getNestedValue } from "../../components/FilterSection";
 
 
 export default function DriverPage(){
     const {notify} = useNotify("Chofer");
     const {data, isLoading, refetch} = useChoferControllerFindAll();
-    const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);
     const [openDialog, setOpenDialog] = useState(false);
     const [choferSelect, setChoferSelect] = useState<ChoferDto>();
+    const [filterOpen, setFilterOpen] = useState<boolean>(false);
+    const [filteredChoferes, setFilteredChoferes] = useState<ChoferDto[]>(data?.data || []);
     const [openDetailsDialog, setOpenDetailsDialog] = useState<boolean>(false);
     const choferes = data?.data || [];
-    const debouncedQuery = useDebouncedValue(searchQuery, 500);
+    const [appliedFilters, setAppliedFilters] = useState<any>({});
     const theme = useTheme();
     const isTablet = useMediaQuery(theme.breakpoints.between('md', 'lg'));
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -53,33 +55,76 @@ export default function DriverPage(){
         }
     };
 
-    const filtered = choferes.filter((dri) => 
-        dri.apellido.toLocaleLowerCase().includes(debouncedQuery.toLocaleLowerCase()) ||
-        dri.nombre.toLocaleLowerCase().includes(debouncedQuery.toLocaleLowerCase())
-    );
-
-    const totalPages = Math.ceil(filtered.length / rowsPerPage);
-    const paginated = filtered.slice((page-1) * rowsPerPage, page*rowsPerPage);
+    const totalPages = Math.ceil(filteredChoferes.length / rowsPerPage);
+    const paginated = filteredChoferes.slice((page-1) * rowsPerPage, page*rowsPerPage);
     const handleChangePage = (event: React.ChangeEvent<unknown>, value:number) => {
         setPage(value);
     };
 
-    useEffect(() => {
+    const formatChipLabel = (key: string, value: any) => {
+        switch (key) {
+            case "nombre":
+                return `Nombre: ${value}`;
+            case "apellido":
+                return `Apellido: ${value}`;
+            case "dni":
+                return `DNI: ${value}`;
+            default:
+                return `${key}: ${value}`;
+        }
+    };
+
+    const handleApplyFilters = (filters: any) => {
+        setAppliedFilters(filters);
         setPage(1);
-    }, [searchQuery]);
+    };
+    
+    // Filtrado dinámico según los filtros aplicados
+    useEffect(() => {
+        if (!choferes) return;
+
+        let result = choferes;
+
+        Object.entries(appliedFilters).forEach(([key, value]) => {
+            if (!value) return;
+
+            result = result.filter((d) => {
+            const fieldValue = getNestedValue(d, key);
+            if (typeof fieldValue === "string") {
+                return fieldValue.toLowerCase().includes((value as string).toLowerCase());
+            }
+            if (typeof fieldValue === "number") {
+                return fieldValue.toString().includes((value as number).toString());
+            }
+            return fieldValue === value;
+            });
+        });
+
+        setFilteredChoferes(result);
+    }, [appliedFilters, choferes]);
+
 
     const navigate = useNavigate();
 
     return(
         <>
-            <div> 
-                <SectionHeader
-                    title="Choferes"
-                    buttonText="Nuevo chofer"
-                    onAdd={() => navigate("/driver/create")}
-                /> 
-                <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} placeholder="Buscar por nombre o apellido"></SearchBar>
-            </div>
+            <SectionHeader
+                title="Choferes"
+                buttonText="Nuevo chofer"
+                onAdd={() => navigate("/driver/create")}
+            /> 
+
+            <FilterSection
+                filterOpen={filterOpen}
+                setFilterOpen={setFilterOpen}
+                onApply={handleApplyFilters}
+                formatChipLabel={formatChipLabel}
+                listFilters={[
+                    { key: "nombre", label: "Nombre", type: "text" },
+                    { key: "apellido", label: "Apellido", type: "text" },
+                    { key: "dni", label: "DNI", type: "number" },
+                ]}
+            />
 
             {/*tabla*/}
             {isMobile || isTablet ? (
@@ -182,7 +227,7 @@ export default function DriverPage(){
                 page={page}
                 totalPages={totalPages}
                 rowsPerPage={rowsPerPage}
-                filtered={filtered}
+                filtered={filteredChoferes}
                 handleChangePage={handleChangePage}
                 setRowsPerPage={setRowsPerPage}
                 setPage={setPage}

@@ -1062,8 +1062,7 @@ page?: number;
 };
 
 export type RemitosControllerEntregarRemitoBody = {
-  /** Archivo PDF o imagen con la firma del remito */
-  file: Blob;
+  file?: Blob;
 };
 
 export type RemitosControllerMarcarNoEntregadoBody = {

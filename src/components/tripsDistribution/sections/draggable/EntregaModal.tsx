@@ -18,14 +18,17 @@ import {
   Alert,
 } from "@mui/material";
 import { X, Camera, FileText, CheckCircle, XCircle } from "lucide-react";
-import { useRemitosControllerEntregarRemito, useRemitosControllerMarcarNoEntregado } from "../../../../api/generated";
+import { RemitoDto, useRemitosControllerEntregarRemito, useRemitosControllerMarcarNoEntregado } from "../../../../api/generated";
 import { useNotify } from "../../../../hooks/useNotify";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface Props {
   open: boolean;
   onClose: () => void;
   remito: any;
   isLoading?: boolean;
+  setRemitosCompletos: React.Dispatch<React.SetStateAction<RemitoDto[]>>;
+  refrescarRemitos: () => Promise<void>;
 }
 
 const VisuallyHiddenInput = styled('input')({
@@ -51,16 +54,45 @@ const FilePreview = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(1),
 }));
 
-export default function EntregaModal({ open, onClose, remito, isLoading = false }: Props) {
+export default function EntregaModal({ open, onClose, remito, isLoading = false, setRemitosCompletos, refrescarRemitos }: Props) {
   const {notify} = useNotify("Remito", "male");
   const [estado, setEstado] = useState<"Entregado" | "No entregado" | "">("");
   const [motivo, setMotivo] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const queryClient = useQueryClient();
 
-  const entregarRemitoMutation = useRemitosControllerEntregarRemito();
-  const noEntregadoMutation = useRemitosControllerMarcarNoEntregado();
+  const entregarRemitoMutation = useRemitosControllerEntregarRemito({
+    mutation: {
+      onSuccess: async (response) => {
+        const remitoActualizado = response.data as RemitoDto;
+
+        setRemitosCompletos((prev: RemitoDto[]) =>
+          prev.map((r: RemitoDto) =>
+            r.id === remitoActualizado.id ? remitoActualizado : r
+          )
+        );
+
+        await refrescarRemitos();
+      },
+  },
+  });
+  const noEntregadoMutation = useRemitosControllerMarcarNoEntregado({
+    mutation: {
+      onSuccess: async (response) => {
+        const remitoActualizado = response.data as RemitoDto;
+
+        setRemitosCompletos((prev: RemitoDto[]) =>
+          prev.map((r: RemitoDto) =>
+            r.id === remitoActualizado.id ? remitoActualizado : r
+          )
+        );
+
+        await refrescarRemitos();
+      },
+    },
+  });
 
   const handleConfirm = async() => {
     setError("");
@@ -86,11 +118,13 @@ export default function EntregaModal({ open, onClose, remito, isLoading = false 
         setError("Subí una foto del comprobante de entrega");
         return;
       }
+      const formData = new FormData();
+      formData.append("file", file); 
+
       await entregarRemitoMutation.mutateAsync({
         id: remito.id,
-        data: { file },
+        data: formData,
       });
-
       notify("custom", `Remito N° ${remito.numeroAsignado} entregado correctamente`);
     }
 
@@ -104,7 +138,6 @@ export default function EntregaModal({ open, onClose, remito, isLoading = false 
         id: remito.id,
         data: { razonNoEntrega: motivo },
       });
-
       notify("custom", `Remito N° ${remito.numeroAsignado} marcado como no entregado`);
     }
 

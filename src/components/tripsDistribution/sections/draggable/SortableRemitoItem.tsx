@@ -13,6 +13,8 @@ export default function SortableRemitoRow({
   canDrag = true,
   isUpdating = false,
   remitosIdsInGrupo = [],
+  setRemitosCompletos,
+  refrescarRemitos
 }: SortableRemitoRowProps) {
   const [showEntregaDialog, setShowEntregaDialog] = useState(false);
 
@@ -141,6 +143,8 @@ export default function SortableRemitoRow({
         onClose={() => setShowEntregaDialog(false)}
         remito={rem}
         isLoading={isUpdating}
+        setRemitosCompletos={setRemitosCompletos}
+        refrescarRemitos={refrescarRemitos}
       />
 
     </>

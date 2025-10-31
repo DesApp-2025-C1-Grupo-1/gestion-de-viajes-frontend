@@ -41,6 +41,8 @@ export default function DraggableRemitosGrid({
   entregas = {},
   disableDrag,
   bulkUpdating = [],
+  setRemitosCompletos,
+  refrescarRemitos
 }: DraggableRemitosGridProps) {
   const [activeId, setActiveId] = useState<number | null>(null);
   const [gruposExpandidos, setGruposExpandidos] = useState<Record<string, boolean>>({});
@@ -261,6 +263,8 @@ export default function DraggableRemitosGrid({
                           canDrag={!disableDrag}
                           remitosIdsInGrupo={grupo.remitos.map(r => r.id)}
                           isUpdating={bulkUpdating.includes(remito.id)}
+                          setRemitosCompletos={setRemitosCompletos}
+                          refrescarRemitos={refrescarRemitos}
                         />
                       ))}
                     </Box>

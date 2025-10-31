@@ -45,7 +45,8 @@ export default function RemitosSection() {
       quitarRemito,
       remitosQuitados,
       restaurarRemito,
-      toggleRemitos
+      toggleRemitos,
+      refrescarRemitos
     } = useRemitosManagement({
       control,
       setValue,
@@ -154,6 +155,8 @@ export default function RemitosSection() {
             remitosQuitados={remitosQuitados}
             restaurarRemito={restaurarRemito}
             quitarRemito={quitarRemito}
+            setRemitosCompletos={setRemitosCompletos}
+            refrescarRemitos={refrescarRemitos}
           />
 
         </Grid>

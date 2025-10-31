@@ -26,7 +26,7 @@ export function useNotify(entityName: string = "Elemento", typeGender: NotifyGen
         toast.error(message || `Ocurrió un error con ${entityName.toLowerCase()}.`);
         break;
       case "custom":
-        toast(message || "");
+        toast.info(message || "");
         break;
       default:
         toast(message || "");

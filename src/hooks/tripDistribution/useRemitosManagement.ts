@@ -118,7 +118,13 @@ export const useRemitosManagement = ({
       shouldDirty: true,
     });
   };
-  
+
+  const refrescarRemitos = async () => {
+    if (remitoIds.length === 0) return;
+    const { data } = await remitosControllerGetRemitosByIds({ ids: remitoIds });
+    setRemitosCompletos(data || []);
+  };
+
   return {
     remitosSeleccionados,
     remitosDisponibles,
@@ -131,6 +137,7 @@ export const useRemitosManagement = ({
     quitarRemito,
     restaurarRemito,
     toggleRemitos,
-    remitosQuitados
+    remitosQuitados,
+    refrescarRemitos,
   };
 };

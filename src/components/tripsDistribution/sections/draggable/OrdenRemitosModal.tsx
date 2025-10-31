@@ -4,7 +4,7 @@ import DraggableRemitosGrid from "./DraggableRemitosGrid";
 import { EstadoEntrega, OrdenRemitosModalProps } from "../../../../types";
 
 
-export default function OrdenRemitosModal({ open, onClose, estadoViaje, remitos, remitoIds, onReorderRemitos, onToggleRemito, remitosQuitados, restaurarRemito, quitarRemito }: OrdenRemitosModalProps) {
+export default function OrdenRemitosModal({ open, onClose, estadoViaje, remitos, remitoIds, onReorderRemitos, onToggleRemito, remitosQuitados, restaurarRemito, quitarRemito, setRemitosCompletos, refrescarRemitos }: OrdenRemitosModalProps) {
 
     const puedeEditarEntrega =
         estadoViaje === "fin de carga" || estadoViaje === "inicio de carga" || estadoViaje === "iniciado";
@@ -59,6 +59,8 @@ export default function OrdenRemitosModal({ open, onClose, estadoViaje, remitos,
                         remitosQuitados={remitosQuitados}
                         restaurarRemito={restaurarRemito}
                         quitarRemito={quitarRemito}
+                        setRemitosCompletos={setRemitosCompletos}
+                        refrescarRemitos={refrescarRemitos}
                     />
 
                     {!puedeEditarEntrega && (

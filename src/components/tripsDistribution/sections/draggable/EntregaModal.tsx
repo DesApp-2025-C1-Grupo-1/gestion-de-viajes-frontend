@@ -17,17 +17,15 @@ import {
   Chip,
   Alert,
 } from "@mui/material";
-import { CloudUpload, X, Camera, FileText, CheckCircle, XCircle } from "lucide-react";
+import { X, Camera, FileText, CheckCircle, XCircle } from "lucide-react";
+import { useRemitosControllerEntregarRemito, useRemitosControllerMarcarNoEntregado } from "../../../../api/generated";
+import { useNotify } from "../../../../hooks/useNotify";
 
 interface Props {
   open: boolean;
   onClose: () => void;
   remito: any;
   isLoading?: boolean;
-  onConfirm: (
-    estado: "entregado" | "no_entregado",
-    data: { foto?: File; motivo?: string }
-  ) => void;
 }
 
 const VisuallyHiddenInput = styled('input')({
@@ -53,14 +51,18 @@ const FilePreview = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(1),
 }));
 
-export default function EntregaModal({ open, onClose, remito, onConfirm, isLoading = false }: Props) {
-  const [estado, setEstado] = useState<"entregado" | "no_entregado" | "">("");
+export default function EntregaModal({ open, onClose, remito, isLoading = false }: Props) {
+  const {notify} = useNotify("Remito", "male");
+  const [estado, setEstado] = useState<"Entregado" | "No entregado" | "">("");
   const [motivo, setMotivo] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleConfirm = () => {
+  const entregarRemitoMutation = useRemitosControllerEntregarRemito();
+  const noEntregadoMutation = useRemitosControllerMarcarNoEntregado();
+
+  const handleConfirm = async() => {
     setError("");
 
     if (!estado) {
@@ -68,21 +70,50 @@ export default function EntregaModal({ open, onClose, remito, onConfirm, isLoadi
       return;
     }
 
-    if (estado === "entregado" && !file) {
+    if (estado === "Entregado" && !file) {
       setError("Subí una foto del comprobante de entrega");
       return;
     }
 
-    if (estado === "no_entregado" && !motivo.trim()) {
+    if (estado === "No entregado" && !motivo.trim()) {
       setError("Escribí el motivo de la no entrega");
       return;
     }
 
-    const data: { foto?: File; motivo?: string } =
-      estado === "entregado" ? { foto: file! } : { motivo: motivo.trim() };
+    try {
+    if (estado === "Entregado") {
+      if (!file) {
+        setError("Subí una foto del comprobante de entrega");
+        return;
+      }
+      await entregarRemitoMutation.mutateAsync({
+        id: remito.id,
+        data: { file },
+      });
 
-    onConfirm(estado, data);
-  };
+      notify("custom", `Remito N° ${remito.numeroAsignado} entregado correctamente`);
+    }
+
+    if (estado === "No entregado") {
+      if (!motivo.trim()) {
+        setError("Escribí el motivo de la no entrega");
+        return;
+      }
+
+      await noEntregadoMutation.mutateAsync({
+        id: remito.id,
+        data: { razonNoEntrega: motivo },
+      });
+
+      notify("custom", `Remito N° ${remito.numeroAsignado} marcado como no entregado`);
+    }
+
+    onClose?.();
+  } catch (err) {
+    console.error(err);
+    setError("Ocurrió un error al procesar la solicitud");
+  }
+};
 
   const handleClose = () => {
     setEstado("");
@@ -92,7 +123,7 @@ export default function EntregaModal({ open, onClose, remito, onConfirm, isLoadi
     onClose();
   };
 
-  const handleEstadoChange = (newEstado: "entregado" | "no_entregado" | "") => {
+  const handleEstadoChange = (newEstado: "Entregado" | "No entregado" | "") => {
     setEstado(newEstado);
     setMotivo("");
     setFile(null);
@@ -176,7 +207,7 @@ export default function EntregaModal({ open, onClose, remito, onConfirm, isLoadi
         justifyContent: 'space-between',
         pb: 1 
       }}>
-        <Typography variant="h6" fontWeight={600}>
+        <Typography variant="body2" fontWeight={600} fontSize={20}>
           Estado del Remito
         </Typography>
         <IconButton 
@@ -219,7 +250,7 @@ export default function EntregaModal({ open, onClose, remito, onConfirm, isLoadi
 
         <RadioGroup value={estado} onChange={(e) => handleEstadoChange(e.target.value as any)}>
           <FormControlLabel
-            value="entregado"
+            value="Entregado"
             control={<Radio />}
             label={
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -238,7 +269,7 @@ export default function EntregaModal({ open, onClose, remito, onConfirm, isLoadi
           />
           
           <FormControlLabel
-            value="no_entregado"
+            value="No entregado"
             control={<Radio />}
             label={
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -257,7 +288,7 @@ export default function EntregaModal({ open, onClose, remito, onConfirm, isLoadi
         </RadioGroup>
 
         {/* Campo para foto */}
-        {estado === "entregado" && (
+        {estado === "Entregado" && (
           <Box sx={{ mt: 3 }}>
             <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 1 }}>
               Foto del comprobante
@@ -299,7 +330,7 @@ export default function EntregaModal({ open, onClose, remito, onConfirm, isLoadi
         )}
 
         {/* Campo para motivo */}
-        {estado === "no_entregado" && (
+        {estado === "No entregado" && (
           <Box sx={{ mt: 3 }}>
             <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 1 }}>
               Motivo de no entrega
@@ -344,22 +375,22 @@ export default function EntregaModal({ open, onClose, remito, onConfirm, isLoadi
           variant="contained" 
           onClick={handleConfirm}
           disabled={isLoading}
-          startIcon={isLoading ? <></> : estado === "entregado" ? <CheckCircle size={18} /> : <XCircle size={18} />}
+          startIcon={isLoading ? <></> : estado === "Entregado" ? <CheckCircle size={18} /> : <XCircle size={18} />}
           sx={{ 
             minWidth: 200,
             boxShadow: 'none',
-            backgroundColor: estado === "no_entregado" ? '#C62828' : '#2E7D32',
+            backgroundColor: estado === "No entregado" ? '#C62828' : '#2E7D32',
             '&:hover': {
-              backgroundColor: estado === "no_entregado" ? '#B71C1C' : '#1B5E20',
+              backgroundColor: estado === "No entregado" ? '#B71C1C' : '#1B5E20',
               boxShadow: 'none',
             }
           }}
         >
           {isLoading ? (
             "Procesando..."
-          ) : estado === "entregado" ? (
+          ) : estado === "Entregado" ? (
             "Marcar como entregado"
-          ) : estado === "no_entregado" ? (
+          ) : estado === "No entregado" ? (
             "Marcar como no entregado"
           ) : (
             "Confirmar estado"

@@ -1,8 +1,7 @@
-import { Box, Chip, IconButton, Typography, Tooltip, CircularProgress, Button, Dialog, DialogTitle, DialogContent } from "@mui/material";
-import { GripVertical, CheckCircle2, XCircle, Trash2, CheckCircle, Clock, MessageCircle, Camera, Pen, Pencil, X } from "lucide-react";
+import { Box, IconButton, Typography, Tooltip, Chip } from "@mui/material";
+import { GripVertical, Trash2, Pencil } from "lucide-react";
 import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
-import { RemitoDto } from "../../../../api/generated";
 import { SortableRemitoRowProps } from "../../../../types";
 import { useState } from "react";
 import EntregaModal from "./EntregaModal";
@@ -10,8 +9,6 @@ import EntregaModal from "./EntregaModal";
 export default function SortableRemitoRow({
   rem,
   index,
-  estadoEntrega = "en camino",
-  onToggleEntrega,
   onQuitar,
   canDrag = true,
   isUpdating = false,
@@ -104,51 +101,8 @@ export default function SortableRemitoRow({
           </Box>
 
           {/* Botones de acción - solo mostrar si está en camino */}
-          {estadoEntrega === "en camino" && onToggleEntrega && (
+          {rem.estado?.nombre === "En camino" && (
             <Box sx={{ display: "flex", gap: 1, justifyContent: "flex-end" }}>
-{/*               <Tooltip title="Marcar como entregado">
-                <Button
-                  size="small"
-                  variant="outlined"
-                  startIcon={<Camera size={14} />}
-                  onClick={() => setShowEntregaDialog(true)}
-                  disabled={isUpdating}
-                  sx={{ 
-                    fontSize: '0.75rem',
-                    borderColor: '#2E7D32',
-                    color: '#2E7D32',
-                    '&:hover': {
-                      backgroundColor: '#2E7D32',
-                      borderColor: '#2E7D32',
-                      color: 'white'
-                    }
-                  }}
-                >
-                  Entregar
-                </Button>
-              </Tooltip>
-
-              <Tooltip title="Marcar como no entregado">
-                <Button
-                  size="small"
-                  variant="outlined"
-                  startIcon={<MessageCircle size={14} />}
-                  onClick={() => setShowNoEntregaDialog(true)}
-                  disabled={isUpdating}
-                  sx={{ 
-                    fontSize: '0.75rem',
-                    borderColor: '#C62828',
-                    color: '#C62828',
-                    '&:hover': {
-                      backgroundColor: '#C62828',
-                      borderColor: '#C62828',
-                      color: 'white'
-                    }
-                  }}
-                >
-                  No Entregar
-                </Button>
-              </Tooltip> */}
 
               <Tooltip title="Marcar remito">
                 <IconButton 
@@ -164,7 +118,7 @@ export default function SortableRemitoRow({
         </Box>
 
         {/* Botón eliminar - solo si está en camino */}
-        {estadoEntrega === "en camino" && onQuitar && (
+        {rem.estado?.nombre === "En camino" && onQuitar && (
           <Tooltip title="Quitar remito">
             <IconButton 
               size="small" 
@@ -175,6 +129,10 @@ export default function SortableRemitoRow({
             </IconButton>
           </Tooltip>
         )}
+
+        {rem.estado?.nombre !== "En camino" && (
+          <Chip label={rem.estado?.nombre} color={rem.estado?.nombre === "Entregado" ? "success" : "error"} />
+        )}
       </Box>
       
       {/* Dialogs para entrega y no entrega */}
@@ -183,7 +141,6 @@ export default function SortableRemitoRow({
         onClose={() => setShowEntregaDialog(false)}
         remito={rem}
         isLoading={isUpdating}
-        onConfirm={() => setShowEntregaDialog(false)}
       />
 
     </>

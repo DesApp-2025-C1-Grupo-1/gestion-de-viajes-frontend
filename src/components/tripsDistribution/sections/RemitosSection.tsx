@@ -147,10 +147,8 @@ export default function RemitosSection() {
             open={ordenModalOpen} 
             onClose={() => setOrdenModalOpen(false)} 
             estadoViaje={tripData?.estado || ""}
-            onUpdateEntrega={async () => {}}
             remitos={remitosSeleccionados}
             remitoIds={remitoIds}
-            viajeId={tripData?._id || ""}
             onReorderRemitos={reordenarRemitos}
             onToggleRemito={toggleRemito}
             remitosQuitados={remitosQuitados}

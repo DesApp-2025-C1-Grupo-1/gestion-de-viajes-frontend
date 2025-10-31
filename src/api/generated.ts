@@ -1061,6 +1061,15 @@ limit?: number;
 page?: number;
 };
 
+export type RemitosControllerEntregarRemitoBody = {
+  /** Archivo PDF o imagen con la firma del remito */
+  file: Blob;
+};
+
+export type RemitosControllerMarcarNoEntregadoBody = {
+  razonNoEntrega: string;
+};
+
 export type RemitosControllerGetRemitosByIdsBody = {
   ids?: number[];
 };
@@ -4187,20 +4196,22 @@ export const useRemitosControllerCambiarEstado = <TError = AxiosError<void>,
  * @summary Entregar remito (requiere archivo firmado)
  */
 export const remitosControllerEntregarRemito = (
-    id: number, options?: AxiosRequestConfig
+    id: number,
+    remitosControllerEntregarRemitoBody: RemitosControllerEntregarRemitoBody, options?: AxiosRequestConfig
  ): Promise<AxiosResponse<RemitoDto>> => {
     
     
     return axios.put(
-      `/remito/${id}/firmar`,undefined,options
+      `/remito/${id}/firmar`,
+      remitosControllerEntregarRemitoBody,options
     );
   }
 
 
 
 export const getRemitosControllerEntregarRemitoMutationOptions = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof remitosControllerEntregarRemito>>, TError,{id: number}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof remitosControllerEntregarRemito>>, TError,{id: number}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof remitosControllerEntregarRemito>>, TError,{id: number;data: RemitosControllerEntregarRemitoBody}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof remitosControllerEntregarRemito>>, TError,{id: number;data: RemitosControllerEntregarRemitoBody}, TContext> => {
 
 const mutationKey = ['remitosControllerEntregarRemito'];
 const {mutation: mutationOptions, axios: axiosOptions} = options ?
@@ -4212,10 +4223,10 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof remitosControllerEntregarRemito>>, {id: number}> = (props) => {
-          const {id} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof remitosControllerEntregarRemito>>, {id: number;data: RemitosControllerEntregarRemitoBody}> = (props) => {
+          const {id,data} = props ?? {};
 
-          return  remitosControllerEntregarRemito(id,axiosOptions)
+          return  remitosControllerEntregarRemito(id,data,axiosOptions)
         }
 
         
@@ -4224,18 +4235,18 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type RemitosControllerEntregarRemitoMutationResult = NonNullable<Awaited<ReturnType<typeof remitosControllerEntregarRemito>>>
-    
+    export type RemitosControllerEntregarRemitoMutationBody = RemitosControllerEntregarRemitoBody
     export type RemitosControllerEntregarRemitoMutationError = AxiosError<void>
 
     /**
  * @summary Entregar remito (requiere archivo firmado)
  */
 export const useRemitosControllerEntregarRemito = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof remitosControllerEntregarRemito>>, TError,{id: number}, TContext>, axios?: AxiosRequestConfig}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof remitosControllerEntregarRemito>>, TError,{id: number;data: RemitosControllerEntregarRemitoBody}, TContext>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof remitosControllerEntregarRemito>>,
         TError,
-        {id: number},
+        {id: number;data: RemitosControllerEntregarRemitoBody},
         TContext
       > => {
 
@@ -4248,20 +4259,22 @@ export const useRemitosControllerEntregarRemito = <TError = AxiosError<void>,
  * @summary Marcar remito como no entregado
  */
 export const remitosControllerMarcarNoEntregado = (
-    id: number, options?: AxiosRequestConfig
+    id: number,
+    remitosControllerMarcarNoEntregadoBody: RemitosControllerMarcarNoEntregadoBody, options?: AxiosRequestConfig
  ): Promise<AxiosResponse<RemitoDto>> => {
     
     
     return axios.put(
-      `/remito/${id}/no-entregado`,undefined,options
+      `/remito/${id}/no-entregado`,
+      remitosControllerMarcarNoEntregadoBody,options
     );
   }
 
 
 
 export const getRemitosControllerMarcarNoEntregadoMutationOptions = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof remitosControllerMarcarNoEntregado>>, TError,{id: number}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof remitosControllerMarcarNoEntregado>>, TError,{id: number}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof remitosControllerMarcarNoEntregado>>, TError,{id: number;data: RemitosControllerMarcarNoEntregadoBody}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof remitosControllerMarcarNoEntregado>>, TError,{id: number;data: RemitosControllerMarcarNoEntregadoBody}, TContext> => {
 
 const mutationKey = ['remitosControllerMarcarNoEntregado'];
 const {mutation: mutationOptions, axios: axiosOptions} = options ?
@@ -4273,10 +4286,10 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof remitosControllerMarcarNoEntregado>>, {id: number}> = (props) => {
-          const {id} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof remitosControllerMarcarNoEntregado>>, {id: number;data: RemitosControllerMarcarNoEntregadoBody}> = (props) => {
+          const {id,data} = props ?? {};
 
-          return  remitosControllerMarcarNoEntregado(id,axiosOptions)
+          return  remitosControllerMarcarNoEntregado(id,data,axiosOptions)
         }
 
         
@@ -4285,18 +4298,18 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type RemitosControllerMarcarNoEntregadoMutationResult = NonNullable<Awaited<ReturnType<typeof remitosControllerMarcarNoEntregado>>>
-    
+    export type RemitosControllerMarcarNoEntregadoMutationBody = RemitosControllerMarcarNoEntregadoBody
     export type RemitosControllerMarcarNoEntregadoMutationError = AxiosError<void>
 
     /**
  * @summary Marcar remito como no entregado
  */
 export const useRemitosControllerMarcarNoEntregado = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof remitosControllerMarcarNoEntregado>>, TError,{id: number}, TContext>, axios?: AxiosRequestConfig}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof remitosControllerMarcarNoEntregado>>, TError,{id: number;data: RemitosControllerMarcarNoEntregadoBody}, TContext>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof remitosControllerMarcarNoEntregado>>,
         TError,
-        {id: number},
+        {id: number;data: RemitosControllerMarcarNoEntregadoBody},
         TContext
       > => {
 

@@ -1,32 +1,18 @@
-import { Alert, AppBar, Box, Button, CircularProgress, Dialog, IconButton, Toolbar, Typography } from "@mui/material";
+import { Alert, AppBar, Box, Button, Dialog, IconButton, Toolbar, Typography } from "@mui/material";
 import { CheckCircle, X } from "lucide-react";
-import { useState } from "react";
 import DraggableRemitosGrid from "./DraggableRemitosGrid";
-import { useRemitosEntrega } from "../../../../hooks/tripDistribution/remitos/useRemitosEntrega";
-import { OrdenRemitosModalProps } from "../../../../types";
+import { EstadoEntrega, OrdenRemitosModalProps } from "../../../../types";
 
 
-export default function OrdenRemitosModal({ open, onClose, estadoViaje, onUpdateEntrega, remitos, remitoIds, onReorderRemitos, viajeId, onToggleRemito, remitosQuitados, restaurarRemito, quitarRemito }: OrdenRemitosModalProps) {
-    const [isSaving, setIsSaving] = useState<boolean>(false);
-    const { toggleEntrega, entregas, isUpdating } = useRemitosEntrega(viajeId);
+export default function OrdenRemitosModal({ open, onClose, estadoViaje, remitos, remitoIds, onReorderRemitos, onToggleRemito, remitosQuitados, restaurarRemito, quitarRemito }: OrdenRemitosModalProps) {
 
     const puedeEditarEntrega =
         estadoViaje === "fin de carga" || estadoViaje === "inicio de carga" || estadoViaje === "iniciado";
 
-    const handleSave = async () => {
-        try {
-        setIsSaving(true);
-        await onUpdateEntrega();
-        onClose();
-        } finally {
-        setIsSaving(false);
-        }
-    };
-
-    const entregasMapped: Record<number, "en camino" | "entregado" | "no_entregado"> = {};
-    for (const [remitoId, entregado] of Object.entries(entregas)) {
-        entregasMapped[Number(remitoId)] = entregado ? "entregado" : "no_entregado";
-    }
+    const entregas = remitos.reduce((acc, remito) => {
+        acc[remito.id] = remito.estado?.nombre as EstadoEntrega || "";
+        return acc;
+    }, {} as Record<number, EstadoEntrega>);
 
     return (
         <Dialog open={open} onClose={onClose} fullScreen disableScrollLock scroll="paper" PaperProps={{ sx: { backgroundColor: "#ffffff", mx: "auto", p: 0, borderRadius: 0 } }}>
@@ -67,10 +53,9 @@ export default function OrdenRemitosModal({ open, onClose, estadoViaje, onUpdate
                         remitos={remitos}
                         remitoIds={remitoIds}
                         onReorderRemitos={onReorderRemitos}
-                        onToggleEntrega={puedeEditarEntrega ? toggleEntrega : undefined}
-                        entregas={entregasMapped}
                         disableDrag={!puedeEditarEntrega} 
-                        onToggleRemito={onToggleRemito}            
+                        onToggleRemito={onToggleRemito}    
+                        entregas={entregas}
                         remitosQuitados={remitosQuitados}
                         restaurarRemito={restaurarRemito}
                         quitarRemito={quitarRemito}
@@ -105,25 +90,21 @@ export default function OrdenRemitosModal({ open, onClose, estadoViaje, onUpdate
                     onClick={onClose}
                     variant="outlined"
                     color="inherit"
-                    disabled={isSaving}
                     >
                     Cancelar
                     </Button>
                     <Button
-                    onClick={handleSave}
-                    variant="contained"
-                    sx={{
-                        backgroundColor: "#E65F2B",
-                        "&:hover": { backgroundColor: "#C94715" },
-                    }}
-                    startIcon={
-                        isSaving ? (
-                        <CircularProgress size={18} color="inherit" />
-                        ) : (
-                        <CheckCircle size={18} />
-                        )
-                    }
-                    disabled={isSaving}
+                        onClick={() => {
+                            onClose();
+                        }}
+                        variant="contained"
+                        sx={{
+                            backgroundColor: "#E65F2B",
+                            "&:hover": { backgroundColor: "#C94715" },
+                        }}
+                        startIcon={
+                            <CheckCircle size={18} />
+                        }
                     >
                     Guardar cambios
                     </Button>

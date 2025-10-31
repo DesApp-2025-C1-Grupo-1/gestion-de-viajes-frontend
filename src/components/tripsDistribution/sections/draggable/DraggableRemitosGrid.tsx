@@ -26,7 +26,6 @@ import {
   Tooltip,
 } from "@mui/material";
 import { MapPin, Package, XCircle, CheckCircle, ChevronUp, ChevronDown } from "lucide-react";
-import { RemitoDto } from "../../../../api/generated";
 import RemitoCard from "../../../trip/modals/RemitoCard";
 import SortableRemitoRow from "./SortableRemitoItem";
 import { DraggableRemitosGridProps, GrupoRemitos } from "../../../../types";
@@ -38,7 +37,6 @@ export default function DraggableRemitosGrid({
   remitosQuitados,
   restaurarRemito,
   quitarRemito,
-  onToggleEntrega,
   onToggleEntregaMultiple,
   entregas = {},
   disableDrag,
@@ -120,8 +118,8 @@ export default function DraggableRemitosGrid({
   // Estadísticas para el header
   const estadisticas = useMemo(() => {
     const total = remitos.length;
-    const entregados = Object.values(entregas).filter(e => e === "entregado").length;
-    const noEntregados = Object.values(entregas).filter(e => e === "no_entregado").length;
+    const entregados = Object.values(entregas).filter(e => e === "Entregado").length;
+    const noEntregados = Object.values(entregas).filter(e => e === "No entregado").length;
     const enCamino = total - entregados - noEntregados;
 
     return { total, entregados, noEntregados, enCamino };
@@ -260,8 +258,6 @@ export default function DraggableRemitosGrid({
                           rem={remito}
                           index={index}
                           onQuitar={() => quitarRemito(remito)}
-                          onToggleEntrega={onToggleEntrega}
-                          estadoEntrega={entregas[remito.id]}
                           canDrag={!disableDrag}
                           remitosIdsInGrupo={grupo.remitos.map(r => r.id)}
                           isUpdating={bulkUpdating.includes(remito.id)}

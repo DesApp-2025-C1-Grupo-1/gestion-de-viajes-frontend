@@ -1,7 +1,7 @@
 import { RemitoDto } from "../api/generated";
 
-export type EstadoEntrega = "en camino" | "entregado" | "no_entregado";
-export type PrioridadRemito = "baja" | "media" | "alta" | "urgente";
+export type EstadoEntrega = "En preparación" | "En camino" | "Entregado" | "No entregado";
+export type PrioridadRemito = "baja" | "normal" | "alta" | "urgente";
 
 export interface GrupoRemitos {
   key: string;
@@ -29,7 +29,6 @@ export interface DraggableRemitosGridProps {
 export interface SortableRemitoRowProps {
   rem: RemitoDto;
   index: number;
-  estadoEntrega?: EstadoEntrega;
   onToggleEntrega?: (id: number, estado: EstadoEntrega) => void;
   onQuitar?: (rem: RemitoDto) => void;
   canDrag?: boolean;
@@ -41,10 +40,8 @@ export interface OrdenRemitosModalProps {
   open: boolean;
   onClose: () => void;
   estadoViaje: string;
-  onUpdateEntrega: () => Promise<void>;
   remitos: RemitoDto[];
   remitoIds: number[];
-  viajeId: string;
   onReorderRemitos: (newOrder: number[]) => void;
   onToggleRemito: (remitoId: number) => void;
   remitosQuitados: RemitoDto[];

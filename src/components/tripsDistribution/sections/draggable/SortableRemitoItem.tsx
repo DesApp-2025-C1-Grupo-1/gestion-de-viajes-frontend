@@ -119,8 +119,12 @@ export default function SortableRemitoRow({
           )}
         </Box>
 
+        {rem.estado?.nombre !== "En camino" && (
+          <Chip label={rem.estado?.nombre} color={rem.estado?.nombre === "Entregado" ? "success" : "error"} />
+        )}
+
         {/* Botón eliminar - solo si está en camino */}
-        {rem.estado?.nombre === "En camino" && onQuitar && (
+        {(rem.estado?.nombre !== "No entregado") && (rem.estado?.nombre !== "Entregado") && onQuitar && (
           <Tooltip title="Quitar remito">
             <IconButton 
               size="small" 
@@ -130,10 +134,6 @@ export default function SortableRemitoRow({
               <Trash2 size={18} color="#888" />
             </IconButton>
           </Tooltip>
-        )}
-
-        {rem.estado?.nombre !== "En camino" && (
-          <Chip label={rem.estado?.nombre} color={rem.estado?.nombre === "Entregado" ? "success" : "error"} />
         )}
       </Box>
       

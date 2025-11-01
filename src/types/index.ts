@@ -24,7 +24,7 @@ export interface DraggableRemitosGridProps {
   entregas?: Record<number, EstadoEntrega>;
   disableDrag?: boolean;
   bulkUpdating?: number[];
-  setRemitosCompletos: React.Dispatch<React.SetStateAction<RemitoDto[]>>;
+  setRemitosCompletos: (remitos: RemitoDto[]) => void;
   refrescarRemitos: () => Promise<void>;
 }
 
@@ -36,7 +36,7 @@ export interface SortableRemitoRowProps {
   canDrag?: boolean;
   isUpdating?: boolean;
   remitosIdsInGrupo?: number[];
-  setRemitosCompletos: React.Dispatch<React.SetStateAction<RemitoDto[]>>;
+  setRemitosCompletos: (remitos: RemitoDto[]) => void;
   refrescarRemitos: () => Promise<void>;
 }
 
@@ -51,7 +51,7 @@ export interface OrdenRemitosModalProps {
   remitosQuitados: RemitoDto[];
   restaurarRemito: (remito: RemitoDto) => void;
   quitarRemito: (remito: RemitoDto) => void;
-  setRemitosCompletos: React.Dispatch<React.SetStateAction<RemitoDto[]>>;
+  setRemitosCompletos: (remitos: RemitoDto[]) => void;
   refrescarRemitos: () => Promise<void>;
 }
 

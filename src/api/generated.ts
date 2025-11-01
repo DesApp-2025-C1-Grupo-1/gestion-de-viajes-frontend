@@ -1061,8 +1061,16 @@ limit?: number;
 page?: number;
 };
 
-export type RemitosControllerEntregarRemitoBody = {
-  file?: Blob;
+export type RemitosControllerEntregarRemitoBodyOneFile = Blob | string;
+
+export type RemitosControllerEntregarRemitoBodyOne = {
+  file?: RemitosControllerEntregarRemitoBodyOneFile;
+};
+
+export type RemitosControllerEntregarRemitoBodyTwoFile = Blob | string;
+
+export type RemitosControllerEntregarRemitoBodyTwo = {
+  file?: RemitosControllerEntregarRemitoBodyTwoFile;
 };
 
 export type RemitosControllerMarcarNoEntregadoBody = {
@@ -4192,11 +4200,11 @@ export const useRemitosControllerCambiarEstado = <TError = AxiosError<void>,
     }
     
 /**
- * @summary Entregar remito (requiere archivo firmado)
+ * @summary Entregar remito (archivo o base64)
  */
 export const remitosControllerEntregarRemito = (
     id: number,
-    remitosControllerEntregarRemitoBody: RemitosControllerEntregarRemitoBody, options?: AxiosRequestConfig
+    remitosControllerEntregarRemitoBody: RemitosControllerEntregarRemitoBodyOne | RemitosControllerEntregarRemitoBodyTwo, options?: AxiosRequestConfig
  ): Promise<AxiosResponse<RemitoDto>> => {
     
     
@@ -4209,8 +4217,8 @@ export const remitosControllerEntregarRemito = (
 
 
 export const getRemitosControllerEntregarRemitoMutationOptions = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof remitosControllerEntregarRemito>>, TError,{id: number;data: RemitosControllerEntregarRemitoBody}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof remitosControllerEntregarRemito>>, TError,{id: number;data: RemitosControllerEntregarRemitoBody}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof remitosControllerEntregarRemito>>, TError,{id: number;data: RemitosControllerEntregarRemitoBodyOne | RemitosControllerEntregarRemitoBodyTwo}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof remitosControllerEntregarRemito>>, TError,{id: number;data: RemitosControllerEntregarRemitoBodyOne | RemitosControllerEntregarRemitoBodyTwo}, TContext> => {
 
 const mutationKey = ['remitosControllerEntregarRemito'];
 const {mutation: mutationOptions, axios: axiosOptions} = options ?
@@ -4222,7 +4230,7 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof remitosControllerEntregarRemito>>, {id: number;data: RemitosControllerEntregarRemitoBody}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof remitosControllerEntregarRemito>>, {id: number;data: RemitosControllerEntregarRemitoBodyOne | RemitosControllerEntregarRemitoBodyTwo}> = (props) => {
           const {id,data} = props ?? {};
 
           return  remitosControllerEntregarRemito(id,data,axiosOptions)
@@ -4234,18 +4242,18 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type RemitosControllerEntregarRemitoMutationResult = NonNullable<Awaited<ReturnType<typeof remitosControllerEntregarRemito>>>
-    export type RemitosControllerEntregarRemitoMutationBody = RemitosControllerEntregarRemitoBody
+    export type RemitosControllerEntregarRemitoMutationBody = RemitosControllerEntregarRemitoBodyOne | RemitosControllerEntregarRemitoBodyTwo
     export type RemitosControllerEntregarRemitoMutationError = AxiosError<void>
 
     /**
- * @summary Entregar remito (requiere archivo firmado)
+ * @summary Entregar remito (archivo o base64)
  */
 export const useRemitosControllerEntregarRemito = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof remitosControllerEntregarRemito>>, TError,{id: number;data: RemitosControllerEntregarRemitoBody}, TContext>, axios?: AxiosRequestConfig}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof remitosControllerEntregarRemito>>, TError,{id: number;data: RemitosControllerEntregarRemitoBodyOne | RemitosControllerEntregarRemitoBodyTwo}, TContext>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof remitosControllerEntregarRemito>>,
         TError,
-        {id: number;data: RemitosControllerEntregarRemitoBody},
+        {id: number;data: RemitosControllerEntregarRemitoBodyOne | RemitosControllerEntregarRemitoBodyTwo},
         TContext
       > => {
 

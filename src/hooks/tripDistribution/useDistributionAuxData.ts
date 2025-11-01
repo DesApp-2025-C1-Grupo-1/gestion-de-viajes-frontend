@@ -36,17 +36,17 @@ export const useDistributionAuxData = ({ control, setValue, initialCompanyId }: 
     const companyId = companyIdTrip || initialCompanyId;
     
     if (companyId && vehicles?.data && drivers?.data) {
-      const filteredVehicles = vehicles.data.filter(v => v.empresa._id === companyId);
-      const filteredDrivers = drivers.data.filter(d => d.empresa._id === companyId);
+      const filteredVehicles = vehicles.data.filter(v => v.empresa?._id === companyId);
+      const filteredDrivers = drivers.data.filter(d => d.empresa?._id === companyId);
       
       setFilteredVehiculos(filteredVehicles);
       setFilteredChoferes(filteredDrivers);
 
       // Resetear selecciones si ya no pertenecen a la empresa
-      if (currentVehicleId && !filteredVehicles.some(v => v._id === currentVehicleId)) {
+      if (currentVehicleId && !filteredVehicles.some(v => v?._id === currentVehicleId)) {
         setValue("vehiculo", "");
       }
-      if (currentDriverId && !filteredDrivers.some(d => d._id === currentDriverId)) {
+      if (currentDriverId && !filteredDrivers.some(d => d?._id === currentDriverId)) {
         setValue("chofer", "");
       }
     } else {

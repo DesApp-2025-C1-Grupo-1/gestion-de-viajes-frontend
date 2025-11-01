@@ -8,6 +8,7 @@ import {
   useSensors,
   DragEndEvent,
   DragStartEvent,
+  TouchSensor,
 } from "@dnd-kit/core";
 import {
   arrayMove,
@@ -83,16 +84,28 @@ export default function DraggableRemitosGrid({
     }
   };
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, { 
-      activationConstraint: { 
-        distance: 3, // Reducido para mejor respuesta
-      } 
-    }),
-    useSensor(KeyboardSensor)
-  );
+const sensors = useSensors(
+  // Para escritorio
+  useSensor(PointerSensor, {
+    activationConstraint: {
+      distance: 8, // evita arrastres accidentales
+    },
+  }),
+
+  // Para dispositivos táctiles
+  useSensor(TouchSensor, {
+    activationConstraint: {
+      delay: 150, // mantener presionado 200ms antes de arrastrar
+      tolerance: 5, // margen de movimiento
+    },
+  }),
+
+  // ⌨Accesibilidad (opcional)
+  useSensor(KeyboardSensor)
+);
 
   const handleDragStart = (event: DragStartEvent) => {
+    document.body.style.overflow = "hidden"; // bloquea scroll
     setActiveId(event.active.id as number);
   };
 
@@ -101,6 +114,7 @@ export default function DraggableRemitosGrid({
     const { active, over } = event;
     
     if (!over || active.id === over.id) {
+      document.body.style.overflow = "auto"; // restaura scroll
       setActiveId(null);
       return;
     }

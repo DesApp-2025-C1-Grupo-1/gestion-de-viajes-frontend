@@ -10,7 +10,6 @@ export default function CreateDistributionTrip() {
     <>
       <SectionHeader 
         title="Registrar Viaje de Distribución"
-        description="Completá el formulario para dar de alta un viaje de distribución."
       />
       
       <Paper sx={{ 

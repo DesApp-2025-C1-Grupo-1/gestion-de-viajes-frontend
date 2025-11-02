@@ -1,4 +1,4 @@
-import { MenuItem, Pagination, Select, SelectChangeEvent } from "@mui/material";
+import { Box, MenuItem, Pagination, Select, SelectChangeEvent, Typography } from "@mui/material";
 
 interface PaginationEntityProps {
     entity: string;
@@ -24,36 +24,65 @@ export default function PaginationEntity({ entity, page,totalPages, rowsPerPage,
     const maxItemsToShow = totalItems ? totalItems : filtered.length;
     
     return (
-        <div className="flex flex-col gap-4 justify-between items-center  container mx-auto py-4 ">
-            <p className="text-sm w-full">
+        <Box p={2} gap={3} sx={{display: "flex", flexDirection: {xs: "column", md: "row"}, mx: "auto", width: "100%", justifyContent: {xs: "center",md: "space-between"}, alignItems: "center"}}>
+            <Typography variant="body2" sx={{ width: {xs: "100%", sm: "max-content"}, whiteSpace: "nowrap",textAlign: {xs: "center", sm:"left"}}} >
                 Mostrando {Math.min((page - 1) * rowsPerPage + 1, maxItemsToShow)}–{Math.min(page * rowsPerPage, maxItemsToShow)} de {maxItemsToShow} {entity}
-            </p>
+            </Typography>
 
-            <div className="flex items-center w-full justify-between">
-                <div className="flex items-center w-full gap-2">
+            <Box gap={3} alignItems="center" sx={{
+                flexDirection: {xs: "column-reverse", sm: "row"},
+                justifyContent: {xs: "center", md: "flex-end"},
+                display: "flex",
+                width: "100%",
+            }}>
+                <div className="flex items-center gap-2">
                     <span className="text-sm w-max">Filas por página: </span>
                     <Select
                         value={rowsPerPage}
                         onChange={(e) => handleChangeRowsPerPage(e)}
-                        sx={{fontSize: "0.875rem", py: 0, px: 1, borderRadius: "4px", backgroundColor: "#F5F5F5"}}
+                        sx={{fontSize: "0.875rem", py: 0, px: 0.5, borderRadius: "4px", backgroundColor: "#F5F5F5", height: 40}}
                     >
                         <MenuItem value={5}>5</MenuItem>
+                        <MenuItem value={8}>8</MenuItem>
                         <MenuItem value={10}>10</MenuItem>
-                        <MenuItem value={25}>25</MenuItem>
+                        <MenuItem value={20}>20</MenuItem>
                     </Select>
 
                 </div>
             
-
                 <Pagination 
                     count={totalPages}
                     page={page}
                     onChange={handleChangePage}
                     shape="rounded"
+                    variant="outlined"
                     color="primary"
-                    sx={{width: "100%", display: "flex", justifyContent: "flex-end"}}
+                    size="large" 
+                    sx={{
+                        "& .MuiPaginationItem-root": {
+                            borderRadius: "4px",
+                            border: "1px solid #E65F2B",
+                            color: "#E65F2B",
+                            fontWeight: 500,
+                            transition: "all 0.2s ease",
+                        },
+
+                        "& .MuiPaginationItem-root:hover": {
+                            backgroundColor: "#ff926882", 
+                        },
+
+                        "& .Mui-selected": {
+                            backgroundColor: "#E65F2B !important",
+                            color: "#fff !important",
+                            borderColor: "#E65F2B !important",
+                            "&:hover": {
+                                backgroundColor: "#cf5426 !important",
+                            },
+                        },
+                    }}
+
                 />
-            </div>
-        </div>
+            </Box>
+        </Box>
     );
 }

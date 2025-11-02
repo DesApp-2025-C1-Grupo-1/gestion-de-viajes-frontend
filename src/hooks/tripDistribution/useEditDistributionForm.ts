@@ -16,7 +16,7 @@ export const useEditDistributionForm = (tripId: string) => {
   const queryClient = useQueryClient();
   const { notify } = useNotify("Viaje");
    // Cargar datos del viaje existente
-  const { data: tripData, isLoading, error } = useTripDistributionData(tripId);
+  const { data: tripData, isLoading, error, refetch } = useTripDistributionData(tripId);
 
   // Form con valores del viaje
   const form = useDistributionFormBase(
@@ -96,7 +96,10 @@ export const useEditDistributionForm = (tripId: string) => {
       });
       reset(formData)
       notify("update");
-      queryClient.invalidateQueries({ queryKey: ['/viaje-distribucion'] });
+      queryClient.invalidateQueries({ queryKey: ['/viajeDistribucionControllerBuscar'] });
+      queryClient.invalidateQueries({ queryKey: ['/viajeDistribucionControllerUpdate'] });
+      queryClient.invalidateQueries({ queryKey: ['/remitosControllerGetRemitosByIds'] });
+      await refetch();
       navigate("/trips/distribution");
     } catch (e) {
       handleApiError(e, notify);

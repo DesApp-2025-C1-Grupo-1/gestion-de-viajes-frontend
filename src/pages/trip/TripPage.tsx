@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
 import { SectionHeader } from "../../components/SectionHeader";
 import TripFilters from "../../components/TripFilters";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
+import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
 import LoadingState from "../../components/LoadingState";
 import MenuItem from "../../components/buttons/MenuItem";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
@@ -146,7 +146,6 @@ export default function TripPage() {
         <>
             <SectionHeader
                 title="Viajes"
-                description="Consulte los viajes registrados junto con su logística asociada."
                 buttonText="Nuevo viaje"
                 onAdd={() => navigate('/trips/form')}
 
@@ -163,14 +162,12 @@ export default function TripPage() {
                 loadingOptions={loadingOptions}
             />
 
-            <div className="bg-white rounded-lg" style={{
-                boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
-                border: "0.5px solid #C7C7C7",}}>
-                    <TableContainer className="text-sm rounded-lg">
-                        <Table aria-label="simple table" >
-                            <TableHead >
-                                    <TableRow >
-                                        <TableCell>Número</TableCell>
+            <Box>
+                <TableContainer component={Paper}>
+                    <Table aria-label="tabla de viajes">
+                        <TableHead >
+                                <TableRow >
+                                    <TableCell>Número</TableCell>
                                         <TableCell>Ruta</TableCell>
                                         <TableCell>Transportista</TableCell>
                                         <TableCell>Itinerario</TableCell>
@@ -228,7 +225,7 @@ export default function TripPage() {
 
                         </Table>
                     </TableContainer>
-            </div>
+            </Box>
 
             {/* Paginación */}
             <PaginationEntity

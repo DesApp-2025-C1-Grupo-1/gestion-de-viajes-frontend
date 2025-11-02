@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from "react";
 import {
   DndContext,
   closestCenter,
@@ -7,307 +7,326 @@ import {
   useSensor,
   useSensors,
   DragEndEvent,
-  DragOverlay,
   DragStartEvent,
-} from '@dnd-kit/core';
+  TouchSensor,
+} from "@dnd-kit/core";
 import {
   arrayMove,
   SortableContext,
   verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
+} from "@dnd-kit/sortable";
+import {
+  Typography,
+  Paper,
+  Box,
+  Chip,
+  Divider,
+  Alert,
+  Collapse,
+  IconButton,
+  Tooltip,
+} from "@mui/material";
+import { MapPin, Package, XCircle, CheckCircle, ChevronUp, ChevronDown } from "lucide-react";
+import RemitoCard from "../../../trip/modals/RemitoCard";
+import SortableRemitoRow from "./SortableRemitoItem";
+import { DraggableRemitosGridProps, GrupoRemitos } from "../../../../types";
 
-import { Grid, Typography, Paper, Box, Chip, Divider, Button, Alert } from "@mui/material";
-import { MapPin, Info, GripVertical } from "lucide-react";
-import { RemitoDto } from '../../../../api/generated';
-import RemitoCard from '../../../trip/modals/RemitoCard';
-import SortableRemitoItem from './SortableRemitoItem';
 
-interface DraggableRemitosGridProps {
-  remitos: RemitoDto[];
-  remitoIds: number[];
-  onToggleRemito: (remitoId: number) => void;
-  onReorderRemitos: (nuevoOrden: number[]) => void;
-  remitosQuitados: RemitoDto[];
-  restaurarRemito: (remito: RemitoDto) => void;
-  quitarRemito: (remito: RemitoDto) => void;
-}
-
-export default function DraggableRemitosGrid({ 
-  remitos, 
-  remitoIds, 
-  onToggleRemito,
+export default function DraggableRemitosGrid({
+  remitos,
   onReorderRemitos,
   remitosQuitados,
   restaurarRemito,
-  quitarRemito
+  quitarRemito,
+  onToggleEntregaMultiple,
+  entregas = {},
+  disableDrag,
+  bulkUpdating = [],
+  setRemitosCompletos,
+  refrescarRemitos
 }: DraggableRemitosGridProps) {
   const [activeId, setActiveId] = useState<number | null>(null);
+  const [gruposExpandidos, setGruposExpandidos] = useState<Record<string, boolean>>({});
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 8, 
-      },
-    }),
-    useSensor(KeyboardSensor)
-  );
+  // Agrupar remitos por provincia y localidad
+  const grupos: GrupoRemitos[] = useMemo(() => {
+    const gruposMap = remitos.reduce((acc, remito) => {
+      const key = `${remito.destino?.provincia}-${remito.destino?.localidad}`;
+      if (!acc[key]) {
+        acc[key] = {
+          key,
+          provincia: remito.destino?.provincia || "Sin provincia",
+          localidad: remito.destino?.localidad || "Sin localidad",
+          remitos: [],
+          expanded: gruposExpandidos[key] ?? false
+        };
+      }
+      acc[key].remitos.push(remito);
+      return acc;
+    }, {} as Record<string, GrupoRemitos>);
+
+    return Object.values(gruposMap).sort((a, b) => 
+      a.provincia.localeCompare(b.provincia) || a.localidad.localeCompare(b.localidad)
+    );
+  }, [remitos, gruposExpandidos]);
+
+  const toggleGrupo = (key: string) => {
+    setGruposExpandidos(prev => ({
+      ...prev,
+      [key]: !prev[key]
+    }));
+  };
+
+  const toggleEntregaGrupo = (grupo: GrupoRemitos, estado: boolean) => {
+    if (onToggleEntregaMultiple) {
+      const remitoIds = grupo.remitos.map(r => r.id);
+      onToggleEntregaMultiple(remitoIds, estado);
+    }
+  };
+
+const sensors = useSensors(
+  // Para escritorio
+  useSensor(PointerSensor, {
+    activationConstraint: {
+      distance: 8, // evita arrastres accidentales
+    },
+  }),
+
+  // Para dispositivos táctiles
+  useSensor(TouchSensor, {
+    activationConstraint: {
+      delay: 150, // mantener presionado 200ms antes de arrastrar
+      tolerance: 5, // margen de movimiento
+    },
+  }),
+
+  // ⌨Accesibilidad (opcional)
+  useSensor(KeyboardSensor)
+);
 
   const handleDragStart = (event: DragStartEvent) => {
+    document.body.style.overflow = "hidden"; // bloquea scroll
     setActiveId(event.active.id as number);
-  }
+  };
 
+  // En handleDragEnd, cambiar esta parte:
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-
-    if (active.id !== over?.id) {
-      const oldIndex = remitos.findIndex(r => r.id === active.id as number);
-      const newIndex = remitos.findIndex(r => r.id === over?.id as number);
-
-      if (oldIndex !== -1 && newIndex !== -1) {
-        const nuevoOrden = arrayMove(remitos, oldIndex, newIndex);
-        const nuevosIds = nuevoOrden.map(r => r.id);
-        onReorderRemitos(nuevosIds);
-      }
+    
+    if (!over || active.id === over.id) {
+      document.body.style.overflow = "auto"; // restaura scroll
+      setActiveId(null);
+      return;
     }
 
+    // Encontrar índices en el array completo de remitos
+    const oldIndex = remitos.findIndex((r) => r.id === active.id);
+    const newIndex = remitos.findIndex((r) => r.id === over.id);
+    
+    if (oldIndex !== -1 && newIndex !== -1) {
+      const nuevosIds = arrayMove(remitos.map(r => r.id), oldIndex, newIndex);
+      onReorderRemitos(nuevosIds); // ← Solo pasar los IDs, sin grupoKey
+    }
+    
     setActiveId(null);
-  }
+  };
 
-  const activeRemito = remitos.find(rem => rem.id === activeId);
+  // Estadísticas para el header
+  const estadisticas = useMemo(() => {
+    const total = remitos.length;
+    const entregados = Object.values(entregas).filter(e => e === "Entregado").length;
+    const noEntregados = Object.values(entregas).filter(e => e === "No entregado").length;
+    const enCamino = total - entregados - noEntregados;
 
-  // Resumen por países
-  const remitosPorPais = remitos.reduce((acc, remito) => {
-    const pais = remito.destino?.pais || "Sin país";
-    acc[pais] = (acc[pais] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
-
-  const remitosOrdenadosPorPais = Object.keys(remitosPorPais).sort().reduce((obj, key) => {
-    obj[key] = remitosPorPais[key];
-    return obj;
-  }, {} as Record<string, number>);
+    return { total, entregados, noEntregados, enCamino };
+  }, [remitos.length, entregas]);
 
   return (
-    <Grid item xs={12} sx={{ mt: 4 }}>
-      <Paper 
-        variant="outlined" 
-        sx={{ 
-          p: 3, 
-          backgroundColor: "#FAFAFA",
-          border: "1px solid #E0E0E0",
-          borderRadius: 2
-        }}
-      >
-        {/* Header (igual que antes) */}
-        <Box sx={{ mb: 3 }}>
-          <Typography 
-            variant="h6" 
-            sx={{ 
-              color: "#5A5A65", 
-              fontWeight: 600, 
-              mb: 1,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1
-            }}
-          >
-            <MapPin size={20} />
-            Remitos Seleccionados
-          </Typography>
-
-          {Object.entries(remitosPorPais).length > 0 && (
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
-              <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
-                Distribución:
-              </Typography>
-              {Object.entries(remitosOrdenadosPorPais).map(([pais, count]) => (
-                <Chip
-                  key={pais}
-                  label={`${count} ${pais}`}
-                  size="small"
-                  variant="filled"
-                  sx={{ 
-                    backgroundColor: '#EDE7F6',
-                    color: '#5E35B1',
-                    fontSize: '0.75rem'
-                  }}
-                />
-              ))}
-            </Box>
-          )}
-        </Box>
-
-        <Divider sx={{ mb: 3 }} />
-
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragStart={handleDragStart}
-          onDragEnd={handleDragEnd}
+    <Paper variant="outlined" sx={{p: 3, backgroundColor: "#fafafa",borderRadius: 2, border: "1px solid #E0E0E0"}}>
+      {/* Header */}
+      <Box sx={{ mb: 3 }}>
+        <Typography
+          variant="h6"
+          sx={{
+            color: "#5A5A65",
+            fontWeight: 600,
+            mb: 1,
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+          }}
         >
-          <SortableContext
-            items={remitos.map(r => r.id)}
-            strategy={verticalListSortingStrategy}
-          >
-            <Box sx={{ mb: 3 }}>
-              {remitos.length === 0 ? (
-                <Typography 
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{ fontStyle: 'italic', textAlign: 'center', py: 4 }}
-                >
-                  No hay remitos seleccionados.
-                </Typography>
-              ):(
-                <Typography 
-                  variant="subtitle2" 
-                  sx={{ 
-                    color: "#5A5A65", 
-                    fontWeight: 500, 
-                    mb: 2,
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 1
-                  }}
-                >
-                  <GripVertical size={16} />
-                  Orden de entrega (arrastrá para reordenar)
-                </Typography>
-              )}
-              
-              <Box  sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-                {remitos.map((remito, index) => (
-                  
-                  <SortableRemitoItem
-                    key={remito.id}
-                    rem={remito}
-                    index={index}
-                    remitoIds={remitoIds}
-                    onToggleRemito={onToggleRemito}
-                    quitarRemito={quitarRemito}
-                  />
-                  
-                ))}
-              </Box>
-            </Box>
-          </SortableContext>
+          <Package size={20} />
+          Remitos Seleccionados ({remitos.length})
+        </Typography>
 
-          <DragOverlay>
-            {activeRemito ? (
+        {/* Barra de progreso/estadísticas */}
+        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+          <Chip 
+            icon={<CheckCircle size={16} />}
+            label={`${estadisticas.entregados} Entregados`}
+            variant="outlined"
+            color="success"
+            size="small"
+          />
+          <Chip 
+            icon={<XCircle size={16} />}
+            label={`${estadisticas.noEntregados} No Entregados`}
+            variant="outlined"
+            color="error"
+            size="small"
+          />
+          <Chip 
+            label={`${estadisticas.enCamino} En Camino`}
+            variant="outlined"
+            color="default"
+            size="small"
+          />
+        </Box>
+      </Box>
+
+      <Divider sx={{ mb: 3 }} />
+
+      {/* DndContext general */}
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+      >
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          {grupos.map((grupo) => (
+            <Paper 
+              key={grupo.key}
+              variant="outlined"
+              sx={{ borderRadius: 2, overflow: 'hidden' }}
+            >
+              {/* Header del grupo */}
               <Box 
                 sx={{ 
-                  display: 'flex', 
-                  alignItems: 'flex-start', 
-                  gap: 2,
-                  p: 2,
-                  border: '2px dashed #8648B9',
-                  borderRadius: 2,
-                  backgroundColor: '#F8F5FF',
-                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-                  opacity: 0.9,
+                  p: 2, 
+                  backgroundColor: '#F5F5F5',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  cursor: 'pointer',
+                  '&:hover': { backgroundColor: '#EEEEEE' }
                 }}
+                onClick={() => toggleGrupo(grupo.key)}
               >
-                <Box
-            sx={{
-                display: 'flex',
-                flexDirection: "column",
-                alignItems: 'center',
-                height: '100%',
-                gap: 5,
-            }}
-        >
-            {/* Número de orden */}
-            <Box
-            sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minWidth: 30,
-                height: 30,
-                backgroundColor: '#8648B9',
-                color: 'white',
-                borderRadius: '50%',
-                fontWeight: 'bold',
-                fontSize: '0.875rem',
-            }}
-            >
-            {remitos.findIndex(r => r.id === activeId) + 1}
-            </Box>
-
-            {/* Handle de arrastre */}
-            <Box
-                sx={{
-                    height: '100%',
-                    p: 0.5,
-                    border: '1px solid #CCC',
-                    borderRadius: "50%",
-                    cursor: 'grab',
-                    color: '#666',
-                    '&:hover': {
-                    backgroundColor: '#F0F0F0',
-                    color: '#8648B9'
-                    },
-                    '&:active': {
-                    cursor: 'grabbing'
-                    }
-                }}
-            >
-                <GripVertical size={20} />
-            </Box>
-        </Box>
-                <Box sx={{ flex: 1, minWidth: 0 }}>
-                  <RemitoCard
-                    rem={activeRemito}
-                    selectedRemitos={remitoIds}
-                    onRemitoToggle={() => {}}
-                    showCheckbox={false}
-                    compactMode={true}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <IconButton size="small">
+                    {grupo.expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                  </IconButton>
+                  <MapPin size={16} color="#666" />
+                  <Typography variant="subtitle1" fontWeight={600}>
+                    {grupo.provincia}, {grupo.localidad}
+                  </Typography>
+                  <Chip 
+                    label={`${grupo.remitos.length} remitos`} 
+                    size="small" 
+                    variant="filled"
                   />
                 </Box>
+
+                {/* Acciones rápidas del grupo */}
+                {onToggleEntregaMultiple && (
+                  <Box sx={{ display: 'flex', gap: 1 }}>
+                    <Tooltip title="Marcar todos como entregados">
+                      <IconButton
+                        size="small"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleEntregaGrupo(grupo, true);
+                        }}
+                        color="success"
+                      >
+                        <CheckCircle size={16} />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Marcar todos como no entregados">
+                      <IconButton
+                        size="small"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleEntregaGrupo(grupo, false);
+                        }}
+                        color="error"
+                      >
+                        <XCircle size={16} />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
+                )}
               </Box>
-            ) : null}
-          </DragOverlay>
-        </DndContext>
 
-        {remitos.length > 0 &&       
-          <Alert severity="info" sx={{ mt: 2, backgroundColor: '#E3F2FD', color: '#0D47A1',p: 1, borderRadius: 1, border: '1px solid #BBDEFB', display: 'flex', alignItems: 'center'}}
-          >
-            <Typography variant="body2" color="#1565C0" sx={{ fontSize: '0.875rem' }}>
-              <strong>Ayuda:</strong> Hacé click en el checkbox para quitar un remito del viaje. 
-            </Typography>
-          </Alert>
-        }
-
-        {remitosQuitados.length > 0 && (
-          <>
-            <Divider sx={{ my: 3 }} />
-            <Box sx={{ mb: 2 }}>
-              <Typography 
-                variant="subtitle2"
-                sx={{ color: "#B71C1C", fontWeight: 600 }}
-              >
-                Remitos quitados (podés volver a agregarlos)
-              </Typography>
-            </Box>
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-              {remitosQuitados.map((remito) => (
-                <Box 
-                  key={remito.id} 
-                  sx={{ display: "flex", alignItems: "center", gap: 2 }}
-                >
-                  <RemitoCard
-                    rem={remito}
-                    selectedRemitos={remitoIds}
-                    onRemitoToggle={() => restaurarRemito(remito)}
-                    showCheckbox={true}
-                    compactMode={true}
-                  />
+              {/* Contenido del grupo con su propio SortableContext */}
+              <Collapse in={grupo.expanded}>
+                <Box sx={{ p: 1 }}>
+                  <SortableContext 
+                    items={grupo.remitos.map(r => r.id)} 
+                    strategy={verticalListSortingStrategy}
+                  >
+                    <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                      {grupo.remitos.map((remito, index) => (
+                        <SortableRemitoRow
+                          key={remito.id}
+                          rem={remito}
+                          index={index}
+                          onQuitar={() => quitarRemito(remito)}
+                          canDrag={!disableDrag}
+                          remitosIdsInGrupo={grupo.remitos.map(r => r.id)}
+                          isUpdating={bulkUpdating.includes(remito.id)}
+                          setRemitosCompletos={setRemitosCompletos}
+                          refrescarRemitos={refrescarRemitos}
+                        />
+                      ))}
+                    </Box>
+                  </SortableContext>
                 </Box>
-              ))}
-            </Box>
-          </>
-        )}
-      </Paper>
-    </Grid>
+              </Collapse>
+            </Paper>
+          ))}
+        </Box>
+      </DndContext>
+
+      {remitosQuitados.length > 0 && (
+        <>
+          <Divider sx={{ my: 3 }} />
+          <Typography
+            variant="subtitle2"
+            sx={{ color: "#B71C1C", fontWeight: 600, mb: 1 }}
+          >
+            Remitos quitados ({remitosQuitados.length})
+          </Typography>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+            {remitosQuitados.map((remito) => (
+              <RemitoCard
+                key={remito.id}
+                rem={remito}
+                onAction={() => restaurarRemito(remito)}
+                actionTooltip="Restaurar remito"
+              />
+            ))}
+          </Box>
+        </>
+      )}
+
+      {remitos.length > 2 && (
+        <Alert
+          severity="info"
+          sx={{
+            mt: 3,
+            backgroundColor: "#E3F2FD",
+            color: "#0D47A1",
+            borderRadius: 1,
+          }}
+        >
+          <Typography variant="body2">
+            <strong>Tip:</strong> Podés reordenar remitos dentro del mismo grupo arrastrándolos.
+          </Typography>
+        </Alert>
+      )}
+    </Paper>
   );
 }

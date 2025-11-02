@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { MenuItem, Pagination, Select, SelectChangeEvent, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery, useTheme } from "@mui/material";
 import MenuItemDialog from "../../components/buttons/MenuItem";
 import { SectionHeader } from "../../components/SectionHeader";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +13,7 @@ import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { Building2, Eye } from "lucide-react";
 import EntityCard from "../../components/EntityCard";
 import PaginationEntity from "../../components/PaginationEntity";
+import FilterSection, { getNestedValue } from "../../components/FilterSection";
 
 export default function CompanyPage(){
     const {notify} = useNotify("Empresa", "female");
@@ -22,11 +23,14 @@ export default function CompanyPage(){
     const [openDialog, setOpenDialog] = useState(false);
     const [empresaSelected, setEmpresaSelected] = useState<EmpresaDto>();
     const empresas = data?.data || [];
-    const debouncedQuery = useDebouncedValue(searchQuery, 500);
-
-    const [rowsPerPage, setRowsPerPage] = useState<number>(5);
+    const [filteredEmpresas, setFilteredEmpresas] = useState<EmpresaDto[]>(empresas);
+    const [filterOpen, setFilterOpen] = useState(false);
+    const [appliedFilters, setAppliedFilters] = useState<{ [key: string]: string | number }>({});
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down("lg")); 
+    const isTablet = useMediaQuery(theme.breakpoints.between('md', 'lg'));
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const defaultRows = isMobile ? 5 : isTablet ? 8 : 5;
+    const [rowsPerPage, setRowsPerPage] = useState<number>(defaultRows);
 
     const handleOpenDialog = (company: EmpresaDto) => {
         setOpenDialog(true);
@@ -48,38 +52,81 @@ export default function CompanyPage(){
         }
     };
 
-    const filtered = empresas.filter((com) => 
-    com.nombre_comercial.toLocaleLowerCase().includes(debouncedQuery.toLocaleLowerCase())
-    );
-
-    const totalPages = Math.ceil(filtered.length / rowsPerPage);
-    const paginated = filtered.slice((page-1) * rowsPerPage, page*rowsPerPage);
+    const totalPages = Math.ceil(filteredEmpresas.length / rowsPerPage);
+    const paginated = filteredEmpresas.slice((page-1) * rowsPerPage, page*rowsPerPage);
     const handleChangePage = (event: React.ChangeEvent<unknown>, value:number) => {
         setPage(value);
     };
 
-    useEffect(() => {
+    const formatChipLabel = (key: string, value: any) => {
+        switch (key) {
+            case "nombre_comercial":
+                return `Nombre comercial: ${value}`;
+            case "cuit":
+                return `CUIT/RUT: ${value}`;
+            case "direccion.ciudad":
+                return `Ciudad: ${value}`;
+            default:
+                return `${key}: ${value}`;
+        }
+    };
+
+    const handleApplyFilters = (filters: any) => {
+        setAppliedFilters(filters);
         setPage(1);
-    }, [searchQuery]);
+    };
+    
+    // Filtrado dinámico según los filtros aplicados
+    useEffect(() => {
+        if (!empresas) return;
+
+        let result = empresas;
+
+        Object.entries(appliedFilters).forEach(([key, value]) => {
+            if (!value) return;
+
+            result = result.filter((d) => {
+            const fieldValue = getNestedValue(d, key);
+            if (typeof fieldValue === "string") {
+                return fieldValue.toLowerCase().includes((value as string).toLowerCase());
+            }
+            if (typeof fieldValue === "number") {
+                return fieldValue.toString().includes((value as number).toString());
+            }
+            return fieldValue === value;
+            });
+        });
+
+        setFilteredEmpresas(result);
+    }, [appliedFilters, empresas]);
+
 
     const navigate = useNavigate();
 
     return(
         <>
-            <div> 
-                <SectionHeader
-                    title="Empresas transportistas"
-                    description="Gestione las empresas habilitadas para operar en el sistema logístico."
-                    buttonText="Nueva empresa"
-                    onAdd={() => navigate("/company/create")}
-                /> 
-                <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} placeholder="Buscar por nombre"></SearchBar>
-            </div>
+            <SectionHeader
+                title="Empresas transportistas"
+                buttonText="Nueva empresa"
+                onAdd={() => navigate("/company/create")}
+            /> 
+            <FilterSection
+                filterOpen={filterOpen}
+                setFilterOpen={setFilterOpen}
+                onApply={handleApplyFilters}
+                formatChipLabel={formatChipLabel}
+                listFilters={[
+                    { key: "nombre_comercial", label: "Nombre comercial", type: "text" },
+                    { key: "cuit", label: "CUIT/RUT", type: "number" },
+                    { key: "direccion.ciudad", label: "Ciudad", type: "text" },
+                ]}
+            />
+
             {/*tabla*/}
 
-            {isMobile ? (
+            {isMobile || isTablet ? (
                 <div className="grid gap-4  lg:grid-cols-2">
-                    {paginated.map(company => (
+                    {paginated.length > 0 ? paginated.map(company => (
                         <EntityCard
                             key={company._id}
                             title={company.nombre_comercial}
@@ -94,27 +141,26 @@ export default function CompanyPage(){
                             onEdit={() => navigate(`/companies/edit/${company._id}`)}   
                             onView={() => navigate(`/companies/details/${company._id}`)}         
                         />
-                    ))}
+                    )):(
+                        <div className="text-center text-gray-500 py-10">
+                            No se encontraron empresas con el nombre buscado.
+                        </div>
+                    )}
                 </div>
             ):(           
-                <div className="bg-white rounded-lg" style={{
-                    boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
-                    border: "0.5px solid #C7C7C7",
-                }}>
-
-                    <TableContainer className=" text-sm rounded-lg">
-                        <Table aria-label="simple table">
+                <Box >
+                    <TableContainer component={Paper}>
+                        <Table aria-label="tabla de empresas">
                             <TableHead >
-                                
-                                <TableRow>
+                                <TableRow >
                                     <TableCell>Razón social</TableCell>
                                     <TableCell>CUIT/RUT</TableCell>
-                                    <TableCell sx={{minWidth: 200}}>Domicilio fiscal</TableCell>
+                                    <TableCell sx={{ minWidth: 200 }}>Domicilio fiscal</TableCell>
                                     <TableCell>Contacto</TableCell>
-                                    <TableCell align="center" sx={{width: 72}}>Acciones</TableCell>
+                                    <TableCell sx={{ width: 72 }}>Acciones</TableCell>
                                 </TableRow>
                             </TableHead>
-                            <TableBody>
+                            <TableBody >
                                 {isLoading ? (
                                     <TableRow key="loading">
                                         <TableCell colSpan={7} >
@@ -122,7 +168,7 @@ export default function CompanyPage(){
                                         </TableCell>
                                     </TableRow>
                                 ) : paginated.length === 0 ? (
-                                    <TableRow key="no-companies">
+                                    <TableRow key="no-companies" hover>
                                         <TableCell 
                                             colSpan={6} 
                                             sx={{textAlign: "center", paddingY: "26px",}}
@@ -132,16 +178,16 @@ export default function CompanyPage(){
                                     </TableRow>
                                 ):(
                                     paginated.map((company) => (
-                                        <TableRow key={company._id} className="hover:bg-gray-50 overflow-hidden">
+                                        <TableRow key={company._id} hover >
                                             <TableCell sx={{fontWeight: "bold"}}>{company.razon_social}</TableCell>
                                             <TableCell>{company.cuit}</TableCell>
                                             <TableCell>{`${company.direccion?.ciudad}, ${company.direccion?.calle} ${company.direccion?.numero}`}</TableCell>
                                             <TableCell>{company.contacto?.email}</TableCell>
-                                            <TableCell sx={{ verticalAlign: "middle"}}>
+                                            <TableCell sx={{ verticalAlign: "middle" }} >
                                                 <MenuItemDialog  
-                                                        handleOpenDialog={() => handleOpenDialog(company)}
-                                                        handleOpenDetails={() => navigate(`/companies/details/${company._id}`)}
-                                                        id={company._id}                                                      
+                                                    handleOpenDialog={() => handleOpenDialog(company)}
+                                                    handleOpenDetails={() => navigate(`/companies/details/${company._id}`)}
+                                                    id={company._id}         
                                                 >
                                                     <Eye className="text-gray-500 hover:text-gray-700 size-4" />
                                                 </MenuItemDialog>
@@ -152,7 +198,7 @@ export default function CompanyPage(){
                             </TableBody>
                         </Table>
                     </TableContainer>
-                </div>
+                </Box>
             )}
 
             <PaginationEntity
@@ -160,7 +206,7 @@ export default function CompanyPage(){
                 page={page}
                 totalPages={totalPages}
                 rowsPerPage={rowsPerPage}
-                filtered={filtered}
+                filtered={filteredEmpresas}
                 handleChangePage={handleChangePage}
                 setRowsPerPage={setRowsPerPage}
                 setPage={setPage}

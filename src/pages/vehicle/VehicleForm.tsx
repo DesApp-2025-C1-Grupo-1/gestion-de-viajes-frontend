@@ -49,7 +49,6 @@ export default function VehicleFormPage() {
         <>
             <SectionHeader
                 title={isEditing ? "Editar vehículo" : "Registrar vehículo"}
-                description={isEditing ? "Actualizá los datos del vehículo registrado." : "Completá el formulario para dar de alta un vehículo."}
             />
 
             <Paper  sx={{ padding:4, mx:'auto', width:"100%", borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "0.5px solid #C7C7C7"}} >

@@ -7,7 +7,7 @@ import RemitosSelectModal from "../../trip/modals/RemitosSelectModal";
 import { CountryProvinceSelect } from "../../trip/CountryProvinceSelect";
 import { LocalidadSelect } from "../../trip/LocalidadSelected";
 import { useRemitosManagement } from "../../../hooks/tripDistribution/useRemitosManagement";
-import DraggableRemitosGrid from "./draggable/DraggableRemitosGrid";
+import OrdenRemitosModal from "./draggable/OrdenRemitosModal";
 
 const depositoSelectButtonStyle = {
   height: "48px",
@@ -32,6 +32,7 @@ export default function RemitosSection() {
   const{ selectedPais, selectedProvincia, selectedLocalidad, setSelectedPais, setSelectedProvincia, setSelectedLocalidad } = useLocationData();
   const { control,setValue, formState: { errors } } = form.form;
   const [remitosModalOpen, setRemitosModalOpen] = useState(false);
+  const [ordenModalOpen, setOrdenModalOpen] = useState(false);
 
   const {
       remitosSeleccionados,
@@ -43,7 +44,9 @@ export default function RemitosSection() {
       reordenarRemitos,
       quitarRemito,
       remitosQuitados,
-      restaurarRemito
+      restaurarRemito,
+      toggleRemitos,
+      refrescarRemitos
     } = useRemitosManagement({
       control,
       setValue,
@@ -61,7 +64,7 @@ export default function RemitosSection() {
   useEffect(() => {
     const nuevoTipoViaje = tieneRemitosInternacionales ? "internacional" : "nacional";
     setValue("tipo_viaje", nuevoTipoViaje);
-  }, [tieneRemitosInternacionales, setValue]);
+  }, [tieneRemitosInternacionales, setValue, remitosSeleccionados]);
 
   useEffect(() => {
     setRemitosCompletos(remitosCompletos);
@@ -131,16 +134,31 @@ export default function RemitosSection() {
             )}
           </ConditionalField>
 
+          <Button 
+            variant="contained" 
+            onClick={() => setOrdenModalOpen(true)}
+            sx={{ mt: 2, boxShadow: 'none', ":hover": { boxShadow: 'none', backgroundColor: "#C94715" }, py: 1 }}
+            disabled={remitoIds.length === 0}
+            fullWidth
+          >
+            Editar orden de entrega
+          </Button>
 
-          <DraggableRemitosGrid
-            remitos={remitosCompletos}
+          <OrdenRemitosModal 
+            open={ordenModalOpen} 
+            onClose={() => setOrdenModalOpen(false)} 
+            estadoViaje={tripData?.estado || ""}
+            remitos={remitosSeleccionados}
             remitoIds={remitoIds}
-            onToggleRemito={toggleRemito}
             onReorderRemitos={reordenarRemitos}
-            quitarRemito={quitarRemito}
+            onToggleRemito={toggleRemito}
             remitosQuitados={remitosQuitados}
             restaurarRemito={restaurarRemito}
+            quitarRemito={quitarRemito}
+            setRemitosCompletos={setRemitosCompletos}
+            refrescarRemitos={refrescarRemitos}
           />
+
         </Grid>
 
         <RemitosSelectModal
@@ -148,11 +166,12 @@ export default function RemitosSection() {
           onOpenChange={setRemitosModalOpen}
           availableRemitos={remitosDisponibles}
           selectedRemitos={remitoIds}
-          onConfirm={(remitos) => {
-            setValue("remito_ids", remitos, { shouldValidate: true });
+          onRemitoToggle={toggleRemito}
+          onConfirm={(nuevosIds) => {
+            setValue("remito_ids", nuevosIds, { shouldValidate: true });
             setRemitosModalOpen(false);
           }}
-          onRemitoToggle={toggleRemito}
+          onRemitosToggle={toggleRemitos}
           targetProvince={selectedProvincia ? selectedProvincia.nombre : ""}      
         />
       </Grid>

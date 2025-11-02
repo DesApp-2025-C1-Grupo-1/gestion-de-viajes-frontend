@@ -37,20 +37,46 @@ export const customMuiTheme = createTheme({
     },
   },
   components: {
+    MuiTableContainer: {
+      styleOverrides: {
+        root: {
+          borderRadius: "8px",
+          boxShadow: "0px 0px 1px rgba(0, 0, 0, 0.1)", 
+          border: "1px solid #e5e7eb" 
+        },
+      },
+    },
     MuiTable:{
       styleOverrides: {
         root: {
           width: "100%",
-          minWidth: 600
+          height: "100%",
+          minWidth: 650,
+          "& thead th": {
+              backgroundColor: "#f5f6f7",
+              color: "#5A5A65",
+              fontWeight: 600,
+              fontSize: "0.875rem",
+              letterSpacing: 0.3,
+              borderBottom: "1px solid #e5e7eb",
+          },
+          "& tbody td": {
+              borderBottom: "1px solid #f0f0f0",
+              fontSize: "0.9rem",
+              color: "#5A5A65",
+          },
+          "& tbody tr:hover": {
+              backgroundColor: "#fff7ee",
+          },
         },
       },
     },
     MuiTableCell: {
       styleOverrides: {
         head: {
-          fontWeight: 'semibold',
+          fontWeight: 600,
           fontSize: '0.875rem',
-          color: "#4B5563",
+          color: "#5a5a65",
           border: "none",
           textAlign: "left",
           padding: "14px 18px",
@@ -59,14 +85,14 @@ export const customMuiTheme = createTheme({
           fontSize: '0.875rem',
           color: "#5A5A65",
           border: "none",
-          padding: "26px 18px",
+          padding: "20px 18px",
         },
       }
     },
     MuiTableRow: {
       styleOverrides: {
         head: {
-          backgroundColor: "#F6F7FB",
+          backgroundColor: "#f3f4f6",
           border: "none",
         },
         root : {
@@ -130,8 +156,11 @@ export const customMuiTheme = createTheme({
         root:{
           borderRadius:6,
           height:"48px",
-          padding: "0px 14px",
+          padding: "0px 0px",
+          "& .MuiOutlinedInput-notchedOutline": { borderColor: "#c7c7c7" },
+          "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#5A5A65" }
         },
+        
       },
     },
     MuiMenuItem:{
@@ -191,7 +220,10 @@ export const customMuiTheme = createTheme({
           "& .MuiOutlinedInput-root": {
             borderRadius: "6px",
             height: "48px",
-            padding: "0px 14px",
+            padding: "0px 0px",
+            "& .MuiOutlinedInput-notchedOutline": { borderColor: "#c7c7c7" },
+            "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#5A5A65" },
+            "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "#C94715" },
             backgroundColor: "#fff",
             fontSize: '0.900rem',
           },

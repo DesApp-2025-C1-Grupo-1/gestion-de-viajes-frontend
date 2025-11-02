@@ -1,4 +1,4 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery, useTheme } from "@mui/material";
 import { SectionHeader } from "../../components/SectionHeader";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -12,20 +12,24 @@ import { useNotify } from "../../hooks/useNotify";
 import { Eye, Truck } from "lucide-react";
 import EntityCard from "../../components/EntityCard";
 import PaginationEntity from "../../components/PaginationEntity";
+import FilterSection, { getNestedValue } from "../../components/FilterSection";
 
 
 export default function VehiclePage() {
     const {notify} = useNotify("Vehículo");
-    const {data, isLoading, refetch} = useVehiculoControllerFindAll()
-    const [searchQuery, setSearchQuery] = useState<string>("");
+    const {data, isLoading, refetch} = useVehiculoControllerFindAll();
     const [page, setPage] = useState<number>(1);
-    const [rowsPerPage, setRowsPerPage] = useState<number>(5);
     const [openDialog, setOpenDialog] = useState(false);
     const [vehicleSelected, setVehicleSelected] = useState<VehiculoDto>();
     const vehicles = data?.data || [];
-    const debouncedQuery = useDebouncedValue(searchQuery, 500);
+    const [appliedFilters, setAppliedFilters] = useState<any>({});
+    const [filteredVehicles, setFilteredVehicles] = useState<VehiculoDto[]>(vehicles);
+    const [filterOpen, setFilterOpen] = useState(false);
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down("lg")); // <1280px
+    const isTablet = useMediaQuery(theme.breakpoints.between('md', 'lg'));
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const defaultRows = isMobile ? 5 : isTablet ? 8 : 5;
+    const [rowsPerPage, setRowsPerPage] = useState<number>(defaultRows);
 
     const handleOpenDialog = (vehicle : VehiculoDto) => {
         setOpenDialog(true);
@@ -47,40 +51,86 @@ export default function VehiclePage() {
         }
     };
 
-    const filtered = vehicles.filter((v) =>
-        v.patente.toLowerCase().includes(debouncedQuery.toLowerCase()) ||
-        v.modelo.toLowerCase().includes(debouncedQuery.toLowerCase())
-    );
-    const totalPages = Math.ceil(filtered.length / rowsPerPage);
-    const paginated = filtered.slice((page - 1) * rowsPerPage, page * rowsPerPage);
+    const totalPages = Math.ceil(filteredVehicles.length / rowsPerPage);
+    const paginated = filteredVehicles.slice((page - 1) * rowsPerPage, page * rowsPerPage);
 
     const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
         setPage(value);
     };
 
-    useEffect(() => {
-        // Si el search cambia, reseteamos a página 1
+    const formatChipLabel = (key: string, value: any) => {
+        switch (key) {
+            case "patente":
+                return `Patente: ${value}`;
+            case "modelo":
+                return `Modelo: ${value}`;
+            case "año":
+                return `Año: ${value}`;
+            case "tipo.nombre":
+                return `Tipo de vehículo: ${value}`;
+            case "empresa.nombre_comercial":
+                return `Empresa: ${value}`;
+            default:
+                return `${key}: ${value}`;
+        }
+    };
+
+    const handleApplyFilters = (filters: any) => {
+        setAppliedFilters(filters);
         setPage(1);
-    }, [searchQuery]);
+    };
+    
+    // Filtrado dinámico según los filtros aplicados
+    useEffect(() => {
+        if (!vehicles) return;
+
+        let result = vehicles;
+
+        Object.entries(appliedFilters).forEach(([key, value]) => {
+            if (!value) return;
+
+            result = result.filter((d) => {
+            const fieldValue = getNestedValue(d, key);
+            if (typeof fieldValue === "string") {
+                return fieldValue.toLowerCase().includes((value as string).toLowerCase());
+            }
+            if (typeof fieldValue === "number") {
+                return fieldValue.toString().includes((value as number).toString());
+            }
+            return fieldValue === value;
+            });
+        });
+
+        setFilteredVehicles(result);
+    }, [appliedFilters, vehicles]);
 
     const navigate = useNavigate();
     return (
         <>
-            <div>
-                <SectionHeader 
-                    title="Flota de vehículos"
-                    description="Registre y gestione los vehículos asignados a las empresas transportistas."
-                    buttonText="Nuevo vehículo"
-                    onAdd={() => navigate("/vehicles/form")}
-                />
+            <SectionHeader 
+                title="Flota de vehículos"
+                buttonText="Nuevo vehículo"
+                onAdd={() => navigate("/vehicles/form")}
+            />
 
-                {/* Buscador y boton para ir a tipo de vehiculos*/}    
-                <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} placeholder="Buscar vehículo por modelo o patente" />
-            </div>
+            {/* Buscador y boton para ir a tipo de vehiculos*/}    
+            <FilterSection
+                filterOpen={filterOpen}
+                setFilterOpen={setFilterOpen}
+                onApply={handleApplyFilters}
+                formatChipLabel={formatChipLabel}
+                listFilters={[
+                    { key: "patente", label: "Patente", type: "text" },
+                    { key: "modelo", label: "Modelo", type: "text" },
+                    { key: "año", label: "Año", type: "number" },
+                    { key: "tipo.nombre", label: "Tipo", type: "text" },
+                    { key: "empresa.nombre_comercial", label: "Empresa", type: "text" },
+                ]}
+            />
 
-            {isMobile ? (
+            {isTablet || isMobile ? (
                 <div className="grid gap-4  lg:grid-cols-2">
-                    {paginated.map(vehicle => (
+                    {paginated.length > 0 ? paginated.map(vehicle => (
                         <EntityCard
                             key={vehicle._id}
                             title={vehicle.patente}
@@ -96,21 +146,16 @@ export default function VehiclePage() {
                             onEdit={() => navigate(`/vehicles/edit/${vehicle._id}`)}
                             onView={() => navigate(`/vehicles/details/${vehicle._id}`)}
                         />
-                    ))}
+                    )) : (
+                        <div className="text-center text-gray-500 py-10">
+                            No se encontraron vehículos con el modelo o patente buscado.
+                        </div>
+                    )}
                 </div>
             ) : (
-                <div 
-                    className="bg-white rounded-lg "
-                    style={{
-                        boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
-                        border: "0.5px solid #C7C7C7",
-                    }}
-                >         
-                    <TableContainer className="text-sm rounded-lg">
-                        <Table 
-                            aria-label="simple table"
-                            
-                        >
+                <Box>         
+                    <TableContainer component={Paper}>
+                        <Table aria-label="tabla de vehículos">
                             <TableHead >
                                 <TableRow>
                                     <TableCell>Patente</TableCell>
@@ -147,10 +192,7 @@ export default function VehiclePage() {
                                     </TableRow>
                                 ) : (
                                     paginated.map((vehicle) => (
-                                        <TableRow 
-                                            key={vehicle._id} 
-                                            className="hover:bg-gray-50 overflow-hidden"
-                                        >
+                                        <TableRow key={vehicle._id} hover>
                                             <TableCell sx={{fontWeight: "bold"}}>{vehicle.patente}</TableCell>
                                             <TableCell>{vehicle.modelo}</TableCell>
                                             <TableCell>{vehicle.año}</TableCell>
@@ -177,7 +219,7 @@ export default function VehiclePage() {
                             </TableBody>
                         </Table>
                     </TableContainer>
-                </div>
+                </Box>
             )}
             
 
@@ -187,7 +229,7 @@ export default function VehiclePage() {
                 page={page}
                 totalPages={totalPages}
                 rowsPerPage={rowsPerPage}
-                filtered={filtered}
+                filtered={filteredVehicles}
                 handleChangePage={handleChangePage}
                 setRowsPerPage={setRowsPerPage}
                 setPage={setPage}

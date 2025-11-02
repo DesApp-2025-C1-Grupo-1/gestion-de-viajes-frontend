@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery, useTheme } from "@mui/material";
 import { SectionHeader } from "../../components/SectionHeader";
 import { useNavigate } from "react-router-dom";
 import LoadingState from "../../components/LoadingState";
@@ -15,21 +15,25 @@ import { formatTelefono } from "../../lib/formatters";
 import EntityCard from "../../components/EntityCard";
 import { DriverDetailsDialog } from "../../components/driver/DriverDetailsDialog";
 import PaginationEntity from "../../components/PaginationEntity";
+import FilterSection, { getNestedValue } from "../../components/FilterSection";
 
 
 export default function DriverPage(){
     const {notify} = useNotify("Chofer");
     const {data, isLoading, refetch} = useChoferControllerFindAll();
-    const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);
     const [openDialog, setOpenDialog] = useState(false);
-    const [rowsPerPage, setRowsPerPage] = useState<number>(5);
     const [choferSelect, setChoferSelect] = useState<ChoferDto>();
+    const [filterOpen, setFilterOpen] = useState<boolean>(false);
+    const [filteredChoferes, setFilteredChoferes] = useState<ChoferDto[]>(data?.data || []);
     const [openDetailsDialog, setOpenDetailsDialog] = useState<boolean>(false);
     const choferes = data?.data || [];
-    const debouncedQuery = useDebouncedValue(searchQuery, 500);
+    const [appliedFilters, setAppliedFilters] = useState<any>({});
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down("lg")); // <1280px
+    const isTablet = useMediaQuery(theme.breakpoints.between('md', 'lg'));
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const defaultRows = isMobile ? 5 : isTablet ? 8 : 5;
+    const [rowsPerPage, setRowsPerPage] = useState<number>(defaultRows);
 
     const handleOpenDialog = (company: ChoferDto) => {
         setOpenDialog(true);
@@ -51,39 +55,81 @@ export default function DriverPage(){
         }
     };
 
-    const filtered = choferes.filter((dri) => 
-        dri.apellido.toLocaleLowerCase().includes(debouncedQuery.toLocaleLowerCase()) ||
-        dri.nombre.toLocaleLowerCase().includes(debouncedQuery.toLocaleLowerCase())
-    );
-
-    const totalPages = Math.ceil(filtered.length / rowsPerPage);
-    const paginated = filtered.slice((page-1) * rowsPerPage, page*rowsPerPage);
+    const totalPages = Math.ceil(filteredChoferes.length / rowsPerPage);
+    const paginated = filteredChoferes.slice((page-1) * rowsPerPage, page*rowsPerPage);
     const handleChangePage = (event: React.ChangeEvent<unknown>, value:number) => {
         setPage(value);
     };
 
-    useEffect(() => {
+    const formatChipLabel = (key: string, value: any) => {
+        switch (key) {
+            case "nombre":
+                return `Nombre: ${value}`;
+            case "apellido":
+                return `Apellido: ${value}`;
+            case "dni":
+                return `DNI: ${value}`;
+            default:
+                return `${key}: ${value}`;
+        }
+    };
+
+    const handleApplyFilters = (filters: any) => {
+        setAppliedFilters(filters);
         setPage(1);
-    }, [searchQuery]);
+    };
+    
+    // Filtrado dinámico según los filtros aplicados
+    useEffect(() => {
+        if (!choferes) return;
+
+        let result = choferes;
+
+        Object.entries(appliedFilters).forEach(([key, value]) => {
+            if (!value) return;
+
+            result = result.filter((d) => {
+            const fieldValue = getNestedValue(d, key);
+            if (typeof fieldValue === "string") {
+                return fieldValue.toLowerCase().includes((value as string).toLowerCase());
+            }
+            if (typeof fieldValue === "number") {
+                return fieldValue.toString().includes((value as number).toString());
+            }
+            return fieldValue === value;
+            });
+        });
+
+        setFilteredChoferes(result);
+    }, [appliedFilters, choferes]);
+
 
     const navigate = useNavigate();
 
     return(
         <>
-            <div> 
-                <SectionHeader
-                    title="Choferes"
-                    description="Gestione el personal habilitado para conducir vehículos de transporte."
-                    buttonText="Nuevo chofer"
-                    onAdd={() => navigate("/driver/create")}
-                /> 
-                <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} placeholder="Buscar por nombre o apellido"></SearchBar>
-            </div>
+            <SectionHeader
+                title="Choferes"
+                buttonText="Nuevo chofer"
+                onAdd={() => navigate("/driver/create")}
+            /> 
+
+            <FilterSection
+                filterOpen={filterOpen}
+                setFilterOpen={setFilterOpen}
+                onApply={handleApplyFilters}
+                formatChipLabel={formatChipLabel}
+                listFilters={[
+                    { key: "nombre", label: "Nombre", type: "text" },
+                    { key: "apellido", label: "Apellido", type: "text" },
+                    { key: "dni", label: "DNI", type: "number" },
+                ]}
+            />
 
             {/*tabla*/}
-            {isMobile ? (
+            {isMobile || isTablet ? (
                 <div className="grid gap-4  lg:grid-cols-2">
-                    {paginated.map(driver => (
+                    {paginated.length > 0 ? paginated.map(driver => (
                         <EntityCard
                             key={driver._id}
                             title={`${driver.nombre} ${driver.apellido}`}
@@ -99,24 +145,24 @@ export default function DriverPage(){
                             onEdit={() => navigate(`/drivers/edit/${driver._id}`)}
                             onView={() => navigate(`/drivers/details/${driver._id}`)}
                         />
-                    ))}
+                    )):(
+                        <div className="text-center text-gray-500 py-10">
+                            No se encontraron choferes con el nombre buscado.
+                        </div>
+                    )}
                 </div>
             ) : (
-                <div className="bg-white rounded-lg " style={{
-                    boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
-                    border: "0.5px solid #C7C7C7",
-                }}>
-
-                    <TableContainer className="text-sm rounded-lg">
-                        <Table aria-label="simple table">
+                <Box>
+                    <TableContainer component={Paper}>
+                        <Table aria-label="tabla de choferes">
                             <TableHead >
                                 <TableRow>
                                     <TableCell>Nombre completo</TableCell>
-                                    <TableCell>DNI</TableCell>
-                                    <TableCell>Licencia</TableCell>
-                                    <TableCell sx={{ minWidth: 150, maxWidth: 200}}>Teléfono</TableCell>
+                                    <TableCell sx={{ width: 100}}>DNI</TableCell>
+                                    <TableCell sx={{ width: 150}}>Licencia</TableCell>
+                                    <TableCell sx={{ width: 160}}>Teléfono</TableCell>
                                     <TableCell sx={{minWidth: 200}}>Transporte</TableCell>
-                                    <TableCell align="center" sx={{maxWidth: 100}}>Acciones</TableCell>
+                                    <TableCell align="center" sx={{width: 72}}>Acciones</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -127,7 +173,7 @@ export default function DriverPage(){
                                         </TableCell>
                                     </TableRow>
                                 ) : paginated.length === 0 ? (
-                                    <TableRow key="no-drivers">
+                                    <TableRow key="no-drivers" hover>
                                         <TableCell 
                                             colSpan={8} 
                                             sx={{textAlign: "center", paddingY: "26px",}}
@@ -137,7 +183,7 @@ export default function DriverPage(){
                                     </TableRow>
                                 ):(
                                     paginated.map((driver) => (
-                                        <TableRow key={driver._id} className="hover:bg-gray-50 overflow-hidden">
+                                        <TableRow key={driver._id} hover>
                                             <TableCell sx={{fontWeight: "bold"}}>{`${driver.nombre} ${driver.apellido}`}</TableCell>
                                             <TableCell>{driver.dni}</TableCell>
                                             <TableCell>{`${driver.licencia} - ${driver.tipo_licencia}`}</TableCell>
@@ -171,7 +217,7 @@ export default function DriverPage(){
                             </TableBody>
                         </Table>
                     </TableContainer>
-                </div>
+                </Box>
             )}
             
 
@@ -181,7 +227,7 @@ export default function DriverPage(){
                 page={page}
                 totalPages={totalPages}
                 rowsPerPage={rowsPerPage}
-                filtered={filtered}
+                filtered={filteredChoferes}
                 handleChangePage={handleChangePage}
                 setRowsPerPage={setRowsPerPage}
                 setPage={setPage}

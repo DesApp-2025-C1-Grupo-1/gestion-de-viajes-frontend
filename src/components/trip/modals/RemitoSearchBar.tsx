@@ -10,7 +10,7 @@ export default function RemitoSearchBar({ remitosSearch, setRemitosSearch }: Rem
     return (
         <TextField
             variant="outlined"
-            placeholder="Buscar remitos por número o dirección"
+            placeholder="Buscar remitos por número, dirección o localidad..."
             fullWidth
             size="small"
             className="inside-paper"

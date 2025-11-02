@@ -1061,6 +1061,22 @@ limit?: number;
 page?: number;
 };
 
+export type RemitosControllerEntregarRemitoBodyOneFile = Blob | string;
+
+export type RemitosControllerEntregarRemitoBodyOne = {
+  file?: RemitosControllerEntregarRemitoBodyOneFile;
+};
+
+export type RemitosControllerEntregarRemitoBodyTwoFile = Blob | string;
+
+export type RemitosControllerEntregarRemitoBodyTwo = {
+  file?: RemitosControllerEntregarRemitoBodyTwoFile;
+};
+
+export type RemitosControllerMarcarNoEntregadoBody = {
+  razonNoEntrega: string;
+};
+
 export type RemitosControllerGetRemitosByIdsBody = {
   ids?: number[];
 };
@@ -4184,23 +4200,25 @@ export const useRemitosControllerCambiarEstado = <TError = AxiosError<void>,
     }
     
 /**
- * @summary Entregar remito (requiere archivo firmado)
+ * @summary Entregar remito (archivo o base64)
  */
 export const remitosControllerEntregarRemito = (
-    id: number, options?: AxiosRequestConfig
+    id: number,
+    remitosControllerEntregarRemitoBody: RemitosControllerEntregarRemitoBodyOne | RemitosControllerEntregarRemitoBodyTwo, options?: AxiosRequestConfig
  ): Promise<AxiosResponse<RemitoDto>> => {
     
     
     return axios.put(
-      `/remito/${id}/firmar`,undefined,options
+      `/remito/${id}/firmar`,
+      remitosControllerEntregarRemitoBody,options
     );
   }
 
 
 
 export const getRemitosControllerEntregarRemitoMutationOptions = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof remitosControllerEntregarRemito>>, TError,{id: number}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof remitosControllerEntregarRemito>>, TError,{id: number}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof remitosControllerEntregarRemito>>, TError,{id: number;data: RemitosControllerEntregarRemitoBodyOne | RemitosControllerEntregarRemitoBodyTwo}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof remitosControllerEntregarRemito>>, TError,{id: number;data: RemitosControllerEntregarRemitoBodyOne | RemitosControllerEntregarRemitoBodyTwo}, TContext> => {
 
 const mutationKey = ['remitosControllerEntregarRemito'];
 const {mutation: mutationOptions, axios: axiosOptions} = options ?
@@ -4212,10 +4230,10 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof remitosControllerEntregarRemito>>, {id: number}> = (props) => {
-          const {id} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof remitosControllerEntregarRemito>>, {id: number;data: RemitosControllerEntregarRemitoBodyOne | RemitosControllerEntregarRemitoBodyTwo}> = (props) => {
+          const {id,data} = props ?? {};
 
-          return  remitosControllerEntregarRemito(id,axiosOptions)
+          return  remitosControllerEntregarRemito(id,data,axiosOptions)
         }
 
         
@@ -4224,18 +4242,18 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type RemitosControllerEntregarRemitoMutationResult = NonNullable<Awaited<ReturnType<typeof remitosControllerEntregarRemito>>>
-    
+    export type RemitosControllerEntregarRemitoMutationBody = RemitosControllerEntregarRemitoBodyOne | RemitosControllerEntregarRemitoBodyTwo
     export type RemitosControllerEntregarRemitoMutationError = AxiosError<void>
 
     /**
- * @summary Entregar remito (requiere archivo firmado)
+ * @summary Entregar remito (archivo o base64)
  */
 export const useRemitosControllerEntregarRemito = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof remitosControllerEntregarRemito>>, TError,{id: number}, TContext>, axios?: AxiosRequestConfig}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof remitosControllerEntregarRemito>>, TError,{id: number;data: RemitosControllerEntregarRemitoBodyOne | RemitosControllerEntregarRemitoBodyTwo}, TContext>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof remitosControllerEntregarRemito>>,
         TError,
-        {id: number},
+        {id: number;data: RemitosControllerEntregarRemitoBodyOne | RemitosControllerEntregarRemitoBodyTwo},
         TContext
       > => {
 
@@ -4248,20 +4266,22 @@ export const useRemitosControllerEntregarRemito = <TError = AxiosError<void>,
  * @summary Marcar remito como no entregado
  */
 export const remitosControllerMarcarNoEntregado = (
-    id: number, options?: AxiosRequestConfig
+    id: number,
+    remitosControllerMarcarNoEntregadoBody: RemitosControllerMarcarNoEntregadoBody, options?: AxiosRequestConfig
  ): Promise<AxiosResponse<RemitoDto>> => {
     
     
     return axios.put(
-      `/remito/${id}/no-entregado`,undefined,options
+      `/remito/${id}/no-entregado`,
+      remitosControllerMarcarNoEntregadoBody,options
     );
   }
 
 
 
 export const getRemitosControllerMarcarNoEntregadoMutationOptions = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof remitosControllerMarcarNoEntregado>>, TError,{id: number}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof remitosControllerMarcarNoEntregado>>, TError,{id: number}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof remitosControllerMarcarNoEntregado>>, TError,{id: number;data: RemitosControllerMarcarNoEntregadoBody}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof remitosControllerMarcarNoEntregado>>, TError,{id: number;data: RemitosControllerMarcarNoEntregadoBody}, TContext> => {
 
 const mutationKey = ['remitosControllerMarcarNoEntregado'];
 const {mutation: mutationOptions, axios: axiosOptions} = options ?
@@ -4273,10 +4293,10 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof remitosControllerMarcarNoEntregado>>, {id: number}> = (props) => {
-          const {id} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof remitosControllerMarcarNoEntregado>>, {id: number;data: RemitosControllerMarcarNoEntregadoBody}> = (props) => {
+          const {id,data} = props ?? {};
 
-          return  remitosControllerMarcarNoEntregado(id,axiosOptions)
+          return  remitosControllerMarcarNoEntregado(id,data,axiosOptions)
         }
 
         
@@ -4285,18 +4305,18 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type RemitosControllerMarcarNoEntregadoMutationResult = NonNullable<Awaited<ReturnType<typeof remitosControllerMarcarNoEntregado>>>
-    
+    export type RemitosControllerMarcarNoEntregadoMutationBody = RemitosControllerMarcarNoEntregadoBody
     export type RemitosControllerMarcarNoEntregadoMutationError = AxiosError<void>
 
     /**
  * @summary Marcar remito como no entregado
  */
 export const useRemitosControllerMarcarNoEntregado = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof remitosControllerMarcarNoEntregado>>, TError,{id: number}, TContext>, axios?: AxiosRequestConfig}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof remitosControllerMarcarNoEntregado>>, TError,{id: number;data: RemitosControllerMarcarNoEntregadoBody}, TContext>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof remitosControllerMarcarNoEntregado>>,
         TError,
-        {id: number},
+        {id: number;data: RemitosControllerMarcarNoEntregadoBody},
         TContext
       > => {
 
@@ -5046,6 +5066,92 @@ export function useTarifasControllerGetTarifaById<TData = Awaited<ReturnType<typ
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getTarifasControllerGetTarifaByIdQueryOptions(id,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * @summary Obtener todas las tarifas
+ */
+export const tarifasControllerGetTarifas = (
+     options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<TarifaDto[]>> => {
+    
+    
+    return axios.get(
+      `/tarifas`,options
+    );
+  }
+
+
+export const getTarifasControllerGetTarifasQueryKey = () => {
+    return [`/tarifas`] as const;
+    }
+
+    
+export const getTarifasControllerGetTarifasQueryOptions = <TData = Awaited<ReturnType<typeof tarifasControllerGetTarifas>>, TError = AxiosError<void>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof tarifasControllerGetTarifas>>, TError, TData>>, axios?: AxiosRequestConfig}
+) => {
+
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getTarifasControllerGetTarifasQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof tarifasControllerGetTarifas>>> = ({ signal }) => tarifasControllerGetTarifas({ signal, ...axiosOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof tarifasControllerGetTarifas>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type TarifasControllerGetTarifasQueryResult = NonNullable<Awaited<ReturnType<typeof tarifasControllerGetTarifas>>>
+export type TarifasControllerGetTarifasQueryError = AxiosError<void>
+
+
+export function useTarifasControllerGetTarifas<TData = Awaited<ReturnType<typeof tarifasControllerGetTarifas>>, TError = AxiosError<void>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof tarifasControllerGetTarifas>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof tarifasControllerGetTarifas>>,
+          TError,
+          Awaited<ReturnType<typeof tarifasControllerGetTarifas>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useTarifasControllerGetTarifas<TData = Awaited<ReturnType<typeof tarifasControllerGetTarifas>>, TError = AxiosError<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof tarifasControllerGetTarifas>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof tarifasControllerGetTarifas>>,
+          TError,
+          Awaited<ReturnType<typeof tarifasControllerGetTarifas>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useTarifasControllerGetTarifas<TData = Awaited<ReturnType<typeof tarifasControllerGetTarifas>>, TError = AxiosError<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof tarifasControllerGetTarifas>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Obtener todas las tarifas
+ */
+
+export function useTarifasControllerGetTarifas<TData = Awaited<ReturnType<typeof tarifasControllerGetTarifas>>, TError = AxiosError<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof tarifasControllerGetTarifas>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getTarifasControllerGetTarifasQueryOptions(options)
 
   const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

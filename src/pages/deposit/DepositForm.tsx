@@ -34,7 +34,6 @@ export default function DepositFormPage() {
         <>
             <SectionHeader
                 title={isEditing ? "Editar depósito" : "Registrar depósito"}
-                description={isEditing ? "Actualizá los datos del depósito registrado." : "Completá el formulario para dar de alta un depósito."}
             />
 
             <Paper  sx={{ padding:4, mx:'auto', width:"100%", borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "0.5px solid #C7C7C7"}} >

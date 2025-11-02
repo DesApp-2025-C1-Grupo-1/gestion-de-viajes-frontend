@@ -51,11 +51,9 @@ export function TripStateFlow({ setValue, control, initialState, register, error
 
     // Validación para "fin de viaje"
     if (nuevoEstado === 'fin de viaje') {
-      const remitosEnCamino = remitosCompletos.filter(r =>{ 
-          r.estadoId !== 5 && r.estadoId !== 6 // 5: ENTREGADO, 6: NO ENTREGADO
+      const remitosEnCamino = remitosCompletos.filter(({ estadoId }) => ![5, 6].includes(estadoId));
 
-          return r;
-      });
+      console.log("Remitos en camino:", remitosEnCamino);
 
       if (remitosEnCamino.length > 0) {
         setPermission(false);

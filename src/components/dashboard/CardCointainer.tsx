@@ -31,63 +31,65 @@ export default function CardContainer ({
       <Grid container mb={2} spacing={1} padding={4}>
         <Grid item xs={12}  lg={6} >
           <DashboardCard
-          title="Cantidad total"
-          count={viajeCantidadTotal || 0}
-          backgroundColor="#ffffff"
-          textColor="#605D5D"
-          link={{
-            pathname: "/trips/distribution"
-          }}
+            title="Cantidad total"
+            count={viajeCantidadTotal || 0}
+            backgroundColor="#ffffff"
+            textColor="#605D5D"
+            link={{
+              pathname: "/trips/distribution"
+            }}
           />
         </Grid>
         
         <Grid item xs={12}  lg={6} >
           <DashboardCard
-          title="Inicio de carga"
-          count={viajeInicioCarga || 0}
-          backgroundColor="#5192FB"
-          textColor="#ffffff"
-          link={{
-            pathname: "/trips/distribution",
-            state: { defaultFilter: { estado: "inicio de carga" } }
-          }}
+            title="Inicio de carga"
+            count={viajeInicioCarga || 0}
+            backgroundColor="#5192FB"
+            textColor="#ffffff"
+            link={{
+              pathname: "/trips/distribution",
+              state: { defaultFilter: { estado: "inicio de carga" } }
+            }}
           />
         </Grid>                          
         <Grid item xs={12}  lg={6} >
           <DashboardCard
-          title="En camino"
-          count={viajeEnCamino || 0}
-          backgroundColor="#FF9247"
-          textColor="#ffffff"
-          link={{
-            pathname: "/trips/distribution",
-            state: { defaultFilter: { estado: "fin de carga" } }
-          }}
+            title="En camino"
+            count={viajeEnCamino || 0}
+            backgroundColor="#FF9247"
+            textColor="#ffffff"
+            link={{
+              pathname: "/trips/distribution",
+              state: { defaultFilter: { estado: "fin de carga" } }
+            }}
           />
         </Grid>
         <Grid item xs={12}  lg={6} >
           <DashboardCard
-          title="Finalizado"
-          count={viajeFinalizado || 0}
-          backgroundColor="#9699A1"
-          textColor="#ffffff"
-          link={{
-            pathname: "/trips/distribution",
-            state: { defaultFilter: { estado: "fin de viaje" } }
-          }}
+            title="Finalizado"
+            count={viajeFinalizado || 0}
+            backgroundColor="#9699A1"
+            textColor="#ffffff"
+            link={{
+              pathname: "/trips/distribution",
+              state: { defaultFilter: { estado: "fin de viaje" } }
+            }}
           />
         </Grid>
       </Grid>
         
       ) : (
 
-      <Grid container mb={2} spacing={1} padding={3}>
+      <Grid container mb={2} spacing={1} padding={4}>
         <Grid item xs={12}  lg={6} >
           <DashboardCard
-          title="Cantidad total"
-          count={remitoCantidadTotal || 0}
-          backgroundColor="#ffffff"
-          textColor="#605D5D"
+            title="Cantidad total"
+            count={remitoCantidadTotal || 0}
+            backgroundColor="#ffffff"
+            textColor="#605D5D"
+            link={buildRemitosUrl({ fechaDesde: new Date(), fechaHasta: new Date() })}
+            external={true}
           />
         </Grid>
         
@@ -103,18 +105,18 @@ export default function CardContainer ({
         </Grid>                          
         <Grid item xs={12}  lg={6} >
           <DashboardCard
-          title="Entregados"
-          count={remitoEntregados || 0}
-          backgroundColor="#23A26D"
-          textColor="#ffffff"
+            title="Entregados"
+            count={remitoEntregados || 0}
+            backgroundColor="#23A26D"
+            textColor="#ffffff"
           />
         </Grid>
         <Grid item xs={12}  lg={6} >
           <DashboardCard
-          title="No entregados"
-          count={remitoNoEntregados || 0}
-          backgroundColor="#FF4443"
-          textColor="#ffffff"
+            title="No entregados"
+            count={remitoNoEntregados || 0}
+            backgroundColor="#FF4443"
+            textColor="#ffffff"
           />
         </Grid>
       </Grid>

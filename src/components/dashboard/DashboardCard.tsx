@@ -75,12 +75,12 @@ export default function DashboardCard({
         <Typography
           sx={{
             color: textColor,
-            fontSize: 50, // tamaño original
+            fontSize: 40, // tamaño original
             '@media (max-width:1350px)': {
-              fontSize: 40, // se achica entre 0 y 1350px
+              fontSize: 30, // se achica entre 0 y 1350px
             },
             '@media (min-width:1200px)': {
-              fontSize: 50, // vuelve al original desde 1200px
+              fontSize: 40, // vuelve al original desde 1200px
             },
           }}
         >
@@ -88,7 +88,10 @@ export default function DashboardCard({
         </Typography>
       </CardContent>
 
-      <ChevronRight className={`size-10 text-[${textColor}] w-15 h-15 shrink-0`} />
+      <ChevronRight
+        className="size-10 w-15 h-15 shrink-0"
+        style={{ color: textColor }}
+      />
     </Card>
   );
 }

@@ -4,6 +4,7 @@ import { InfoCard } from "../components/dashboard/InfoCard";
 import { useDashboardControllerGetDashboard } from "../api/generated";
 import { Grid } from "@mui/material";
 import CardContainer from "../components/dashboard/CardCointainer";
+import ProximosViajes from "../components/dashboard/ProximosViajes";
 
 export default function Dashboard() {
     const { data, isLoading} =  useDashboardControllerGetDashboard();
@@ -55,7 +56,7 @@ export default function Dashboard() {
                         >
                           <CardContainer
                             isViaje={false}
-                            remitoCantidadTotal={256}
+                            remitoCantidadTotal={128}
                             remitoEnCamino={34}
                             remitoEntregados={198}
                             remitoNoEntregados={24}
@@ -68,9 +69,19 @@ export default function Dashboard() {
                         <InfoCard 
                             title="Próximos viajes"
                             icon={<MapPinned className={`size-7 block`} color="#E65F2B"/>} 
-                            loading={isLoading}
+                            // loading={isLoading}
                             isList
-                        />
+                        >
+                          <ProximosViajes
+                              viajeID= {"V-808FF"}
+                              fecha= {"12/11/2025"}
+                              empresaNombre= {"Acme SRL"}
+                              choferNombre= {"Carlos Lonfardo"}
+                              precioTarifa= {1500}
+                              remitosEntregados= {3}
+                              totalRemitos= {10}
+                          />
+                        </InfoCard>
                     </Grid>
                 </Grid>
             </div>

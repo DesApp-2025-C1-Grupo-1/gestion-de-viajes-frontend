@@ -28,7 +28,7 @@ export default function CardContainer ({
   return (
     <div>
       { isViaje ? (
-      <Grid container mb={2} spacing={1} padding={4}>
+      <Grid container mb={2} spacing={1} paddingLeft={3} paddingRight={3} paddingTop={2} paddingBottom={2}>
         <Grid item xs={12}  lg={6} >
           <DashboardCard
             title="Cantidad total"
@@ -81,7 +81,7 @@ export default function CardContainer ({
         
       ) : (
 
-      <Grid container mb={2} spacing={1} padding={4}>
+      <Grid container mb={2} spacing={1} paddingLeft={3} paddingRight={3} paddingTop={2} paddingBottom={2}>
         <Grid item xs={12}  lg={6} >
           <DashboardCard
             title="Cantidad total"

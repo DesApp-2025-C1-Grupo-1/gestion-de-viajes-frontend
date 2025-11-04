@@ -28,7 +28,7 @@ export const InfoCard = ({
 
     return(
         <Card className="h-full">
-            <Box display="flex" alignItems="center" justifyContent="space-between" paddingTop={3} paddingLeft={3}>
+            <Box display="flex" alignItems="center" justifyContent="space-between" paddingTop={3} paddingLeft={3} >
                 <Stack direction="row" alignItems="center" gap={1.5}>
                     {icon}
                     <Typography variant="subtitle1" sx={{ color: "#5A5A65", fontWeight: "bold" }}>

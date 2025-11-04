@@ -1,5 +1,6 @@
 import { SectionHeader } from "../components/SectionHeader";
-import { MapPinned, Navigation, FileBox} from "lucide-react";
+import { MapPinned, Navigation, FileBox } from "lucide-react";
+import { Box } from "@mui/material";
 import { InfoCard } from "../components/dashboard/InfoCard";
 import { useDashboardControllerGetDashboard } from "../api/generated";
 import { Grid } from "@mui/material";
@@ -25,7 +26,7 @@ export default function Dashboard() {
                 title="Dashboard"
                 description="Realice un seguimiento de sus cargas y entregas logísticas diarias"
             />
-            <div className="flex flex-col px-0 md:px-2">   
+            <div className="flex flex-col px-0">   
                 <Grid container mb={2} spacing={2}>
                     <Grid item xs={12}  lg={6} >
                         <InfoCard 
@@ -56,7 +57,7 @@ export default function Dashboard() {
                         >
                           <CardContainer
                             isViaje={false}
-                            remitoCantidadTotal={128}
+                            remitoCantidadTotal={265}
                             remitoEnCamino={34}
                             remitoEntregados={198}
                             remitoNoEntregados={24}
@@ -72,15 +73,36 @@ export default function Dashboard() {
                             // loading={isLoading}
                             isList
                         >
-                          <ProximosViajes
-                              viajeID= {"V-808FF"}
-                              fecha= {"12/11/2025"}
-                              empresaNombre= {"Acme SRL"}
-                              choferNombre= {"Carlos Lonfardo"}
-                              precioTarifa= {1500}
-                              remitosEntregados= {3}
-                              totalRemitos= {10}
-                          />
+                          <Box display="flex" paddingLeft={3} paddingRight={3} paddingTop={2} paddingBottom={2} flexDirection={"column"}>
+                            <ProximosViajes
+                                viajeID= {"V-808FF"}
+                                fecha= {"12/11/2025"}
+                                empresaNombre= {"Transportes Alfa"}
+                                choferNombre= {"Carlos Lonfardo"}
+                                precioTarifa= {1500}
+                                remitosEntregados= {3}
+                                totalRemitos= {10}
+                            />
+                            <ProximosViajes
+                              viajeID="V-809AA"
+                              fecha="13/11/2025"
+                              empresaNombre="Transportes Beta"
+                              choferNombre="Lucía Fernández"
+                              precioTarifa={2000}
+                              remitosEntregados={5}
+                              totalRemitos={12}
+                            />
+
+                            <ProximosViajes
+                              viajeID="V-810BB"
+                              fecha="14/11/2025"
+                              empresaNombre="Logística Gamma"
+                              choferNombre="Martín López"
+                              precioTarifa={1750}
+                              remitosEntregados={2}
+                              totalRemitos={8}
+                            />
+                          </Box>
                         </InfoCard>
                     </Grid>
                 </Grid>

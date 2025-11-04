@@ -42,7 +42,7 @@ export default function ProximosViajes(viajesParam: ProximosViajesParams) {
       borderRadius={1}
       padding={3}
       gap={5}
-      
+
       sx={{
         cursor: "pointer",
         "&:hover": {
@@ -149,9 +149,9 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   },
   [`& .${linearProgressClasses.bar}`]: {
     borderRadius: 5,
-    backgroundColor: '#1a90ff',
+    backgroundColor: '#23A26D',
     ...theme.applyStyles('dark', {
-      backgroundColor: '#308fe8',
+      backgroundColor: '#c7c7c7',
     }),
   },
 }));

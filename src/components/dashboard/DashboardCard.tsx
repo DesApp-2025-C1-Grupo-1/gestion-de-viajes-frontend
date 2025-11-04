@@ -41,8 +41,8 @@ export default function DashboardCard({
         backgroundColor: backgroundColor,
         border: `1px solid #C7C7C7`,
         cursor: "pointer",
+        padding: "8px", // reducimos padding general
       }}
-
       onClick={handleRedirect}
     >
       <CardContent
@@ -52,20 +52,16 @@ export default function DashboardCard({
           display: "flex",
           flexDirection: "column",
           p: 0,
-          m: 1,
-          backgroundColor: backgroundColor
+          m: 0,
         }}
       >
         <Typography
           sx={{
             color: textColor,
-            height: "auto",
-            fontSize: 20, // tamaño original
+            fontSize: 18, // un poco más pequeño
+            lineHeight: 1.2,
             '@media (max-width:1350px)': {
-              fontSize: 16, // se achica entre 0 y 1350px
-            },
-            '@media (min-width:1200px)': {
-              fontSize: 20, // vuelve al original desde 1200px
+              fontSize: 16,
             },
           }}
         >
@@ -75,12 +71,11 @@ export default function DashboardCard({
         <Typography
           sx={{
             color: textColor,
-            fontSize: 40, // tamaño original
+            fontSize: 32, // reducimos tamaño de número
+            fontWeight: 600,
+            lineHeight: 1.2,
             '@media (max-width:1350px)': {
-              fontSize: 30, // se achica entre 0 y 1350px
-            },
-            '@media (min-width:1200px)': {
-              fontSize: 40, // vuelve al original desde 1200px
+              fontSize: 28,
             },
           }}
         >
@@ -89,7 +84,7 @@ export default function DashboardCard({
       </CardContent>
 
       <ChevronRight
-        className="size-10 w-15 h-15 shrink-0"
+        className="size-10 w-12 h-12 shrink-0" // icono más pequeño
         style={{ color: textColor }}
       />
     </Card>

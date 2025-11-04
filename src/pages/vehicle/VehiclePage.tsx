@@ -139,7 +139,7 @@ export default function VehiclePage() {
                             fields={[
                                 { label: "Tipo", value: vehicle.tipo.nombre },
                                 { label: "Capacidad (kg)", value: `${vehicle.peso_carga} kg` },
-                                { label: "Empresa", value: vehicle.empresa.nombre_comercial },
+                                { label: "Empresa", value: vehicle.empresa?.nombre_comercial },
                                 { label: "Año", value: vehicle.año },
                             ]}
                             onDelete={() => handleOpenDialog(vehicle)}
@@ -198,7 +198,7 @@ export default function VehiclePage() {
                                             <TableCell>{vehicle.año}</TableCell>
                                             <TableCell>{vehicle.volumen_carga} kg</TableCell>
                                             <TableCell>{vehicle.tipo?.nombre || '-'}</TableCell>
-                                            <TableCell>{vehicle.empresa.nombre_comercial}</TableCell>
+                                            <TableCell>{vehicle.empresa?.nombre_comercial}</TableCell>
                                             <TableCell sx={{ verticalAlign: "middle"}}>
                                                 <MenuItemDialog  
                                                     handleOpenDialog={() => handleOpenDialog(vehicle)}

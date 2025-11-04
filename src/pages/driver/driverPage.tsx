@@ -138,7 +138,7 @@ export default function DriverPage(){
                             fields={[
                                 { label: "Licencia", value: `${driver.licencia} - ${driver.tipo_licencia}` },
                                 { label: "Teléfono", value: formatTelefono(driver.telefono) },
-                                { label: "Empresa", value: driver.empresa.nombre_comercial },
+                                { label: "Empresa", value: driver.empresa?.nombre_comercial},
                                 { label: "Vehículo", value:  `${driver.vehiculo.marca} - ${driver.vehiculo.patente}` },
                             ]}
                             onDelete={() => handleOpenDialog(driver)}

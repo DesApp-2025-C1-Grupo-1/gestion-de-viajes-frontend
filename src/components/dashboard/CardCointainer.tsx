@@ -109,6 +109,8 @@ export default function CardContainer ({
             count={remitoEntregados || 0}
             backgroundColor="#23A26D"
             textColor="#ffffff"
+            link={buildRemitosUrl({ fechaDesde: new Date(), fechaHasta: new Date(), estadoId: 5 })}
+            external={true}
           />
         </Grid>
         <Grid item xs={12}  lg={6} >
@@ -117,6 +119,8 @@ export default function CardContainer ({
             count={remitoNoEntregados || 0}
             backgroundColor="#FF4443"
             textColor="#ffffff"
+            link={buildRemitosUrl({ fechaDesde: new Date(), fechaHasta: new Date(), estadoId: 6 })}
+            external={true}
           />
         </Grid>
       </Grid>

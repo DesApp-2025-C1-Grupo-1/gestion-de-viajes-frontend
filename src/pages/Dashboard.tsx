@@ -9,39 +9,33 @@ import ProximosViajes from "../components/dashboard/ProximosViajes";
 
 export default function Dashboard() {
     const { data, isLoading} =  useDashboardControllerGetDashboard();
-    const { topEmpresas, 
-        proximosViajes, 
-        viajesEnCamino, 
-        viajesRecientes, 
-        comparativaCostos, 
-        remitos, 
-        cantidadTarifas, 
-        remitosProximos,
-        cantidadRemitosRecientes
+    const { totalViajes, 
+        viajesPorEstado, 
+        totalRemitos, 
+        remitosPorEstado, 
+        proximosViajes,
     } = data?.data || {};
 
     return (
         <>
             <SectionHeader
                 title="Dashboard"
-                description="Realice un seguimiento de sus cargas y entregas logísticas diarias"
             />
             <div className="flex flex-col px-0">   
-                <Grid container mb={2} spacing={2}>
+                <Grid container mb={2} spacing={2} marginBottom={0}>
                     <Grid item xs={12}  lg={6} >
                         <InfoCard 
                             title="Viajes En Camino"
                             icon={<Navigation className="size-6 block" color="#E65F2B" />} 
-                            value={viajesEnCamino}
-                            // loading={isLoading}
+                            loading={isLoading}
                         >
 
                           <CardContainer
                             isViaje={true}
-                            viajeCantidadTotal={128}
-                            viajeInicioCarga={12}
-                            viajeEnCamino={45}
-                            viajeFinalizado={71}
+                            viajeCantidadTotal={totalViajes}
+                            viajeInicioCarga={viajesPorEstado?.inicioCarga}
+                            viajeEnCamino={viajesPorEstado?.finCarga}
+                            viajeFinalizado={viajesPorEstado?.finViaje}
                           />
 
                         </InfoCard>
@@ -50,17 +44,16 @@ export default function Dashboard() {
                         <InfoCard 
                             title="Remitos"
                             icon={<FileBox className="size-6 block" color="#E65F2B" />} 
-                            value={remitos}
                             link="https://remitos-front.netlify.app/remitos"
                             external
-                            // loading={isLoading}
+                            loading={isLoading}
                         >
                           <CardContainer
                             isViaje={false}
-                            remitoCantidadTotal={265}
-                            remitoEnCamino={34}
-                            remitoEntregados={198}
-                            remitoNoEntregados={24}
+                            remitoCantidadTotal={totalRemitos}
+                            remitoEnCamino={remitosPorEstado?.enCamino}
+                            remitoEntregados={remitosPorEstado?.entregados}
+                            remitoNoEntregados={remitosPorEstado?.noEntregados}
                           />
                         </InfoCard>
 
@@ -70,38 +63,29 @@ export default function Dashboard() {
                         <InfoCard 
                             title="Próximos viajes"
                             icon={<MapPinned className={`size-7 block`} color="#E65F2B"/>} 
-                            // loading={isLoading}
+                            loading={isLoading}
                             isList
                         >
                           <Box display="flex" paddingLeft={3} paddingRight={3} paddingTop={2} paddingBottom={2} flexDirection={"column"}>
-                            <ProximosViajes
-                                viajeID= {"V-808FF"}
-                                fecha= {"12/11/2025"}
-                                empresaNombre= {"Transportes Alfa"}
-                                choferNombre= {"Carlos Lonfardo"}
-                                precioTarifa= {1500}
-                                remitosEntregados= {3}
-                                totalRemitos= {10}
-                            />
-                            <ProximosViajes
-                              viajeID="V-809AA"
-                              fecha="13/11/2025"
-                              empresaNombre="Transportes Beta"
-                              choferNombre="Lucía Fernández"
-                              precioTarifa={2000}
-                              remitosEntregados={5}
-                              totalRemitos={12}
-                            />
-
-                            <ProximosViajes
-                              viajeID="V-810BB"
-                              fecha="14/11/2025"
-                              empresaNombre="Logística Gamma"
-                              choferNombre="Martín López"
-                              precioTarifa={1750}
-                              remitosEntregados={2}
-                              totalRemitos={8}
-                            />
+                            {proximosViajes && proximosViajes.length > 0 ? (
+                                proximosViajes.map((viaje) => (
+                                  <ProximosViajes
+                                    key={viaje._id}
+                                    viajeID={viaje.nro_viaje}
+                                    viaje_id={viaje._id}
+                                    fecha={viaje.fecha}
+                                    empresaNombre={viaje.empresa}
+                                    choferNombre={viaje.chofer}
+                                    precioTarifa={viaje.valorTarifa}
+                                    remitosEntregados={viaje.totalRemitos}
+                                    totalRemitos={viaje.remitosEntregados}
+                                  />
+                                ))
+                            ) : (
+                                <Box padding={2} textAlign="center" width="100%">
+                                    No hay próximos viajes disponibles.
+                                </Box>
+                            )}
                           </Box>
                         </InfoCard>
                     </Grid>

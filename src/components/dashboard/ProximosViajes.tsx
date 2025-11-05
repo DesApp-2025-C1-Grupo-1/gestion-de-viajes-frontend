@@ -14,18 +14,27 @@ interface ProximosViajesParams {
 }
 
 export default function ProximosViajes(viajesParam: ProximosViajesParams) {
-  const { viajeID, empresaNombre, choferNombre, fecha, precioTarifa } = viajesParam;
+  const { viajeID, empresaNombre, choferNombre, fecha, precioTarifa, viaje_id } = viajesParam;
   const porcentajeEntregado =
-    (viajesParam.remitosEntregados / viajesParam.totalRemitos) * 100;
+    (
+    (viajesParam.remitosEntregados / viajesParam.totalRemitos) === Infinity 
+    ? 0 
+    : (viajesParam.remitosEntregados / viajesParam.totalRemitos) 
+    ) * 100;
 
-  const link = `/viajes/${viajesParam.viaje_id}`;
+  const link={
+    pathname: "/trips/distribution",
+    state: { defaultFilter: { _id: viaje_id } }
+  }
+
 
   const navigate = useNavigate();
 
   const handleRedirect = () => {
     if (!link) return;
     else {
-      navigate(link);
+      if (typeof link === "string") navigate(link);
+      else navigate(link.pathname, { state: link.state });
     }
   };
 
@@ -67,7 +76,7 @@ export default function ProximosViajes(viajesParam: ProximosViajesParams) {
         >
           {viajeID}
           <Typography variant="caption" noWrap>
-            {`Inicio: ${fecha}`}
+            {`Inicio: ${new Date(fecha).toLocaleDateString()}`}
           </Typography>
         </Box>
 

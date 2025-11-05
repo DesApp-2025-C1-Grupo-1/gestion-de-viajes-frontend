@@ -931,43 +931,56 @@ export interface ZonaDto {
   nombre: string;
 }
 
-export interface EmpresaViajesDistribucionDto {
-  /** ID de la empresa */
-  empresaId: string;
-  /** Nombre de la empresa */
-  nombre: string;
-  /** Cantidad total de viajes realizados por la empresa */
-  cantidadViajes: number;
+export interface ViajesPorEstadoDto {
+  /** Cantidad de viajes iniciados */
+  iniciado: number;
+  /** Cantidad de viajes en inicio de carga */
+  inicioCarga: number;
+  /** Cantidad de viajes en fin de carga */
+  finCarga: number;
+  /** Cantidad de viajes en fin de viaje */
+  finViaje: number;
 }
 
-export interface ComparativaCostoDto {
-  /** Nombre de la zona */
-  nombre: string;
-  /** Promedio de tarifas de la zona */
-  average: number;
-  /** Valor máximo de tarifas de la zona */
-  max: number;
+export interface RemitosPorEstadoDto {
+  /** Cantidad de remitos en camino */
+  enCamino: number;
+  /** Cantidad de remitos entregados */
+  entregados: number;
+  /** Cantidad de remitos no entregados */
+  noEntregados: number;
+}
+
+export interface ProximoViajeDto {
+  /** ID del viaje */
+  _id: string;
+  /** Número de viaje */
+  nro_viaje: string;
+  /** Fecha de inicio del viaje */
+  fecha: string;
+  /** Nombre comercial de la empresa transportista */
+  empresa: string;
+  /** Nombre del chofer */
+  chofer: string;
+  /** Valor de la tarifa si existe */
+  valorTarifa?: number;
+  /** Cantidad total de remitos asignados al viaje */
+  totalRemitos: number;
+  /** Cantidad de remitos entregados del viaje */
+  remitosEntregados: number;
 }
 
 export interface DashboardDistribucionResponseDto {
-  /** Próximos viajes de distribución programados (limitado a 5) */
-  proximosViajes: ViajeDistribucionDto[];
-  /** Viajes actualmente en camino */
-  viajesEnCamino: number;
-  /** Viajes recientes realizados en la última semana */
-  viajesRecientes: number;
-  /** Top empresas con más viajes realizados */
-  topEmpresas: EmpresaViajesDistribucionDto[];
-  /** Comparativa de costos por zona */
-  comparativaCostos: ComparativaCostoDto[];
-  /** Lista de remitos (sin filtros) */
-  remitos: number;
-  /** Cantidad total de tarifas */
-  cantidadTarifas: number;
-  /** Lista de remitos próximos a preparar */
-  remitosProximos: RemitoDto[];
-  /** Cantidad de remitos recientes realizados en la última semana */
-  cantidadRemitosRecientes: number;
+  /** Cantidad total de viajes */
+  totalViajes: number;
+  /** Cantidad de viajes por estado */
+  viajesPorEstado: ViajesPorEstadoDto;
+  /** Cantidad total de remitos */
+  totalRemitos: number;
+  /** Cantidad de remitos por estado */
+  remitosPorEstado: RemitosPorEstadoDto;
+  /** Lista de próximos viajes con información relevante */
+  proximosViajes: ProximoViajeDto[];
 }
 
 export type ViajeControllerFindAllParams = {

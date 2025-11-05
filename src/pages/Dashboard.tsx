@@ -1,103 +1,93 @@
 import { SectionHeader } from "../components/SectionHeader";
-import { MapPinned, DollarSign, Navigation, FileText, FileBox} from "lucide-react";
+import { MapPinned, Navigation, FileBox } from "lucide-react";
+import { Box } from "@mui/material";
 import { InfoCard } from "../components/dashboard/InfoCard";
-import TopEmpresasChart from "../components/dashboard/Chart";
-import { RemitoDto, ViajeDistribucionDto, useDashboardControllerGetDashboard } from "../api/generated";
+import { useDashboardControllerGetDashboard } from "../api/generated";
 import { Grid } from "@mui/material";
-import ZonasChart from "../components/dashboard/ChartZonas";
+import CardContainer from "../components/dashboard/CardCointainer";
+import ProximosViajes from "../components/dashboard/ProximosViajes";
 
 export default function Dashboard() {
     const { data, isLoading} =  useDashboardControllerGetDashboard();
-    const { topEmpresas, 
-        proximosViajes, 
-        viajesEnCamino, 
-        viajesRecientes, 
-        comparativaCostos, 
-        remitos, 
-        cantidadTarifas, 
-        remitosProximos,
-        cantidadRemitosRecientes
+    const { totalViajes, 
+        viajesPorEstado, 
+        totalRemitos, 
+        remitosPorEstado, 
+        proximosViajes,
     } = data?.data || {};
 
     return (
         <>
             <SectionHeader
                 title="Dashboard"
-                description="Realice un seguimiento de sus cargas y entregas logísticas diarias"
             />
-            <div className="flex flex-col px-0 md:px-2">   
-                <Grid container mb={2} spacing={2}>
-                    <Grid item xs={12} lg={4}  >
+            <div className="flex flex-col px-0">   
+                <Grid container mb={2} spacing={2} marginBottom={0}>
+                    <Grid item xs={12}  lg={6} >
                         <InfoCard 
                             title="Viajes En Camino"
-                            description="viajes activos"
                             icon={<Navigation className="size-6 block" color="#E65F2B" />} 
-                            value={viajesEnCamino}
-                            subDescription={viajesRecientes}
-                            link="/trips/distribution"
                             loading={isLoading}
-                        />
+                        >
+
+                          <CardContainer
+                            isViaje={true}
+                            viajeCantidadTotal={totalViajes}
+                            viajeInicioCarga={viajesPorEstado?.inicioCarga}
+                            viajeEnCamino={viajesPorEstado?.finCarga}
+                            viajeFinalizado={viajesPorEstado?.finViaje}
+                          />
+
+                        </InfoCard>
                     </Grid>
-                    <Grid item xs={12} md={6} lg={4} >
-                        <InfoCard 
-                            title="Tarifas de Costos"
-                            description="tarifas registradas"
-                            icon={<DollarSign className="size-6 block" color="#E65F2B" />} 
-                            value={cantidadTarifas}
-                            link="https://tarifas-de-costo.netlify.app/tarifas"
-                            external
-                            loading={isLoading}
-                        />
-                    </Grid>
-                    <Grid item xs={12} md={6} lg={4} >
+                    <Grid item xs={12} lg={6}>
                         <InfoCard 
                             title="Remitos"
-                            description="remitos registrados"
                             icon={<FileBox className="size-6 block" color="#E65F2B" />} 
-                            value={remitos}
                             link="https://remitos-front.netlify.app/remitos"
-                            subDescription={cantidadRemitosRecientes}
                             external
                             loading={isLoading}
-                        />
+                        >
+                          <CardContainer
+                            isViaje={false}
+                            remitoCantidadTotal={totalRemitos}
+                            remitoEnCamino={remitosPorEstado?.enCamino}
+                            remitoEntregados={remitosPorEstado?.entregados}
+                            remitoNoEntregados={remitosPorEstado?.noEntregados}
+                          />
+                        </InfoCard>
+
                     </Grid>
-                
-                </Grid>
-                <Grid container mb={2} spacing={2}>
-                    <Grid item xs={12}  lg={6}>
+
+                    <Grid item xs={12}  lg={12}>
                         <InfoCard 
                             title="Próximos viajes"
                             icon={<MapPinned className={`size-7 block`} color="#E65F2B"/>} 
-                            list={proximosViajes ? (proximosViajes as unknown as ViajeDistribucionDto[]) : undefined}
-                            link="/trips/distribution"
                             loading={isLoading}
                             isList
-                        />
-                    </Grid>
-                    <Grid item xs={12}  lg={6}>
-                        <InfoCard 
-                            title="Próximos remitos"
-                            icon={<FileText className={`size-7 block`} color="#E65F2B"/>} 
-                            listRemitos={remitosProximos ? (remitosProximos as unknown as RemitoDto[]) : undefined}
-                            link="https://remitos-front.netlify.app/remitos"
-                            external
-                            loading={isLoading}
-                            isList
-                        />
-                    </Grid>
-
-
-                    <Grid item xs={12}  lg={6} >
-                        <TopEmpresasChart 
-                            topEmpresas={topEmpresas ?? []} 
-                            loading={isLoading}
-                        />
-                    </Grid>
-                    <Grid item xs={12} lg={6}>
-                        <ZonasChart 
-                            dataZonas={comparativaCostos ?? []} 
-                            loading={isLoading}    
-                        />
+                        >
+                          <Box display="flex" paddingLeft={3} paddingRight={3} paddingTop={2} paddingBottom={2} flexDirection={"column"}>
+                            {proximosViajes && proximosViajes.length > 0 ? (
+                                proximosViajes.map((viaje) => (
+                                  <ProximosViajes
+                                    key={viaje._id}
+                                    viajeID={viaje.nro_viaje}
+                                    viaje_id={viaje._id}
+                                    fecha={viaje.fecha}
+                                    empresaNombre={viaje.empresa}
+                                    choferNombre={viaje.chofer}
+                                    precioTarifa={viaje.valorTarifa}
+                                    remitosEntregados={viaje.totalRemitos}
+                                    totalRemitos={viaje.remitosEntregados}
+                                  />
+                                ))
+                            ) : (
+                                <Box padding={2} textAlign="center" width="100%">
+                                    No hay próximos viajes disponibles.
+                                </Box>
+                            )}
+                          </Box>
+                        </InfoCard>
                     </Grid>
                 </Grid>
             </div>

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { SectionHeader } from "../../components/SectionHeader";
 import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useMediaQuery} from "@mui/material";
 import LoadingState from "../../components/LoadingState";
@@ -26,12 +26,12 @@ export default function DistributionListPage() {
   const {notify} = useNotify("Viaje");
   const [page, setPage] = useState<number>(1);
   const [filterOpen, setFilterOpen] = useState(false);
-  const [appliedFilters, setAppliedFilters] = useState<BuscarViajeDistribucionDto>({fecha_desde: haceUnMes.toISOString()});
-    const theme = useTheme();
-    const isTablet = useMediaQuery(theme.breakpoints.between('md', 'lg'));
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-    const defaultRows = isMobile ? 5 : isTablet ? 8 : 5;
-    const [rowsPerPage, setRowsPerPage] = useState<number>(defaultRows);
+  
+  const theme = useTheme();
+  const isTablet = useMediaQuery(theme.breakpoints.between('md', 'lg'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const defaultRows = isMobile ? 5 : isTablet ? 8 : 5;
+  const [rowsPerPage, setRowsPerPage] = useState<number>(defaultRows);
 
   const [trips, setTrips] = useState<ViajeDistribucionDto[]>([]);
   const [totalItems, setTotalItems] = useState<number>(0);
@@ -55,6 +55,15 @@ export default function DistributionListPage() {
       depositos: false,
       remitos: false,
       tarifas: false,
+  });
+
+  const location = useLocation();
+  
+  const defaultFilterFromState = (location.state as { defaultFilter?: BuscarViajeDistribucionDto })?.defaultFilter;
+
+  const [appliedFilters, setAppliedFilters] = useState<BuscarViajeDistribucionDto>({
+    fecha_desde: haceUnMes.toISOString(),
+    ...defaultFilterFromState,
   });
 
   // Función para cargar las opciones de los selects
@@ -177,7 +186,10 @@ export default function DistributionListPage() {
 
         <div className="flex justify-around">
             <DistributionFilters 
-                filterOpen={filterOpen} 
+                filterOpen={filterOpen}
+                initialFilters = {
+                  appliedFilters
+                } 
                 setFilterOpen={setFilterOpen} 
                 onApply={handleApplyFilters}
                 empresas={empresas}

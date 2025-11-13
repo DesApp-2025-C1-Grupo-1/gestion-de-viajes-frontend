@@ -1,24 +1,75 @@
-import { Grid, Typography, MenuItem, Select, FormHelperText } from "@mui/material";
+import { Grid, Typography, MenuItem, Select, FormHelperText, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
 import { Controller } from "react-hook-form";
 import { useDistributionFormContext } from "../../../contexts/DistributionFormContext";
 import { ConditionalField } from "../fields/ConditionalField";
 import { VehiculoDto } from "../../../api/generated";
+import { ChevronDown } from "lucide-react";
+import { useState } from "react";
 
 export default function ResourcesSection() {
   const { form, permissions } = useDistributionFormContext();
   const { control, formState: { errors } } = form.form;
+  const bloqueada = !permissions.canEditTransportista && !permissions.canEditChofer && !permissions.canEditVehiculo;
+  const [expanded, setExpanded] = useState(!bloqueada);
 
+  const handleChange = () => {
+    setExpanded(!expanded);
+  };
   return (
-    <>
-      <Typography variant="h6" sx={{ 
-        color: "#5A5A65", 
-        fontWeight: 550, 
-        fontSize: "1.4rem", 
-        mb: 2 
-      }}>
-        Asignar Recursos
-      </Typography>
-      
+    <Accordion
+      expanded={!bloqueada && expanded}    // si bloqueada = true → nunca se abre
+      onChange={!bloqueada ? handleChange : undefined}
+      elevation={0}
+      disableGutters
+      square
+      sx={{
+        backgroundColor: "transparent",
+        "&:before": { display: "none" }, // quita la línea gris superior
+        mb: 3,
+      }}
+    >
+      <AccordionSummary
+        expandIcon={!bloqueada ? <ChevronDown /> : null}
+        sx={{
+          px: 0,
+          cursor: bloqueada ? "default" : "pointer",
+          color: "#5A5A65",
+          fontWeight: 600,
+          opacity: 1,                 // <- fuerza a no verse gris
+          backgroundColor: "transparent !important", 
+          "&.Mui-disabled": {
+            opacity: 1,               // <- evita el gris de MUI
+            backgroundColor: "transparent",
+          },
+        }}
+      >
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <Typography
+            variant="h6"
+            sx={{
+              color: "#5A5A65",
+              fontWeight: 550,
+              fontSize: "1.4rem",
+              mb: bloqueada ? 0 : 2,
+            }}
+          >
+            Asignar Recursos
+          </Typography>
+
+          {bloqueada && (
+            <Typography
+              sx={{
+                color: "#8A8A95",
+                fontSize: "0.85rem",
+                mt: 0.5,
+              }}
+            >
+              No tiene permisos para editar recursos, el estado del viaje no lo permite.
+            </Typography>
+          )}
+        </div>
+      </AccordionSummary>
+      <AccordionDetails sx={{padding: 0}}>
       <Grid container spacing={3} mb={4}>
         {/* Empresa Transportista */}
         <Grid item xs={12} md={6}>
@@ -137,6 +188,7 @@ export default function ResourcesSection() {
           </ConditionalField>
         </Grid>
       </Grid>
-    </>
+      </AccordionDetails>
+    </Accordion>
   );
 }

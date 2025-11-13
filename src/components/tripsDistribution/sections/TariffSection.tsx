@@ -1,11 +1,10 @@
-import { Grid, Typography, MenuItem, Select, FormHelperText, Alert, Box } from "@mui/material";
+import { Grid, Typography, MenuItem, Select, FormHelperText, Alert, Box, AccordionSummary, AccordionDetails, Accordion } from "@mui/material";
 import { Controller, useWatch } from "react-hook-form";
 import { useDistributionFormContext } from "../../../contexts/DistributionFormContext";
 import { ConditionalField } from "../fields/ConditionalField";
 import { useEffect, useMemo, useState } from "react";
 import { TarifaDto, useTarifasControllerGetTarifaById, useTarifasControllerListarZonas, useTarifasControllerTarifasFiltradas, ZonaDto } from "../../../api/generated";
-import axios from "axios";
-import { useQuery } from "@tanstack/react-query";
+import { ChevronDown } from "lucide-react";
 
 interface TripData {
   tarifa_id?: number;
@@ -14,32 +13,24 @@ interface TripData {
 
 export default function TariffSection() {
   const context = useDistributionFormContext();
-  
-  if (!context) {
-    return (
-      <Alert severity="error" sx={{ mb: 3 }}>
-        Error: No se pudo cargar la sección de tarifas. Contexto no disponible.
-      </Alert>
-    );
-  }
+  const safeContext = context ?? ({} as any);
 
-  const { form, permissions, isEditing, tripData} = context;
-  
-  if (!form || !form.form) {
-    return (
-      <Alert severity="error" sx={{ mb: 3 }}>
-        Error: No se pudo cargar el formulario de tarifas.
-      </Alert>
-    );
-  }
+  const { form, permissions, isEditing, tripData } = safeContext;
 
-  const { control, setValue, formState: { errors } } = form.form;
-  
+  // TODOS LOS HOOKS SIEMPRE SE EJECUTAN
+  const { control, setValue, formState: { errors } } = form?.form ?? { control: null, setValue: () => {}, formState: { errors: {} } };
+
   const { data, isLoading: loadingZonas } = useTarifasControllerListarZonas();
   const zonas: ZonaDto[] = data?.data || [];
   const [tarifasDisponibles, setTarifasDisponibles] = useState<TarifaDto[]>([]);
   const [zonaSeleccionada, setZonaSeleccionada] = useState<number | "">("");
   const [inicializado, setInicializado] = useState(false); // NUEVO: Control de inicialización
+  const bloqueada = !permissions.canEditTrip
+  const [expanded, setExpanded] = useState(!bloqueada);
+
+  const handleChange = () => {
+    setExpanded(!expanded);
+  };
 
   // Watch los valores necesarios para las dependencias
   const tipoViaje = useWatch({ control, name: "tipo_viaje" });
@@ -141,6 +132,21 @@ export default function TariffSection() {
                          loadingZonas || 
                          (safeIsEditing && !inicializado); // SOLO deshabilitar durante inicialización
 
+  if (!context) {
+    return (
+      <Alert severity="error" sx={{ mb: 3 }}>
+        Error: No se pudo cargar la sección de tarifas. Contexto no disponible.
+      </Alert>
+    );
+  }
+  
+  if (!form || !form.form) {
+    return (
+      <Alert severity="error" sx={{ mb: 3 }}>
+        Error: No se pudo cargar el formulario de tarifas.
+      </Alert>
+    );
+  }
   // No mostrar la sección si es internacional
   if (esViajeInternacional) {
 
@@ -166,114 +172,165 @@ export default function TariffSection() {
 
   return (
     <>
-      <Typography variant="h6" sx={{ 
-        color: "#5A5A65", 
-        fontWeight: 550, 
-        fontSize: "1.4rem", 
-        mb: 2 
-      }}>
-        Tarifa del Viaje
-      </Typography>
-      
-      <Grid container spacing={3} mb={4}>
-        {/* Selección de Zona */}
-        <Grid item xs={12} md={6}>
-          <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb: 1 }}>
-            Zona de destino
-          </Typography>
-          <ConditionalField 
-            permission={permissions?.canEditTrip}
-            fieldName="zona"
-          >
-            <Select
-              value={zonaSeleccionada || ""}
-              fullWidth
-              displayEmpty
-              disabled={zonaDeshabilitada}
-              onChange={(e) => {
-                const value = e.target.value;
-                const nuevaZona = value === "" ? "" : Number(value);
-                setZonaSeleccionada(nuevaZona);
-                setValue("tarifa_id", undefined);
+      <Accordion
+        expanded={!bloqueada && expanded}    // si bloqueada = true → nunca se abre
+        onChange={!bloqueada ? handleChange : undefined}
+        elevation={0}
+        disableGutters
+        square
+        sx={{
+          backgroundColor: "transparent",
+          "&:before": { display: "none" }, // quita la línea gris superior
+          mb: 1,
+        }}
+      >
+        <AccordionSummary
+          expandIcon={!bloqueada ? <ChevronDown /> : null}
+          sx={{
+            px: 0,
+            cursor: bloqueada ? "default" : "pointer",
+            color: "#5A5A65",
+            fontWeight: 600,
+            opacity: 1,                 // <- fuerza a no verse gris
+            backgroundColor: "transparent !important", 
+            "&.Mui-disabled": {
+              opacity: 1,               // <- evita el gris de MUI
+              backgroundColor: "transparent",
+            },
+          }}
+        >
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <Typography
+              variant="h6"
+              sx={{
+                color: "#5A5A65",
+                fontWeight: 550,
+                fontSize: "1.4rem",
+                mb: bloqueada ? 0 : 2,
               }}
             >
-              <MenuItem value="" disabled>
-                {!tieneRequisitos 
-                  ? "Seleccione empresa y vehículo primero" 
-                  : loadingZonas 
-                    ? "Cargando zonas..." 
-                    : safeIsEditing && loadingZonas && !inicializado
-                      ? "Cargando configuración..."
-                      : "Seleccione una zona"
-                }
-              </MenuItem>
-              
-              {zonas.map((zona) => (
-                <MenuItem key={zona.id} value={zona.id}>
-                  {zona.nombre}
-                </MenuItem>
-              ))}
-            </Select>
-            
-            {tieneRequisitos && !tieneZonas && !loadingZonas && (
-              <Alert severity="warning" sx={{ mt: 1 }}>
-                No hay zonas disponibles para la empresa y vehículo seleccionados
-              </Alert>
-            )}
-          </ConditionalField>
-        </Grid>
+              Tarifa del Viaje
+            </Typography>
 
-        {/* Selección de Tarifa */}
-        <Grid item xs={12} md={6}>
-          <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb: 1 }}>
-            Tarifa aplicable
-          </Typography>
-          <ConditionalField 
-            permission={permissions?.canEditTrip}
-            fieldName="tarifa"
-          >
-            <Controller
-              control={control}
-              name="tarifa_id"
-              render={({ field }) => (
+            {bloqueada && (
+              <Typography
+                sx={{
+                  color: "#8A8A95",
+                  fontSize: "0.85rem",
+                  mt: 0.5,
+                }}
+              >
+                No tiene permisos para editar la tarifa, el estado del viaje no lo permite.
+              </Typography>
+            )}
+          </div>
+        </AccordionSummary>
+        <AccordionDetails sx={{padding: 0}}>
+          <Grid container spacing={3} mb={4}>
+            {/* Selección de Zona */}
+            
+            <Grid item xs={12} md={6}>
+              <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb: 1 }}>
+                Zona de destino
+              </Typography>
+              <ConditionalField 
+                permission={permissions?.canEditTrip}
+                fieldName="zona"
+              >
                 <Select
-                  {...field}
-                  value={!zonaSeleccionada || cargandoTarifaActual || loadingTarifas ? "" : field.value || ""}
+                  value={zonaSeleccionada || ""}
                   fullWidth
                   displayEmpty
-                  disabled={!zonaSeleccionada || loadingTarifas || tarifasDisponibles.length === 0}
-                  error={!!errors.tarifa_id}
+                  disabled={zonaDeshabilitada}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    const nuevaZona = value === "" ? "" : Number(value);
+                    setZonaSeleccionada(nuevaZona);
+                    setValue("tarifa_id", undefined);
+                  }}
                 >
                   <MenuItem value="" disabled>
-                    {!zonaSeleccionada
-                      ? "Seleccione una zona primero" 
-                      : loadingTarifas || cargandoTarifaActual 
-                        ? "Cargando tarifas..." 
-                        : tarifasDisponibles.length === 0
-                          ? "No hay tarifas disponibles"
-                          : "Seleccione una tarifa"
+                    {!tieneRequisitos 
+                      ? "Seleccione empresa y vehículo primero" 
+                      : loadingZonas 
+                        ? "Cargando zonas..." 
+                        : safeIsEditing && loadingZonas && !inicializado
+                          ? "Cargando configuración..."
+                          : "Seleccione una zona"
                     }
                   </MenuItem>
                   
-                  {tarifasDisponibles.map((tarifa, index) => (
-                    <MenuItem key={index} value={tarifa.id}>
-                      <Box>
-                        <Typography variant="body2" fontWeight="bold">
-                          ${tarifa.total} - {tarifa.nombreTarifa}
-                        </Typography>
-                      </Box>
+                  {zonas.map((zona) => (
+                    <MenuItem key={zona.id} value={zona.id}>
+                      {zona.nombre}
                     </MenuItem>
                   ))}
                 </Select>
-              )}
-            />
-            <FormHelperText error={!!errors.tarifa_id}>
-              {errors.tarifa_id?.message as string}
-            </FormHelperText>
-          </ConditionalField>
-        </Grid>
+                
+                {tieneRequisitos && !tieneZonas && !loadingZonas && (
+                  <Alert severity="warning" sx={{ mt: 1 }}>
+                    No hay zonas disponibles para la empresa y vehículo seleccionados
+                  </Alert>
+                )}
+              </ConditionalField>
+            </Grid>
 
-        {/* Resumen de tarifa seleccionada */}
+            {/* Selección de Tarifa */}
+            <Grid item xs={12} md={6}>
+              <Typography sx={{ color: "#5A5A65", fontSize: '0.900rem', mb: 1 }}>
+                Tarifa aplicable
+              </Typography>
+              <ConditionalField 
+                permission={permissions?.canEditTrip}
+                fieldName="tarifa"
+              >
+                <Controller
+                  control={control}
+                  name="tarifa_id"
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      value={!zonaSeleccionada || cargandoTarifaActual || loadingTarifas ? "" : field.value || ""}
+                      fullWidth
+                      displayEmpty
+                      disabled={!zonaSeleccionada || loadingTarifas || tarifasDisponibles.length === 0}
+                      error={!!errors.tarifa_id}
+                    >
+                      <MenuItem value="" disabled>
+                        {!zonaSeleccionada
+                          ? "Seleccione una zona primero" 
+                          : loadingTarifas || cargandoTarifaActual 
+                            ? "Cargando tarifas..." 
+                            : tarifasDisponibles.length === 0
+                              ? "No hay tarifas disponibles"
+                              : "Seleccione una tarifa"
+                        }
+                      </MenuItem>
+                      
+                      {tarifasDisponibles.map((tarifa, index) => (
+                        <MenuItem key={index} value={tarifa.id}>
+                          <Box>
+                            <Typography variant="body2" fontWeight="bold">
+                              ${tarifa.total} - {tarifa.nombreTarifa}
+                            </Typography>
+                          </Box>
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  )}
+                />
+                <FormHelperText error={!!errors.tarifa_id}>
+                  {errors.tarifa_id?.message as string}
+                </FormHelperText>
+              </ConditionalField>
+            </Grid>
+            
+
+            
+          </Grid>
+        </AccordionDetails>
+      </Accordion>
+      {/* Resumen de tarifa seleccionada */}
         {tarifaParaMostrar && (
           <Grid item xs={12}>
             <Alert  severity="success" sx={{ 
@@ -300,7 +357,6 @@ export default function TariffSection() {
             </Alert>
           </Grid>
         )}
-      </Grid>
     </>
   );
 }

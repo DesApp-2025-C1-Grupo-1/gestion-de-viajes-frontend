@@ -127,7 +127,7 @@ export default function RemitosSection() {
                 mt: 0.5,
               }}
             >
-              No tiene permisos para editar recursos, el estado del viaje no lo permite.
+              No tiene permisos para editar remitos, el estado del viaje no lo permite.
             </Typography>
           )}
         </div>

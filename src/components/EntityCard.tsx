@@ -25,7 +25,7 @@ type EntityCardProps = {
 
 export default function EntityCard({ title, subtitle, icon, fields, onView, onEdit, onDelete ,headerEstado, licenseType}: EntityCardProps) {
     return (
-        <Card className="w-full border border-line rounded-lg overflow-hidden">
+        <Card className="w-full border border-line rounded-lg overflow-hidden h-full">
             <header className="p-5 bg-gray-100 w-full h-24 flex justify-between items-center border-b border-line">
                 <div className="flex justify-center gap-4 items-center w-max">
                     <div className="p-3 rounded-full shadow-sm bg-primary-orange text-white h-max w-max flex items-center justify-center">
@@ -53,8 +53,8 @@ export default function EntityCard({ title, subtitle, icon, fields, onView, onEd
                     </Box>
                 )}
             </header>
-            <article>
-                <Grid container spacing={2} className="p-5 pb-0">
+            <article className="h-full">
+                <Grid container spacing={2} className="p-5 pb-0 h-full">
                     {fields.map((field, index) => (
                         <Grid item xs={field.extend ? 12 : 6} key={index}>
                             <Typography variant="body2" color="text.secondary">

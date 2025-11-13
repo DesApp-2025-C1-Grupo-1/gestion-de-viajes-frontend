@@ -1,6 +1,6 @@
 import { TripDistributionType } from "../../components/tripsDistribution/TripDistributionType";
 import { SectionHeader } from "../../components/SectionHeader";
-import { Button, CircularProgress, DialogActions, Paper, Table, TableCell, TableHead, TableRow, SxProps, Typography, Box } from '@mui/material';
+import { Button, CircularProgress, DialogActions, Paper } from '@mui/material';
 import { Building2, ClipboardMinus, MapPinned, Route, Ticket } from "lucide-react";
 import { useNavigate, useParams } from 'react-router-dom';
 import CardDetails from "../../components/detailts/Details";
@@ -45,13 +45,10 @@ export default function DistributionDetailsPage() {
     ? remitosMutation.data.data
     : [];
 
-    console.log(tripSelected)
-
     return (
         <>
             <SectionHeader
                 title="Detalles del viaje"
-                description="Visualice los detalles del viaje en distribución y gestione su estado."
             />
             <Paper  sx={{ padding:4, mx:'auto', width:"100%", borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "0.5px solid #C7C7C7"}} >
                 <div className="flex-1 overflow-y-auto px-4 py-6 flex flex-col items-center">

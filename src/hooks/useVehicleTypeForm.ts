@@ -21,7 +21,6 @@ export const useTipoVehiculo = () => {
   const openDialog = useCallback((item?: TipoVehiculoForm) => {
     setCurrentItem(item || null);
     setIsDialogOpen(true);
-    console.log("hola")
   }, []);
 
   const closeDialog = useCallback(() => {

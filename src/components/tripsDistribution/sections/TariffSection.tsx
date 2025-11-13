@@ -186,7 +186,7 @@ export default function TariffSection() {
             fieldName="zona"
           >
             <Select
-              value={zonaSeleccionada}
+              value={zonaSeleccionada || ""}
               fullWidth
               displayEmpty
               disabled={zonaDeshabilitada}
@@ -238,7 +238,7 @@ export default function TariffSection() {
               render={({ field }) => (
                 <Select
                   {...field}
-                  value={!zonaSeleccionada || cargandoTarifaActual || loadingTarifas ? "" : field.value}
+                  value={!zonaSeleccionada || cargandoTarifaActual || loadingTarifas ? "" : field.value || ""}
                   fullWidth
                   displayEmpty
                   disabled={!zonaSeleccionada || loadingTarifas || tarifasDisponibles.length === 0}

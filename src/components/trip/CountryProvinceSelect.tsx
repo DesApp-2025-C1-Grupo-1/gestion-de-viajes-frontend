@@ -45,7 +45,7 @@ export const CountryProvinceSelect = ({
           fieldName="pais"
         >
           <Select
-            value={selectedPais}
+            value={selectedPais || ""}
             fullWidth
             displayEmpty
             className="inside-paper"

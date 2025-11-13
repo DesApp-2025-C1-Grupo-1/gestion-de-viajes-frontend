@@ -15,8 +15,13 @@ interface DropdownMenuProps {
 export default function DropdownMenu({ IconComponent, title, items, isCollapsed, onClick, isOpen, onToggle }: DropdownMenuProps) {
 
     const textRef = useRef<HTMLParagraphElement>(null);
-    
-    const isLocationSection = items.some(item => window.location.pathname.includes(item.link || "")) || (title === "Inicio" && window.location.pathname === "/");
+    const isLocationSection =
+        items.some(
+        (item) =>
+            item.link &&
+            (window.location.pathname.includes(item.link) ||
+            window.location.href.includes(item.link))
+        ) || (title === "Inicio" && window.location.pathname === "/");
 
     
     const commonClasses = `

@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
-import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery, useTheme } from "@mui/material";
 import { SectionHeader } from "../../components/SectionHeader";
 import { useNavigate } from "react-router-dom";
 import LoadingState from "../../components/LoadingState";
-import SearchBar from "../../components/SearchBar";
 import MenuItemDialog from "../../components/buttons/MenuItem";
 import { useNotify } from "../../hooks/useNotify";
 import { choferControllerRemove, ChoferDto, useChoferControllerFindAll } from "../../api/generated";
-import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { DoubleCell } from "../../components/DoubleCell";
-import { Phone, Mail, Building2, Car, UserRound, Eye } from "lucide-react";
+import { Building2, Car, UserRound, Eye } from "lucide-react";
 import { formatTelefono } from "../../lib/formatters";
 import EntityCard from "../../components/EntityCard";
 import { DriverDetailsDialog } from "../../components/driver/DriverDetailsDialog";
@@ -128,29 +126,39 @@ export default function DriverPage(){
 
             {/*tabla*/}
             {isMobile || isTablet ? (
-                <div className="grid gap-4  lg:grid-cols-2">
-                    {paginated.length > 0 ? paginated.map(driver => (
-                        <EntityCard
-                            key={driver._id}
-                            title={`${driver.nombre} ${driver.apellido}`}
-                            subtitle={`${driver.dni}`}
-                            icon={<UserRound size={24}/>}
-                            fields={[
-                                { label: "Licencia", value: `${driver.licencia} - ${driver.tipo_licencia}` },
-                                { label: "Teléfono", value: formatTelefono(driver.telefono) },
-                                { label: "Empresa", value: driver.empresa?.nombre_comercial},
-                                { label: "Vehículo", value:  `${driver.vehiculo.marca} - ${driver.vehiculo.patente}` },
-                            ]}
-                            onDelete={() => handleOpenDialog(driver)}
-                            onEdit={() => navigate(`/drivers/edit/${driver._id}`)}
-                            onView={() => navigate(`/drivers/details/${driver._id}`)}
-                        />
-                    )):(
-                        <div className="text-center text-gray-500 py-10">
-                            No se encontraron choferes con el nombre buscado.
-                        </div>
+                <Grid>
+                    {isLoading ? (
+                        <LoadingState title="choferes" />
+                    ) : filteredChoferes.length === 0 || paginated.length === 0 ? (
+                        <Box className="text-center text-gray-500 py-5">
+                            No se encontraron choferes.
+                        </Box>
+                    ) : ( 
+                    <Grid container spacing={2}>
+                        {paginated.length > 0 && paginated.map(driver => (
+                            <Grid item xs={12} md={6} lg={4} key={driver._id}>
+                                <EntityCard
+                                    key={driver._id}
+                                    title={`${driver.nombre} ${driver.apellido}`}
+                                    subtitle={`${driver.dni}`}
+                                    icon={<UserRound size={24}/>}
+                                    fields={[
+                                        { label: "Licencia", value: `${driver.licencia} - ${driver.tipo_licencia}` },
+                                        { label: "Teléfono", value: formatTelefono(driver.telefono) },
+                                        { label: "Empresa", value: driver.empresa?.nombre_comercial},
+                                        { label: "Vehículo", value:  `${driver.vehiculo.marca} - ${driver.vehiculo.patente}` },
+                                    ]}
+                                    onDelete={() => handleOpenDialog(driver)}
+                                    onEdit={() => navigate(`/drivers/edit/${driver._id}`)}
+                                    onView={() => navigate(`/drivers/details/${driver._id}`)}
+                                />
+                            </Grid>
+                        ) 
+                        )}
+                        
+                    </Grid>
                     )}
-                </div>
+                </Grid>
             ) : (
                 <Box>
                     <TableContainer component={Paper}>
@@ -158,9 +166,9 @@ export default function DriverPage(){
                             <TableHead >
                                 <TableRow>
                                     <TableCell>Nombre completo</TableCell>
-                                    <TableCell sx={{ width: 100}}>DNI</TableCell>
-                                    <TableCell sx={{ width: 150}}>Licencia</TableCell>
-                                    <TableCell sx={{ width: 160}}>Teléfono</TableCell>
+                                    <TableCell sx={{ minWidth: 100}}>DNI</TableCell>
+                                    <TableCell sx={{ minWidth: 150}}>Licencia</TableCell>
+                                    <TableCell sx={{ minWidth: 160}}>Teléfono</TableCell>
                                     <TableCell sx={{minWidth: 200}}>Transporte</TableCell>
                                     <TableCell align="center" sx={{width: 72}}>Acciones</TableCell>
                                 </TableRow>
@@ -168,15 +176,15 @@ export default function DriverPage(){
                             <TableBody>
                                 {isLoading ? (
                                     <TableRow key="loading">
-                                        <TableCell colSpan={7} >
+                                        <TableCell colSpan={6} >
                                             <LoadingState title="choferes"/>
                                         </TableCell>
                                     </TableRow>
                                 ) : paginated.length === 0 ? (
                                     <TableRow key="no-drivers" hover>
-                                        <TableCell 
-                                            colSpan={8} 
-                                            sx={{textAlign: "center", paddingY: "26px",}}
+                                        <TableCell
+                                            colSpan={6}
+                                            sx={{ textAlign: "center", paddingY: "26px" }}
                                         >
                                             No se encontraron choferes
                                         </TableCell>

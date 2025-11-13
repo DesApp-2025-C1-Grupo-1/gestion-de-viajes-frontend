@@ -1,4 +1,66 @@
-import { Building2, CalendarDays, ChartColumn, DollarSign, FileText, Fuel, Layers, Map, MapPin, Navigation, Package, Truck, User, Users, Warehouse } from "lucide-react";
+import {
+  Building2,
+  CalendarDays,
+  ChartColumn,
+  DollarSign,
+  FileText,
+  Fuel,
+  Layers,
+  Map,
+  MapPin,
+  Navigation,
+  Package,
+  Truck,
+  User,
+  Users,
+  Warehouse,
+} from "lucide-react";
+
+/* -------------------- Configuración de URLs base -------------------- */
+
+const isLocal =
+  window.location.hostname === "localhost" ||
+  window.location.hostname === "127.0.0.1";
+
+export const FRONTEND_URLS = {
+  viajes: isLocal
+    ? "http://localhost:8085"
+    : "https://gestion-de-viajes.vercel.app",
+
+  remitos: isLocal
+    ? "http://localhost:8081"
+    : "https://remitos-front.netlify.app",
+
+  tarifas: isLocal
+    ? "http://localhost:8080"
+    : "https://tarifas-de-costo.netlify.app",
+};
+
+/* -------------------- Detectar app actual -------------------- */
+
+export const getCurrentApp = () => {
+  const hostname = window.location.hostname;
+
+  if (hostname.includes("viaje") || hostname.includes("8085")) return "viajes";
+  if (hostname.includes("remito") || hostname.includes("8081")) return "remitos";
+  if (hostname.includes("tarifa") || hostname.includes("8080")) return "tarifas";
+  return "viajes"; // fallback
+};
+
+const currentApp = getCurrentApp();
+
+/* -------------------- Función helper: arma URL absoluta o relativa -------------------- */
+
+const makeLink = (app: keyof typeof FRONTEND_URLS, path: string, isExternal = false) => {
+  // si el link es interno (mismo dominio), usar ruta relativa
+  if (app === currentApp && !isExternal) return path;
+
+  // si es de otra app o marcado como externo → usar URL absoluta
+  const baseUrl = FRONTEND_URLS[app];
+  return `${baseUrl}/${path}`;
+};
+
+/* -------------------- Menús del sidebar -------------------- */
 
 export const sidebarMenus = {
   viajes: [
@@ -9,18 +71,20 @@ export const sidebarMenus = {
     { src: Layers, title: "Tipos de Vehículos", link: "type-vehicle" },
     { src: Navigation, title: "Viajes", link: "trips/distribution" },
   ],
+
   remitos: [
-    { src: CalendarDays, title: "Agenda", link: "https://remitos-front.netlify.app/agenda" },
-    { src: Users, title: "Clientes", link: "https://remitos-front.netlify.app/clientes" },
-    { src: MapPin, title: "Destinos", link: "https://remitos-front.netlify.app/destinos" },
-    { src: FileText, title: "Remitos", link: "https://remitos-front.netlify.app/remitos" },
-    { src: ChartColumn, title: "Reportes", link: "https://remitos-front.netlify.app/reportes" },
+    { src: CalendarDays, title: "Agenda", link: makeLink("remitos", "agenda", true) },
+    { src: Users, title: "Clientes", link: makeLink("remitos", "clientes", true) },
+    { src: MapPin, title: "Destinos", link: makeLink("remitos", "destinos", true) },
+    { src: FileText, title: "Remitos", link: makeLink("remitos", "remitos", true) },
+    { src: ChartColumn, title: "Reportes", link: makeLink("remitos", "reportes", true) },
   ],
+
   costos: [
-    { src: Layers, title: "Adicionales", link: "https://tarifas-de-costo.netlify.app/adicionales" },
-    { src: Package, title: "Cargas", link: "https://tarifas-de-costo.netlify.app/tipos-de-carga" },
-    { src: Fuel, title: "Combustible", link: "https://tarifas-de-costo.netlify.app/combustible" },
-    { src: DollarSign, title: "Tarifas", link: "https://tarifas-de-costo.netlify.app/tarifas" },
-    { src: Map, title: "Zonas", link: "https://tarifas-de-costo.netlify.app/zonas" },
-  ]
+    { src: Layers, title: "Adicionales", link: makeLink("tarifas", "adicionales", true) },
+    { src: Package, title: "Cargas", link: makeLink("tarifas", "tipos-de-carga", true) },
+    { src: Fuel, title: "Combustible", link: makeLink("tarifas", "combustible", true) },
+    { src: DollarSign, title: "Tarifas", link: makeLink("tarifas", "tarifas", true) },
+    { src: Map, title: "Zonas", link: makeLink("tarifas", "zonas", true) },
+  ],
 };

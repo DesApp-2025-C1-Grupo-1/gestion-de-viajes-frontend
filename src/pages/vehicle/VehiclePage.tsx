@@ -1,4 +1,4 @@
-import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery, useTheme } from "@mui/material";
 import { SectionHeader } from "../../components/SectionHeader";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -129,29 +129,39 @@ export default function VehiclePage() {
             />
 
             {isTablet || isMobile ? (
-                <div className="grid gap-4  lg:grid-cols-2">
-                    {paginated.length > 0 ? paginated.map(vehicle => (
-                        <EntityCard
-                            key={vehicle._id}
-                            title={vehicle.patente}
-                            subtitle={`${vehicle.modelo}`}
-                            icon={<Truck size={24}/>}
-                            fields={[
-                                { label: "Tipo", value: vehicle.tipo.nombre },
-                                { label: "Capacidad (kg)", value: `${vehicle.peso_carga} kg` },
-                                { label: "Empresa", value: vehicle.empresa?.nombre_comercial },
-                                { label: "Año", value: vehicle.año },
-                            ]}
-                            onDelete={() => handleOpenDialog(vehicle)}
-                            onEdit={() => navigate(`/vehicles/edit/${vehicle._id}`)}
-                            onView={() => navigate(`/vehicles/details/${vehicle._id}`)}
-                        />
-                    )) : (
-                        <div className="text-center text-gray-500 py-10">
-                            No se encontraron vehículos con el modelo o patente buscado.
-                        </div>
+                <Grid>
+                {isLoading ? (
+                    <LoadingState title="vehículos" />
+                ) : filteredVehicles.length === 0 || paginated.length === 0 ? (
+                    <Box className="text-center text-gray-500 py-5">
+                        No se encontraron vehículos.
+                    </Box>
+                ) : (
+                    <Grid container spacing={2}>
+                        {paginated.length > 0 && paginated.map(vehicle => (
+                            <Grid item xs={12} md={6} key={vehicle._id}>
+                                <EntityCard
+                                    key={vehicle._id}
+                                    title={vehicle.patente}
+                                    subtitle={`${vehicle.modelo}`}
+                                    icon={<Truck size={24}/>}
+                                    fields={[
+                                        { label: "Tipo", value: vehicle.tipo.nombre },
+                                        { label: "Capacidad (kg)", value: `${vehicle.peso_carga} kg` },
+                                        { label: "Empresa", value: vehicle.empresa?.nombre_comercial },
+                                        { label: "Año", value: vehicle.año },
+                                    ]}
+                                    onDelete={() => handleOpenDialog(vehicle)}
+                                    onEdit={() => navigate(`/vehicles/edit/${vehicle._id}`)}
+                                    onView={() => navigate(`/vehicles/details/${vehicle._id}`)}
+                                />
+                            </Grid>
+                        ))}
+                    </Grid>
                     )}
-                </div>
+                </Grid>
+
+                
             ) : (
                 <Box>         
                     <TableContainer component={Paper}>

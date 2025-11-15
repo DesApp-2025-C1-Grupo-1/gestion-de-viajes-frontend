@@ -123,7 +123,7 @@ export default function TypeVehicle() {
       />
 
       {isTablet || isMobile ? (
-        <Grid>
+        <Grid >
           {isLoading ? (
             <LoadingState title="Tipos de vehículos" />
           ) : filteredVehicles.length === 0 ? (
@@ -131,25 +131,27 @@ export default function TypeVehicle() {
               No se encontraron tipos de vehículos.
             </Box>
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 pb-4 px-0.5  lg:h-max">
+            <Grid container spacing={2}>
               {paginated.map((vehicleType) => (
-                <EntityCard
-                  key={vehicleType._id}
-                  icon={<Truck />}
-                  title={vehicleType.nombre}
-                  onEdit={() => openDialog(vehicleType)}
-                  onDelete={() => handleDeleteClick(vehicleType)}
-                  fields={[
-                    {
-                      label: "Descripción",
-                      value: vehicleType.descripcion || "-",
-                      extend: true,
-                    },
-                  ]}
-                  licenseType={vehicleType.licencia_permitida}
-                />
+                <Grid item xs={12} md={6} lg={4} key={vehicleType._id} >
+                  <EntityCard
+                    icon={<Truck />}
+                    title={vehicleType.nombre}
+                    onEdit={() => openDialog(vehicleType)}
+                    onDelete={() => handleDeleteClick(vehicleType)}
+                    fields={[
+                      {
+                        label: "Descripción",
+                        value: vehicleType.descripcion || "-",
+                        extend: true,
+                      },
+                    ]}
+                    licenseType={vehicleType.licencia_permitida}
+                  />
+                </Grid>
               ))}
-            </div>
+            </Grid>
+
           )}
         </Grid>
       ) : (

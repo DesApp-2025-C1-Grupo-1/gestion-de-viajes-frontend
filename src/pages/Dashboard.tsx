@@ -44,7 +44,7 @@ export default function Dashboard() {
                         <InfoCard 
                             title="Remitos"
                             icon={<FileBox className="size-6 block" color="#E65F2B" />} 
-                            link="https://remitos-front.netlify.app/remitos"
+                            link={import.meta.env.VITE_REMITOS_URL || 'https://localhost:8081/remitos'}
                             external
                             loading={isLoading}
                         >

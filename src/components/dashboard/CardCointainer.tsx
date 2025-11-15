@@ -153,5 +153,5 @@ function buildRemitosUrl(filters: RemitosFilters) {
   params.append('fechaDesde', formatDate(fechaDesde));
   params.append('fechaHasta', formatDate(fechaHasta));
 
-  return `https://remitos-front.netlify.app/remitos?${params.toString()}`;
+  return `${import.meta.env.VITE_REMITOS_URL || 'https://localhost:8081/remitos'}?${params.toString()}`;
 }

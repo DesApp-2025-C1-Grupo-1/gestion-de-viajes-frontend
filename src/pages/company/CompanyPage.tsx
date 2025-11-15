@@ -1,15 +1,12 @@
 import { useEffect, useState } from "react";
-import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery, useTheme } from "@mui/material";
 import MenuItemDialog from "../../components/buttons/MenuItem";
 import { SectionHeader } from "../../components/SectionHeader";
 import { useNavigate } from "react-router-dom";
 import LoadingState from "../../components/LoadingState";
-import SearchBar from "../../components/SearchBar";
 import { useNotify } from "../../hooks/useNotify";
 import { empresaControllerDelete, EmpresaDto, useEmpresaControllerFindAll} from "../../api/generated";
-import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
-
 import { Building2, Eye } from "lucide-react";
 import EntityCard from "../../components/EntityCard";
 import PaginationEntity from "../../components/PaginationEntity";
@@ -18,7 +15,6 @@ import FilterSection, { getNestedValue } from "../../components/FilterSection";
 export default function CompanyPage(){
     const {notify} = useNotify("Empresa", "female");
     const {data, isLoading, refetch} = useEmpresaControllerFindAll();
-    const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);
     const [openDialog, setOpenDialog] = useState(false);
     const [empresaSelected, setEmpresaSelected] = useState<EmpresaDto>();
@@ -125,8 +121,17 @@ export default function CompanyPage(){
             {/*tabla*/}
 
             {isMobile || isTablet ? (
-                <div className="grid gap-4  lg:grid-cols-2">
-                    {paginated.length > 0 ? paginated.map(company => (
+                <Grid>
+                {isLoading ? (
+                    <LoadingState title="empresas" />
+                ) : filteredEmpresas.length === 0 || paginated.length === 0 ? (
+                    <Box className="text-center text-gray-500 py-5">
+                        No se encontraron empresas.
+                    </Box>
+                ) : (
+                    <Grid container spacing={2}>
+                    {paginated.length > 0 && paginated.map(company => (
+                        <Grid item xs={12} md={6} key={company._id}>
                         <EntityCard
                             key={company._id}
                             title={company.nombre_comercial}
@@ -141,12 +146,12 @@ export default function CompanyPage(){
                             onEdit={() => navigate(`/companies/edit/${company._id}`)}   
                             onView={() => navigate(`/companies/details/${company._id}`)}         
                         />
-                    )):(
-                        <div className="text-center text-gray-500 py-10">
-                            No se encontraron empresas con el nombre buscado.
-                        </div>
-                    )}
-                </div>
+                        </Grid>
+                    ))}
+                    </Grid>
+                )}
+                
+            </Grid>
             ):(           
                 <Box >
                     <TableContainer component={Paper}>

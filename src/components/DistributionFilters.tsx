@@ -297,7 +297,7 @@ export default function DistributionFilters({
                   <Typography variant="subtitle2" color="#666" mb={0.5}>Transportista</Typography>
                   <Select
                       fullWidth
-                      value={localFilters.transportista}
+                      value={localFilters.transportista || ""}
                       onChange={(e) => handleChange('transportista', e.target.value)}
                       displayEmpty
                   >
@@ -310,7 +310,7 @@ export default function DistributionFilters({
                   <Typography variant="subtitle2" color="#666" mb={0.5}>Vehículo</Typography>
                   <Select
                       fullWidth
-                      value={localFilters.vehiculo}
+                      value={localFilters.vehiculo || ""}
                       onChange={(e) => handleChange('vehiculo', e.target.value)}
                       displayEmpty
                   >
@@ -323,7 +323,7 @@ export default function DistributionFilters({
                   <Typography variant="subtitle2" color="#666" mb={0.5}>Chofer</Typography>
                   <Select
                       fullWidth
-                      value={localFilters.chofer}
+                      value={localFilters.chofer || ""}
                       onChange={(e) => handleChange('chofer', e.target.value)}
                       displayEmpty
                   >
@@ -336,7 +336,7 @@ export default function DistributionFilters({
                   <Typography variant="subtitle2" color="#666" mb={0.5}>Estado de viaje</Typography>
                   <Select
                       fullWidth
-                      value={localFilters.estado}
+                      value={localFilters.estado || ""}
                       onChange={(e) => handleChange('estado', e.target.value)}
                       displayEmpty
                   >
@@ -349,7 +349,7 @@ export default function DistributionFilters({
                   <Typography variant="subtitle2" color="#666" mb={0.5}>Depósito de origen</Typography>
                   <Select
                       fullWidth
-                      value={localFilters.origen}
+                      value={localFilters.origen || ""}
                       onChange={(e) => handleChange('origen', e.target.value)}
                       displayEmpty
                   >

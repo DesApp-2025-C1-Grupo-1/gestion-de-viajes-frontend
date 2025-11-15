@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { SectionHeader } from "../../components/SectionHeader";
-import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useMediaQuery} from "@mui/material";
+import { Box, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useMediaQuery} from "@mui/material";
 import LoadingState from "../../components/LoadingState";
 import MenuItem from "../../components/buttons/MenuItem";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
@@ -71,28 +71,27 @@ export default function DistributionListPage() {
       try {
           setLoadingOptions(prev => ({...prev, empresas: true}));
           const resEmpresas = await empresaControllerFindAll();
-          setEmpresas(resEmpresas.data);
+          setEmpresas(resEmpresas.data || []);
 
           setLoadingOptions(prev => ({...prev, vehiculos: true}));
           const resVehiculos = await vehiculoControllerFindAll();
-          setVehiculos(resVehiculos.data);
+          setVehiculos(resVehiculos?.data || []);
 
           setLoadingOptions(prev => ({...prev, choferes: true}));
           const resChoferes = await choferControllerFindAll();
-          setChoferes(resChoferes.data);
+          setChoferes(resChoferes?.data || []);
 
           setLoadingOptions(prev => ({...prev, depositos: true}));
           const resDepositos = await depositoControllerFindAll();
-          setDepositos(resDepositos.data);
+          setDepositos(resDepositos?.data || []);
 
           setLoadingOptions(prev => ({...prev, remitos: true}));
           const resRemitos = await remitosControllerGetRemitos();
-          setRemitos(resRemitos.data.data);
+          setRemitos(resRemitos?.data?.data || []);
 
           setLoadingOptions(prev => ({...prev, tarifas: true}));
           const resTarifas = await tarifasControllerGetTarifas();
-          setTarifas(resTarifas.data);
-          console.log("Tarifas cargadas:", resTarifas.data);
+          setTarifas(resTarifas?.data || []);
 
       } catch (error) {
           notify("error", "Error al cargar opciones de filtros");
@@ -204,29 +203,38 @@ export default function DistributionListPage() {
 
         {/*tabla*/}
         {isMobile || isTablet ? (
-            <div className="grid gap-4  lg:grid-cols-2">
-                {trips.length > 0 ? trips.map(tripsDistribution => (
-                    <EntityCard
-                        key={tripsDistribution._id}
-                        title={ tripsDistribution.nro_viaje ?? (tripsDistribution as any).numeroDeViaje}
-                        subtitle={`${new Date(tripsDistribution.fecha_inicio).toLocaleDateString()} - ${new Date(tripsDistribution.fecha_inicio).toLocaleTimeString()} `}
-                        icon={<MapPinned size={24}/>}
-                        fields={[
-                            { label: "Transportista", value: `${tripsDistribution.transportista.nombre_comercial}`},
-                            { label: "Chofer", value: tripsDistribution.chofer.nombre + ", " + tripsDistribution.chofer.apellido, isLong: true },
-                            { label: "Deposito de origen", value: `${tripsDistribution.origen.nombre}`, extend: true },
-                        ]}
-                        onDelete={() => handleOpenDialog(tripsDistribution)}
-                        onEdit={() => navigate(`/trips/distribution/edit/${tripsDistribution._id}`)}  
-                        onView={() => navigate(`/trips/distribution/details/${tripsDistribution._id}`)}  
-                        headerEstado={ tripsDistribution.estado}   
-                    />
-                )):(
-                    <div className="text-center text-gray-500 py-10">
-                        No se encontraron viajes en distribución.
-                    </div>
+            <Grid>
+                {isLoading ? (
+                    <LoadingState title="viajes de distribución" />
+                ) : trips.length === 0 ? (
+                    <Box className="text-center text-gray-500 py-5">
+                        No se encontraron viajes de distribución.
+                    </Box>
+                ) : (
+                    <Grid container spacing={2}>
+                        {trips.length > 0 && trips.map(tripsDistribution => (
+                            <Grid item xs={12} md={6} key={tripsDistribution._id}>
+                
+                                <EntityCard
+                                    key={tripsDistribution._id}
+                                    title={ tripsDistribution.nro_viaje ?? (tripsDistribution as any).numeroDeViaje}
+                                    subtitle={`${new Date(tripsDistribution.fecha_inicio).toLocaleDateString()} - ${new Date(tripsDistribution.fecha_inicio).toLocaleTimeString()} `}
+                                    icon={<MapPinned size={24}/>}
+                                    fields={[
+                                        { label: "Transportista", value: `${tripsDistribution.transportista.nombre_comercial}`},
+                                        { label: "Chofer", value: tripsDistribution.chofer.nombre + ", " + tripsDistribution.chofer.apellido, isLong: true },
+                                        { label: "Deposito de origen", value: `${tripsDistribution.origen.nombre}`, extend: true },
+                                    ]}
+                                    onDelete={() => handleOpenDialog(tripsDistribution)}
+                                    onEdit={() => navigate(`/trips/distribution/edit/${tripsDistribution._id}`)}  
+                                    onView={() => navigate(`/trips/distribution/details/${tripsDistribution._id}`)}  
+                                    headerEstado={ tripsDistribution.estado}   
+                                />
+                            </Grid>
+                        ))}
+                    </Grid>
                 )}
-            </div>
+            </Grid>
         ):(          
             <Box>
                 <TableContainer component={Paper}>

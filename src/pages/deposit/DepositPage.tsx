@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { SectionHeader } from "../../components/SectionHeader";
-import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery} from "@mui/material";
+import { Box, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useMediaQuery} from "@mui/material";
 import LoadingState from "../../components/LoadingState";
 import MenuItem from "../../components/buttons/MenuItem";
 import { useNavigate } from "react-router-dom";
@@ -115,30 +115,38 @@ export default function DepositPage() {
 
             {/*tabla*/}
             {isMobile || isTablet ? (
-                <div className="grid gap-4  lg:grid-cols-2">
-                    {paginated.length > 0 ? paginated.map(deposit => (
-                        <EntityCard
-                            key={deposit._id}
-                            title={`${deposit.nombre}`}
-                            subtitle={`${deposit.direccion?.calle} ${deposit.direccion?.numero}, ${deposit.direccion?.ciudad}`}
-                            icon={<Warehouse size={24}/>}
-                            fields={[
-                                { label: "Ciudad", value:   deposit.direccion?.ciudad },
-                                { label: "Tipo", value:     deposit.tipo.charAt(0).toUpperCase() + deposit.tipo.slice(1) },
-                                { label: "Horario", value:  deposit.horario_entrada + " - " + deposit.horario_salida },
-                                { label: "Teléfono", value: formatTelefono(deposit.contacto.telefono) },
-                                { label: "Email", value: deposit.contacto.email, extend: true},
-                            ]}
-                            onDelete={() => handleOpenDialog(deposit)}
-                            onEdit={() => navigate(`/depots/edit/${deposit._id}`)}
-                            onView={() => navigate(`/depots/details/${deposit._id}`)}
-                        />
-                    )):(
-                        <div className="text-center text-gray-500 py-10">
-                            No se encontraron depósitos con el nombre buscado.
-                        </div>
-                    )}
-                </div>
+                <Grid>
+                {isLoading ? (
+                    <LoadingState title="depósitos" />
+                ) : filteredDeposits.length === 0 || paginated.length === 0 ? (
+                    <Box className="text-center text-gray-500 py-5">
+                        No se encontraron depósitos.
+                    </Box>
+                ) : (
+                    <Grid container spacing={2}>
+                    {paginated.length > 0 && paginated.map(deposit => (
+                        <Grid item xs={12} md={6} key={deposit._id}>
+                            <EntityCard
+                                key={deposit._id}
+                                title={`${deposit.nombre}`}
+                                subtitle={`${deposit.direccion?.calle} ${deposit.direccion?.numero}, ${deposit.direccion?.ciudad}`}
+                                icon={<Warehouse size={24}/>}
+                                fields={[
+                                    { label: "Ciudad", value:   deposit.direccion?.ciudad },
+                                    { label: "Tipo", value:     deposit.tipo.charAt(0).toUpperCase() + deposit.tipo.slice(1) },
+                                    { label: "Horario", value:  deposit.horario_entrada + " - " + deposit.horario_salida },
+                                    { label: "Teléfono", value: formatTelefono(deposit.contacto.telefono) },
+                                    { label: "Email", value: deposit.contacto.email, extend: true},
+                                ]}
+                                onDelete={() => handleOpenDialog(deposit)}
+                                onEdit={() => navigate(`/depots/edit/${deposit._id}`)}
+                                onView={() => navigate(`/depots/details/${deposit._id}`)}
+                            />
+                        </Grid>
+                    ))}
+                    </Grid>
+                )}
+                </Grid>
             ) : (
                 <Box>
                     <TableContainer component={Paper}>

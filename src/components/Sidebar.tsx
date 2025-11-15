@@ -2,7 +2,7 @@ import { ChevronLeft, ChevronRight, ClipboardList, Coins, Home, Route } from "lu
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DropdownMenu from "./DropdownMenu";
-import { sidebarMenus } from "../lib/sidebarMenus";
+import { getCurrentApp, sidebarMenus } from "../lib/sidebarMenus";
 import { Box, Button, Stack, Tooltip} from "@mui/material";
 
 
@@ -15,10 +15,9 @@ export default function Sidebar({isVisible, setIsVisible}: SidebarProps) {
   const navigate = useNavigate();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [openSection, setOpenSection] = useState<string | null>(null);
+  const currentApp = getCurrentApp();
 
-  const toggleSidebar = () => {
-    setIsCollapsed(prev => !prev);
-  };
+  const toggleSidebar = () => setIsCollapsed((prev) => !prev);
 
   const menuItems = [
     { key: "inicio", src: Home, title: "Inicio" },
@@ -35,34 +34,22 @@ export default function Sidebar({isVisible, setIsVisible}: SidebarProps) {
       setIsMobile(mobileWidth);
 
       // Si pasás a mobile, expandí el sidebar
-      if (mobileWidth) {
-        setIsCollapsed(false);
-      }
+      if (mobileWidth) setIsCollapsed(false);
     };
   
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const selectOption =() => {
-    setIsVisible(false);
-  }
+  const selectOption = () => setIsVisible(false);
 
   type SidebarMenuKey = keyof typeof sidebarMenus;
-
-  const getItems = (key: SidebarMenuKey) => {
-    return sidebarMenus[key] || [];
-  };
-
-  const isMainApp = window.location.host.includes("gestion-de-viajes.vercel.app") || window.location.host.includes("localhost");
+  const getItems = (key: SidebarMenuKey) => sidebarMenus[key] || [];
 
   const handleLogoClick = () => {
-    if (isMainApp) {
-      navigate("/");
-    } else {
-      window.location.href = "https://gestion-de-viajes.vercel.app/";
-    }
-    selectOption()
+    if (currentApp === "viajes") navigate("/");
+    else window.location.href = "https://gestion-de-viajes.vercel.app/";
+    selectOption();
   };
 
   return (

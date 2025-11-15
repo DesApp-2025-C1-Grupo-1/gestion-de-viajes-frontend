@@ -1,4 +1,4 @@
-import { Box, Button, Card, Divider, Grid, Tooltip, Typography } from "@mui/material";
+import { Box, Button, Card, Grid, Tooltip, Typography } from "@mui/material";
 import { Edit, Eye, Trash2 } from "lucide-react";
 import { ReactNode } from "react";
 import { TripDistributionType } from "./tripsDistribution/TripDistributionType";
@@ -21,10 +21,9 @@ type EntityCardProps = {
     onEdit?: () => void;
     onDelete?: () => void;
     licenseType?: string;
-    children?: ReactNode;
 };
 
-export default function EntityCard({ title, subtitle, icon, fields, onView, onEdit, onDelete ,headerEstado, licenseType, children}: EntityCardProps) {
+export default function EntityCard({ title, subtitle, icon, fields, onView, onEdit, onDelete ,headerEstado, licenseType}: EntityCardProps) {
     return (
         <Card className="w-full border border-line rounded-lg overflow-hidden h-full">
             <header className="p-5 bg-gray-100 w-full h-24 flex justify-between items-center border-b border-line">
@@ -93,21 +92,11 @@ export default function EntityCard({ title, subtitle, icon, fields, onView, onEd
                                         {field.value}
                                     </Typography>
                                 </Tooltip>
-                            )}
+                            )} 
                         </Grid>
                     ))}
                 </Grid>
-
-                {/* Children abajo de fields */}
-                {children && (
-                  <div>
-                    <div className="px-5">
-                        {children}
-                    </div>
-                  </div>
-                )}
-
-              </article>
+            </article>
             <footer className="p-5 flex justify-between items-center">
 
                 {onView ? (
@@ -131,19 +120,32 @@ export default function EntityCard({ title, subtitle, icon, fields, onView, onEd
                     >
                         Editar
                     </Button>
-                    {
-                      onDelete &&
-                      <Button
-                          variant="outlined"
-                          onClick={onDelete}
-                          sx={{ textTransform: 'none', color: '#FF3535', borderColor: '#FF9292', backgroundColor: 'rgba(255, 53, 53, 0.25)', fontWeight: 600, "&:hover": {  borderColor: '#FF3535', backgroundColor: 'rgba(255, 53, 53, 0.35)' } }}
-                          startIcon={<Trash2 size={16} color="#FF3535"/>}
-                      >
-                          Eliminar
-                      </Button>
-                    }
+                    <Button
+                        variant="outlined"
+                        onClick={onDelete}
+                        sx={{ textTransform: 'none', color: '#FF3535', borderColor: '#FF9292', backgroundColor: 'rgba(255, 53, 53, 0.25)', fontWeight: 600, "&:hover": {  borderColor: '#FF3535', backgroundColor: 'rgba(255, 53, 53, 0.35)' } }}
+                        startIcon={<Trash2 size={16} color="#FF3535"/>}
+                    >
+                        Eliminar
+                    </Button>
                 </div>
             </footer>
         </Card>
     );
 }
+
+// <EntityCard
+//     key={tripsDistribution._id}
+//     title={ tripsDistribution.nro_viaje ?? (tripsDistribution as any).numeroDeViaje}
+//     subtitle={`${new Date(tripsDistribution.fecha_inicio).toLocaleDateString()} - ${new Date(tripsDistribution.fecha_inicio).toLocaleTimeString()} `}
+//     icon={<MapPinned size={24}/>}
+//     fields={[
+//         { label: "Transportista", value: `${tripsDistribution.transportista.nombre_comercial}`},
+//         { label: "Chofer", value: tripsDistribution.chofer.nombre + ", " + tripsDistribution.chofer.apellido, isLong: true },
+//         { label: "Deposito de origen", value: `${tripsDistribution.origen.nombre}`, extend: true },
+//     ]}
+//     onDelete={() => handleOpenDialog(tripsDistribution)}
+//     onEdit={() => navigate(`/trips/distribution/edit/${tripsDistribution._id}`)}  
+//     onView={() => navigate(`/trips/distribution/details/${tripsDistribution._id}`)}  
+//     headerEstado={ tripsDistribution.estado}   
+// />

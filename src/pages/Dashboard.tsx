@@ -1,11 +1,15 @@
 import { SectionHeader } from "../components/SectionHeader";
 import { MapPinned, Navigation, FileBox } from "lucide-react";
-import { Box } from "@mui/material";
+import { Box, useMediaQuery } from "@mui/material";
 import { InfoCard } from "../components/dashboard/InfoCard";
 import { useDashboardControllerGetDashboard } from "../api/generated";
 import { Grid } from "@mui/material";
 import CardContainer from "../components/dashboard/CardCointainer";
 import ProximosViajes from "../components/dashboard/ProximosViajes";
+import { useTheme } from "@mui/material/styles";
+import EntityCard from "../components/EntityCard";
+import { useNavigate } from "react-router-dom";
+import DashboardProgressBar from "../components/dashboard/DashboardProgressBar";
 
 export default function Dashboard() {
     const { data, isLoading} =  useDashboardControllerGetDashboard();
@@ -16,6 +20,10 @@ export default function Dashboard() {
         proximosViajes,
     } = data?.data || {};
 
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const navigate = useNavigate();
+
     return (
         <>
             <SectionHeader
@@ -23,7 +31,7 @@ export default function Dashboard() {
             />
             <div className="flex flex-col px-0">   
                 <Grid container mb={2} spacing={2} marginBottom={0}>
-                    <Grid item xs={12}  lg={6} >
+                    <Grid item xs={12} sm={6} lg={6} >
                         <InfoCard 
                             title="Viajes En Camino"
                             icon={<Navigation className="size-6 block" color="#E65F2B" />} 
@@ -40,7 +48,7 @@ export default function Dashboard() {
 
                         </InfoCard>
                     </Grid>
-                    <Grid item xs={12} lg={6}>
+                    <Grid item xs={12} sm={6} lg={6}>
                         <InfoCard 
                             title="Remitos"
                             icon={<FileBox className="size-6 block" color="#E65F2B" />} 
@@ -59,15 +67,38 @@ export default function Dashboard() {
 
                     </Grid>
 
-                    <Grid item xs={12}  lg={12}>
+                    <Grid item xs={12} lg={12}>
                         <InfoCard 
                             title="Próximos viajes"
                             icon={<MapPinned className={`size-7 block`} color="#E65F2B"/>} 
                             loading={isLoading}
                             isList
                         >
-                          <Box display="flex" paddingLeft={3} paddingRight={3} paddingTop={2} paddingBottom={2} flexDirection={"column"}>
+                          <Box display="flex" paddingLeft={3} paddingRight={3} paddingTop={2} paddingBottom={2} flexDirection={"column"} gap={2}> 
                             {proximosViajes && proximosViajes.length > 0 ? (
+                              isMobile ? (
+                                proximosViajes.map((tripsDistribution) => (
+                                  <EntityCard
+                                      key={tripsDistribution._id}
+                                      title={ tripsDistribution.nro_viaje ?? (tripsDistribution as any).numeroDeViaje}
+                                      icon={<MapPinned size={24}/>}
+                                      fields={[
+                                          { label: "Transportista", value: `${tripsDistribution.empresa}`},
+                                          { label: "Chofer", value: tripsDistribution.chofer, isLong: true },
+                                          { label: "Costo", value: tripsDistribution.valorTarifa ? `${tripsDistribution.valorTarifa}` : "N/A" },
+                                          { label: "Fecha", value: `${new Date(tripsDistribution.fecha).toLocaleDateString()}` },
+                                      ]}
+                                      onView={() => navigate(`/trips/distribution/details/${tripsDistribution._id}`)}
+                                      children={
+                                        <DashboardProgressBar
+                                          remitosEntregados={tripsDistribution.remitosEntregados}
+                                          totalRemitos={tripsDistribution.totalRemitos}
+                                          isMobile={true}
+                                        />
+                                      }
+                                  />
+                                ))
+                              ) : (
                                 proximosViajes.map((viaje) => (
                                   <ProximosViajes
                                     key={viaje._id}
@@ -81,6 +112,7 @@ export default function Dashboard() {
                                     totalRemitos={viaje.remitosEntregados}
                                   />
                                 ))
+                              )
                             ) : (
                                 <Box padding={2} textAlign="center" width="100%">
                                     No hay próximos viajes disponibles.

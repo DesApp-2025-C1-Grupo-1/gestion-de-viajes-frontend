@@ -1,6 +1,7 @@
 import { Box, LinearProgress, linearProgressClasses, styled, TableCell, TableRow, Typography } from "@mui/material";
 import { Building2, ChevronRight, DollarSign, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import DashboardProgressBar from "./DashboardProgressBar";
 
 interface ProximosViajesParams {
   viajeID: string;
@@ -15,12 +16,6 @@ interface ProximosViajesParams {
 
 export default function ProximosViajes(viajesParam: ProximosViajesParams) {
   const { viajeID, empresaNombre, choferNombre, fecha, precioTarifa, viaje_id } = viajesParam;
-  const porcentajeEntregado =
-    (
-    (viajesParam.remitosEntregados / viajesParam.totalRemitos) === Infinity 
-    ? 0 
-    : (viajesParam.remitosEntregados / viajesParam.totalRemitos) 
-    ) * 100;
 
   const link={
     pathname: "/trips/distribution",
@@ -47,7 +42,7 @@ export default function ProximosViajes(viajesParam: ProximosViajesParams) {
       alignItems="center"
       justifyContent="space-between"
       border="1px solid #c7c7c7"
-      margin={1}
+      marginX={1}
       borderRadius={1}
       padding={3}
       gap={5}
@@ -100,17 +95,10 @@ export default function ProximosViajes(viajesParam: ProximosViajesParams) {
       {/* 🟩 Bloque derecho: barra + chevron */}
 
         {/* Barra de progreso */}
-        <Box sx={{ flex: 1, maxWidth: "50%"}}>
-          <Box display="flex" justifyContent="space-between" mb={1}>
-            <Typography variant="body2" fontWeight={"500"} noWrap  >
-              Remitos Entregados:
-            </Typography>
-            <Typography variant="body2" fontWeight={"500"} noWrap >
-              {viajesParam.remitosEntregados}/{viajesParam.totalRemitos}
-            </Typography>
-          </Box>
-          <BorderLinearProgress variant="determinate" value={porcentajeEntregado} />
-        </Box>
+        <DashboardProgressBar
+          remitosEntregados={viajesParam.remitosEntregados}
+          totalRemitos={viajesParam.totalRemitos}
+        />
 
         {/* Chevron */}
         <ChevronRight className="size-10 shrink-0" />
@@ -146,21 +134,3 @@ const DoubleCell = ({ primarySection, secondarySection, primaryIcon, secondaryIc
     </Box>
   );
 };
-
-const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
-  height: 10,
-  borderRadius: 5,
-  [`&.${linearProgressClasses.colorPrimary}`]: {
-    backgroundColor: theme.palette.grey[200],
-    ...theme.applyStyles('dark', {
-      backgroundColor: theme.palette.grey[800],
-    }),
-  },
-  [`& .${linearProgressClasses.bar}`]: {
-    borderRadius: 5,
-    backgroundColor: '#23A26D',
-    ...theme.applyStyles('dark', {
-      backgroundColor: '#c7c7c7',
-    }),
-  },
-}));

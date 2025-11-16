@@ -86,13 +86,14 @@ export default function Sidebar({isVisible, setIsVisible}: SidebarProps) {
         >
           <Tooltip title={isCollapsed ? "Ir a la página de inicio" : ""} placement="right" arrow>
             <img 
-              src={isCollapsed ? "/logo_chico.png" : "/logo.jpg"}
+              src={isCollapsed ? "/logo_chico.png" : "/logo.jpeg"}
               alt="Gestión de viajes logo con camión naranja sobre fondo blanco, transmite profesionalismo y confianza"
               style={{
                 minHeight: "48px",
                 margin: "12px auto",
-                width: "100%",
+                width: isCollapsed ? "48px" : "90%",
                 transition: "all 0.3s ease-in-out",
+                maxHeight: "140px"
               }}
             />
           </Tooltip>

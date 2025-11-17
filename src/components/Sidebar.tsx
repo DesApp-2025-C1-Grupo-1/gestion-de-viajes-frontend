@@ -91,7 +91,7 @@ export default function Sidebar({isVisible, setIsVisible}: SidebarProps) {
               style={{
                 minHeight: "48px",
                 margin: "12px auto",
-                width: isCollapsed ? "48px" : "90%",
+                width: isCollapsed ? "48px" : "auto",
                 transition: "all 0.3s ease-in-out",
                 maxHeight: "140px"
               }}

@@ -1,6 +1,9 @@
 import { Box, Button, Chip, Collapse, Grid, MenuItem, Paper, Select, Stack, TextField, Typography } from "@mui/material";
 import { Funnel, ListFilter, X } from "lucide-react";
 import { useCallback, useState } from "react";
+import FilterTypeVehicle from "./vehicle/FilterTypeVehicle";
+import FilterCompany from "./vehicle/FilterCompany";
+import FilterVehicle from "./vehicle/FilterVehicle";
 
 interface FilterSectionProps {
     filterOpen: boolean;
@@ -8,6 +11,8 @@ interface FilterSectionProps {
     formatChipLabel: (key: string, value: any) => string;
     onApply: (filters: Record<string, any>) => void;
     listFilters: { key: string; label: string; type: string; list?: { value: string}[] }[];
+    typeVehicle?: boolean;
+    chofer?: boolean;
 }
 
 export function getNestedValue(obj: any, path: string): any {
@@ -20,6 +25,8 @@ export default function FilterSection({
     onApply = () => {},
     formatChipLabel,
     listFilters,
+    typeVehicle = false,
+    chofer = false
 }: FilterSectionProps) {
     const [appliedFilters, setAppliedFilters] = useState<Record<string, any>>({});
     const [localFilters, setLocalFilters] = useState<Record<string, any>>({});
@@ -91,16 +98,16 @@ export default function FilterSection({
                     .filter(([_, value]) => value && (Array.isArray(value) ? value.length > 0 : true))
                     .map(([key, value]) => (
                         <Chip
-                        key={key}
-                        label={formatChipLabel(key, value)}
-                        onDelete={() => handleDeleteChip(key)}
-                        variant="outlined"
-                        sx={{
-                            backgroundColor: "#F0F4F8",
-                            color: "#474752",
-                            fontWeight: "500",
-                            "& .MuiChip-deleteIcon": { color: "#5A5A65", transition: "color 0.2s" },
-                        }}
+                            key={key}
+                            label={formatChipLabel(key, value)}
+                            onDelete={() => handleDeleteChip(key)}
+                            variant="outlined"
+                            sx={{
+                                backgroundColor: "#F0F4F8",
+                                color: "#474752",
+                                fontWeight: "500",
+                                "& .MuiChip-deleteIcon": { color: "#5A5A65", transition: "color 0.2s" },
+                            }}
                         />
                     ))}
                 </Stack>
@@ -139,6 +146,22 @@ export default function FilterSection({
                                     )}
                                 </Grid>
                             ))}
+
+                            {typeVehicle && 
+                                <>
+                                    <Grid item xs={12} md={3}>
+                                        <Typography variant="subtitle2" color="#666" mb={0.5}>Tipo de vehículo</Typography>
+                                        <FilterTypeVehicle localFilters={localFilters} handleChange={handleChange} />
+                                    </Grid>
+                                    <FilterCompany localFilters={localFilters} handleChange={handleChange} />
+                                </>
+                            }
+                            {chofer && 
+                                <>
+                                    <FilterVehicle localFilters={localFilters} handleChange={handleChange} />
+                                    <FilterCompany localFilters={localFilters} handleChange={handleChange} />
+                                </>
+                            }
                         </Grid>
                         <Box 
                             display="flex" mt={2} 

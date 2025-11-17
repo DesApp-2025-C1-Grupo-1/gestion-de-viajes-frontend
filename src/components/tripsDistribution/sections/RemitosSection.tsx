@@ -201,7 +201,7 @@ export default function RemitosSection() {
         disabled={remitoIds.length === 0}
         fullWidth
       >
-        Editar orden de entrega
+        Ver o editar orden de entrega
       </Button>
 
       <OrdenRemitosModal 

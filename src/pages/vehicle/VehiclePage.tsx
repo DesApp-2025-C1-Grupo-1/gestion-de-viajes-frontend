@@ -3,11 +3,9 @@ import { SectionHeader } from "../../components/SectionHeader";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import  LoadingState  from "../../components/LoadingState";
-import SearchBar from "../../components/SearchBar";
 import MenuItemDialog from "../../components/buttons/MenuItem";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { useVehiculoControllerFindAll, vehiculoControllerRemove, VehiculoDto } from "../../api/generated";
-import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 import { useNotify } from "../../hooks/useNotify";
 import { Eye, Truck } from "lucide-react";
 import EntityCard from "../../components/EntityCard";
@@ -123,9 +121,8 @@ export default function VehiclePage() {
                     { key: "patente", label: "Patente", type: "text" },
                     { key: "modelo", label: "Modelo", type: "text" },
                     { key: "año", label: "Año", type: "number" },
-                    { key: "tipo.nombre", label: "Tipo", type: "text" },
-                    { key: "empresa.nombre_comercial", label: "Empresa", type: "text" },
                 ]}
+                typeVehicle
             />
 
             {isTablet || isMobile ? (

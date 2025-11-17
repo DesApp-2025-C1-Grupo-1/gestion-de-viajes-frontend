@@ -176,7 +176,6 @@ export default function RemitosSelectModal({
             {filteredRemitos.length === 0 ? (
               <Grid item xs={12}>
                 <Box sx={{ textAlign: "center", padding: 4 }}>
-                  <Package size={48} color="#ccc" />
                   <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
                     No se encontraron remitos
                   </Typography>

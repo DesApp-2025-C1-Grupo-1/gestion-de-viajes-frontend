@@ -38,7 +38,16 @@ export default function DistributionDetailsPage() {
     const isLoadingAll = isLoading || !tripSelected || remitosMutation.isPending || isLoadingTarifa;
 
     if (isError) {
-        return <p>No se encontró el viaje con ID: {id}</p>;
+        return <>
+            <SectionHeader
+                title="Detalles del viaje"
+            />
+            <Paper  sx={{ padding:4, mx:'auto', width:"100%", borderRadius: 2, boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", border: "0.5px solid #C7C7C7"}} >
+                <div className="flex-1 overflow-y-auto px-4 py-6 flex flex-col items-center">
+                    <p>No se encontró el viaje con ID: <strong>{id}</strong></p>
+                </div>
+            </Paper>
+        </>;
     }
 
     const remitos = Array.isArray(remitosMutation.data?.data)
@@ -56,8 +65,6 @@ export default function DistributionDetailsPage() {
                     {isLoadingAll ? (
                         <LoadingState title="detalles del viaje"/>
                     ):(
-
-
                         <div className="w-full max-w-5xl flex flex-col gap-10">
                             <CardDetails 
                                 icon={<MapPinned color="#E65F2B" />}

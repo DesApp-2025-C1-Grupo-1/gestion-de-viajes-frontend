@@ -136,9 +136,10 @@ const sensors = useSensors(
     const total = remitos.length;
     const entregados = Object.values(entregas).filter(e => e === "Entregado").length;
     const noEntregados = Object.values(entregas).filter(e => e === "No entregado").length;
-    const enCamino = total - entregados - noEntregados;
+    const enCamino = Object.values(entregas).filter(e => e === "En camino").length;
+    const enPreparacion = total - (entregados + noEntregados + enCamino);
 
-    return { total, entregados, noEntregados, enCamino };
+    return { total, entregados, noEntregados, enCamino, enPreparacion };
   }, [remitos.length, entregas]);
 
   return (
@@ -178,6 +179,12 @@ const sensors = useSensors(
           />
           <Chip 
             label={`${estadisticas.enCamino} En Camino`}
+            variant="outlined"
+            color="default"
+            size="small"
+          />
+          <Chip 
+            label={`${estadisticas.enPreparacion} En Preparación`}
             variant="outlined"
             color="default"
             size="small"

@@ -6,8 +6,7 @@ import { EstadoEntrega, OrdenRemitosModalProps } from "../../../../types";
 
 export default function OrdenRemitosModal({ open, onClose, estadoViaje, remitos, remitoIds, onReorderRemitos, onToggleRemito, remitosQuitados, restaurarRemito, quitarRemito, setRemitosCompletos, refrescarRemitos }: OrdenRemitosModalProps) {
 
-    const puedeEditarEntrega =
-        estadoViaje === "fin de carga" || estadoViaje === "inicio de carga" || estadoViaje === "iniciado";
+    const puedeEditarEntrega = estadoViaje !== "fin de viaje";
 
     const entregas = remitos.reduce((acc, remito) => {
         acc[remito.id] = remito.estado?.nombre as EstadoEntrega || "";

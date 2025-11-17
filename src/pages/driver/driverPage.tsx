@@ -67,6 +67,10 @@ export default function DriverPage(){
                 return `Apellido: ${value}`;
             case "dni":
                 return `DNI: ${value}`;
+            case "empresa.nombre_comercial":
+                return `Empresa: ${value}`;
+            case "vehiculo.patente":
+                return `Vehículo: ${value}`;
             default:
                 return `${key}: ${value}`;
         }
@@ -122,6 +126,7 @@ export default function DriverPage(){
                     { key: "apellido", label: "Apellido", type: "text" },
                     { key: "dni", label: "DNI", type: "number" },
                 ]}
+                chofer
             />
 
             {/*tabla*/}

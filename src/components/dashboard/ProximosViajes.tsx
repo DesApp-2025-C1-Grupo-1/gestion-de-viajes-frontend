@@ -15,7 +15,7 @@ interface ProximosViajesParams {
 }
 
 export default function ProximosViajes(viajesParam: ProximosViajesParams) {
-  const { viajeID, empresaNombre, choferNombre, fecha, precioTarifa, viaje_id } = viajesParam;
+  const { viajeID, empresaNombre, choferNombre, fecha, precioTarifa, viaje_id, totalRemitos, remitosEntregados } = viajesParam;
 
   const link={
     pathname: "/trips/distribution",
@@ -96,8 +96,8 @@ export default function ProximosViajes(viajesParam: ProximosViajesParams) {
 
         {/* Barra de progreso */}
         <DashboardProgressBar
-          remitosEntregados={viajesParam.remitosEntregados}
-          totalRemitos={viajesParam.totalRemitos}
+          remitosEntregados={remitosEntregados}
+          totalRemitos={totalRemitos}
         />
 
         {/* Chevron */}

@@ -33,7 +33,7 @@ export default function Dashboard() {
                 <Grid container mb={2} spacing={2} marginBottom={0}>
                     <Grid item xs={12} sm={6} lg={6} >
                         <InfoCard 
-                            title="Viajes En Camino"
+                            title="Viajes"
                             icon={<Navigation className="size-6 block" color="#E65F2B" />} 
                             loading={isLoading}
                         >
@@ -108,8 +108,8 @@ export default function Dashboard() {
                                     empresaNombre={viaje.empresa}
                                     choferNombre={viaje.chofer}
                                     precioTarifa={viaje.valorTarifa}
-                                    remitosEntregados={viaje.totalRemitos}
-                                    totalRemitos={viaje.remitosEntregados}
+                                    remitosEntregados={viaje.remitosEntregados}
+                                    totalRemitos={viaje.totalRemitos}
                                   />
                                 ))
                               )

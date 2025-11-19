@@ -69,7 +69,7 @@ export default function Dashboard() {
 
                     <Grid item xs={12} lg={12}>
                         <InfoCard 
-                            title="Próximos viajes"
+                            title="Viajes en camino"
                             icon={<MapPinned className={`size-7 block`} color="#E65F2B"/>} 
                             loading={isLoading}
                             isList
@@ -85,10 +85,11 @@ export default function Dashboard() {
                                       fields={[
                                           { label: "Transportista", value: `${tripsDistribution.empresa}`},
                                           { label: "Chofer", value: tripsDistribution.chofer, isLong: true },
-                                          { label: "Costo", value: tripsDistribution.valorTarifa ? `${tripsDistribution.valorTarifa}` : "N/A" },
+                                          { label: "Costo", value: tripsDistribution.valorTarifa ? `$${tripsDistribution.valorTarifa?.toLocaleString("es-AR")}` : "N/A" },
                                           { label: "Fecha", value: `${new Date(tripsDistribution.fecha).toLocaleDateString()}` },
                                       ]}
                                       onView={() => navigate(`/trips/distribution/details/${tripsDistribution._id}`)}
+                                      onEdit={() => navigate(`/trips/distribution/edit/${tripsDistribution._id}`)}
                                       children={
                                         <DashboardProgressBar
                                           remitosEntregados={tripsDistribution.remitosEntregados}

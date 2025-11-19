@@ -19,7 +19,7 @@ export default function ProximosViajes(viajesParam: ProximosViajesParams) {
 
   const link={
     pathname: "/trips/distribution",
-    state: { defaultFilter: { _id: viaje_id } }
+    state: { defaultFilter: { _id: viajeID } }
   }
 
 
@@ -88,7 +88,7 @@ export default function ProximosViajes(viajesParam: ProximosViajesParams) {
           <DollarSign className="shrink-0" size={18} color="#AFB3B9"/>
           
           <Typography variant="body2" fontWeight={"500"} noWrap  >
-            {precioTarifa ? `${precioTarifa}` : "N/A"}
+            {precioTarifa ? `${precioTarifa?.toLocaleString("es-AR")}` : "N/A"}
           </Typography>
         </Box>
 

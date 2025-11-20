@@ -17,7 +17,7 @@ export default function FilterCompany({ localFilters, handleChange }: FilterComp
             <Typography variant="subtitle2" color="#666" mb={0.5}>Empresa</Typography>
             <Select
                 fullWidth
-                value={localFilters.nombre_comercial || ""}
+                value={empresas.find(e => e.nombre_comercial === localFilters["empresa.nombre_comercial"])?.nombre_comercial || ""}
                 onChange={(e) => handleChange('empresa.nombre_comercial', e.target.value)}
                 displayEmpty
             >

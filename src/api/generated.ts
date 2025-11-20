@@ -599,6 +599,8 @@ export interface BuscarViajeDto {
   destino?: string;
 }
 
+export interface ObjectId { [key: string]: unknown }
+
 export type CreateViajeDistribucionDtoEstado = typeof CreateViajeDistribucionDtoEstado[keyof typeof CreateViajeDistribucionDtoEstado];
 
 
@@ -612,12 +614,12 @@ export const CreateViajeDistribucionDtoEstado = {
 
 export interface CreateViajeDistribucionDto {
   fecha_inicio: string;
-  origen: string;
+  origen: ObjectId;
   /** Tipo de viaje */
   tipo_viaje: string;
-  chofer: string;
-  transportista: string;
-  vehiculo: string;
+  chofer: ObjectId;
+  transportista: ObjectId;
+  vehiculo: ObjectId;
   remito_ids: number[];
   kilometros: number;
   tarifa_id?: number;
@@ -645,12 +647,12 @@ export const UpdateViajeDistribucionDtoEstado = {
 
 export interface UpdateViajeDistribucionDto {
   fecha_inicio?: string;
-  origen?: string;
+  origen?: ObjectId;
   /** Tipo de viaje */
   tipo_viaje?: string;
-  chofer?: string;
-  transportista?: string;
-  vehiculo?: string;
+  chofer?: ObjectId;
+  transportista?: ObjectId;
+  vehiculo?: ObjectId;
   remito_ids?: number[];
   kilometros?: number;
   tarifa_id?: number;

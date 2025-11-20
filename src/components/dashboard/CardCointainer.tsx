@@ -88,7 +88,7 @@ export default function CardContainer ({
             count={remitoCantidadTotal || 0}
             backgroundColor="#ffffff"
             textColor="#605D5D"
-            link={buildRemitosUrl({ fechaDesde: new Date(), fechaHasta: new Date() })}
+            link={buildRemitosUrl({ fechaDesde: new Date(new Date().setMonth(new Date().getMonth() - 1)), fechaHasta: new Date() })}
             external={true}
           />
         </Grid>
@@ -99,7 +99,7 @@ export default function CardContainer ({
             count={remitoEnCamino || 0}
             backgroundColor="#FF9247"
             textColor="#ffffff"
-            link={buildRemitosUrl({ fechaDesde: new Date(), fechaHasta: new Date(), estadoId: 4 })}
+            link={buildRemitosUrl({ fechaDesde: new Date(new Date().setMonth(new Date().getMonth() - 1)), fechaHasta: new Date(), estadoId: 4 })}
             external={true}
           />
         </Grid>                          
@@ -109,7 +109,7 @@ export default function CardContainer ({
             count={remitoEntregados || 0}
             backgroundColor="#23A26D"
             textColor="#ffffff"
-            link={buildRemitosUrl({ fechaDesde: new Date(), fechaHasta: new Date(), estadoId: 5 })}
+            link={buildRemitosUrl({ fechaDesde: new Date(new Date().setMonth(new Date().getMonth() - 1)), fechaHasta: new Date(), estadoId: 5 })}
             external={true}
           />
         </Grid>
@@ -119,7 +119,7 @@ export default function CardContainer ({
             count={remitoNoEntregados || 0}
             backgroundColor="#FF4443"
             textColor="#ffffff"
-            link={buildRemitosUrl({ fechaDesde: new Date(), fechaHasta: new Date(), estadoId: 6 })}
+            link={buildRemitosUrl({ fechaDesde: new Date(new Date().setMonth(new Date().getMonth() - 1)), fechaHasta: new Date(), estadoId: 6 })}
             external={true}
           />
         </Grid>

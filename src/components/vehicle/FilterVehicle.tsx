@@ -17,7 +17,7 @@ export default function FilterVehicle({ localFilters, handleChange }: FilterVehi
             <Typography variant="subtitle2" color="#666" mb={0.5}>Vehículo</Typography>
             <Select
                 fullWidth
-                value={localFilters.vehiculo?.patente || ""}
+                value={vehicles.find(v => v.patente === localFilters['vehiculo.patente']) ? localFilters['vehiculo.patente'] : ""}
                 onChange={(e) => handleChange('vehiculo.patente', e.target.value)}
                 displayEmpty
             >
